@@ -1,1 +1,1 @@
-// Firebase integration here
+// Firebase config placeholder

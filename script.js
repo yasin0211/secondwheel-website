@@ -1,1 +1,1 @@
-console.log('Website loaded');
+console.log('Second Wheel script loaded');
