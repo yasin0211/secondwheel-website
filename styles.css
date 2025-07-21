@@ -1,1 +1,3 @@
-body { font-family: Arial; text-align: center; background-color: #f9f9f9; } a { margin: 0 10px; }
+body { font-family: sans-serif; text-align: center; }
+.logo { width: 100px; margin: 20px auto; display: block; }
+.btn { padding: 10px 20px; margin: 10px; background: #007bff; color: #fff; text-decoration: none; border-radius: 5px; }
