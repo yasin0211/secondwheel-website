@@ -1,3 +1,26 @@
-body { font-family: sans-serif; text-align: center; }
-.logo { width: 100px; margin: 20px auto; display: block; }
-.btn { padding: 10px 20px; margin: 10px; background: #007bff; color: #fff; text-decoration: none; border-radius: 5px; }
+
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f8f9fa;
+  margin: 0;
+}
+.logo {
+  width: 120px;
+  margin-top: 20px;
+}
+header h1 {
+  color: #111;
+}
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  margin: 10px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+}
+.btn:hover {
+  background-color: #0056b3;
+}
