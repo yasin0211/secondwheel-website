@@ -1,16 +1,14 @@
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: sans-serif;
+    background-color: #f4f4f4;
     text-align: center;
-    background: #f8f9fa;
+    padding: 50px;
 }
-header {
-    margin-top: 50px;
-}
-.btn {
-    display: inline-block;
+.buttons a {
     margin: 10px;
     padding: 10px 20px;
-    background: #007bff;
+    background-color: #007bff;
     color: white;
     text-decoration: none;
     border-radius: 5px;
