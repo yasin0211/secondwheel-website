@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Second Wheel - Buy Used Vehicles</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1950&q=80');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      text-align: center;
+      padding-top: 100px;
+    }
+
+    h1 {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 20px;
+      margin-bottom: 30px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      background-color: #e25a00;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #c24700;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Welcome to Second Wheel</h1>
+  <p>Trusted Vehicles, Smart Deals</p>
+
+  <button id="buyBtn">Buy a Vehicle</button>
+  <button id="sellBtn">Sell Your Vehicle</button>
+  <button id="valuationBtn">Get Vehicle Valuation</button>
+
+  <script>
+    document.getElementById("buyBtn").addEventListener("click", function () {
+      alert("You clicked Buy Vehicle");
+    });
+
+    document.getElementById("sellBtn").addEventListener("click", function () {
+      alert("You clicked Sell Vehicle");
+    });
+
+    document.getElementById("valuationBtn").addEventListener("click", function () {
+      alert("You clicked Vehicle Valuation");
+    });
+  </script>
+</body>
+</html>
