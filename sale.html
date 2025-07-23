@@ -1,45 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sell Vehicle - Second Wheel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 40px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      background-color: #e25a00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #c24700;
+    }
+  </style>
+</head>
+<body>
+
 <h2>Sell Your Vehicle</h2>
-<p>Upload vehicle details below:</p>
+<p style="text-align:center;">Upload vehicle details below:</p>
 
 <form>
-  <label>Owner Name:</label><br>
-  <input type="text" name="owner" required><br><br>
+  <label>Owner Name:</label>
+  <input type="text" name="owner" required>
 
-  <label>Vehicle Type:</label><br>
+  <label>Vehicle Type:</label>
   <select name="type" required>
     <option value="">--Select--</option>
     <option value="Car">Car</option>
     <option value="Bike">Bike</option>
     <option value="Scooter">Scooter</option>
     <option value="EV">EV</option>
-  </select><br><br>
+  </select>
 
-  <label>Brand:</label><br>
-  <input type="text" name="brand" required><br><br>
+  <label>Brand:</label>
+  <input type="text" name="brand" required>
 
-  <label>Model:</label><br>
-  <input type="text" name="model" required><br><br>
+  <label>Model:</label>
+  <input type="text" name="model" required>
 
-  <label>Year:</label><br>
-  <input type="number" name="year" required><br><br>
+  <label>Year:</label>
+  <input type="number" name="year" required>
 
-  <label>Kilometers Driven:</label><br>
-  <input type="number" name="km" required><br><br>
+  <label>Kilometers Driven:</label>
+  <input type="number" name="km" required>
 
-  <label>Upload RC Book:</label><br>
-  <input type="file" name="rc"><br><br>
+  <label>Upload RC Book:</label>
+  <input type="file" name="rc">
 
-  <label>Upload Vehicle Images:</label><br>
-  <input type="file" name="images" multiple><br><br>
+  <label>Upload Vehicle Images:</label>
+  <input type="file" name="images" multiple>
 
   <label>Accident History:</label>
-  <input type="checkbox" name="accident"> Yes<br><br>
+  <input type="checkbox" name="accident"> Yes
 
   <label>Modifications:</label>
-  <input type="checkbox" name="mod"> Yes<br><br>
+  <input type="checkbox" name="mod"> Yes
 
-  <label>Expected Price (Optional):</label><br>
-  <input type="number" name="price"><br><br>
+  <label>Expected Price (Optional):</label>
+  <input type="number" name="price">
 
   <button type="submit">Submit Details</button>
 </form>
+
+</body>
+</html>
