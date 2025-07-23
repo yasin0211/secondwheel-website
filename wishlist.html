@@ -1,61 +1,182 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>Wishlist Form</title>
   <style>
-    body { font-family: Arial; padding: 20px; }
-    label { display: block; margin-top: 10px; }
-    select, input { width: 250px; padding: 5px; }
+    body {
+      font-family: Arial;
+      background: #f7f7f7;
+      padding: 30px;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+    select, input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      background: #d62828;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
 
-<h2>Add to Wishlist</h2>
+  <form>
+    <label>Customer Name:</label>
+    <input type="text" name="name" required>
 
-<form>
-  <label>Customer Name:</label>
-  <input type="text" id="name">
+    <label>Mobile Number:</label>
+    <input type="text" name="mobile" required>
 
-  <label>Mobile Number:</label>
-  <input type="text" id="mobile">
+    <label>City:</label>
+    <input type="text" name="city" required>
 
-  <label>City:</label>
-  <input type="text" id="city">
+    <label>Category:</label>
+    <select id="category" name="category">
+      <option value="Car">Car</option>
+      <option value="Bike">Bike</option>
+    </select>
 
-  <label>Category:</label>
-  <select id="category" onchange="populateBrands()">
-    <option value="Car">Car</option>
-    <option value="Bike">Bike</option>
-  </select>
+    <label>Brand:</label>
+    <select id="brand" name="brand">
+      <option value="">--Select Brand--</option>
+    </select>
 
-  <label>Brand:</label>
-  <select id="brand" onchange="populateModels()"></select>
+    <label>Model:</label>
+    <select id="model" name="model">
+      <option value="">--Select Model--</option>
+    </select>
 
-  <label>Model:</label>
-  <select id="model" onchange="populateFuel()"></select>
+    <label>Fuel Type:</label>
+    <select id="fuel" name="fuel">
+      <option value="">--Select Fuel--</option>
+    </select>
 
-  <label>Fuel Type:</label>
-  <select id="fuel"></select>
+    <label>Model Year:</label>
+    <select id="year" name="year"></select>
 
-  <label>Model Year:</label>
-  <select id="year"></select>
+    <button type="submit">Submit Wishlist</button>
+  </form>
 
-  <br><br>
-  <button type="submit">Submit Wishlist</button>
-</form>
+  <script>
+    const data = {
+      Car: {
+        "Maruti Suzuki": {
+          "Alto": ["Petrol"],
+          "Swift": ["Petrol", "Diesel"],
+          "WagonR": ["Petrol", "CNG"]
+        },
+        "Hyundai": {
+          "i10": ["Petrol", "CNG"],
+          "i20": ["Petrol", "Diesel"]
+        }
+      },
+      Bike: {
+        "Hero": {
+          "Splendor": ["Petrol"],
+          "HF Deluxe": ["Petrol"]
+        },
+        "Bajaj": {
+          "Pulsar": ["Petrol"],
+          "Platina": ["Petrol"]
+        }
+      }
+    };
 
-<script src="data.js"></script>
-<script>
-  // Auto-populate Year dropdown (2000 to current year)
-  const yearSelect = document.getElementById("year");
-  const currentYear = new Date().getFullYear();
-  for (let y = 2000; y <= currentYear; y++) {
-    let opt = document.createElement("option");
-    opt.value = y;
-    opt.innerText = y;
-    yearSelect.appendChild(opt);
-  }
-</script>
+    const categorySelect = document.getElementById("category");
+    const brandSelect = document.getElementById("brand");
+    const modelSelect = document.getElementById("model");
+    const fuelSelect = document.getElementById("fuel");
+    const yearSelect = document.getElementById("year");
+
+    function populateBrands() {
+      brandSelect.innerHTML = '<option value="">--Select Brand--</option>';
+      modelSelect.innerHTML = '<option value="">--Select Model--</option>';
+      fuelSelect.innerHTML = '<option value="">--Select Fuel--</option>';
+
+      const category = categorySelect.value;
+      if (data[category]) {
+        Object.keys(data[category]).forEach(brand => {
+          const option = document.createElement("option");
+          option.value = brand;
+          option.text = brand;
+          brandSelect.appendChild(option);
+        });
+      }
+    }
+
+    function populateModels() {
+      modelSelect.innerHTML = '<option value="">--Select Model--</option>';
+      fuelSelect.innerHTML = '<option value="">--Select Fuel--</option>';
+
+      const category = categorySelect.value;
+      const brand = brandSelect.value;
+
+      if (data[category] && data[category][brand]) {
+        Object.keys(data[category][brand]).forEach(model => {
+          const option = document.createElement("option");
+          option.value = model;
+          option.text = model;
+          modelSelect.appendChild(option);
+        });
+      }
+    }
+
+    function populateFuels() {
+      fuelSelect.innerHTML = '<option value="">--Select Fuel--</option>';
+
+      const category = categorySelect.value;
+      const brand = brandSelect.value;
+      const model = modelSelect.value;
+
+      if (data[category] && data[category][brand] && data[category][brand][model]) {
+        data[category][brand][model].forEach(fuel => {
+          const option = document.createElement("option");
+          option.value = fuel;
+          option.text = fuel;
+          fuelSelect.appendChild(option);
+        });
+      }
+    }
+
+    function populateYears() {
+      const currentYear = new Date().getFullYear();
+      for (let y = 2000; y <= currentYear; y++) {
+        const option = document.createElement("option");
+        option.value = y;
+        option.text = y;
+        yearSelect.appendChild(option);
+      }
+    }
+
+    categorySelect.addEventListener("change", populateBrands);
+    brandSelect.addEventListener("change", populateModels);
+    modelSelect.addEventListener("change", populateFuels);
+
+    window.onload = populateYears;
+  </script>
 
 </body>
 </html>
