@@ -1,0 +1,401 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sell Vehicle - Second Wheel</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f2f2f2; padding: 40px; }
+    h2 { text-align: center; color: #333; }
+    form {
+      max-width: 700px;
+      margin: 0 auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+    }
+    label { display: block; margin-top: 15px; font-weight: bold; }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      background-color: #e25a00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover { background-color: #c24700; }
+    .tabs {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .tabs button {
+      padding: 8px 16px;
+      margin: 0 5px;
+      border: none;
+      background: #ddd;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .tabs button.active {
+      background: #e25a00;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Sell Your Vehicle</h2>
+<p style="text-align:center;">Upload vehicle details below:</p>
+
+<form>
+  <div class="tabs">
+    <button type="button" id="carTab" class="active">Car</button>
+    <button type="button" id="bikeTab">Bike</button>
+  </div>
+
+  <label for="brandSelect">Select Brand:</label>
+  <select id="brandSelect" name="brand" required>
+    <option value="">-- Select Brand --</option>
+  </select>
+
+  <label for="modelSelect">Select Model:</label>
+  <select id="modelSelect" name="model" required>
+    <option value="">-- Select Model --</option>
+  </select>
+
+  <label>Year:</label>
+  <input type="number" name="year" required>
+
+  <label>Kilometers Driven:</label>
+  <input type="number" name="km" required>
+
+  <label>Upload RC Book:</label>
+  <input type="file" name="rc">
+
+  <label>Upload Vehicle Images:</label>
+  <input type="file" name="images" multiple>
+
+  <label>Accident History:</label>
+  <input type="checkbox" name="accident"> Yes
+
+  <label>Modifications:</label>
+  <input type="checkbox" name="mod"> Yes
+
+  <label>Expected Price (Optional):</label>
+  <input type="number" name="price">
+
+  <button type="submit">Submit Details</button>
+</form>
+
+<script>
+const vehicleData = {
+  "cars": {
+    "Popular": {
+      "Maruti Suzuki": [
+        "Alto",
+        "Baleno",
+        "Swift",
+        "Dzire",
+        "Ertiga"
+      ],
+      "Hyundai": [
+        "i10",
+        "i20",
+        "Creta",
+        "Verna",
+        "Venue"
+      ],
+      "Tata": [
+        "Nexon",
+        "Tiago",
+        "Harrier",
+        "Punch",
+        "Altroz"
+      ],
+      "Mahindra": [
+        "Scorpio",
+        "Bolero",
+        "XUV300",
+        "Thar",
+        "XUV700"
+      ],
+      "Toyota": [
+        "Innova",
+        "Fortuner",
+        "Glanza",
+        "Urban Cruiser"
+      ],
+      "Honda": [
+        "City",
+        "Amaze",
+        "Jazz",
+        "WR-V"
+      ]
+    },
+    "All": {
+      "Ambassador": [
+        "Classic",
+        "Nova"
+      ],
+      "Ashok Leyland": [
+        "Stile"
+      ],
+      "Aston Martin": [
+        "DB11",
+        "Vantage"
+      ],
+      "Audi": [
+        "A4",
+        "Q3",
+        "Q5",
+        "A6"
+      ],
+      "BYD": [
+        "Atto 3",
+        "e6"
+      ],
+      "BMW": [
+        "X1",
+        "X3",
+        "5 Series",
+        "3 Series"
+      ],
+      "Chevrolet": [
+        "Beat",
+        "Cruze",
+        "Spark",
+        "Enjoy"
+      ],
+      "Citroen": [
+        "C3",
+        "C5 Aircross"
+      ],
+      "Datsun": [
+        "Go",
+        "Redi-Go"
+      ],
+      "Fiat": [
+        "Punto",
+        "Linea"
+      ],
+      "Ford": [
+        "EcoSport",
+        "Figo",
+        "Endeavour"
+      ],
+      "Hindustan Motors": [
+        "Ambassador"
+      ],
+      "Isuzu": [
+        "MU-X",
+        "D-Max"
+      ],
+      "Jeep": [
+        "Compass",
+        "Meridian"
+      ],
+      "Kia": [
+        "Seltos",
+        "Sonet",
+        "Carens"
+      ],
+      "Lexus": [
+        "RX",
+        "NX"
+      ],
+      "MG": [
+        "Hector",
+        "ZS EV"
+      ],
+      "Mercedes-Benz": [
+        "C-Class",
+        "E-Class"
+      ],
+      "Mitsubishi": [
+        "Pajero",
+        "Outlander"
+      ],
+      "Nissan": [
+        "Magnite",
+        "Kicks"
+      ],
+      "Renault": [
+        "Kwid",
+        "Duster",
+        "Triber"
+      ],
+      "Skoda": [
+        "Rapid",
+        "Kushaq",
+        "Slavia"
+      ],
+      "Volkswagen": [
+        "Polo",
+        "Vento",
+        "Taigun"
+      ],
+      "Volvo": [
+        "XC40",
+        "XC60"
+      ]
+    }
+  },
+  "bikes": {
+    "Popular": {
+      "Hero": [
+        "Splendor",
+        "HF Deluxe",
+        "Glamour",
+        "Xtreme"
+      ],
+      "Honda": [
+        "Activa",
+        "Shine",
+        "Hornet",
+        "Unicorn"
+      ],
+      "TVS": [
+        "Apache",
+        "Jupiter",
+        "Ntorq",
+        "XL100"
+      ],
+      "Bajaj": [
+        "Pulsar",
+        "Platina",
+        "Avenger",
+        "CT100"
+      ],
+      "Yamaha": [
+        "FZ",
+        "R15",
+        "Ray ZR",
+        "MT-15"
+      ],
+      "Royal Enfield": [
+        "Classic 350",
+        "Bullet",
+        "Meteor",
+        "Hunter"
+      ]
+    },
+    "All": {
+      "Aprilia": [
+        "SR 160",
+        "Storm 125"
+      ],
+      "Benelli": [
+        "TRK 502",
+        "Imperiale 400"
+      ],
+      "BMW Motorrad": [
+        "G310R",
+        "G310GS"
+      ],
+      "Ducati": [
+        "Monster",
+        "Panigale"
+      ],
+      "Harley-Davidson": [
+        "Street 750",
+        "Iron 883"
+      ],
+      "Husqvarna": [
+        "Vitpilen 250",
+        "Svartpilen 250"
+      ],
+      "Jawa": [
+        "Jawa",
+        "Forty Two",
+        "Perak"
+      ],
+      "KTM": [
+        "Duke 200",
+        "RC 390",
+        "Adventure 250"
+      ],
+      "Mahindra": [
+        "Gusto",
+        "Mojo"
+      ],
+      "Suzuki": [
+        "Access",
+        "Burgman",
+        "Gixxer"
+      ],
+      "Triumph": [
+        "Speed Triple",
+        "Street Twin"
+      ],
+      "Ultraviolette": [
+        "F77"
+      ],
+      "Yezdi": [
+        "Roadster",
+        "Scrambler"
+      ]
+    }
+  }
+};
+let currentCategory = 'cars';
+
+const brandSelect = document.getElementById('brandSelect');
+const modelSelect = document.getElementById('modelSelect');
+const carTab = document.getElementById('carTab');
+const bikeTab = document.getElementById('bikeTab');
+
+function populateBrands(category) {
+  brandSelect.innerHTML = '<option value="">-- Select Brand --</option>';
+  const brands = { ...vehicleData[category]["Popular"], ...vehicleData[category]["All"] };
+  Object.keys(brands).sort().forEach(brand => {
+    let opt = document.createElement('option');
+    opt.value = brand;
+    opt.textContent = brand;
+    brandSelect.appendChild(opt);
+  });
+  modelSelect.innerHTML = '<option value="">-- Select Model --</option>';
+}
+
+brandSelect.addEventListener('change', () => {
+  const selectedBrand = brandSelect.value;
+  modelSelect.innerHTML = '<option value="">-- Select Model --</option>';
+  if (selectedBrand && vehicleData[currentCategory]) {
+    const allModels = { ...vehicleData[currentCategory]["Popular"], ...vehicleData[currentCategory]["All"] };
+    const models = allModels[selectedBrand] || [];
+    models.forEach(model => {
+      let opt = document.createElement('option');
+      opt.value = model;
+      opt.textContent = model;
+      modelSelect.appendChild(opt);
+    });
+  }
+});
+
+carTab.addEventListener('click', () => {
+  currentCategory = 'cars';
+  carTab.classList.add('active');
+  bikeTab.classList.remove('active');
+  populateBrands(currentCategory);
+});
+
+bikeTab.addEventListener('click', () => {
+  currentCategory = 'bikes';
+  bikeTab.classList.add('active');
+  carTab.classList.remove('active');
+  populateBrands(currentCategory);
+});
+
+populateBrands(currentCategory);
+</script>
+
+</body>
+</html>
