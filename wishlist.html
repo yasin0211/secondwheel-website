@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wishlist Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 40px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      background-color: #e25a00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #c24700;
+    }
+  </style>
+</head>
+<body>
+
+<h2>🚗 Add to Wishlist</h2>
+<p style="text-align:center;">Please select your vehicle preferences:</p>
+
+<form id="wishlistForm">
+  <label>Customer Name:</label>
+  <input type="text" name="name" required>
+
+  <label>Mobile Number:</label>
+  <input type="tel" name="mobile" pattern="[0-9]{10}" required>
+
+  <label>City:</label>
+  <input type="text" name="city" required>
+
+  <label>Category:</label>
+  <select name="category" id="category" onchange="loadBrands()" required>
+    <option value="">--Select Category--</option>
+    <option value="Car">Car</option>
+    <option value="Bike">Bike</option>
+  </select>
+
+  <label>Brand:</label>
+  <select name="brand" id="brand" onchange="loadModels()" required>
+    <option value="">--Select Brand--</option>
+  </select>
+
+  <label>Model:</label>
+  <select name="model" id="model" required>
+    <option value="">--Select Model--</option>
+  </select>
+
+  <label>Fuel Type:</label>
+  <select name="fuel" required>
+    <option value="">--Select Fuel--</option>
+    <option>Petrol</option>
+    <option>Diesel</option>
+    <option>CNG</option>
+    <option>Electric</option>
+  </select>
+
+  <label>Model Year:</label>
+  <select name="year" id="year" required></select>
+
+  <button type="submit">Submit Wishlist</button>
+</form>
+
+<script>
+  const vehicleData = {
+    Car: {
+      "Maruti Suzuki": ["Alto", "Baleno", "Swift"],
+      "Hyundai": ["i20", "Creta", "Verna"],
+      "Tata": ["Tiago", "Altroz", "Nexon"]
+    },
+    Bike: {
+      "Hero": ["Splendor", "Passion Pro", "HF Deluxe"],
+      "Bajaj": ["Pulsar", "CT 100", "Platina"],
+      "TVS": ["Apache", "Star City", "Radeon"]
+    }
+  };
+
+  function loadBrands() {
+    const category = document.getElementById("category").value;
+    const brandSelect = document.getElementById("brand");
+    brandSelect.innerHTML = '<option value="">--Select Brand--</option>';
+    document.getElementById("model").innerHTML = '<option value="">--Select Model--</option>';
+
+    if (vehicleData[category]) {
+      Object.keys(vehicleData[category]).forEach(brand => {
+        const option = document.createElement("option");
+        option.value = brand;
+        option.textContent = brand;
+        brandSelect.appendChild(option);
+      });
+    }
+  }
+
+  function loadModels() {
+    const category = document.getElementById("category").value;
+    const brand = document.getElementById("brand").value;
+    const modelSelect = document.getElementById("model");
+    modelSelect.innerHTML = '<option value="">--Select Model--</option>';
+
+    if (vehicleData[category] && vehicleData[category][brand]) {
+      vehicleData[category][brand].forEach(model => {
+        const option = document.createElement("option");
+        option.value = model;
+        option.textContent = model;
+        modelSelect.appendChild(option);
+      });
+    }
+  }
+
+  const yearSelect = document.getElementById("year");
+  const currentYear = new Date().getFullYear();
+  for (let y = currentYear; y >= 2000; y--) {
+    const option = document.createElement("option");
+    option.value = y;
+    option.textContent = y;
+    yearSelect.appendChild(option);
+  }
+
+  document.getElementById("wishlistForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    alert("✅ Wishlist submitted!");
+  });
+</script>
+
+</body>
+</html>
