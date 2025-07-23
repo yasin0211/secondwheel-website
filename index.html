@@ -49,18 +49,16 @@
   <button id="sellBtn">Sell Your Vehicle</button>
   <button id="valuationBtn">Get Vehicle Valuation</button>
 
-  <script>
-    document.getElementById("buyBtn").addEventListener("click", function () {
-      alert("You clicked Buy Vehicle");
-    });
+<script>
+  document.getElementById("buyBtn").addEventListener("click", function () {
+    window.location.href = "buy.html";
+  });
 
-    document.getElementById("sellBtn").addEventListener("click", function () {
-      alert("You clicked Sell Vehicle");
-    });
+  document.getElementById("sellBtn").addEventListener("click", function () {
+    window.location.href = "sell.html";
+  });
 
-    document.getElementById("valuationBtn").addEventListener("click", function () {
-      alert("You clicked Vehicle Valuation");
-    });
-  </script>
-</body>
-</html>
+  document.getElementById("valuationBtn").addEventListener("click", function () {
+    window.location.href = "valuation.html";
+  });
+</script>
