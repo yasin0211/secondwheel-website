@@ -1,1 +1,0 @@
-console.log('Second Wheel script loaded');
