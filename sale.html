@@ -1,10 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Sell Vehicles</title>
-</head>
-<body>
-  <h1>Sell Page</h1>
-  <p>Fill the form to sell your vehicle.</p>
-</body>
-</html>
+<h2>Sell Your Vehicle</h2>
+<p>Upload vehicle details below:</p>
+
+<form>
+  <label>Owner Name:</label><br>
+  <input type="text" name="owner" required><br><br>
+
+  <label>Vehicle Type:</label><br>
+  <select name="type" required>
+    <option value="">--Select--</option>
+    <option value="Car">Car</option>
+    <option value="Bike">Bike</option>
+    <option value="Scooter">Scooter</option>
+    <option value="EV">EV</option>
+  </select><br><br>
+
+  <label>Brand:</label><br>
+  <input type="text" name="brand" required><br><br>
+
+  <label>Model:</label><br>
+  <input type="text" name="model" required><br><br>
+
+  <label>Year:</label><br>
+  <input type="number" name="year" required><br><br>
+
+  <label>Kilometers Driven:</label><br>
+  <input type="number" name="km" required><br><br>
+
+  <label>Upload RC Book:</label><br>
+  <input type="file" name="rc"><br><br>
+
+  <label>Upload Vehicle Images:</label><br>
+  <input type="file" name="images" multiple><br><br>
+
+  <label>Accident History:</label>
+  <input type="checkbox" name="accident"> Yes<br><br>
+
+  <label>Modifications:</label>
+  <input type="checkbox" name="mod"> Yes<br><br>
+
+  <label>Expected Price (Optional):</label><br>
+  <input type="number" name="price"><br><br>
+
+  <button type="submit">Submit Details</button>
+</form>
