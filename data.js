@@ -1,57 +1,42 @@
-let vehicleData = {};
-
-fetch('fuel_types_by_model_extended.json')
-  .then(res => res.json())
-  .then(data => {
-    vehicleData = data;
-    populateBrands(); // initial load
-  });
-
-function populateBrands() {
-  const category = document.getElementById('category').value;
-  const brandSelect = document.getElementById('brand');
-  brandSelect.innerHTML = '<option value="">--Select Brand--</option>';
-
-  if (vehicleData[category]) {
-    Object.keys(vehicleData[category]).forEach(brand => {
-      let opt = document.createElement('option');
-      opt.value = brand;
-      opt.innerText = brand;
-      brandSelect.appendChild(opt);
-    });
+const vehicleData = {
+  Car: {
+    "Maruti Suzuki": {
+      "Alto": ["Petrol"],
+      "WagonR": ["Petrol", "CNG"],
+      "Swift": ["Petrol", "Diesel"]
+    },
+    "Hyundai": {
+      "i10": ["Petrol"],
+      "i20": ["Petrol", "Diesel"],
+      "Verna": ["Petrol", "Diesel"]
+    },
+    "Tata": {
+      "Nexon": ["Petrol", "Diesel", "Electric"],
+      "Altroz": ["Petrol", "Diesel"],
+      "Tiago": ["Petrol", "CNG"]
+    },
+    "Mahindra": {
+      "Bolero": ["Diesel"],
+      "Scorpio": ["Diesel"],
+      "XUV700": ["Petrol", "Diesel"]
+    }
+  },
+  Bike: {
+    "Hero": {
+      "Splendor Plus": ["Petrol"],
+      "HF Deluxe": ["Petrol"]
+    },
+    "Bajaj": {
+      "Pulsar 150": ["Petrol"],
+      "CT 100": ["Petrol"]
+    },
+    "TVS": {
+      "Apache RTR 160": ["Petrol"],
+      "Sport": ["Petrol"]
+    },
+    "Honda": {
+      "Shine": ["Petrol"],
+      "Unicorn": ["Petrol"]
+    }
   }
-}
-
-function populateModels() {
-  const category = document.getElementById('category').value;
-  const brand = document.getElementById('brand').value;
-  const modelSelect = document.getElementById('model');
-  modelSelect.innerHTML = '<option value="">--Select Model--</option>';
-
-  if (vehicleData[category] && vehicleData[category][brand]) {
-    Object.keys(vehicleData[category][brand]).forEach(model => {
-      let opt = document.createElement('option');
-      opt.value = model;
-      opt.innerText = model;
-      modelSelect.appendChild(opt);
-    });
-  }
-}
-
-function populateFuel() {
-  const category = document.getElementById('category').value;
-  const brand = document.getElementById('brand').value;
-  const model = document.getElementById('model').value;
-  const fuelSelect = document.getElementById('fuel');
-  fuelSelect.innerHTML = '<option value="">--Select Fuel--</option>';
-
-  if (vehicleData[category] && vehicleData[category][brand] && vehicleData[category][brand][model]) {
-    const fuels = vehicleData[category][brand][model];
-    fuels.forEach(fuel => {
-      let opt = document.createElement('option');
-      opt.value = fuel;
-      opt.innerText = fuel;
-      fuelSelect.appendChild(opt);
-    });
-  }
-}
+};
