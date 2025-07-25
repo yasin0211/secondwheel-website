@@ -1,98 +1,85 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Second Wheel - Buy Used Vehicles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Second Wheel - Trusted Vehicles, Smart Deals</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-image: url('assets/bg.jpg');
+    body { margin: 0; font-family: Arial, sans-serif; background-color: #f2f2f2; }
+    header { background-color: #1f1f1f; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { margin: 0; font-size: 24px; }
+    .hero {
+      background-image: url('banner.jpg');
       background-size: cover;
       background-position: center;
       color: white;
+      padding: 80px 20px;
       text-align: center;
-      padding-top: 100px;
-      margin: 0;
     }
-
-    .logo {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 220px;
-    }
-
-    .language-switch {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-    }
-
-    .language-switch a {
-      color: white;
-      text-decoration: none;
-      margin-left: 15px;
-      font-weight: bold;
-    }
-
-    h1 {
-      font-size: 48px;
-      margin-top: 40px;
-    }
-
-    .button {
-      background-color: #002B5B;
-      color: white;
-      padding: 15px 30px;
-      margin: 15px;
-      text-decoration: none;
-      border-radius: 10px;
-      font-size: 20px;
+    .hero h2 { font-size: 36px; margin-bottom: 10px; }
+    .hero p { font-size: 18px; margin-bottom: 5px; }
+    .hero small { font-size: 14px; color: #ddd; }
+    .hero a {
       display: inline-block;
-    }
-
-    footer {
-      text-align: center;
-      padding: 25px;
-      background-color: #f2f2f2;
-      margin-top: 100px;
-    }
-
-    footer a {
-      background-color: #003366;
+      padding: 10px 25px;
+      background-color: #e25a00;
       color: white;
-      padding: 10px 20px;
       text-decoration: none;
-      border-radius: 8px;
-      font-size: 18px;
-      font-family: Arial, sans-serif;
+      margin: 10px;
+      border-radius: 6px;
     }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 20px;
+      padding: 40px 20px;
+      background-color: #ffffff;
+    }
+    .tool-card {
+      background: #f7f7f7;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .tool-card img { width: 50px; margin-bottom: 10px; }
+    .tool-card p { margin: 0; font-size: 14px; font-weight: bold; }
+    .trust { text-align:center; padding: 20px; background-color: #f9f9f9; }
+    .trust strong { font-size: 16px; }
+    .trust span { font-size: 14px; color: gray; }
   </style>
 </head>
 <body>
+  <header>
+    <h1>Second Wheel</h1>
+    <div>
+      <a href="#" style="color:white; text-decoration:none; margin-right:15px;">Login</a>
+      <a href="#" style="color:white; text-decoration:none;">Wishlist</a>
+    </div>
+  </header>
 
-  <!-- Logo -->
-  <img src="assets/logo.png" alt="Second Wheel Logo" class="logo">
+  <section class="hero">
+    <h2>Trusted Vehicles, Smart Deals</h2>
+    <p>Buy & Sell Verified Vehicles Across Maharashtra</p>
+    <small>Starting from Satara • Expanding Soon Across India</small><br>
+    <a href="#buy">Buy</a>
+    <a href="#sell">Sell</a>
+  </section>
 
-  <!-- Language switch -->
-  <div class="language-switch">
-    <a href="#">English</a>
-    <a href="#">हिंदी</a>
-    <a href="#">मराठी</a>
+  <div class="trust">
+    <strong>✅ Trusted by Local Customers in Satara</strong><br>
+    <span>Fast & Transparent Deals Across Maharashtra</span>
   </div>
 
-  <!-- Title -->
-  <h1>Buy, Sell & Valuation</h1>
-
-  <!-- Main Buttons -->
-  <a href="buy.html" class="button">Buy</a>
-  <a href="sell.html" class="button">Sell</a>
-  <a href="valuation.html" class="button">Valuation</a>
-
-  <!-- Footer Extra Tools -->
-  <footer>
-    <a href="extratools.html">Extra Tools</a>
-  </footer>
-
+  <section class="grid">
+    <div class="tool-card"><img src="icons/valuation.png"><p>Valuation</p></div>
+    <div class="tool-card"><img src="icons/fastag.png"><p>FASTag Recharge</p></div>
+    <div class="tool-card"><img src="icons/insurance.png"><p>Renew Insurance</p></div>
+    <div class="tool-card"><img src="icons/hsrp.png"><p>HSRP Plate</p></div>
+    <div class="tool-card"><img src="icons/rto.png"><p>RTO Check</p></div>
+    <div class="tool-card"><img src="icons/challan.png"><p>Pay Challan</p></div>
+    <div class="tool-card"><img src="icons/loan.png"><p>Used Car Loan</p></div>
+  </section>
 </body>
 </html>
