@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Used Vehicle Loan - Second Wheel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 30px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Apply for Used Vehicle Loan</h2>
+  <form action="https://docs.google.com/forms/d/e/1FAIpQLSdEXAMPLEFORMURL/formResponse" method="POST" target="_blank">
+    <label>Full Name</label>
+    <input type="text" name="entry.1111111111" required>
+
+    <label>Mobile Number</label>
+    <input type="tel" name="entry.2222222222" required>
+
+    <label>City</label>
+    <input type="text" name="entry.3333333333" required>
+
+    <label>Loan Type</label>
+    <select name="entry.4444444444" required>
+      <option value="">-- Select --</option>
+      <option value="Used Car Loan">Used Car Loan</option>
+      <option value="Used Bike Loan">Used Bike Loan</option>
+    </select>
+
+    <label>Vehicle Brand</label>
+    <input type="text" name="entry.5555555555" required>
+
+    <label>Vehicle Model</label>
+    <input type="text" name="entry.6666666666" required>
+
+    <label>Loan Amount Required</label>
+    <input type="number" name="entry.7777777777" required>
+
+    <button type="submit">Submit Application</button>
+  </form>
+</div>
+
+</body>
+</html>
