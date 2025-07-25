@@ -1,85 +1,55 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Second Wheel – Buy Used Vehicles</title>
+  <title>Second Wheel - Buy Used Vehicles</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background-image: url('https://images.unsplash.com/photo-1584973618496-4caf8f2594dd?auto=format&fit=crop&w=1950&q=80');
+      background-image: url('https://i.imgur.com/CL3HdtA.jpg');
       background-size: cover;
       background-position: center;
       color: white;
       text-align: center;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      padding-top: 100px;
+      margin: 0;
     }
-    nav {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-    }
-    nav a {
-      color: white;
-      margin-left: 15px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .logo {
+    header {
       position: absolute;
       top: 20px;
       left: 20px;
     }
-    .logo img {
-      height: 60px;
+    header img {
+      width: 200px;
     }
     h1 {
       font-size: 48px;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
     }
-    .buttons a {
-      display: inline-block;
-      background-color: #002f5f;
-      color: white;
+    .btn {
       padding: 15px 30px;
+      font-size: 20px;
       margin: 10px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 18px;
+      background-color: #002f6c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
-    .buttons a:hover {
-      background-color: #0056a3;
+    .btn:hover {
+      background-color: #005bbb;
     }
   </style>
 </head>
 <body>
-  <div class="logo">
-    <img src="https://secondwheel.in/assets/logo.png" alt="Second Wheel Logo" />
-  </div>
-  <nav>
-    <a href="#">English</a>
-    <a href="#">हिंदी</a>
-    <a href="#">मराठी</a>
-    <a href="mailto:sales@secondwheel.in">📧</a>
-  </nav>
+  <header>
+    <img src="https://i.imgur.com/wpywVYk.png" alt="Second Wheel Logo">
+  </header>
   <h1>Buy, Sell & Valuation</h1>
-  <div class="buttons">
-    <a href="buy.html">Buy</a>
-    <a href="sell.html">Sell</a>
-    <a href="valuation.html">Valuation</a>
+  <div>
+    <button class="btn" onclick="location.href='buy.html'">Buy</button>
+    <button class="btn" onclick="location.href='sell.html'">Sell</button>
+    <button class="btn" onclick="location.href='valuation.html'">Valuation</button>
   </div>
-  <footer style="text-align:center; padding: 20px; background-color: #f2f2f2; margin-top: 50px;">
-    <a href="extratools.html" style="
-        background-color: #003366;
-        color: white;
-        padding: 10px 20px;
-        text-decoration: none;
-        border-radius: 8px;
-        font-size: 18px;
-        font-family: Arial, sans-serif;
-    ">Extra Tools</a>
-</footer>
 </body>
 </html>
