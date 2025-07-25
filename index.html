@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Second Wheel - Buy Used Vehicles</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-image: url('https://i.imgur.com/CL3HdtA.jpg');
+      background-image: url('assets/bg.jpg');
       background-size: cover;
       background-position: center;
       color: white;
@@ -14,42 +14,85 @@
       padding-top: 100px;
       margin: 0;
     }
-    header {
+
+    .logo {
       position: absolute;
       top: 20px;
       left: 20px;
+      width: 220px;
     }
-    header img {
-      width: 200px;
+
+    .language-switch {
+      position: absolute;
+      top: 20px;
+      right: 20px;
     }
+
+    .language-switch a {
+      color: white;
+      text-decoration: none;
+      margin-left: 15px;
+      font-weight: bold;
+    }
+
     h1 {
       font-size: 48px;
-      margin-bottom: 30px;
+      margin-top: 40px;
     }
-    .btn {
-      padding: 15px 30px;
-      font-size: 20px;
-      margin: 10px;
-      background-color: #002f6c;
+
+    .button {
+      background-color: #002B5B;
       color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      padding: 15px 30px;
+      margin: 15px;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 20px;
+      display: inline-block;
     }
-    .btn:hover {
-      background-color: #005bbb;
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      background-color: #f2f2f2;
+      margin-top: 100px;
+    }
+
+    footer a {
+      background-color: #003366;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-family: Arial, sans-serif;
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="https://i.imgur.com/wpywVYk.png" alt="Second Wheel Logo">
-  </header>
-  <h1>Buy, Sell & Valuation</h1>
-  <div>
-    <button class="btn" onclick="location.href='buy.html'">Buy</button>
-    <button class="btn" onclick="location.href='sell.html'">Sell</button>
-    <button class="btn" onclick="location.href='valuation.html'">Valuation</button>
+
+  <!-- Logo -->
+  <img src="assets/logo.png" alt="Second Wheel Logo" class="logo">
+
+  <!-- Language switch -->
+  <div class="language-switch">
+    <a href="#">English</a>
+    <a href="#">हिंदी</a>
+    <a href="#">मराठी</a>
   </div>
+
+  <!-- Title -->
+  <h1>Buy, Sell & Valuation</h1>
+
+  <!-- Main Buttons -->
+  <a href="buy.html" class="button">Buy</a>
+  <a href="sell.html" class="button">Sell</a>
+  <a href="valuation.html" class="button">Valuation</a>
+
+  <!-- Footer Extra Tools -->
+  <footer>
+    <a href="extratools.html">Extra Tools</a>
+  </footer>
+
 </body>
 </html>
