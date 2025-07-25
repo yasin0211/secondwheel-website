@@ -1,85 +1,102 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Second Wheel - Trusted Vehicles, Smart Deals</title>
+  <meta charset="UTF-8" />
+  <title>Second Wheel - Trusted Vehicles</title>
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background-color: #f2f2f2; }
-    header { background-color: #1f1f1f; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-    header h1 { margin: 0; font-size: 24px; }
-    .hero {
-      background-image: url('banner.jpg');
-      background-size: cover;
-      background-position: center;
-      color: white;
-      padding: 80px 20px;
-      text-align: center;
+    body { font-family: Arial, sans-serif; margin: 0; background: #f7f7f7; }
+    header, footer { background: #1f1f1f; color: white; text-align: center; padding: 15px; }
+    .hero { text-align: center; background: #333; color: white; padding: 50px 20px; }
+    .hero h1 { margin-bottom: 10px; }
+    .hero button { margin: 10px; padding: 12px 25px; background: #e25a00; border: none; color: white; border-radius: 6px; cursor: pointer; }
+
+    .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 30px 10px; background: white; }
+    .grid .card {
+      background: #fff; border-radius: 10px; padding: 20px; width: 140px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
     }
-    .hero h2 { font-size: 36px; margin-bottom: 10px; }
-    .hero p { font-size: 18px; margin-bottom: 5px; }
-    .hero small { font-size: 14px; color: #ddd; }
-    .hero a {
-      display: inline-block;
-      padding: 10px 25px;
-      background-color: #e25a00;
-      color: white;
-      text-decoration: none;
-      margin: 10px;
-      border-radius: 6px;
+    .grid .card:hover {
+      transform: scale(1.05);
+      background: #f0f0f0;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 20px;
-      padding: 40px 20px;
-      background-color: #ffffff;
+
+    section { padding: 40px 20px; text-align: center; }
+    section h2 { margin-bottom: 20px; color: #333; }
+    .features, .testimonials, .faq, .steps {
+      background: #fff; margin: 20px auto; max-width: 1000px; border-radius: 10px; padding: 20px;
     }
-    .tool-card {
-      background: #f7f7f7;
-      border-radius: 10px;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+
+    .faq p, .steps p { margin: 10px 0; }
+
+    @media screen and (max-width: 600px) {
+      .grid .card {
+        width: 100%;
+        max-width: 300px;
+      }
     }
-    .tool-card img { width: 50px; margin-bottom: 10px; }
-    .tool-card p { margin: 0; font-size: 14px; font-weight: bold; }
-    .trust { text-align:center; padding: 20px; background-color: #f9f9f9; }
-    .trust strong { font-size: 16px; }
-    .trust span { font-size: 14px; color: gray; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Second Wheel</h1>
-    <div>
-      <a href="#" style="color:white; text-decoration:none; margin-right:15px;">Login</a>
-      <a href="#" style="color:white; text-decoration:none;">Wishlist</a>
-    </div>
-  </header>
 
-  <section class="hero">
-    <h2>Trusted Vehicles, Smart Deals</h2>
-    <p>Buy & Sell Verified Vehicles Across Maharashtra</p>
-    <small>Starting from Satara • Expanding Soon Across India</small><br>
-    <a href="#buy">Buy</a>
-    <a href="#sell">Sell</a>
-  </section>
+<header>
+  <h1>Second Wheel</h1>
+</header>
 
-  <div class="trust">
-    <strong>✅ Trusted by Local Customers in Satara</strong><br>
-    <span>Fast & Transparent Deals Across Maharashtra</span>
-  </div>
+<div class="hero">
+  <h1>Trusted Vehicles, Smart Deals</h1>
+  <p>Maharashtra's Reliable Vehicle Partner</p>
+  <button onclick="window.location.href='buycar.html'">Buy Car</button>
+  <button onclick="window.location.href='sellcar.html'">Sell Car</button>
+</div>
 
-  <section class="grid">
-    <div class="tool-card"><img src="icons/valuation.png"><p>Valuation</p></div>
-    <div class="tool-card"><img src="icons/fastag.png"><p>FASTag Recharge</p></div>
-    <div class="tool-card"><img src="icons/insurance.png"><p>Renew Insurance</p></div>
-    <div class="tool-card"><img src="icons/hsrp.png"><p>HSRP Plate</p></div>
-    <div class="tool-card"><img src="icons/rto.png"><p>RTO Check</p></div>
-    <div class="tool-card"><img src="icons/challan.png"><p>Pay Challan</p></div>
-    <div class="tool-card"><img src="icons/loan.png"><p>Used Car Loan</p></div>
-  </section>
+<div class="grid">
+  <div class="card" onclick="window.location.href='buybike.html'"><p><b>Buy Bike</b><br>(Scooter)</p></div>
+  <div class="card" onclick="window.location.href='sellbike.html'"><p><b>Sell Bike</b><br>(Scooter)</p></div>
+  <div class="card" onclick="window.location.href='valuation.html'"><p>Instant Valuation</p></div>
+  <div class="card" onclick="window.location.href='insurance.html'"><p>Get Insured</p></div>
+  <div class="card" onclick="window.location.href='challan.html'"><p>Pay Challan</p></div>
+  <div class="card" onclick="window.location.href='hsrp.html'"><p>HSRP Plate</p></div>
+  <div class="card" onclick="window.location.href='fastag.html'"><p>FASTag Recharge</p></div>
+  <div class="card" onclick="window.location.href='carloan.html'"><p>Used Car Loan</p></div>
+  <div class="card" onclick="window.location.href='bikeloan.html'"><p>Used Bike Loan</p></div>
+  <div class="card" onclick="window.location.href='rtocheck.html'"><p>RTO Check</p></div>
+</div>
+
+<section class="features">
+  <h2>Why Choose Us?</h2>
+  <p>✔️ Instant Vehicle Valuation</p>
+  <p>✔️ 100% Transparency</p>
+  <p>✔️ Secure Payment & Pickup</p>
+  <p>✔️ Trusted by 500+ Customers in Satara</p>
+</section>
+
+<section class="testimonials">
+  <h2>What Our Customers Say</h2>
+  <p>“Second Wheel made my car sale effortless.” – Ravi J.</p>
+  <p>“Got my bike loan quickly. Great service!” – Priya M.</p>
+</section>
+
+<section class="faq">
+  <h2>FAQs</h2>
+  <p><b>Q:</b> How to sell my car?</p>
+  <p><b>A:</b> Just click 'Sell Car', fill form & get valuation.</p>
+  <p><b>Q:</b> Do I need insurance to buy?</p>
+  <p><b>A:</b> No, but we offer insurance services too.</p>
+</section>
+
+<section class="steps">
+  <h2>How It Works</h2>
+  <p>1️⃣ Select Service</p>
+  <p>2️⃣ Fill Basic Info</p>
+  <p>3️⃣ Get Instant Help</p>
+  <p>4️⃣ Finalize Deal</p>
+</section>
+
+<footer>
+  <p>© 2025 Second Wheel - The Car Bazaar</p>
+</footer>
+
 </body>
 </html>
