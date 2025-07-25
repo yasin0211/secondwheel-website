@@ -3,44 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <title>Second Wheel - Trusted Vehicles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background: #f7f7f7; }
-    header, footer { background: #1f1f1f; color: white; text-align: center; padding: 15px; }
-    .hero { text-align: center; background: #333; color: white; padding: 50px 20px; }
-    .hero h1 { margin-bottom: 10px; }
-    .hero button { margin: 10px; padding: 12px 25px; background: #e25a00; border: none; color: white; border-radius: 6px; cursor: pointer; }
+    header, footer {
+      background: #1f1f1f; color: white; text-align: center; padding: 15px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    header img {
+      height: 40px; margin-left: 10px;
+    }
+    header h1 {
+      margin: 0; font-size: 20px; flex: 1; text-align: center;
+    }
 
-    .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 30px 10px; background: white; }
-    .grid .card {
-      background: #fff; border-radius: 10px; padding: 20px; width: 140px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;
+    .hero {
+      text-align: center;
+      background-image: url('assets/bg.jpg');
+      background-size: cover;
+      background-position: center;
+      color: white; padding: 60px 20px;
+    }
+
+    .hero h1 { margin-bottom: 10px; }
+    .hero button {
+      margin: 10px; padding: 12px 25px;
+      background: #e25a00; border: none;
+      color: white; border-radius: 6px;
       cursor: pointer;
+    }
+
+    .grid {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: 15px;
+      padding: 30px 10px; background: white;
+    }
+    .grid .card {
+      background: #fff; border-radius: 10px;
+      padding: 20px; width: 140px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center; cursor: pointer;
       transition: 0.2s;
     }
     .grid .card:hover {
-      transform: scale(1.05);
-      background: #f0f0f0;
+      transform: scale(1.05); background: #f0f0f0;
     }
 
     section { padding: 40px 20px; text-align: center; }
     section h2 { margin-bottom: 20px; color: #333; }
     .features, .testimonials, .faq, .steps {
-      background: #fff; margin: 20px auto; max-width: 1000px; border-radius: 10px; padding: 20px;
+      background: #fff; margin: 20px auto;
+      max-width: 1000px; border-radius: 10px; padding: 20px;
     }
 
-    .faq p, .steps p { margin: 10px 0; }
+    .faq details { margin: 10px 0; text-align: left; }
+    .faq summary { font-weight: bold; cursor: pointer; }
+
+    footer a { color: white; margin: 10px; text-decoration: none; }
 
     @media screen and (max-width: 600px) {
       .grid .card {
         width: 100%;
         max-width: 300px;
       }
+      header { flex-direction: column; }
+      header h1 { text-align: center; margin: 10px 0; }
     }
   </style>
 </head>
 <body>
 
 <header>
+  <img src="assets/logo.png" alt="Logo">
   <h1>Second Wheel</h1>
 </header>
 
@@ -80,10 +114,18 @@
 
 <section class="faq">
   <h2>FAQs</h2>
-  <p><b>Q:</b> How to sell my car?</p>
-  <p><b>A:</b> Just click 'Sell Car', fill form & get valuation.</p>
-  <p><b>Q:</b> Do I need insurance to buy?</p>
-  <p><b>A:</b> No, but we offer insurance services too.</p>
+  <details>
+    <summary>How to sell my car?</summary>
+    <p>Just click 'Sell Car', fill the form & get valuation instantly.</p>
+  </details>
+  <details>
+    <summary>Do I need insurance to buy?</summary>
+    <p>No, but we offer vehicle insurance services too.</p>
+  </details>
+  <details>
+    <summary>Can I get a loan for used bikes?</summary>
+    <p>Yes, we offer bike loan services with minimal paperwork.</p>
+  </details>
 </section>
 
 <section class="steps">
@@ -94,15 +136,13 @@
   <p>4️⃣ Finalize Deal</p>
 </section>
 
-<footer style="background:#1f1f1f; color:white; text-align:center; padding:20px;">
+<footer>
   <p>
-    <a href="about.html" style="color:white; margin:10px;">About Us</a> |
-    <a href="contact.html" style="color:white; margin:10px;">Contact</a> |
-    <a href="wishlist.html" style="color:white; margin:10px;">Wishlist</a> |
-    <a href="disclaimer.html" style="color:white; margin:10px;">Disclaimer</a>
+    <a href="about.html">About Us</a> |
+    <a href="contact.html">Contact</a> |
+    <a href="wishlist.html">Wishlist</a> |
+    <a href="disclaimer.html">Disclaimer</a>
   </p>
-  <p>© 2025 Second Wheel - The Car Bazaar</p>
-</footer>
   <p>© 2025 Second Wheel - The Car Bazaar</p>
 </footer>
 
