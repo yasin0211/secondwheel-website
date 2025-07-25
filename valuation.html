@@ -1,124 +1,155 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Vehicle Valuation - Second Wheel</title>
+  <title>Instant Vehicle Valuation - Second Wheel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      padding: 30px;
+      background: #f2f2f2;
+      padding: 20px;
     }
-
-    h2 {
-      text-align: center;
-    }
-
     form {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
       max-width: 600px;
       margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-
     label {
-      font-weight: bold;
-      margin-top: 10px;
       display: block;
+      margin-top: 15px;
+      font-weight: bold;
     }
-
-    input, select, button {
+    input, select {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       margin-top: 5px;
-      margin-bottom: 15px;
       border-radius: 5px;
       border: 1px solid #ccc;
     }
-
     button {
-      background-color: #ff6600;
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background-color: #e25a00;
       color: white;
       border: none;
+      border-radius: 6px;
+      font-size: 16px;
       cursor: pointer;
     }
-
-    #result {
-      text-align: center;
-      font-size: 1.2em;
+    button:hover {
+      background-color: #c24700;
+    }
+    .checkbox {
+      margin-top: 10px;
+    }
+    #valuationResult {
       margin-top: 20px;
+      font-weight: bold;
+      color: green;
     }
   </style>
 </head>
 <body>
 
-  <h2>Vehicle Valuation</h2>
+<h2 style="text-align:center;">Instant Vehicle Valuation</h2>
 
-  <form id="valuationForm">
-    <label>Vehicle Type:</label>
-    <select id="type" required>
-      <option value="">--Select--</option>
-      <option value="Car">Car</option>
-      <option value="Bike">Bike</option>
-      <option value="Scooter">Scooter</option>
-      <option value="EV">EV</option>
-    </select>
+<form id="valuationForm">
+  <label>Full Name</label>
+  <input type="text" name="name" required>
 
-    <label>Brand:</label>
-    <input type="text" id="brand" required>
+  <label>Vehicle Type</label>
+  <select name="type" required>
+    <option value="">--Select--</option>
+    <option>Car</option>
+    <option>Bike</option>
+    <option>Scooter</option>
+  </select>
 
-    <label>Model:</label>
-    <input type="text" id="model" required>
+  <label>Brand</label>
+  <input type="text" name="brand" required>
 
-    <label>Year of Purchase:</label>
-    <input type="number" id="year" min="1990" max="2025" required>
+  <label>Model</label>
+  <input type="text" name="model" required>
 
-    <label>Kilometers Driven:</label>
-    <input type="number" id="km" required>
+  <label>Manufacture Year</label>
+  <input type="number" name="year" min="1990" max="2025" required>
 
-    <label>Condition:</label>
-    <select id="condition" required>
-      <option value="">--Select--</option>
-      <option value="Excellent">Excellent</option>
-      <option value="Good">Good</option>
-      <option value="Average">Average</option>
-      <option value="Poor">Poor</option>
-    </select>
+  <label>Kilometers Driven</label>
+  <input type="number" name="km" required>
 
-    <button type="submit">Get Estimated Value</button>
-  </form>
+  <label>Fuel Type</label>
+  <select name="fuel" required>
+    <option value="">--Select--</option>
+    <option>Petrol</option>
+    <option>Diesel</option>
+    <option>Electric</option>
+  </select>
 
-  <div id="result"></div>
+  <label>City</label>
+  <input type="text" name="city" required>
 
-  <script>
-    document.getElementById("valuationForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const year = parseInt(document.getElementById("year").value);
-      const km = parseInt(document.getElementById("km").value);
-      const condition = document.getElementById("condition").value;
+  <div class="checkbox">
+    <input type="checkbox" id="terms" required> I agree to the <a href="terms.html" target="_blank">Terms & Conditions</a>
+  </div>
 
-      const currentYear = new Date().getFullYear();
-      const age = currentYear - year;
+  <div class="checkbox">
+    <input type="checkbox" id="doorstep" name="doorstep"> Request Doorstep Inspection
+  </div>
 
-      let baseValue = 500000; // Sample base price
+  <button type="button" onclick="calculateValuation()">Get Valuation</button>
+  <div id="valuationResult"></div>
+</form>
 
-      baseValue -= age * 20000;
-      baseValue -= (km / 10000) * 10000;
+<script>
+  function calculateValuation() {
+    const form = document.getElementById('valuationForm');
+    const year = parseInt(form.year.value);
+    const km = parseInt(form.km.value);
 
-      const conditionFactor = {
-        "Excellent": 1,
-        "Good": 0.9,
-        "Average": 0.75,
-        "Poor": 0.5
-      };
+    if (!year || !km) {
+      alert('Please fill all required fields');
+      return;
+    }
 
-      const finalValue = Math.max(Math.round(baseValue * conditionFactor[condition]), 10000);
+    const currentYear = new Date().getFullYear();
+    const age = currentYear - year;
 
-      document.getElementById("result").innerText = "Estimated Value: ₹" + finalValue.toLocaleString();
+    let basePrice = 500000; // dummy base price
+    if (form.type.value === 'Bike' || form.type.value === 'Scooter') basePrice = 80000;
+
+    const depreciation = age * 0.08 * basePrice;
+    const kmPenalty = km > 50000 ? (0.05 * basePrice) : 0;
+
+    const estimatedPrice = Math.max(10000, basePrice - depreciation - kmPenalty);
+
+    document.getElementById("valuationResult").innerText =
+      "Estimated Price: ₹" + estimatedPrice.toLocaleString();
+
+    sendToGoogleSheet(estimatedPrice);
+  }
+
+  function sendToGoogleSheet(estimatedPrice) {
+    const form = document.getElementById("valuationForm");
+    const formData = new FormData(form);
+    formData.append("estimatedPrice", estimatedPrice);
+
+    fetch("https://script.google.com/macros/s/AKfycbxEXAMPLEURL/exec", {
+      method: "POST",
+      body: formData
+    }).then(res => {
+      if (res.ok) {
+        alert("Form submitted successfully!");
+      } else {
+        alert("Failed to submit form.");
+      }
     });
-  </script>
+  }
+</script>
 
 </body>
 </html>
