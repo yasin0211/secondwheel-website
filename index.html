@@ -1,66 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Second Wheel - Buy Used Vehicles</title>
+  <title>Second Wheel – Buy Used Vehicles</title>
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background-image: url('https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1950&q=80');
+      background-image: url('https://images.unsplash.com/photo-1584973618496-4caf8f2594dd?auto=format&fit=crop&w=1950&q=80');
       background-size: cover;
       background-position: center;
       color: white;
       text-align: center;
-      padding-top: 100px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
-
-    h1 {
-      font-size: 40px;
-      margin-bottom: 10px;
+    nav {
+      position: absolute;
+      top: 20px;
+      right: 20px;
     }
-
-    p {
-      font-size: 20px;
-      margin-bottom: 30px;
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin: 5px;
-      border: none;
-      border-radius: 5px;
-      background-color: #e25a00;
+    nav a {
       color: white;
-      cursor: pointer;
+      margin-left: 15px;
+      text-decoration: none;
+      font-weight: bold;
     }
-
-    button:hover {
-      background-color: #c24700;
+    .logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+    .logo img {
+      height: 60px;
+    }
+    h1 {
+      font-size: 48px;
+      margin-bottom: 40px;
+    }
+    .buttons a {
+      display: inline-block;
+      background-color: #002f5f;
+      color: white;
+      padding: 15px 30px;
+      margin: 10px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 18px;
+    }
+    .buttons a:hover {
+      background-color: #0056a3;
     }
   </style>
 </head>
-
 <body>
-  <h1>Welcome to Second Wheel</h1>
-  <p>Trusted Vehicles, Smart Deals</p>
-
-  <button id="buyBtn">Buy a Vehicle</button>
-  <button id="sellBtn">Sell Your Vehicle</button>
-  <button id="valuationBtn">Get Vehicle Valuation</button>
-
-  <script>
-    document.getElementById("buyBtn").addEventListener("click", function () {
-      alert("You clicked Buy Vehicle");
-    });
-
-    document.getElementById("sellBtn").addEventListener("click", function () {
-      alert("You clicked Sell Vehicle");
-    });
-
-    document.getElementById("valuationBtn").addEventListener("click", function () {
-      alert("You clicked Vehicle Valuation");
-    });
-  </script>
+  <div class="logo">
+    <img src="https://secondwheel.in/assets/logo.png" alt="Second Wheel Logo" />
+  </div>
+  <nav>
+    <a href="#">English</a>
+    <a href="#">हिंदी</a>
+    <a href="#">मराठी</a>
+    <a href="mailto:sales@secondwheel.in">📧</a>
+  </nav>
+  <h1>Buy, Sell & Valuation</h1>
+  <div class="buttons">
+    <a href="buy.html">Buy</a>
+    <a href="sell.html">Sell</a>
+    <a href="valuation.html">Valuation</a>
+    <a href="extratools.html">Extra Tools</a>
+  </div>
 </body>
 </html>
