@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Second Wheel - Trusted Vehicles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f7f7f7;
+    }
+
+    header, footer {
+      background: #1f1f1f;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    header img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      flex: 1;
+      text-align: center;
+    }
+
+    .hero {
+      text-align: center;
+      background-image: url('assets/bg.jpg');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      padding: 60px 20px;
+    }
+
+    .hero h1 {
+      margin-bottom: 10px;
+    }
+
+    .hero button {
+      margin: 10px;
+      padding: 12px 25px;
+      background: #e25a00;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      padding: 30px 10px;
+      background: white;
+    }
+
+    .card {
+      background: #111;
+      border-radius: 10px;
+      padding: 20px;
+      width: 140px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      color: #ffdd44;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      position: relative;
+      overflow: visible;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .dropdown-content {
+      display: none;
+      background: #333;
+      border-radius: 0 0 10px 10px;
+      margin-top: 10px;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      flex-direction: column;
+    }
+
+    .dropdown-content div {
+      width: 100%;
+      padding: 10px;
+      background: #444;
+      color: white;
+      border-top: 1px solid #222;
+      text-align: center;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .dropdown-content div:hover {
+      background: #555;
+    }
+
+    section {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .features, .testimonials, .faq, .steps {
+      background: #fff;
+      margin: 20px auto;
+      max-width: 1000px;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .faq h2 {
+      text-align: center;
+    }
+
+    .faq details {
+      margin: 10px auto;
+      max-width: 600px;
+      text-align: left;
+    }
+
+    .faq summary {
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    footer {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    footer a {
+      color: white;
+      margin: 5px 10px;
+      text-decoration: none;
+    }
+
+    footer p {
+      margin: 10px 0;
+    }
+
+    @media screen and (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      header img {
+        margin: 10px 0;
+      }
+
+      header h1 {
+        text-align: center;
+        margin: 10px 0;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .hero {
+        padding: 40px 15px;
+      }
+
+      .hero button {
+        width: 100%;
+        max-width: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="assets/logo-yellow-metallic.png" alt="Logo">
+  <h1>Second Wheel</h1>
+</header>
+
+<div class="hero">
+  <h1>Trusted Vehicles, Smart Deals</h1>
+  <p>Maharashtra's Reliable Vehicle Partner</p>
+  <button onclick="window.location.href='buycar.html'">Buy Car</button>
+  <button onclick="window.location.href='sellcar.html'">Sell Car</button>
+</div>
+
+<div class="grid">
+
+  <div class="card dropdown" onclick="toggleDropdown(this)">
+    Bike Explore
+    <div class="dropdown-content">
+      <div onclick="event.stopPropagation(); window.location.href='buybike.html'">Buy Bike</div>
+      <div onclick="event.stopPropagation(); window.location.href='sellbike.html'">Sell Bike</div>
+      <div onclick="event.stopPropagation(); window.location.href='buyscooter.html'">Buy Scooter</div>
+      <div onclick="event.stopPropagation(); window.location.href='sellscooter.html'">Sell Scooter</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="window.location.href='valuation.html'">Instant Valuation</div>
+  <div class="card" onclick="window.location.href='insurance.html'">Get Insured</div>
+  <div class="card" onclick="window.location.href='challan.html'">Pay Challan</div>
+  <div class="card" onclick="window.location.href='hsrp.html'">HSRP Plate</div>
+  <div class="card" onclick="window.location.href='fastag.html'">FASTag Recharge</div>
+  <div class="card" onclick="window.location.href='carloan.html'">Used Car Loan</div>
+  <div class="card" onclick="window.location.href='bikeloan.html'">Used Bike Loan</div>
+  <div class="card" onclick="window.location.href='rtocheck.html'">RTO Check</div>
+
+</div>
+
+<section class="features">
+  <h2>Why Choose Us?</h2>
+  <p>✔️ Instant Vehicle Valuation</p>
+  <p>✔️ 100% Transparency</p>
+  <p>✔️ Secure Payment & Pickup</p>
+  <p>✔️ Trusted by 500+ Customers in Satara</p>
+</section>
+
+<section class="testimonials">
+  <h2>What Our Customers Say</h2>
+  <p>“Second Wheel made my car sale effortless.” – Ravi J.</p>
+  <p>“Got my bike loan quickly. Great service!” – Priya M.</p>
+</section>
+
+<section class="faq">
+  <h2>FAQs</h2>
+  <details>
+    <summary>How to sell my car?</summary>
+    <p>Just click 'Sell Car', fill the form & get valuation instantly.</p>
+  </details>
+  <details>
+    <summary>Do I need insurance to buy?</summary>
+    <p>No, but we offer vehicle insurance services too.</p>
+  </details>
+  <details>
+    <summary>Can I get a loan for used bikes?</summary>
+    <p>Yes, we offer bike loan services with minimal paperwork.</p>
+  </details>
+</section>
+
+<section class="steps">
+  <h2>How It Works</h2>
+  <p>1️⃣ Select Service</p>
+  <p>2️⃣ Fill Basic Info</p>
+  <p>3️⃣ Get Instant Help</p>
+  <p>4️⃣ Finalize Deal</p>
+</section>
+
+<footer>
+  <p>
+    <a href="about.html">About Us</a> |
+    <a href="contact.html">Contact</a> |
+    <a href="wishlist.html">Wishlist</a> |
+    <a href="disclaimer.html">Disclaimer</a>
+  </p>
+  <p>© 2025 Second Wheel - The Car Bazaar</p>
+</footer>
+
+<script>
+  function toggleDropdown(el) {
+    const dropdown = el.querySelector('.dropdown-content');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  }
+
+  window.addEventListener('click', function(e) {
+    document.querySelectorAll('.dropdown-content').forEach(drop => {
+      if (!drop.parentElement.contains(e.target)) {
+        drop.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
