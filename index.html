@@ -76,11 +76,39 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.4);
       cursor: pointer;
       transition: 0.3s;
+      position: relative;
     }
 
     .grid .card:hover {
       background: #222;
       transform: scale(1.05);
+    }
+
+    .dropdown {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #222;
+      padding: 10px;
+      border-radius: 10px;
+      z-index: 99;
+      min-width: 140px;
+    }
+
+    .dropdown .card {
+      background: #333;
+      color: #fff;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      font-size: 14px;
+      box-shadow: none;
+    }
+
+    .dropdown .card:hover {
+      background: #444;
     }
 
     .features, .testimonials, .faq, .steps {
@@ -161,7 +189,16 @@
 </div>
 
 <div class="grid">
-  <div class="card" onclick="window.location.href='buybike.html'">Bike Explore</div>
+  <div class="card" onclick="toggleDropdown(event)">
+    Bike Explore
+    <div class="dropdown" id="bikeDropdown">
+      <div class="card" onclick="window.location.href='buybike.html'">Buy Bike</div>
+      <div class="card" onclick="window.location.href='sellbike.html'">Sell Bike</div>
+      <div class="card" onclick="window.location.href='buyscooter.html'">Buy Scooter</div>
+      <div class="card" onclick="window.location.href='sellscooter.html'">Sell Scooter</div>
+    </div>
+  </div>
+
   <div class="card" onclick="window.location.href='valuation.html'">Instant Valuation</div>
   <div class="card" onclick="window.location.href='insurance.html'">Get Insured</div>
   <div class="card" onclick="window.location.href='challan.html'">Pay Challan</div>
@@ -219,6 +256,19 @@
   </p>
   <p>© 2025 Second Wheel - The Car Bazaar</p>
 </footer>
+
+<script>
+  function toggleDropdown(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById("bikeDropdown");
+    dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+  }
+
+  document.addEventListener("click", function () {
+    const dropdown = document.getElementById("bikeDropdown");
+    if (dropdown) dropdown.style.display = "none";
+  });
+</script>
 
 </body>
 </html>
