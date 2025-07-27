@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
+      font-family: Arial, sans-serif;
       background: url('assets/bg.jpg') no-repeat center center fixed;
       background-size: cover;
       color: white;
@@ -15,19 +15,24 @@
 
     header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       background: rgba(0, 0, 0, 0.7);
-      padding: 15px;
-   header img {
-  height: 70px;
-  max-width: 200px;
-}
+      padding: 10px 20px;
+    }
+
+    header img {
+      height: 55px;
+      max-width: 160px;
+      margin-left: 10px;
+    }
 
     header h1 {
+      flex: 1;
+      text-align: center;
       font-size: 22px;
-      margin: 0 auto;
       color: white;
+      margin: 0;
     }
 
     .hero {
@@ -64,7 +69,7 @@
       padding: 30px 10px;
     }
 
-    .grid .card {
+    .card {
       background: #111;
       border-radius: 10px;
       padding: 15px 20px;
@@ -78,39 +83,44 @@
       position: relative;
     }
 
-    .grid .card:hover {
+    .card:hover {
       background: #222;
       transform: scale(1.05);
     }
 
-    .dropdown {
+    /* Dropdown inside card */
+    .dropdown-content {
       display: none;
-      flex-direction: column;
       position: absolute;
       top: 100%;
       left: 0;
       background: #222;
-      padding: 10px;
-      border-radius: 10px;
-      z-index: 99;
-      min-width: 140px;
+      padding: 5px;
+      border-radius: 8px;
+      width: 100%;
+      z-index: 999;
     }
 
-    .dropdown .card {
-      background: #333;
-      color: #fff;
-      margin: 5px 0;
+    .dropdown-content button {
+      width: 100%;
       padding: 8px;
-      border-radius: 5px;
-      font-size: 14px;
-      box-shadow: none;
+      background: #333;
+      color: white;
+      border: none;
+      margin: 2px 0;
+      border-radius: 4px;
+      cursor: pointer;
     }
 
-    .dropdown .card:hover {
+    .dropdown-content button:hover {
       background: #444;
     }
 
-    .features, .testimonials, .faq, .steps {
+    .card.dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    section {
       background: rgba(0,0,0,0.6);
       margin: 20px auto;
       max-width: 1000px;
@@ -119,13 +129,9 @@
       text-align: center;
     }
 
-    .features h2, .testimonials h2, .faq h2, .steps h2 {
+    h2 {
       color: #fff;
       margin-bottom: 20px;
-    }
-
-    .features p, .testimonials p, .steps p {
-      color: #ddd;
     }
 
     .faq details {
@@ -144,7 +150,7 @@
     }
 
     footer {
-      background: rgba(0,0,0,0.7);
+      background: rgba(0, 0, 0, 0.8);
       text-align: center;
       padding: 20px;
       color: white;
@@ -182,22 +188,21 @@
 
 <div class="hero">
   <h1>Trusted Vehicles, Smart Deals</h1>
-  <p>Maharashtra’s Reliable Vehicle Partner</p>
+  <p>Maharashtra's Reliable Vehicle Partner</p>
   <button onclick="window.location.href='buycar.html'">Buy Car</button>
   <button onclick="window.location.href='sellcar.html'">Sell Car</button>
 </div>
 
 <div class="grid">
-  <div class="card" onclick="toggleDropdown(event)">
+  <div class="card dropdown">
     Bike Explore
-    <div class="dropdown" id="bikeDropdown">
-      <div class="card" onclick="window.location.href='buybike.html'">Buy Bike</div>
-      <div class="card" onclick="window.location.href='sellbike.html'">Sell Bike</div>
-      <div class="card" onclick="window.location.href='buyscooter.html'">Buy Scooter</div>
-      <div class="card" onclick="window.location.href='sellscooter.html'">Sell Scooter</div>
+    <div class="dropdown-content">
+      <button onclick="location.href='buybike.html'">Buy Bike</button>
+      <button onclick="location.href='sellbike.html'">Sell Bike</button>
+      <button onclick="location.href='buyscooter.html'">Buy Scooter</button>
+      <button onclick="location.href='sellscooter.html'">Sell Scooter</button>
     </div>
   </div>
-
   <div class="card" onclick="window.location.href='valuation.html'">Instant Valuation</div>
   <div class="card" onclick="window.location.href='insurance.html'">Get Insured</div>
   <div class="card" onclick="window.location.href='challan.html'">Pay Challan</div>
@@ -226,11 +231,11 @@
   <h2>FAQs</h2>
   <details>
     <summary>How to sell my car?</summary>
-    <p>Just click 'Sell Car', fill the form & get valuation instantly.</p>
+    <p>Click 'Sell Car', fill the form & get valuation instantly.</p>
   </details>
   <details>
     <summary>Do I need insurance to buy?</summary>
-    <p>No, but we offer vehicle insurance services too.</p>
+    <p>No, but we offer insurance too.</p>
   </details>
   <details>
     <summary>Can I get a loan for used bikes?</summary>
@@ -255,19 +260,6 @@
   </p>
   <p>© 2025 Second Wheel - The Car Bazaar</p>
 </footer>
-
-<script>
-  function toggleDropdown(event) {
-    event.stopPropagation();
-    const dropdown = document.getElementById("bikeDropdown");
-    dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
-  }
-
-  document.addEventListener("click", function () {
-    const dropdown = document.getElementById("bikeDropdown");
-    if (dropdown) dropdown.style.display = "none";
-  });
-</script>
 
 </body>
 </html>
