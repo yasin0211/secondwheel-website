@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Second Wheel - Trusted Vehicles</title>
@@ -15,104 +14,103 @@
     }
     header h1 {
       margin: 0; font-size: 20px; flex: 1; text-align: center;
-    }
+    }.hero {
+  text-align: center;
+  background-image: url('assets/bg.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white; padding: 60px 20px;
+}
 
-    .hero {
-      text-align: center;
-      background-image: url('assets/bg.jpg');
-      background-size: cover;
-      background-position: center;
-      color: white; padding: 60px 20px;
-    }
+.hero h1 { margin-bottom: 10px; }
+.hero button {
+  margin: 10px; padding: 12px 25px;
+  background: #e25a00; border: none;
+  color: white; border-radius: 6px;
+  cursor: pointer;
+}
 
-    .hero h1 { margin-bottom: 10px; }
-    .hero button {
-      margin: 10px; padding: 12px 25px;
-      background: #e25a00; border: none;
-      color: white; border-radius: 6px;
-      cursor: pointer;
-    }
+.grid {
+  display: flex; flex-wrap: wrap;
+  justify-content: center; gap: 15px;
+  padding: 30px 10px; background: white;
+}
+.grid .card {
+  background: #fff; border-radius: 10px;
+  padding: 20px; width: 140px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-align: center; cursor: pointer;
+  transition: 0.2s;
+}
+.grid .card:hover {
+  transform: scale(1.05); background: #f0f0f0;
+}
 
-    .grid {
-      display: flex; flex-wrap: wrap;
-      justify-content: center; gap: 15px;
-      padding: 30px 10px; background: white;
-    }
-    .grid .card {
-      background: #fff; border-radius: 10px;
-      padding: 20px; width: 140px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      text-align: center; cursor: pointer;
-      transition: 0.2s;
-    }
-    .grid .card:hover {
-      transform: scale(1.05); background: #f0f0f0;
-    }
+.inner-buttons {
+  display: none; margin-top: 10px;
+}
+.inner-buttons button {
+  display: block; margin: 5px auto; padding: 10px;
+  background: #444; color: white; border: none; border-radius: 5px;
+  width: 80%; font-size: 14px; cursor: pointer;
+}
 
-    section { padding: 40px 20px; text-align: center; }
-    section h2 { margin-bottom: 20px; color: #333; }
-    .features, .testimonials, .faq, .steps {
-      background: #fff; margin: 20px auto;
-      max-width: 1000px; border-radius: 10px; padding: 20px;
-    }
+section { padding: 40px 20px; text-align: center; }
+section h2 { margin-bottom: 20px; color: #333; }
+.features, .testimonials, .faq, .steps {
+  background: #fff; margin: 20px auto;
+  max-width: 1000px; border-radius: 10px; padding: 20px;
+}
+.faq details { margin: 10px 0; text-align: left; }
+.faq summary { font-weight: bold; cursor: pointer; }
+footer a { color: white; margin: 10px; text-decoration: none; }
 
-    .faq details { margin: 10px 0; text-align: left; }
-    .faq summary { font-weight: bold; cursor: pointer; }
+@media screen and (max-width: 600px) {
+  .grid .card {
+    width: 100%;
+    max-width: 300px;
+  }
+  header { flex-direction: column; }
+  header h1 { text-align: center; margin: 10px 0; }
+}
 
-    footer a { color: white; margin: 10px; text-decoration: none; }
-
-    @media screen and (max-width: 600px) {
-      .grid .card {
-        width: 100%;
-        max-width: 300px;
-      }
-      header { flex-direction: column; }
-      header h1 { text-align: center; margin: 10px 0; }
-    }
   </style>
 </head>
-<body>
-
-<header>
-  <img src="assets/logo.png" alt="Logo">
+<body><header>
+  <img src="assets/logo-yellow-metallic.png" alt="Logo">
   <h1>Second Wheel</h1>
-</header>
-
-<div class="hero">
+</header><div class="hero">
   <h1>Trusted Vehicles, Smart Deals</h1>
   <p>Maharashtra's Reliable Vehicle Partner</p>
   <button onclick="window.location.href='buycar.html'">Buy Car</button>
   <button onclick="window.location.href='sellcar.html'">Sell Car</button>
-</div>
-
-<div class="grid">
-  <div class="card" onclick="window.location.href='buybike.html'"><p><b>Buy Bike</b><br>(Scooter)</p></div>
-  <div class="card" onclick="window.location.href='sellbike.html'"><p><b>Sell Bike</b><br>(Scooter)</p></div>
-  <div class="card" onclick="window.location.href='valuation.html'"><p>Instant Valuation</p></div>
-  <div class="card" onclick="window.location.href='insurance.html'"><p>Get Insured</p></div>
-  <div class="card" onclick="window.location.href='challan.html'"><p>Pay Challan</p></div>
-  <div class="card" onclick="window.location.href='hsrp.html'"><p>HSRP Plate</p></div>
-  <div class="card" onclick="window.location.href='fastag.html'"><p>FASTag Recharge</p></div>
-  <div class="card" onclick="window.location.href='carloan.html'"><p>Used Car Loan</p></div>
-  <div class="card" onclick="window.location.href='bikeloan.html'"><p>Used Bike Loan</p></div>
-  <div class="card" onclick="window.location.href='rtocheck.html'"><p>RTO Check</p></div>
-</div>
-
-<section class="features">
+</div><div class="grid">
+  <div class="card" onclick="toggleBikeOptions()">
+    <p><b>Bike Explore</b><br>(Buy/Sell – Bike & Scooter)</p>
+    <div class="inner-buttons" id="bikeOptions">
+      <button onclick="window.location.href='buybike.html'">Buy Bike</button>
+      <button onclick="window.location.href='sellbike.html'">Sell Bike</button>
+      <button onclick="window.location.href='buyscooter.html'">Buy Scooter</button>
+      <button onclick="window.location.href='sellscooter.html'">Sell Scooter</button>
+    </div>
+  </div>  <div class="card" onclick="window.location.href='insurance.html'">Get Insured</div>
+  <div class="card" onclick="window.location.href='challan.html'">Pay Challan</div>
+  <div class="card" onclick="window.location.href='hsrp.html'">HSRP Plate</div>
+  <div class="card" onclick="window.location.href='fastag.html'">FASTag Recharge</div>
+  <div class="card" onclick="window.location.href='carloan.html'">Used Car Loan</div>
+  <div class="card" onclick="window.location.href='bikeloan.html'">Used Bike Loan</div>
+  <div class="card" onclick="window.location.href='rtocheck.html'">RTO Check</div>
+</div><section class="features">
   <h2>Why Choose Us?</h2>
   <p>✔️ Instant Vehicle Valuation</p>
   <p>✔️ 100% Transparency</p>
   <p>✔️ Secure Payment & Pickup</p>
   <p>✔️ Trusted by 500+ Customers in Satara</p>
-</section>
-
-<section class="testimonials">
+</section><section class="testimonials">
   <h2>What Our Customers Say</h2>
   <p>“Second Wheel made my car sale effortless.” – Ravi J.</p>
   <p>“Got my bike loan quickly. Great service!” – Priya M.</p>
-</section>
-
-<section class="faq">
+</section><section class="faq">
   <h2>FAQs</h2>
   <details>
     <summary>How to sell my car?</summary>
@@ -126,17 +124,13 @@
     <summary>Can I get a loan for used bikes?</summary>
     <p>Yes, we offer bike loan services with minimal paperwork.</p>
   </details>
-</section>
-
-<section class="steps">
+</section><section class="steps">
   <h2>How It Works</h2>
   <p>1️⃣ Select Service</p>
   <p>2️⃣ Fill Basic Info</p>
   <p>3️⃣ Get Instant Help</p>
   <p>4️⃣ Finalize Deal</p>
-</section>
-
-<footer>
+</section><footer>
   <p>
     <a href="about.html">About Us</a> |
     <a href="contact.html">Contact</a> |
@@ -144,7 +138,10 @@
     <a href="disclaimer.html">Disclaimer</a>
   </p>
   <p>© 2025 Second Wheel - The Car Bazaar</p>
-</footer>
-
-</body>
+</footer><script>
+function toggleBikeOptions() {
+  const section = document.getElementById("bikeOptions");
+  section.style.display = section.style.display === "none" || section.style.display === "" ? "block" : "none";
+}
+</script></body>
 </html>
