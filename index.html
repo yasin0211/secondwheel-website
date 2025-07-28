@@ -9,7 +9,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: url('assets/point_2_converted.jpg') no-repeat center center fixed;
+      background: url('assets/bg.jpg') no-repeat center center fixed;
       background-size: cover;
       color: white;
     }
@@ -271,7 +271,6 @@
     el.classList.toggle('active');
   }
 
-  // Optional: Close dropdown when clicking outside
   document.addEventListener('click', function(e) {
     const isDropdown = e.target.closest('.dropdown');
     if (!isDropdown) {
