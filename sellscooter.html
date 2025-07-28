@@ -2,337 +2,108 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Sell Your Scooter - Second Wheel</title>
+  <title>Sell Scooter</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #111;
-      color: white;
-    }
-    .container {
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 20px;
-      background: #222;
-      border-radius: 10px;
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-    select, input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-    }
-    #valuation-box {
-      margin-top: 15px;
-      padding: 10px;
-      background: #000;
-      border-radius: 6px;
-      font-weight: bold;
-      text-align: center;
-      display: none;
-    }
-    select#model {
-      max-height: 150px;
-      overflow-y: auto;
-    }
-    @media (max-width: 600px) {
-      .container {
-        margin: 10px;
-        padding: 10px;
-      }
-    }
-  </style>
 </head>
 <body>
-<div class="container">
   <h2>Sell Your Scooter</h2>
-  <form id="sellScooterForm" action="https://script.google.com/macros/s/AKfycbzR-KKEmImJ_bQ-eV6xaZwGKhoXpz01GekbY57BycjJvXzbAlBMeeLO9kzXfxu4V7/exec" method="POST">
+
+  <form id="sellScooterForm">
     <label>Full Name</label>
     <input type="text" name="Name" required />
 
-    <label>Mobile Number</label>
-    <input type="tel" name="Phone" pattern="[0-9]{10}" required />
+    <label>Mobile</label>
+    <input type="tel" name="Phone" required />
 
     <label>City</label>
     <input type="text" name="City" required />
 
     <label>Vehicle Number</label>
-    <input type="text" name="VehicleNumber" placeholder="MH12AB1234" required />
+    <input type="text" name="VehicleNumber" required />
 
     <label>Brand</label>
-    <select id="brand" name="Brand" required>
-      <option value="" disabled selected>--Select Brand--</option>
-    </select>
+    <input type="text" name="Brand" required />
 
     <label>Model</label>
-    <select id="model" name="Model" required>
-      <option value="" disabled selected>--Select Model--</option>
-    </select>
+    <input type="text" name="Model" required />
 
-    <label>Model Year</label>
-    <select id="year" name="Year" required>
-      <option value="2025">2025</option>
-<option value="2024">2024</option>
-<option value="2023">2023</option>
-<option value="2022">2022</option>
-<option value="2021">2021</option>
-<option value="2020">2020</option>
-<option value="2019">2019</option>
-<option value="2018">2018</option>
-<option value="2017">2017</option>
-<option value="2016">2016</option>
-<option value="2015">2015</option>
-<option value="2014">2014</option>
-<option value="2013">2013</option>
-<option value="2012">2012</option>
-<option value="2011">2011</option>
-<option value="2010">2010</option>
-<option value="2009">2009</option>
-<option value="2008">2008</option>
-<option value="2007">2007</option>
-<option value="2006">2006</option>
-<option value="2005">2005</option>
-<option value="2004">2004</option>
-<option value="2003">2003</option>
-<option value="2002">2002</option>
-<option value="2001">2001</option>
-<option value="2000">2000</option>
-    </select>
+    <label>Year</label>
+    <input type="number" name="Year" required />
 
     <label>Color</label>
-    <input type="text" name="Color" id="color" placeholder="e.g. Black, Red, White" required />
+    <input type="text" name="Color" required />
 
     <label>RC Renewed?</label>
-    <select id="rc" name="RC">
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
+    <select name="RC">
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
     </select>
 
     <label>Insurance Valid?</label>
-    <select id="insurance" name="Insurance">
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
+    <select name="Insurance">
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
     </select>
 
     <label>Insurance Type</label>
     <select name="InsuranceType">
-      <option value="Third Party">Third Party</option>
-      <option value="Comprehensive">Comprehensive</option>
-      <option value="Not Sure" selected>Not Sure</option>
+      <option>Third Party</option>
+      <option>Comprehensive</option>
+      <option>Not Sure</option>
     </select>
 
     <label>PUC Available?</label>
-    <select id="puc" name="PUC">
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
+    <select name="PUC">
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
     </select>
 
     <label>Upload RC Book</label>
-    <input type="file" id="rcFile" name="RCBook" />
+    <input type="file" name="RCBook" id="rcBook" />
 
-    <div class="checkbox-group">
-      <input type="checkbox" id="doorstep" name="Doorstep" value="Yes" onchange="checkRCUpload()" />
-      <label for="doorstep">I want Doorstep Valuation</label>
-    </div>
+    <label><input type="checkbox" name="Doorstep" id="doorstep" /> I want Doorstep Valuation</label>
 
-    <div id="valuation-box">
-      Estimated Valuation: <span id="valuation-result">₹0</span>
-    </div>
-
-    <button type="submit" id="submitBtn" style="background-color:#ff5200; font-size:18px; padding:14px; width:100%; border:none; color:white; border-radius:6px; margin-top:15px;">Submit</button>
-    <div id="success-message" style="display:none; margin-top:10px; color: #0f0; font-weight: bold; text-align: center;">Form submitted successfully!</div>
+    <button type="submit">Submit</button>
   </form>
-</div>
 
+  <script>
+    document.getElementById("sellScooterForm").addEventListener("submit", function (e) {
+      const doorstep = document.getElementById("doorstep").checked;
+      const rcFile = document.getElementById("rcBook").files.length;
 
-<script>
-const brandModelData = {
-  "Hero": [
-    "Destiny 125",
-    "Duet",
-    "E Sprint",
-    "Electric Cruz",
-    "Electric Optima",
-    "Electric Zippy",
-    "Maestro",
-    "Maestro Edge",
-    "Pleasure"
-  ],
-  "Honda": [
-    "Activa",
-    "Activa 125",
-    "Activa 3G",
-    "Activa 4G",
-    "Activa 5G",
-    "Activa 6G",
-    "Activa i",
-    "Deo",
-    "Honda Aviator",
-    "Honda Navi"
-  ],
-  "Mahindra": [
-    "Duro",
-    "Duro DZ",
-    "Flyte",
-    "Gusto",
-    "Kine",
-    "Rodeo",
-    "Rodeo RZ"
-  ],
-  "Piaggio": [
-    "Vespa",
-    "Vespa LX",
-    "Vespa SXL",
-    "Vespa VXL"
-  ],
-  "Suzuki": [
-    "suzuki Access",
-    "suzuki Access SE",
-    "suzuki Let's",
-    "suzuki Swish"
-  ],
-  "Tvs": [
-    "Heavy Duty Super XL",
-    "Jupiter",
-    "Scooty Pep+",
-    "Streek",
-    "Wego",
-    "Zest"
-  ],
-  "Yamaha": [
-    "Alpha",
-    "Fascino",
-    "Ray",
-    "Ray Z"
-  ],
-  "Yo": [
-    "EXL",
-    "Electron",
-    "Spark",
-    "Style",
-    "Xplor"
-  ]
-};
+      if (doorstep && rcFile === 0) {
+        e.preventDefault();
+        alert("Please upload RC Book for doorstep valuation.");
+        return;
+      }
 
-// Populate brand and model dropdowns
-const brandSelect = document.getElementById('brand');
-const modelSelect = document.getElementById('model');
+      // Gather form data
+      const formData = new FormData(this);
+      const plainData = {};
+      formData.forEach((value, key) => {
+        plainData[key] = value;
+      });
 
-Object.keys(brandModelData).sort().forEach(brand => {
-  const opt = document.createElement('option');
-  opt.value = brand;
-  opt.textContent = brand;
-  brandSelect.appendChild(opt);
-});
+      // Send data to Google Sheet
+      fetch("https://script.google.com/macros/s/AKfycbwxnMrS0zNPgeLNjA7rg_FCx1OtAb1VM-Za_J3oI8Dwqp46pY-WZmWG7KzdzL65l-ne/exec", {
+        method: "POST",
+        body: JSON.stringify(plainData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => res.text())
+      .then((data) => {
+        alert("Form submitted successfully!");
+        document.getElementById("sellScooterForm").reset();
+      })
+      .catch((err) => {
+        alert("Error submitting form. Please try again.");
+        console.error(err);
+      });
 
-brandSelect.addEventListener('change', function() {
-  modelSelect.innerHTML = '<option value="" disabled selected>--Select Model--</option>';
-  const models = brandModelData[this.value] || [];
-  models.forEach(model => {
-    const opt = document.createElement('option');
-    opt.value = model;
-    opt.textContent = model;
-    modelSelect.appendChild(opt);
-  });
-});
-
-function checkRCUpload() {
-  const rcUploaded = document.getElementById("rcFile").files.length > 0;
-  if (document.getElementById("doorstep").checked) {
-    if (rcUploaded) {
-      alert("RC Book uploaded successfully. Doorstep inspection will be arranged.");
-    } else {
-      alert("Please upload RC Book to proceed with Doorstep Inspection.");
-      document.getElementById("doorstep").checked = false;
-    }
-  }
-}
-
-function calculateValuation() {
-  const name = document.querySelector('input[name="Name"]').value.trim();
-  const phone = document.querySelector('input[name="Phone"]').value.trim();
-  const city = document.querySelector('input[name="City"]').value.trim();
-  const vehicleNumber = document.querySelector('input[name="VehicleNumber"]').value.trim();
-  const brand = brandSelect.value;
-  const model = modelSelect.value;
-  const year = parseInt(document.getElementById('year').value);
-  const color = document.getElementById('color').value.toLowerCase();
-  const rc = document.getElementById('rc').value;
-  const insurance = document.getElementById('insurance').value;
-  const puc = document.getElementById('puc').value;
-  const doorstep = document.getElementById('doorstep').checked;
-  const rcUploaded = document.getElementById("rcFile").files.length > 0;
-
-  if (!name || !phone.match(/^\d{10}$/) || !city || !vehicleNumber ||
-      !brand || !model || !year || !rc || !insurance || !puc || !color) {
-    document.getElementById("valuation-box").style.display = "none";
-    return;
-  }
-
-  if (doorstep && !rcUploaded) {
-    alert("Please upload RC Book before submission.");
-    document.getElementById("doorstep").checked = false;
-    return;
-  }
-
-  let base = 0;
-  if (year >= 2000 && year <= 2009) base = 2500 + (year - 2000) * 1055;
-  else if (year >= 2010 && year <= 2015) base = 14000 + (year - 2010) * 900;
-  else if (year >= 2016 && year <= 2020) base = 19000 + (year - 2016) * 3950;
-  else if (year >= 2021 && year <= 2025) base = 39000 + (year - 2021) * 5250;
-  else base = 2000;
-
-  let deduction = 0;
-  if (!["black", "white", "matte", "matte black", "matte white"].some(c => color.includes(c))) deduction += 2000;
-  if (!vehicleNumber.startsWith("MH11") && !vehicleNumber.startsWith("MH12") && !vehicleNumber.startsWith("MH14")) deduction += 2000;
-  if (rc !== "yes") deduction += 10000;
-  if (insurance !== "yes") deduction += 2000;
-  if (puc !== "yes") deduction += 500;
-
-  const finalVal = Math.max(0, base - deduction);
-  const result = document.getElementById("valuation-result");
-  result.textContent = "₹" + finalVal.toLocaleString();
-  document.getElementById("valuation-box").style.display = "block";
-  document.getElementById("valuation-box").style.color = deduction > 0 ? "#ff0" : "#0f0";
-}
-
-document.getElementById("sellScooterForm").addEventListener("input", calculateValuation);
-document.getElementById("sellScooterForm").addEventListener("submit", function(e) {
-  e.preventDefault();
-
-  const formData = new FormData(this);
-  const data = {};
-  formData.forEach((value, key) => {
-    if (key !== "RCBook") {
-      data[key] = value;
-    }
-  });
-
-  fetch("https://script.google.com/macros/s/AKfycbzR-KKEmImJ_bQ-eV6xaZwGKhoXpz01GeKbty57BycjGJnXzbAlBMeeLO9kzXfxu4V7/exec", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-  .then(res => res.text())
-  .then(res => {
-    document.getElementById("success-message").style.display = "block";
-    document.getElementById("sellScooterForm").reset();
-    document.getElementById("valuation-box").style.display = "none";
-  })
-  .catch(err => {
-    alert("Error submitting form. Try again later.");
-    console.error(err);
-  });
-});
-</script>
-
-<script src="assets/scooterData.js"></script>
+      e.preventDefault(); // Prevent default form submit
+    });
+  </script>
 </body>
 </html>
