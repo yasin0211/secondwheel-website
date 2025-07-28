@@ -327,7 +327,8 @@ document.getElementById("sellScooterForm").addEventListener("submit", function(e
     document.getElementById("valuation-box").style.display = "none";
   })
   .catch(err => {
-    <button type="submit">Submit Enquiry</button>
+    alert("Error submitting form. Try again later.");
+    console.error(err);
   });
 });
 </script>
