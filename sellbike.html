@@ -37,20 +37,6 @@
       text-align: center;
       display: none;
     }
-  
-    select#model {
-      max-height: 150px;
-      overflow-y: auto;
-    }
-
-  
-@media (max-width: 600px) {
-  .container {
-    margin: 10px;
-    padding: 10px;
-  }
-}
-
   </style>
 </head>
 <body>
@@ -75,7 +61,7 @@
     </select>
 
     <label>Model</label>
-    <select id="model" name="Model" required size="5" style="overflow-y:auto;">
+    <select id="model" name="Model" required style="overflow-y:auto;">
       <option value="" disabled selected>--Select Model--</option>
     </select>
 
@@ -100,7 +86,7 @@
     <select name="InsuranceType">
       <option value="Third Party">Third Party</option>
       <option value="Comprehensive">Comprehensive</option>
-      <option value="Not Sure" selected>Not Sure</option>
+      <option value="Not Sure">Not Sure</option>
     </select>
 
     <label>PUC Available?</label>
@@ -415,8 +401,6 @@ function calculateValuation() {
   else if (yearVal >= 2010 && yearVal <= 2015) base = 16000 + (yearVal - 2010) * 2400;
   else if (yearVal >= 2016 && yearVal <= 2020) base = 29000 + (yearVal - 2016) * 2200;
   else if (yearVal >= 2021 && yearVal <= 2025) base = 41000 + (yearVal - 2021) * 4750;
-  else if (yearVal > 2025) base = 60000;
-
 
   let deduction = 0;
   if (rc !== "yes") deduction += 10000;
@@ -429,34 +413,9 @@ function calculateValuation() {
   document.getElementById("valuation-box").style.color = deduction > 0 ? "#ff0" : "#0f0";
 }
 
-
 document.querySelector("form").addEventListener("submit", function(e) {
   e.preventDefault();
-
-  const form = e.target;
-  const formData = new FormData(form);
-  const data = {};
-  formData.forEach((value, key) => {
-    data[key] = value;
-  });
-
-  fetch("https://script.google.com/macros/s/AKfycbxdKkw4i3UqqBH3YmoMRlO8fI4HzRqDlU62Ls4E33uz_XxlP5tPbI3SlY5i1rdvjner0Q/exec", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-  .then(res => res.text())
-  .then(res => {
-    document.getElementById("success-message").style.display = "block";
-    form.reset();
-    document.getElementById("valuation-box").style.display = "none";
-  })
-  .catch(err => {
-    alert("Error submitting form. Try again later.");
-    console.error(err);
-  });
+  document.getElementById("success-message").style.display = "block";
 });
 </script>
 </body>
