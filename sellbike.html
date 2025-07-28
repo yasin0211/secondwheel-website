@@ -1,0 +1,463 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sell Your Bike - All Working</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #111;
+      color: white;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #222;
+      border-radius: 10px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    select, input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+    }
+    #valuation-box {
+      margin-top: 15px;
+      padding: 10px;
+      background: #000;
+      border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+      display: none;
+    }
+  
+    select#model {
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+  
+@media (max-width: 600px) {
+  .container {
+    margin: 10px;
+    padding: 10px;
+  }
+}
+
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Sell Your Bike</h2>
+  <form oninput="calculateValuation()">
+    <label>Full Name</label>
+    <input type="text" name="Name" required />
+
+    <label>Mobile Number</label>
+    <input type="tel" name="Phone" pattern="[0-9]{10}" required />
+
+    <label>City</label>
+    <input type="text" name="City" required />
+
+    <label>Vehicle Number</label>
+    <input type="text" name="VehicleNumber" placeholder="MH12AB1234" required />
+
+    <label>Brand</label>
+    <select id="brand" name="Brand" required>
+      <option value="" disabled selected>--Select Brand--</option>
+    </select>
+
+    <label>Model</label>
+    <select id="model" name="Model" required size="5" style="overflow-y:auto;">
+      <option value="" disabled selected>--Select Model--</option>
+    </select>
+
+    <label>Model Year</label>
+    <select id="year" name="Year" required>
+      <option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option>
+    </select>
+
+    <label>RC Renewed?</label>
+    <select id="rc" name="RC">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <label>Insurance Valid?</label>
+    <select id="insurance" name="Insurance">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <label>Insurance Type</label>
+    <select name="InsuranceType">
+      <option value="Third Party">Third Party</option>
+      <option value="Comprehensive">Comprehensive</option>
+      <option value="Not Sure" selected>Not Sure</option>
+    </select>
+
+    <label>PUC Available?</label>
+    <select id="puc" name="PUC">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <label>Upload RC Book</label>
+    <input type="file" id="rcFile" name="RCBook" />
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="doorstep" name="Doorstep" value="Yes" onchange="checkRCUpload()" />
+      <label for="doorstep">I want Doorstep Valuation</label>
+    </div>
+
+    <div id="valuation-box">
+      Estimated Valuation: <span id="valuation-result">₹0</span>
+    </div>
+
+    <button type="submit" id="submitBtn" style="background-color:#ff5200; font-size:18px; padding:14px; width:100%; border:none; color:white; border-radius:6px; margin-top:15px;">Submit</button>
+<div id="success-message" style="display:none; margin-top:10px; color: #0f0; font-weight: bold; text-align: center;">Form submitted successfully!</div>
+  </form>
+</div>
+
+<script>
+const brandModelData = {
+  "Bajaj": [
+    "Avenger",
+    "Avenger 150 Street",
+    "Avenger 220 Cruise",
+    "Avenger 220 DTS-i",
+    "Avenger 220 Street",
+    "Boxer",
+    "CT 100",
+    "Caliber",
+    "Discover",
+    "Discover 100 DTS-i",
+    "Discover 150 f",
+    "Discover 150 s",
+    "Platina",
+    "Platina 100 DTS-i",
+    "Pulsar",
+    "Pulsar 135 LS DTS-i",
+    "Pulsar 150",
+    "Pulsar 150 DTS-i",
+    "Pulsar 180 DTS-i",
+    "Pulsar 200 NS DTS-i",
+    "Pulsar 220 DTS-i",
+    "Pulsar AS 150",
+    "Pulsar RS 200",
+    "V 150",
+    "XCD 125cc",
+    "j Discover 125 DTS-i"
+  ],
+  "Hero Honda": [
+    "Ambition",
+    "CBZ",
+    "CBZ Extreme",
+    "CD deluxe",
+    "CD100",
+    "CD100 SS",
+    "Honda CD Dawn",
+    "Honda Passion Plus"
+  ],
+  "Honda": [
+    "CB",
+    "CB 1000R",
+    "CB Hornet 160",
+    "CB Shine",
+    "CB Trigger",
+    "CB Twister",
+    "CB Unicorn",
+    "CBF",
+    "CBF Stunner",
+    "CBR 1000RR",
+    "CBR 150R",
+    "CBR 250R",
+    "CBR 650F",
+    "CD 110 Dream",
+    "Dazzler",
+    "Honda Dream",
+    "Honda Dream Neo",
+    "Honda Dream Yuga",
+    "Honda Livo",
+    "Trigger",
+    "Unicorn",
+    "Unicorn Dazzler"
+  ],
+  "Tvs": [
+    "Apache",
+    "Apache RTR 160",
+    "Apache RTR 180",
+    "Fiero F2",
+    "Flame",
+    "Flame DS 125",
+    "Flame SR125",
+    "Jive",
+    "Max",
+    "Max 4R",
+    "Pheonix",
+    "Phoenix 125",
+    "Sport",
+    "Star",
+    "Star City",
+    "Star Sport",
+    "Victor GLX",
+    "Victor New"
+  ],
+  "Suzuki": [
+    "Bandit",
+    "GS",
+    "GS 150R",
+    "GSX",
+    "Gixxer",
+    "Gixxer SF",
+    "Hayate",
+    "Heat",
+    "Sling",
+    "Sling Shot",
+    "Sling Shot Plus"
+  ],
+  "Hero": [
+    "Achiever",
+    "CD Dawn",
+    "CD deluxe",
+    "Duet",
+    "Glamour",
+    "Glamour FI",
+    "HF",
+    "HF Dawn",
+    "HF Deluxe",
+    "Ignitor",
+    "Impulse",
+    "Karizma",
+    "Karizma ZMR",
+    "Maestro",
+    "Maestro Edge",
+    "Moto corp Hunk",
+    "Passion",
+    "Passion Plus",
+    "Passion Pro",
+    "Passion Pro TR",
+    "Passion Xpro",
+    "Pleasure",
+    "Splendor",
+    "Splendor I Smart",
+    "Splendor NXG",
+    "Splendor Plus",
+    "Splendor Pro",
+    "Splendor Pro Classic",
+    "Super Splendor",
+    "Xtreme",
+    "Xtreme Sports"
+  ],
+  "Yamaha": [
+    "Crux",
+    "FZ",
+    "FZ-S",
+    "FZ16",
+    "Fazer",
+    "Gladiator",
+    "Jog R",
+    "Libero",
+    "R15",
+    "R15 s",
+    "RD 350",
+    "RX 100",
+    "SS",
+    "SS 125",
+    "SZ R",
+    "SZ X",
+    "SZ-RR",
+    "SZ-S",
+    "Saluto",
+    "VMAX",
+    "YBR 125",
+    "YZF",
+    "YZF R1",
+    "YZF R15 S",
+    "YZF R25"
+  ],
+  "Royal Enfield": [
+    "500",
+    "Battle",
+    "Battle Green",
+    "Beat",
+    "Bullet 350",
+    "Bullet 500",
+    "Classic 350",
+    "Classic 500",
+    "Classic Chrome",
+    "Continental GT",
+    "Electra Delux",
+    "Enticer",
+    "Thunderbird 350",
+    "Thunderbird 500",
+    "Twin",
+    "Twin spark"
+  ],
+  "Ducati": [
+    "899 Panigale",
+    "Diavel",
+    "Hypermotard",
+    "Hyperstrada",
+    "Monster 795",
+    "Monster 796 S2R",
+    "Monster 82",
+    "Monster 821",
+    "Multistrada"
+  ],
+  "Mahindra": [
+    "Centuro",
+    "Mojo",
+    "Pantero"
+  ],
+  "Ktm": [
+    "Duke 200",
+    "Duke 390",
+    "RC 200",
+    "RC 390"
+  ],
+  "Kawasaki": [
+    "Ninja",
+    "Ninja 1000",
+    "Ninja 250",
+    "Ninja 300",
+    "Z250",
+    "Z800"
+  ],
+  "Bmw": [
+    "1200 GS",
+    "K 1600",
+    "R 1200 GS"
+  ],
+  "Hyosung": [
+    "Aquila 250",
+    "Aquila Pro 650",
+    "GT250R",
+    "GT650R",
+    "ST7"
+  ]
+};
+
+
+const brandSelect = document.getElementById('brand');
+const modelSelect = document.getElementById('model');
+
+Object.keys(brandModelData).sort().forEach(brand => {
+  const opt = document.createElement('option');
+  opt.value = brand;
+  opt.textContent = brand;
+  brandSelect.appendChild(opt);
+});
+
+brandSelect.addEventListener('change', function() {
+  modelSelect.innerHTML = '<option value="" disabled selected>--Select Model--</option>';
+  const models = brandModelData[this.value] || [];
+  models.forEach(model => {
+    const opt = document.createElement('option');
+    opt.value = model;
+    opt.textContent = model;
+    modelSelect.appendChild(opt);
+  });
+  modelSelect.selectedIndex = 0;
+});
+
+function checkRCUpload() {
+  const rcUploaded = document.getElementById("rcFile").files.length > 0;
+  if (document.getElementById("doorstep").checked) {
+    if (rcUploaded) {
+      alert("RC Book uploaded successfully. Doorstep inspection will be arranged.");
+    } else {
+      alert("Please upload RC Book to proceed with Doorstep Inspection.");
+      document.getElementById("doorstep").checked = false;
+    }
+  }
+}
+
+function calculateValuation() {
+  const name = document.querySelector('input[name="Name"]').value.trim();
+  const phone = document.querySelector('input[name="Phone"]').value.trim();
+  const city = document.querySelector('input[name="City"]').value.trim();
+  const vehicleNumber = document.querySelector('input[name="VehicleNumber"]').value.trim();
+  const brand = brandSelect.value;
+  const model = modelSelect.value;
+  const year = document.getElementById('year').value;
+  const rc = document.getElementById('rc').value;
+  const insurance = document.getElementById('insurance').value;
+  const puc = document.getElementById('puc').value;
+  const doorstep = document.getElementById('doorstep').checked;
+  const rcUploaded = document.getElementById("rcFile").files.length > 0;
+
+  if (
+    !name || !phone.match(/^\d{10}$/) || !city || !vehicleNumber ||
+    !brand || !model || !year || !rc || !insurance || !puc
+  ) {
+    document.getElementById("valuation-box").style.display = "none";
+    return;
+  }
+
+  if (doorstep && !rcUploaded) {
+    document.getElementById("valuation-box").style.display = "none";
+    alert("Please upload RC Book to proceed with Doorstep Inspection.");
+    document.getElementById("doorstep").checked = false;
+    return;
+  }
+
+  const yearVal = parseInt(year);
+  let base = 0;
+  if (yearVal >= 2000 && yearVal <= 2009) base = 5000 + (yearVal - 2000) * 1000;
+  else if (yearVal >= 2010 && yearVal <= 2015) base = 16000 + (yearVal - 2010) * 2400;
+  else if (yearVal >= 2016 && yearVal <= 2020) base = 29000 + (yearVal - 2016) * 2200;
+  else if (yearVal >= 2021 && yearVal <= 2025) base = 41000 + (yearVal - 2021) * 4750;
+  else if (yearVal > 2025) base = 60000;
+
+
+  let deduction = 0;
+  if (rc !== "yes") deduction += 10000;
+  if (insurance !== "yes") deduction += 2000;
+  if (puc !== "yes") deduction += 500;
+
+  const finalVal = Math.max(0, base - deduction);
+  document.getElementById("valuation-result").textContent = "₹" + finalVal.toLocaleString();
+  document.getElementById("valuation-box").style.display = "block";
+  document.getElementById("valuation-box").style.color = deduction > 0 ? "#ff0" : "#0f0";
+}
+
+
+document.querySelector("form").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+  const data = {};
+  formData.forEach((value, key) => {
+    data[key] = value;
+  });
+
+  fetch("https://script.google.com/macros/s/AKfycbxdKkw4i3UqqBH3YmoMRlO8fI4HzRqDlU62Ls4E33uz_XxlP5tPbI3SlY5i1rdvjner0Q/exec", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  .then(res => res.text())
+  .then(res => {
+    document.getElementById("success-message").style.display = "block";
+    form.reset();
+    document.getElementById("valuation-box").style.display = "none";
+  })
+  .catch(err => {
+    alert("Error submitting form. Try again later.");
+    console.error(err);
+  });
+});
+</script>
+</body>
+</html>
