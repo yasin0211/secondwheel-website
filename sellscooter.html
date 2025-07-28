@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <title>
-   Sell Your Scooter - Second Wheel
-  </title>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<head>
+  <meta charset="UTF-8" />
+  <title>Sell Your Scooter - Second Wheel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-   body {
+    body {
       font-family: Arial, sans-serif;
       margin: 0;
       background: #111;
@@ -49,205 +47,111 @@
       }
     }
   </style>
- </head>
- <body>
-  <div class="container">
-   <h2>
-    Sell Your Scooter
-   </h2>
-   <form id="sellScooterForm">
-    <label>
-     Full Name
-    </label>
-    <input name="Name" required="" type="text"/>
-    <label>
-     Mobile Number
-    </label>
-    <input name="Phone" pattern="[0-9]{10}" required="" type="tel"/>
-    <label>
-     City
-    </label>
-    <input name="City" required="" type="text"/>
-    <label>
-     Vehicle Number
-    </label>
-    <input name="VehicleNumber" placeholder="MH12AB1234" required="" type="text"/>
-    <label>
-     Brand
-    </label>
-    <select id="brand" name="Brand" required="">
-     <option disabled="" selected="" value="">
-      --Select Brand--
-     </option>
+</head>
+<body>
+<div class="container">
+  <h2>Sell Your Scooter</h2>
+  <form id="sellScooterForm" action="https://script.google.com/macros/s/AKfycbzR-KKEmImJ_bQ-eV6xaZwGKhoXpz01GekbY57BycjJvXzbAlBMeeLO9kzXfxu4V7/exec" method="POST">
+    <label>Full Name</label>
+    <input type="text" name="Name" required />
+
+    <label>Mobile Number</label>
+    <input type="tel" name="Phone" pattern="[0-9]{10}" required />
+
+    <label>City</label>
+    <input type="text" name="City" required />
+
+    <label>Vehicle Number</label>
+    <input type="text" name="VehicleNumber" placeholder="MH12AB1234" required />
+
+    <label>Brand</label>
+    <select id="brand" name="Brand" required>
+      <option value="" disabled selected>--Select Brand--</option>
     </select>
-    <label>
-     Model
-    </label>
-    <select id="model" name="Model" required="">
-     <option disabled="" selected="" value="">
-      --Select Model--
-     </option>
+
+    <label>Model</label>
+    <select id="model" name="Model" required>
+      <option value="" disabled selected>--Select Model--</option>
     </select>
-    <label>
-     Model Year
-    </label>
-    <select id="year" name="Year" required="">
-     <option value="2025">
-      2025
-     </option>
-     <option value="2024">
-      2024
-     </option>
-     <option value="2023">
-      2023
-     </option>
-     <option value="2022">
-      2022
-     </option>
-     <option value="2021">
-      2021
-     </option>
-     <option value="2020">
-      2020
-     </option>
-     <option value="2019">
-      2019
-     </option>
-     <option value="2018">
-      2018
-     </option>
-     <option value="2017">
-      2017
-     </option>
-     <option value="2016">
-      2016
-     </option>
-     <option value="2015">
-      2015
-     </option>
-     <option value="2014">
-      2014
-     </option>
-     <option value="2013">
-      2013
-     </option>
-     <option value="2012">
-      2012
-     </option>
-     <option value="2011">
-      2011
-     </option>
-     <option value="2010">
-      2010
-     </option>
-     <option value="2009">
-      2009
-     </option>
-     <option value="2008">
-      2008
-     </option>
-     <option value="2007">
-      2007
-     </option>
-     <option value="2006">
-      2006
-     </option>
-     <option value="2005">
-      2005
-     </option>
-     <option value="2004">
-      2004
-     </option>
-     <option value="2003">
-      2003
-     </option>
-     <option value="2002">
-      2002
-     </option>
-     <option value="2001">
-      2001
-     </option>
-     <option value="2000">
-      2000
-     </option>
+
+    <label>Model Year</label>
+    <select id="year" name="Year" required>
+      <option value="2025">2025</option>
+<option value="2024">2024</option>
+<option value="2023">2023</option>
+<option value="2022">2022</option>
+<option value="2021">2021</option>
+<option value="2020">2020</option>
+<option value="2019">2019</option>
+<option value="2018">2018</option>
+<option value="2017">2017</option>
+<option value="2016">2016</option>
+<option value="2015">2015</option>
+<option value="2014">2014</option>
+<option value="2013">2013</option>
+<option value="2012">2012</option>
+<option value="2011">2011</option>
+<option value="2010">2010</option>
+<option value="2009">2009</option>
+<option value="2008">2008</option>
+<option value="2007">2007</option>
+<option value="2006">2006</option>
+<option value="2005">2005</option>
+<option value="2004">2004</option>
+<option value="2003">2003</option>
+<option value="2002">2002</option>
+<option value="2001">2001</option>
+<option value="2000">2000</option>
     </select>
-    <label>
-     Color
-    </label>
-    <input id="color" name="Color" placeholder="e.g. Black, Red, White" required="" type="text"/>
-    <label>
-     RC Renewed?
-    </label>
+
+    <label>Color</label>
+    <input type="text" name="Color" id="color" placeholder="e.g. Black, Red, White" required />
+
+    <label>RC Renewed?</label>
     <select id="rc" name="RC">
-     <option value="yes">
-      Yes
-     </option>
-     <option value="no">
-      No
-     </option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
     </select>
-    <label>
-     Insurance Valid?
-    </label>
+
+    <label>Insurance Valid?</label>
     <select id="insurance" name="Insurance">
-     <option value="yes">
-      Yes
-     </option>
-     <option value="no">
-      No
-     </option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
     </select>
-    <label>
-     Insurance Type
-    </label>
+
+    <label>Insurance Type</label>
     <select name="InsuranceType">
-     <option value="Third Party">
-      Third Party
-     </option>
-     <option value="Comprehensive">
-      Comprehensive
-     </option>
-     <option selected="" value="Not Sure">
-      Not Sure
-     </option>
+      <option value="Third Party">Third Party</option>
+      <option value="Comprehensive">Comprehensive</option>
+      <option value="Not Sure" selected>Not Sure</option>
     </select>
-    <label>
-     PUC Available?
-    </label>
+
+    <label>PUC Available?</label>
     <select id="puc" name="PUC">
-     <option value="yes">
-      Yes
-     </option>
-     <option value="no">
-      No
-     </option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
     </select>
-    <label>
-     Upload RC Book
-    </label>
-    <input id="rcBookInput" name="RCBook" type="file"/>
+
+    <label>Upload RC Book</label>
+    <input type="file" id="rcFile" name="RCBook" />
+
     <div class="checkbox-group">
-     <input id="doorstep" name="Doorstep" onchange="checkRCUpload()" type="checkbox" value="Yes"/>
-     <label for="doorstep">
-      I want Doorstep Valuation
-     </label>
+      <input type="checkbox" id="doorstep" name="Doorstep" value="Yes" onchange="checkRCUpload()" />
+      <label for="doorstep">I want Doorstep Valuation</label>
     </div>
+
     <div id="valuation-box">
-     Estimated Valuation:
-     <span id="valuation-result">
-      ₹0
-     </span>
+      Estimated Valuation: <span id="valuation-result">₹0</span>
     </div>
-    <button id="submitBtn" style="background-color:#ff5200; font-size:18px; padding:14px; width:100%; border:none; color:white; border-radius:6px; margin-top:15px;" type="submit">
-     Submit
-    </button>
-    <div id="success-message" style="display:none; margin-top:10px; color: #0f0; font-weight: bold; text-align: center;">
-     Form submitted successfully!
-    </div>
-   </form>
-  </div>
-  <script>
-   const brandModelData = {
+
+    <button type="submit" id="submitBtn" style="background-color:#ff5200; font-size:18px; padding:14px; width:100%; border:none; color:white; border-radius:6px; margin-top:15px;">Submit</button>
+    <div id="success-message" style="display:none; margin-top:10px; color: #0f0; font-weight: bold; text-align: center;">Form submitted successfully!</div>
+  </form>
+</div>
+
+
+<script>
+const brandModelData = {
   "Hero": [
     "Destiny 125",
     "Duet",
@@ -427,23 +331,8 @@ document.getElementById("sellScooterForm").addEventListener("submit", function(e
     console.error(err);
   });
 });
-  </script>
-  <script>
-   document.addEventListener("DOMContentLoaded", function () {
-  const doorstepCheckbox = document.getElementById("doorstep");
-  const rcBookInput = document.getElementById("rcBookInput");
+</script>
 
-  function toggleRCRequirement() {
-    if (doorstepCheckbox.checked) {
-      rcBookInput.setAttribute("required", "required");
-    } else {
-      rcBookInput.removeAttribute("required");
-    }
-  }
-
-  doorstepCheckbox.addEventListener("change", toggleRCRequirement);
-  toggleRCRequirement();
-});
-  </script>
- </body>
+<script src="assets/scooterData.js"></script>
+</body>
 </html>
