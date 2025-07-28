@@ -6,109 +6,269 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
+      margin: 0;
       background: url('assets/bg.jpg') no-repeat center center fixed;
       background-size: cover;
       color: white;
     }
 
     header {
-      text-align: center;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 20px 10px;
-    }
-
-    h1, h2 {
-      margin: 0;
-      font-weight: normal;
-    }
-
-    .main-buttons {
       display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin: 20px 0;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px;
     }
 
-    .main-buttons button {
-      background-color: orange;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 5px;
-      font-size: 16px;
+    header img {
+      height: 40px;
+    }
+
+    header h1 {
+      font-size: 22px;
+      margin: 0 auto;
       color: white;
-      cursor: pointer;
     }
 
-    .tools {
-      background-color: rgba(0, 0, 0, 0.8);
-      padding: 10px;
+    .hero {
       text-align: center;
+      padding: 80px 20px 40px;
     }
 
-    .tool-btn {
-      display: block;
-      width: 100%;
-      padding: 15px 10px;
+    .hero h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
       font-size: 18px;
-      color: yellow;
-      background-color: #111;
-      border-bottom: 1px solid #444;
+      margin-bottom: 30px;
+    }
+
+    .hero button {
+      margin: 10px;
+      padding: 12px 25px;
+      background: #e25a00;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      padding: 30px 10px;
+    }
+
+    .grid .card {
+      background: #111;
+      border-radius: 10px;
+      padding: 15px 20px;
+      min-width: 140px;
       text-align: center;
+      color: #ffd700;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      cursor: pointer;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .grid .card:hover {
+      background: #222;
+      transform: scale(1.05);
+    }
+
+    .dropdown {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #222;
+      padding: 10px;
+      border-radius: 10px;
+      z-index: 99;
+      min-width: 140px;
+    }
+
+    .dropdown .card {
+      background: #333;
+      color: #fff;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      font-size: 14px;
+      box-shadow: none;
+    }
+
+    .dropdown .card:hover {
+      background: #444;
+    }
+
+    .features, .testimonials, .faq, .steps {
+      background: rgba(0,0,0,0.6);
+      margin: 20px auto;
+      max-width: 1000px;
+      border-radius: 10px;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .features h2, .testimonials h2, .faq h2, .steps h2 {
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .features p, .testimonials p, .steps p {
+      color: #ddd;
+    }
+
+    .faq details {
+      margin: 10px auto;
+      max-width: 600px;
+      text-align: left;
+      background: rgba(255,255,255,0.1);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .faq summary {
+      font-weight: bold;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    footer {
+      background: rgba(0,0,0,0.7);
+      text-align: center;
+      padding: 20px;
+      color: white;
+    }
+
+    footer a {
+      color: #ffc107;
+      margin: 10px;
       text-decoration: none;
     }
 
-    .bike-options {
-      display: none;
-      background-color: #222;
-    }
-
-    .bike-options .tool-btn {
-      color: #ccc;
-    }
-
     @media screen and (max-width: 600px) {
-      .main-buttons button {
-        width: 100%;
-        margin-bottom: 10px;
+      .grid .card {
+        min-width: 100%;
+        max-width: 300px;
+      }
+
+      header {
+        flex-direction: column;
+      }
+
+      header h1 {
+        text-align: center;
+        margin-top: 10px;
       }
     }
   </style>
-  <script>
-    function toggleBikeOptions() {
-      const options = document.getElementById("bikeOptions");
-      options.style.display = options.style.display === "block" ? "none" : "block";
-    }
-  </script>
 </head>
 <body>
-  <header>
-    <h1>SECOND WHEEL</h1>
-    <h2>Maharashtra's Reliable Vehicle Partner</h2>
-    <div class="main-buttons">
-      <button onclick="window.location.href='buycar.html'">Buy Car</button>
-      <button onclick="window.location.href='sellcar.html'">Sell Car</button>
-    </div>
-  </header>
 
-  <div class="tools">
-    <a class="tool-btn" href="#" onclick="toggleBikeOptions()">Bike Explore</a>
-    <div class="bike-options" id="bikeOptions">
-      <a class="tool-btn" href="buybike.html">Buy Bike</a>
-      <a class="tool-btn" href="buyscooter.html">Buy Scooter</a>
-      <a class="tool-btn" href="sellbike.html">Sell Bike</a>
-      <a class="tool-btn" href="sellscooter.html">Sell Scooter</a>
+<header>
+  <img src="assets/logo-yellow-metallic.png" alt="Logo">
+  <h1>Second Wheel</h1>
+</header>
+
+<div class="hero">
+  <h1>Trusted Vehicles, Smart Deals</h1>
+  <p>Maharashtra’s Reliable Vehicle Partner</p>
+  <button onclick="window.location.href='buycar.html'">Buy Car</button>
+  <button onclick="window.location.href='sellcar.html'">Sell Car</button>
+</div>
+
+<div class="grid">
+  <div class="card" onclick="toggleDropdown(event)">
+    Bike Explore
+    <div class="dropdown" id="bikeDropdown">
+      <div class="card" onclick="window.location.href='buybike.html'">Buy Bike</div>
+      <div class="card" onclick="window.location.href='sellbike.html'">Sell Bike</div>
+      <div class="card" onclick="window.location.href='buyscooter.html'">Buy Scooter</div>
+      <div class="card" onclick="window.location.href='sellscooter.html'">Sell Scooter</div>
     </div>
-    <a class="tool-btn" href="valuation.html">Instant Valuation</a>
-    <a class="tool-btn" href="insurance.html">Get Insured</a>
-    <a class="tool-btn" href="challan.html">Pay Challan</a>
-    <a class="tool-btn" href="hsrp.html">HSRP Plate</a>
-    <a class="tool-btn" href="fastag.html">FASTag Recharge</a>
-    <a class="tool-btn" href="carloan.html">Used Car Loan</a>
-    <a class="tool-btn" href="bikeloan.html">Used Bike Loan</a>
-    <a class="tool-btn" href="rto.html">RTO Check</a>
   </div>
+
+  <div class="card" onclick="window.location.href='valuation.html'">Instant Valuation</div>
+  <div class="card" onclick="window.location.href='insurance.html'">Get Insured</div>
+  <div class="card" onclick="window.location.href='challan.html'">Pay Challan</div>
+  <div class="card" onclick="window.location.href='hsrp.html'">HSRP Plate</div>
+  <div class="card" onclick="window.location.href='fastag.html'">FASTag Recharge</div>
+  <div class="card" onclick="window.location.href='carloan.html'">Used Car Loan</div>
+  <div class="card" onclick="window.location.href='bikeloan.html'">Used Bike Loan</div>
+  <div class="card" onclick="window.location.href='rtocheck.html'">RTO Check</div>
+</div>
+
+<section class="features">
+  <h2>Why Choose Us?</h2>
+  <p>✔️ Instant Vehicle Valuation</p>
+  <p>✔️ 100% Transparency</p>
+  <p>✔️ Secure Payment & Pickup</p>
+  <p>✔️ Trusted by 500+ Customers in Satara</p>
+</section>
+
+<section class="testimonials">
+  <h2>What Our Customers Say</h2>
+  <p>"Second Wheel made my car sale effortless." – Ravi J.</p>
+  <p>"Got my bike loan quickly. Great service!" – Priya M.</p>
+</section>
+
+<section class="faq">
+  <h2>FAQs</h2>
+  <details>
+    <summary>How to sell my car?</summary>
+    <p>Just click 'Sell Car', fill the form & get valuation instantly.</p>
+  </details>
+  <details>
+    <summary>Do I need insurance to buy?</summary>
+    <p>No, but we offer vehicle insurance services too.</p>
+  </details>
+  <details>
+    <summary>Can I get a loan for used bikes?</summary>
+    <p>Yes, we offer bike loan services with minimal paperwork.</p>
+  </details>
+</section>
+
+<section class="steps">
+  <h2>How It Works</h2>
+  <p>1️⃣ Select Service</p>
+  <p>2️⃣ Fill Basic Info</p>
+  <p>3️⃣ Get Instant Help</p>
+  <p>4️⃣ Finalize Deal</p>
+</section>
+
+<footer>
+  <p>
+    <a href="about.html">About Us</a> |
+    <a href="contact.html">Contact</a> |
+    <a href="wishlist.html">Wishlist</a> |
+    <a href="disclaimer.html">Disclaimer</a>
+  </p>
+  <p>© 2025 Second Wheel - The Car Bazaar</p>
+</footer>
+
+<script>
+  function toggleDropdown(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById("bikeDropdown");
+    dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+  }
+
+  document.addEventListener("click", function () {
+    const dropdown = document.getElementById("bikeDropdown");
+    if (dropdown) dropdown.style.display = "none";
+  });
+</script>
+
 </body>
 </html>
