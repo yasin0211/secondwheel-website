@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Second Wheel - Trusted Vehicles</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Buy and Sell Used Cars and Bikes in Maharashtra - Instant Valuation, Insurance, Loans & More" />
   <style>
     body {
       margin: 0;
@@ -39,14 +40,15 @@
       margin-bottom: 30px;
     }
 
-    .hero button {
+    .hero a {
       margin: 10px;
       padding: 12px 25px;
       background: #e25a00;
       color: white;
       border: none;
       border-radius: 6px;
-      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
       font-size: 16px;
     }
 
@@ -89,22 +91,22 @@
       z-index: 999;
     }
 
-    .dropdown-content button {
+    .dropdown-content a {
+      display: block;
       width: 100%;
       padding: 8px;
       background: #333;
       color: white;
-      border: none;
-      margin: 2px 0;
       border-radius: 4px;
-      cursor: pointer;
+      text-decoration: none;
+      margin: 2px 0;
     }
 
-    .dropdown-content button:hover {
+    .dropdown-content a:hover {
       background: #444;
     }
 
-    .card.dropdown:hover .dropdown-content {
+    .card.dropdown.active .dropdown-content {
       display: block;
     }
 
@@ -164,6 +166,19 @@
         height: 70px;
         max-width: 200px;
       }
+
+      .hero h1 {
+        font-size: 24px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .hero a {
+        font-size: 14px;
+        padding: 10px 20px;
+      }
     }
   </style>
 </head>
@@ -176,18 +191,18 @@
 <div class="hero">
   <h1>Trusted Vehicles, Smart Deals</h1>
   <p>Maharashtra's Reliable Vehicle Partner</p>
-  <button onclick="window.location.href='buycar.html'">Buy Car</button>
-  <button onclick="window.location.href='sellcar.html'">Sell Car</button>
+  <a href="buycar.html">Buy Car</a>
+  <a href="sellcar.html">Sell Car</a>
 </div>
 
 <div class="grid">
-  <div class="card dropdown">
+  <div class="card dropdown" onclick="toggleDropdown(this)">
     Bike Explore
     <div class="dropdown-content">
-      <button onclick="location.href='buybike.html'">Buy Bike</button>
-      <button onclick="location.href='sellbike.html'">Sell Bike</button>
-      <button onclick="location.href='buyscooter.html'">Buy Scooter</button>
-      <button onclick="location.href='sellscooter.html'">Sell Scooter</button>
+      <a href="buybike.html">Buy Bike</a>
+      <a href="sellbike.html">Sell Bike</a>
+      <a href="buyscooter.html">Buy Scooter</a>
+      <a href="sellscooter.html">Sell Scooter</a>
     </div>
   </div>
   <div class="card" onclick="window.location.href='valuation.html'">Instant Valuation</div>
@@ -247,6 +262,23 @@
   </p>
   <p>© 2025 Second Wheel - The Car Bazaar</p>
 </footer>
+
+<script>
+  function toggleDropdown(el) {
+    document.querySelectorAll('.dropdown').forEach(drop => {
+      if (drop !== el) drop.classList.remove('active');
+    });
+    el.classList.toggle('active');
+  }
+
+  // Optional: Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    const isDropdown = e.target.closest('.dropdown');
+    if (!isDropdown) {
+      document.querySelectorAll('.dropdown').forEach(drop => drop.classList.remove('active'));
+    }
+  });
+</script>
 
 </body>
 </html>
