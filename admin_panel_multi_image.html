@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Second Wheel Admin Panel - Multiple Images</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    h2 {
+      color: #222;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    label {
+      font-weight: bold;
+    }
+    button {
+      padding: 10px 20px;
+      background: #e25a00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Upload Vehicle (Multiple Images)</h2>
+
+<form id="vehicleForm">
+  <label>Vehicle Images (Multiple)</label>
+  <input type="file" id="images" accept="image/*" multiple required />
+
+  <label>Brand</label>
+  <input type="text" id="brand" required />
+
+  <label>Model</label>
+  <input type="text" id="model" required />
+
+  <label>Year</label>
+  <input type="text" id="year" required />
+
+  <label>Price (₹)</label>
+  <input type="text" id="price" required />
+
+  <label>City / RTO</label>
+  <input type="text" id="city" required />
+
+  <label>Condition</label>
+  <select id="condition">
+    <option value="Excellent">Excellent</option>
+    <option value="Good">Good</option>
+    <option value="Average">Average</option>
+  </select>
+
+  <label>KM Driven</label>
+  <input type="text" id="km" required />
+
+  <label>Fuel Type</label>
+  <select id="fuel">
+    <option value="Petrol">Petrol</option>
+    <option value="Diesel">Diesel</option>
+    <option value="CNG">CNG</option>
+    <option value="Electric">Electric</option>
+  </select>
+
+  <label>Ownership</label>
+  <select id="owner">
+    <option value="1st">1st Owner</option>
+    <option value="2nd">2nd Owner</option>
+    <option value="3rd">3rd Owner</option>
+    <option value="4th">4th Owner</option>
+  </select>
+
+  <label>RC Available?</label>
+  <select id="rc">
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
+
+  <label>Insurance Valid?</label>
+  <select id="insurance">
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
+
+  <label>PUC Available?</label>
+  <select id="puc">
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
+
+  <label>Custom Description</label>
+  <textarea id="desc" rows="3"></textarea>
+
+  <label>Status</label>
+  <select id="status">
+    <option value="Available">Available</option>
+    <option value="Sold">Sold</option>
+  </select>
+
+  <button type="submit">Upload Vehicle</button>
+</form>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyB9oWFJalJtYdWdsVdZvUzteUbFbXh7gcg",
+  authDomain: "second-wheel-81373.firebaseapp.com",
+  projectId: "second-wheel-81373",
+  storageBucket: "second-wheel-81373.appspot.com",
+  messagingSenderId: "927066104290",
+  appId: "1:927066104290:web:1fb76d73d76d3cafff59bb",
+  measurementId: "G-HNQP7KJ54Y"
+};
+
+const app = firebase.initializeApp(firebaseConfig);
+const storage = firebase.storage();
+const db = firebase.firestore();
+
+document.getElementById('vehicleForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const files = document.getElementById('images').files;
+  if (!files.length) return alert("Please select at least one image.");
+
+  const formData = {
+    brand: document.getElementById('brand').value,
+    model: document.getElementById('model').value,
+    year: document.getElementById('year').value,
+    price: document.getElementById('price').value,
+    city: document.getElementById('city').value,
+    condition: document.getElementById('condition').value,
+    km: document.getElementById('km').value,
+    fuel: document.getElementById('fuel').value,
+    owner: document.getElementById('owner').value,
+    rc: document.getElementById('rc').value,
+    insurance: document.getElementById('insurance').value,
+    puc: document.getElementById('puc').value,
+    desc: document.getElementById('desc').value,
+    status: document.getElementById('status').value,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  const imageUrls = [];
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const storageRef = storage.ref('vehicles/' + Date.now() + '-' + file.name);
+    await storageRef.put(file);
+    const downloadURL = await storageRef.getDownloadURL();
+    imageUrls.push(downloadURL);
+  }
+
+  formData.images = imageUrls;
+
+  await db.collection('vehicles').add(formData);
+
+  alert("Vehicle with multiple images uploaded successfully!");
+  document.getElementById('vehicleForm').reset();
+});
+</script>
+
+</body>
+</html>
