@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Second Wheel - Trusted Vehicles</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: url('./assets/bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .dark-mode {
+      background-color: #111;
+      color: #eee;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.7);
+      padding: 15px;
+    }
+    header img {
+      height: 40px;
+      margin-right: 10px;
+    }
+    header h1 {
+      font-size: 22px;
+      margin: 0;
+    }
+    .lang-toggle {
+      font-size: 14px;
+      color: #ffc107;
+      cursor: pointer;
+    }
+    .hero {
+      text-align: center;
+      padding: 40px 20px 20px;
+    }
+    .hero-box {
+      background: rgba(0,0,0,0.6);
+      display: inline-block;
+      padding: 30px 20px;
+      border-radius: 12px;
+      backdrop-filter: blur(6px);
+    }
+    .hero h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    .hero p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    .hero img {
+      width: 220px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+    .hero .buttons button {
+      margin: 10px;
+      padding: 12px 25px;
+      background: #e25a00;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .hero .buttons button:hover {
+      background: #ff7700;
+    }
+    .grid, .gallery-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      padding: 30px 10px;
+    }
+    .card, .gallery-card {
+      background: rgba(0,0,0,0.6);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      color: #ffd700;
+      font-weight: bold;
+      min-width: 140px;
+    }
+    .gallery-card img {
+      width: 180px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .floating-wa {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background: #25D366;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 50px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .sticky-bottom {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+    .sticky-bottom button {
+      background: #e25a00;
+      border: none;
+      padding: 10px 15px;
+      color: white;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    footer {
+      background: rgba(0,0,0,0.7);
+      text-align: center;
+      padding: 20px;
+      color: white;
+      margin-top: 30px;
+    }
+    footer a {
+      color: #ffc107;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    .testimonial {
+      background: rgba(255,255,255,0.1);
+      margin: 0 auto 30px;
+      max-width: 600px;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .dark-toggle {
+      cursor: pointer;
+      font-size: 14px;
+      color: #ffc107;
+    }
+  </style>
+</head>
+<body>
+<header>
+<div style="display: flex; align-items: center;">
+<img alt="Logo" src="./assets/logo-yellow-metallic.png"/>
+<h1>Second Wheel</h1>
+</div>
+<div>
+<span class="lang-toggle">EN | HI | MR</span> |
+    <span class="dark-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</span>
+</div>
+</header>
+<div class="hero">
+<div class="hero-box">
+<img alt="Vehicle Thumbnail" src="./assets/thumb-vehicle.png"/>
+<h1>Trusted Vehicles, Smart Deals</h1>
+<p>Maharashtra’s Reliable Vehicle Partner</p>
+<div class="buttons">
+<button onclick="window.location.href='buycar.html'">🚗 Buy Car</button>
+<button onclick="window.location.href='sellcar.html'">🚙 Sell Car</button>
+<button onclick="window.location.href='buybike.html'">🏍️ Buy Bike</button>
+<button onclick="window.location.href='sellbike.html'">🛵 Sell Bike</button>
+</div>
+</div>
+</div>
+<div class="grid">
+<div class="card" onclick="window.location.href='valuation.html'">💰 Valuation</div>
+<div class="card" onclick="window.location.href='insurance.html'">📄 Insurance</div>
+<div class="card" onclick="window.location.href='challan.html'">🧾 Challan</div>
+<div class="card" onclick="window.location.href='fastag.html'">🚦 FASTag</div>
+<div class="card" onclick="window.location.href='hsrp.html'">🏷️ HSRP</div>
+<div class="card" onclick="window.location.href='carloan.html'">🚘 Car Loan</div>
+<div class="card" onclick="window.location.href='bikeloan.html'">🏍️ Bike Loan</div>
+<div class="card" onclick="window.location.href='rtocheck.html'">📍 RTO Check</div>
+</div>
+<h2 style="text-align:center;">🚗 Featured Cars</h2>
+<div class="gallery-row">
+<div class="gallery-card"><img src="assets/cars/car1.jpg"/><div>Swift 2019<br/>₹4.8L</div></div>
+<div class="gallery-card"><img src="assets/cars/car2.jpg"/><div>i20 2020<br/>₹5.9L</div></div>
+</div>
+<h2 style="text-align:center;">🏍️ Featured Bikes</h2>
+<div class="gallery-row">
+<div class="gallery-card"><img src="assets/bikes/bike1.jpg"/><div>Splendor 2021<br/>₹62K</div></div>
+<div class="gallery-card"><img src="assets/bikes/bike2.jpg"/><div>Activa 6G 2022<br/>₹68K</div></div>
+</div>
+<div class="testimonial">
+<p>“Second Wheel made my car sale effortless!” – Ravi J.</p>
+<p>“Quick loan and smooth experience.” – Priya M.</p>
+</div>
+<footer>
+<p>
+<a href="about.html">About</a> |
+    <a href="contact.html">Contact</a> |
+    <a href="wishlist.html">Wishlist</a> |
+    <a href="disclaimer.html">Disclaimer</a>
+</p>
+<p>© 2025 Second Wheel - The Car Bazaar</p>
+</footer>
+<a class="floating-wa" href="https://wa.me/917038697038" target="_blank">💬 WhatsApp Us</a>
+<div class="sticky-bottom">
+<button onclick="window.location.href='buycar.html'">Buy Car</button>
+<button onclick="window.location.href='sellbike.html'">Sell Bike</button>
+<button onclick="window.location.href='https://wa.me/917038697038'">WhatsApp</button>
+</div>
+<script>
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+}
+</script>
+</body>
+</html>
