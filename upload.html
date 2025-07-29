@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Featured Vehicle</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB9oWFJalJTYdWsVdZuFeBuN0*******", // तुमचं पूर्ण key पेस्ट करा
+      authDomain: "second-wheel-81373.firebaseapp.com",
+      projectId: "second-wheel-81373",
+      storageBucket: "second-wheel-81373.appspot.com",
+      messagingSenderId: "927066104290",
+      appId: "1:927066104290:web:1fb76d73d76d3caf6f59bb"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("uploadForm");
+      const status = document.getElementById("status");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const type = form.type.value;
+        const image = form.image.value;
+        const model = form.model.value;
+        const year = form.year.value;
+        const price = form.price.value;
+
+        if (!type || !image || !model || !year || !price) {
+          status.textContent = "❌ कृपया सर्व फील्ड भरा.";
+          return;
+        }
+
+        const data = { image, model, year, price };
+
+        try {
+          await addDoc(collection(db, type === "car" ? "featured_cars" : "featured_bikes"), data);
+          status.textContent = "✅ यशस्वीरित्या Firebase मध्ये अपलोड झाले!";
+          form.reset();
+        } catch (err) {
+          status.textContent = "❌ Error: " + err.message;
+        }
+      });
+    });
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      padding: 30px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      background: white;
+      max-width: 400px;
+      margin: auto;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    button {
+      background: #e25a00;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #ff7700;
+    }
+    #status {
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>📤 Upload Featured Vehicle</h2>
+  <form id="uploadForm">
+    <select name="type" required>
+      <option value="">-- Select Vehicle Type --</option>
+      <option value="car">🚗 Car</option>
+      <option value="bike">🏍️ Bike</option>
+    </select>
+    <input type="text" name="model" placeholder="Model (e.g. Swift)" required />
+    <input type="text" name="year" placeholder="Year (e.g. 2020)" required />
+    <input type="number" name="price" placeholder="Price (e.g. 480000)" required />
+    <input type="url" name="image" placeholder="Image URL (https://...)" required />
+    <button type="submit">Upload</button>
+    <div id="status"></div>
+  </form>
+</body>
+</html>
