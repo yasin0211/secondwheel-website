@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Upload Vehicle</title>
+  <title>Upload Vehicle - Multiple Images</title>
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <style>
-    body { font-family: Arial; padding: 20px; }
+    body { font-family: Arial; padding: 20px; background: #f9f9f9; }
     input, select, textarea { margin-bottom: 10px; width: 100%; padding: 8px; }
-    img.preview { max-width: 150px; margin-right: 10px; display: inline-block; }
+    img.preview { max-width: 140px; margin: 5px; border-radius: 6px; }
     button { background: green; color: white; padding: 10px; border: none; cursor: pointer; }
   </style>
 </head>
 <body>
-  <h2>Vehicle Upload Form (Supabase - Multiple Images)</h2>
+  <h2>Vehicle Upload Form (Supabase)</h2>
 
   <form id="vehicleForm">
     <select name="category" required>
@@ -33,11 +33,9 @@
       <option>Yes</option>
       <option>No</option>
     </select>
-    
     <input type="file" id="imageInput" accept="image/*" multiple required />
     <div id="previewContainer"></div>
-
-    <textarea name="description" placeholder="Description"></textarea>
+    <textarea name="description" placeholder="Description (Optional)"></textarea>
     <button type="submit" id="submitBtn">Upload</button>
   </form>
 
@@ -58,40 +56,35 @@
       imageUrls = [];
 
       for (const file of files) {
-        const imgTag = document.createElement('img');
-        imgTag.src = URL.createObjectURL(file);
-        imgTag.classList.add('preview');
-        previewContainer.appendChild(imgTag);
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.classList.add('preview');
+        previewContainer.appendChild(img);
 
         const filePath = `vehicle-${Date.now()}-${file.name}`;
-        const { data, error } = await supabase.storage
-          .from('vehicals')
-          .upload(filePath, file);
+        const { error } = await supabase.storage.from('vehicals').upload(filePath, file);
 
         if (error) {
-          alert("Image upload failed: " + error.message);
+          alert('❌ Upload failed: ' + error.message);
         } else {
-          const { data: urlData } = supabase
-            .storage
-            .from('vehicals')
-            .getPublicUrl(filePath);
+          const { data: urlData } = supabase.storage.from('vehicals').getPublicUrl(filePath);
           imageUrls.push(urlData.publicUrl);
         }
       }
 
-      console.log("✅ Uploaded Images:", imageUrls);
+      console.log("✅ Uploaded image URLs:", imageUrls);
     });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       if (imageUrls.length === 0) {
-        alert("Please wait until all images are uploaded.");
+        alert('Please upload images first.');
         return;
       }
 
       submitBtn.disabled = true;
-      submitBtn.innerText = "Uploading...";
+      submitBtn.textContent = 'Uploading...';
 
       const formData = new FormData(form);
       const record = {
@@ -105,23 +98,23 @@
         condition: formData.get('condition'),
         ownership: formData.get('ownership'),
         rc: formData.get('rc'),
-        image_urls: imageUrls, // ← array of links
+        image_urls: imageUrls,
         description: formData.get('description'),
       };
 
       const { error } = await supabase.from('vehicles').insert([record]);
 
       if (error) {
-        alert("❌ Upload failed: " + error.message);
+        alert('❌ Failed to upload: ' + error.message);
       } else {
-        alert("✅ Vehicle uploaded successfully!");
+        alert('✅ Uploaded successfully!');
         form.reset();
-        previewContainer.innerHTML = "";
+        previewContainer.innerHTML = '';
         imageUrls = [];
       }
 
       submitBtn.disabled = false;
-      submitBtn.innerText = "Upload";
+      submitBtn.textContent = 'Upload';
     });
   </script>
 </body>
