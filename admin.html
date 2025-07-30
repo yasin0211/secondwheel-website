@@ -2,158 +2,166 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Second Wheel - Admin Upload</title>
-  <script src="="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+  <title>Second Wheel Admin Panel (Supabase)</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
-    form { background: #fff; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    h2 { text-align: center; color: #333; }
-    label { font-weight: bold; margin-top: 10px; display: block; }
-    input, select, textarea { width: 100%; padding: 8px; margin-bottom: 10px; }
-    button { background: #e25a00; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+    h2 { color: #222; }
+    form {
+      background: #fff; padding: 20px; border-radius: 10px;
+      max-width: 700px; margin: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    label, select, input { width: 100%; padding: 10px; margin: 10px 0; }
+    button {
+      padding: 10px 20px; background: #e25a00; color: white;
+      border: none; border-radius: 5px; cursor: pointer;
+    }
   </style>
 </head>
 <body>
+  <h2>Upload Vehicle - Supabase</h2>
+  <form id="vehicleForm">
+    <label>Vehicle Images</label>
+    <input type="file" id="images" accept="image/*" multiple required />
 
-<h2>Admin Vehicle Upload</h2>
+    <label>Category</label>
+    <select id="category" required>
+      <option value="Car">Car</option>
+      <option value="Bike">Bike</option>
+      <option value="Scooter">Scooter</option>
+    </select>
 
-<form id="vehicleForm">
-  <label>Category</label>
-  <select id="category" required>
-    <option value="Car">Car</option>
-    <option value="Bike">Bike</option>
-    <option value="Scooter">Scooter</option>
-  </select>
+    <label>Brand</label>
+    <input type="text" id="brand" required />
 
-  <label>Brand</label>
-  <input type="text" id="brand" required />
+    <label>Model</label>
+    <input type="text" id="model" required />
 
-  <label>Model</label>
-  <input type="text" id="model" required />
+    <label>Year</label>
+    <input type="number" id="year" required />
 
-  <label>Year</label>
-  <input type="text" id="year" required />
+    <label>Price</label>
+    <input type="number" id="price" required />
 
-  <label>Price (₹)</label>
-  <input type="text" id="price" required />
+    <label>Km Driven</label>
+    <input type="number" id="km" required />
 
-  <label>KM Driven</label>
-  <input type="text" id="km" required />
+    <label>City</label>
+    <input type="text" id="city" required />
 
-  <label>City</label>
-  <input type="text" id="city" required />
+    <label>Fuel Type</label>
+    <select id="fuel" required>
+      <option value="Petrol">Petrol</option>
+      <option value="Diesel">Diesel</option>
+      <option value="CNG">CNG</option>
+      <option value="Electric">Electric</option>
+    </select>
 
-  <label>Fuel</label>
-  <select id="fuel">
-    <option value="Petrol">Petrol</option>
-    <option value="Diesel">Diesel</option>
-    <option value="CNG">CNG</option>
-    <option value="Electric">Electric</option>
-  </select>
+    <label>Condition</label>
+    <select id="condition" required>
+      <option value="Excellent">Excellent</option>
+      <option value="Good">Good</option>
+      <option value="Average">Average</option>
+      <option value="Poor">Poor</option>
+    </select>
 
-  <label>Condition</label>
-  <select id="condition">
-    <option value="Excellent">Excellent</option>
-    <option value="Good">Good</option>
-    <option value="Average">Average</option>
-  </select>
+    <label>Ownership</label>
+    <select id="ownership" required>
+      <option value="1st">1st</option>
+      <option value="2nd">2nd</option>
+      <option value="3rd">3rd</option>
+      <option value="4th">4th</option>
+      <option value="5+">5+</option>
+    </select>
 
-  <label>Ownership</label>
-  <select id="owner">
-    <option value="1st">1st</option>
-    <option value="2nd">2nd</option>
-    <option value="3rd">3rd</option>
-    <option value="4th">4th</option>
-  </select>
+    <label>RC Available</label>
+    <select id="rc" required>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
 
-  <label>RC Available?</label>
-  <select id="rc">
-    <option value="Yes">Yes</option>
-    <option value="No">No</option>
-  </select>
+    <label>PUC Available</label>
+    <select id="puc" required>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
 
-  <label>Insurance Valid?</label>
-  <select id="insurance">
-    <option value="Yes">Yes</option>
-    <option value="No">No</option>
-  </select>
+    <label>Fitness Valid</label>
+    <select id="fitness" required>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
 
-  <label>PUC Available?</label>
-  <select id="puc">
-    <option value="Yes">Yes</option>
-    <option value="No">No</option>
-  </select>
+    <button type="submit">Upload</button>
+    <p id="status"></p>
+  </form>
 
-  <label>Images</label>
-  <input type="file" id="images" accept="image/*" multiple required />
+  <script>
+    const supabase = supabase.createClient(
+      'https://<your-project-id>.supabase.co',
+      '<your-anon-key>'
+    );
 
-  <button type="submit">Upload Vehicle</button>
-</form>
+    const form = document.getElementById("vehicleForm");
+    const statusText = document.getElementById("status");
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyB9oWFJalJtYdWdsVdZvUzteUbFbXh7gcg",
-  authDomain: "second-wheel-81373.firebaseapp.com",
-  projectId: "second-wheel-81373",
-  storageBucket: "second-wheel-81373.appspot.com",
-  messagingSenderId: "927066104290",
-  appId: "1:927066104290:web:1fb76d73d76d3cafff59bb",
-  measurementId: "G-HNQP7KJ54Y"
-};
+    form.onsubmit = async function(e) {
+      e.preventDefault();
+      statusText.innerText = "Uploading...";
 
-const app = firebase.initializeApp(firebaseConfig);
-const storage = firebase.storage();
-const db = firebase.firestore();
+      const files = document.getElementById("images").files;
+      const data = {
+        category: form.category.value,
+        brand: form.brand.value,
+        model: form.model.value,
+        year: parseInt(form.year.value),
+        price: parseInt(form.price.value),
+        km: parseInt(form.km.value),
+        city: form.city.value,
+        fuel: form.fuel.value,
+        condition: form.condition.value,
+        ownership: form.ownership.value,
+        rc: form.rc.value,
+        puc: form.puc.value,
+        fitness: form.fitness.value
+      };
 
-document.getElementById("vehicleForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
+      if (!files.length) {
+        statusText.innerText = "Please select at least one image.";
+        return;
+      }
 
-  const files = document.getElementById("images").files;
-  if (!files.length) {
-    alert("❌ Please select at least one image.");
-    return;
-  }
+      // Upload all images and collect their public URLs
+      const urls = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const filePath = `${Date.now()}_${file.name}`;
+        const { data: uploadData, error: uploadError } = await supabase
+          .storage
+          .from('vehicles')
+          .upload(filePath, file);
 
-  const formData = {
-    category: document.getElementById("category").value,
-    brand: document.getElementById("brand").value,
-    model: document.getElementById("model").value,
-    year: document.getElementById("year").value,
-    price: document.getElementById("price").value,
-    km: document.getElementById("km").value,
-    city: document.getElementById("city").value,
-    fuel: document.getElementById("fuel").value,
-    condition: document.getElementById("condition").value,
-    owner: document.getElementById("owner").value,
-    rc: document.getElementById("rc").value,
-    insurance: document.getElementById("insurance").value,
-    puc: document.getElementById("puc").value,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  };
+        if (uploadError) {
+          statusText.innerText = "Upload error: " + uploadError.message;
+          return;
+        }
 
-  const imageUrls = [];
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const ref = storage.ref("vehicles/" + Date.now() + "_" + file.name);
-    await ref.put(file);
-    const url = await ref.getDownloadURL();
-    imageUrls.push(url);
-  }
+        const { data: urlData } = supabase.storage.from('vehicles').getPublicUrl(filePath);
+        urls.push(urlData.publicUrl);
+      }
 
-  formData.images = imageUrls;
+      // Store data in table
+      const { error: insertError } = await supabase.from("vehicles").insert([
+        { ...data, images: urls }
+      ]);
 
-  try {
-    await db.collection("vehicles").add(formData);
-    alert("✅ Vehicle uploaded successfully!");
-    document.getElementById("vehicleForm").reset();
-  } catch (error) {
-    console.error("Error uploading:", error);
-    alert("❌ Failed to upload: " + error.message);
-  }
-});
-</script>
-
+      if (insertError) {
+        statusText.innerText = "Database error: " + insertError.message;
+      } else {
+        statusText.innerText = "Vehicle uploaded successfully!";
+        form.reset();
+      }
+    }
+  </script>
 </body>
 </html>
