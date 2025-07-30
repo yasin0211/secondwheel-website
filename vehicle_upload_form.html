@@ -3,11 +3,6 @@
 <head>
   <title>Upload Vehicle</title>
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <script>
-    const supabaseUrl = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-  </script>
   <style>
     body { font-family: Arial; padding: 20px; }
     input, select, textarea { margin-bottom: 10px; width: 100%; padding: 8px; }
@@ -45,6 +40,12 @@
   </form>
 
   <script>
+    const supabaseUrl = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
+
+    const { createClient } = supabase;
+    const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
     const form = document.getElementById('vehicleForm');
     const imageInput = document.getElementById('imageInput');
     const preview = document.getElementById('preview');
@@ -59,15 +60,15 @@
       preview.style.display = "block";
 
       const filePath = `vehicle-${Date.now()}-${file.name}`;
-      const { data, error } = await supabase.storage
-        .from('vehicals')
+      const { data, error } = await supabaseClient.storage
+        .from('vehicals')  // ✅ Tumcha bucket name
         .upload(filePath, file);
 
       if (error) {
-        alert("Image upload failed: " + error.message);
+        alert("❌ Image upload failed: " + error.message);
         imageUrl = "";
       } else {
-        const { data: urlData } = supabase.storage
+        const { data: urlData } = supabaseClient.storage
           .from('vehicals')
           .getPublicUrl(filePath);
         imageUrl = urlData.publicUrl;
@@ -102,7 +103,7 @@
         description: formData.get('description'),
       };
 
-      const { error } = await supabase.from('vehicles').insert([record]);
+      const { error } = await supabaseClient.from('vehicles').insert([record]);
 
       if (error) {
         alert("❌ Upload failed: " + error.message);
