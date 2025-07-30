@@ -3,8 +3,14 @@
 <head>
   <title>Buy Vehicles - Gallery</title>
   <style>
-    body { font-family: Arial; padding: 20px; background: #eee; }
-    h2 { text-align: center; }
+    body {
+      font-family: Arial;
+      padding: 20px;
+      background: #eee;
+    }
+    h2 {
+      text-align: center;
+    }
     .card {
       border: 1px solid #ccc;
       padding: 10px;
@@ -29,16 +35,21 @@
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-    const supabase = createClient(
-      'https://wbjwvxckbfkutqqbgupq.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz...'
-    );
+
+    const supabaseUrl = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     const gallery = document.getElementById("gallery");
-    const { data, error } = await supabase.from('vehicles').select('*').order('id', { ascending: false });
+
+    const { data, error } = await supabase
+      .from('vehicles')
+      .select('*')
+      .order('id', { ascending: false });
 
     if (error) {
       gallery.innerHTML = "<p>❌ Error loading gallery</p>";
+      console.error("Supabase error:", error);
     } else {
       gallery.innerHTML = "";
       data.forEach(vehicle => {
@@ -46,8 +57,8 @@
         card.className = "card";
 
         const img = document.createElement("img");
-        img.src = vehicle.image_urls?.[0] || "";  // ✅ No placeholder
-        img.alt = vehicle.model;
+        img.src = vehicle.image_urls?.[0] || "";
+        img.alt = vehicle.model || "Vehicle Image";
 
         const info = document.createElement("div");
         info.innerHTML = `
