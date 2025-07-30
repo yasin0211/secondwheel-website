@@ -287,14 +287,33 @@ header {
 <img alt="Vehicle Thumbnail" src="https://via.placeholder.com/220x120?text=Vehicle+Thumbnail"/>
 <h1>Trusted Vehicles, Smart Deals</h1>
 <p>Maharashtra’s Reliable Vehicle Partner</p>
+<!-- Toggle Style Buttons -->
 <div class="buttons">
-<button onclick="window.location.href='buycar.html'">🚗 Buy Car</button>
-<button onclick="window.location.href='sellcar.html'">🚙 Sell Car</button>
-<button onclick="window.location.href='buybike.html'">🏍️ Buy Bike</button>
-<button onclick="window.location.href='sellbike.html'">🛵 Sell Bike</button>
+  <button onclick="toggleBuy()">🛒 Buy</button>
+  <div id="buy-options" style="display:none; margin-top: 10px;">
+    <button onclick="window.location.href='buycar.html'">🚗 Buy Car</button>
+    <button onclick="window.location.href='buybike.html'">🏍️ Buy Bike</button>
+  </div>
+
+  <button onclick="toggleSell()">📤 Sell</button>
+  <div id="sell-options" style="display:none; margin-top: 10px;">
+    <button onclick="window.location.href='sellcar.html'">🚙 Sell Car</button>
+    <button onclick="window.location.href='sellbike.html'">🛵 Sell Bike</button>
+  </div>
 </div>
-</div>
-</div>
+
+<script>
+function toggleBuy() {
+  const buyDiv = document.getElementById('buy-options');
+  buyDiv.style.display = (buyDiv.style.display === 'none') ? 'block' : 'none';
+  document.getElementById('sell-options').style.display = 'none';
+}
+function toggleSell() {
+  const sellDiv = document.getElementById('sell-options');
+  sellDiv.style.display = (sellDiv.style.display === 'none') ? 'block' : 'none';
+  document.getElementById('buy-options').style.display = 'none';
+}
+</script>
 <div class="grid">
 <div class="card" onclick="window.location.href='valuation.html'">💰 Valuation</div>
 <div class="card" onclick="window.location.href='insurance.html'">📄 Insurance</div>
