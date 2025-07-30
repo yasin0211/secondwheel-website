@@ -3,17 +3,19 @@
 <head>
   <title>Upload Vehicle</title>
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-<script>
-  const supabaseUrl = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6...'; // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-</script>  <style>
+  <script>
+    const supabaseUrl = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+  </script>
+  <style>
     body { font-family: Arial; padding: 20px; }
     input, select, textarea { margin-bottom: 10px; width: 100%; padding: 8px; }
-    img { max-width: 200px; margin-top: 10px; }
+    img { max-width: 200px; margin-top: 10px; display: none; }
     button { background: green; color: white; padding: 10px; border: none; cursor: pointer; }
   </style>
-</head><body>
+</head>
+<body>
   <h2>Vehicle Upload Form (Supabase)</h2>
 
   <form id="vehicleForm">
@@ -23,7 +25,6 @@
       <option>Bike</option>
       <option>Scooter</option>
     </select>
-
     <input type="text" name="brand" placeholder="Brand" required />
     <input type="text" name="model" placeholder="Model" required />
     <input type="number" name="year" placeholder="Year" required />
@@ -37,21 +38,13 @@
       <option>Yes</option>
       <option>No</option>
     </select>
-
     <input type="file" id="imageInput" accept="image/*" required />
     <img id="preview" />
-
     <textarea name="description" placeholder="Description"></textarea>
-
     <button type="submit" id="submitBtn">Upload</button>
   </form>
 
   <script>
-    const supabase = supabase.createClient(
-      'https://wbjwvxckbfkutqqbgupq.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiw...'
-    );
-
     const form = document.getElementById('vehicleForm');
     const imageInput = document.getElementById('imageInput');
     const preview = document.getElementById('preview');
@@ -67,14 +60,16 @@
 
       const filePath = `vehicle-${Date.now()}-${file.name}`;
       const { data, error } = await supabase.storage
-        .from('vehicles')
+        .from('vehicals')
         .upload(filePath, file);
 
       if (error) {
         alert("Image upload failed: " + error.message);
         imageUrl = "";
       } else {
-        const { data: urlData } = supabase.storage.from('vehicle-images').getPublicUrl(filePath);
+        const { data: urlData } = supabase.storage
+          .from('vehicals')
+          .getPublicUrl(filePath);
         imageUrl = urlData.publicUrl;
         console.log("✅ Image uploaded:", imageUrl);
       }
