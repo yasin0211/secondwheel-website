@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Second Wheel Admin Panel - Multiple Images</title>
+  <title>Second Wheel Admin Panel</title>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
@@ -23,7 +23,7 @@
 </head>
 <body>
 
-<h2>Upload Vehicle (Multiple Images)</h2>
+<h2>Upload Vehicle (Admin Panel)</h2>
 
 <form id="vehicleForm">
   <label>Vehicle Images (Multiple)</label>
@@ -124,6 +124,8 @@ const db = firebase.firestore();
 
 document.getElementById('vehicleForm').addEventListener('submit', async (e) => {
   e.preventDefault();
+  alert("Uploading started...");
+
   const files = document.getElementById('images').files;
   if (!files.length) return alert("Please select at least one image.");
 
@@ -157,10 +159,14 @@ document.getElementById('vehicleForm').addEventListener('submit', async (e) => {
 
   formData.images = imageUrls;
 
-  await db.collection('vehicles').add(formData);
-
-  alert("✅ Vehicle with multiple images uploaded successfully!");
-  document.getElementById('vehicleForm').reset();
+  try {
+    await db.collection('vehicles').add(formData);
+    alert("✅ Vehicle with multiple images uploaded successfully!");
+    document.getElementById('vehicleForm').reset();
+  } catch (error) {
+    console.error("Upload failed:", error);
+    alert("❌ Upload failed. Check console.");
+  }
 });
 </script>
 
