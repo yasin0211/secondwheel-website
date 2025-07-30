@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Second Wheel Admin Panel</title>
+  <title>Second Wheel Admin Panel (Debug Mode)</title>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
@@ -23,7 +23,7 @@
 </head>
 <body>
 
-<h2>Upload Vehicle (Admin Panel)</h2>
+<h2>Upload Vehicle (Debug Mode)</h2>
 
 <form id="vehicleForm">
   <label>Vehicle Images (Multiple)</label>
@@ -109,12 +109,12 @@
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyB9oWFJalJtYdWdsVdZvUzteUbFbXh7gcg",
+  apiKey: "AIzaSyB9oWFJalJtYdWdsVdVzufEuBtXEeouU0dQ",
   authDomain: "second-wheel-81373.firebaseapp.com",
   projectId: "second-wheel-81373",
   storageBucket: "second-wheel-81373.appspot.com",
   messagingSenderId: "927066104290",
-  appId: "1:927066104290:web:1fb76d73d76d3cafff59bb",
+  appId: "1:927066104290:web:1fb76d73d76d3caf6f59bb",
   measurementId: "G-HNQP7KJ54Y"
 };
 
@@ -124,10 +124,14 @@ const db = firebase.firestore();
 
 document.getElementById('vehicleForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  alert("Uploading started...");
+  alert("🚀 Upload started...");
+  console.log("Starting vehicle upload...");
 
   const files = document.getElementById('images').files;
-  if (!files.length) return alert("Please select at least one image.");
+  if (!files.length) {
+    alert("❌ Please select at least one image.");
+    return;
+  }
 
   const formData = {
     category: document.getElementById('category').value,
@@ -148,24 +152,29 @@ document.getElementById('vehicleForm').addEventListener('submit', async (e) => {
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   };
 
+  console.log("Form Data:", formData);
+
   const imageUrls = [];
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const storageRef = storage.ref('vehicles/' + Date.now() + '-' + file.name);
+    console.log("Uploading image:", file.name);
     await storageRef.put(file);
     const downloadURL = await storageRef.getDownloadURL();
+    console.log("Image URL:", downloadURL);
     imageUrls.push(downloadURL);
   }
 
   formData.images = imageUrls;
 
   try {
-    await db.collection('vehicles').add(formData);
-    alert("✅ Vehicle with multiple images uploaded successfully!");
+    const ref = await db.collection('vehicles').add(formData);
+    console.log("Firestore Document ID:", ref.id);
+    alert("✅ Vehicle uploaded successfully!");
     document.getElementById('vehicleForm').reset();
   } catch (error) {
-    console.error("Upload failed:", error);
-    alert("❌ Upload failed. Check console.");
+    console.error("❌ Upload failed:", error);
+    alert("❌ Upload failed: " + error.message);
   }
 });
 </script>
