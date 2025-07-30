@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>Upload Vehicle - Multiple Images</title>
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <style>
     body { font-family: Arial; padding: 20px; background: #f9f9f9; }
     input, select, textarea { margin-bottom: 10px; width: 100%; padding: 8px; }
@@ -11,7 +10,7 @@
   </style>
 </head>
 <body>
-  <h2>Vehicle Upload Form (Supabase)</h2>
+  <h2>🚗 Vehicle Upload Form (Supabase)</h2>
 
   <form id="vehicleForm">
     <select name="category" required>
@@ -33,16 +32,20 @@
       <option>Yes</option>
       <option>No</option>
     </select>
+
     <input type="file" id="imageInput" accept="image/*" multiple required />
     <div id="previewContainer"></div>
+
     <textarea name="description" placeholder="Description (Optional)"></textarea>
     <button type="submit" id="submitBtn">Upload</button>
   </form>
 
-  <script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
     const supabaseUrl = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     const form = document.getElementById('vehicleForm');
     const imageInput = document.getElementById('imageInput');
@@ -67,19 +70,17 @@
         if (error) {
           alert('❌ Upload failed: ' + error.message);
         } else {
-          const { data: urlData } = supabase.storage.from('vehicals').getPublicUrl(filePath);
-          imageUrls.push(urlData.publicUrl);
+          const { data } = supabase.storage.from('vehicals').getPublicUrl(filePath);
+          imageUrls.push(data.publicUrl);
         }
       }
-
-      console.log("✅ Uploaded image URLs:", imageUrls);
     });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       if (imageUrls.length === 0) {
-        alert('Please upload images first.');
+        alert('📸 Please upload at least one image.');
         return;
       }
 
@@ -99,7 +100,7 @@
         ownership: formData.get('ownership'),
         rc: formData.get('rc'),
         image_urls: imageUrls,
-        description: formData.get('description'),
+        description: formData.get('description')
       };
 
       const { error } = await supabase.from('vehicles').insert([record]);
@@ -107,9 +108,9 @@
       if (error) {
         alert('❌ Failed to upload: ' + error.message);
       } else {
-        alert('✅ Uploaded successfully!');
+        alert('✅ Vehicle uploaded successfully!');
         form.reset();
-        previewContainer.innerHTML = '';
+        previewContainer.innerHTML = "";
         imageUrls = [];
       }
 
