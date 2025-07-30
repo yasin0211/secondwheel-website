@@ -65,7 +65,7 @@
       const file = imageInput.files[0];
       const fileName = `${Date.now()}_${file.name}`;
       const { data: imgData, error: imgErr } = await supabase.storage
-        .from('vehicle-images')
+        .from('vehicles')
         .upload(fileName, file);
 
       if (imgErr) return alert('Image upload failed.');
