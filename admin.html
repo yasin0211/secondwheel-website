@@ -7,37 +7,17 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      padding: 20px;
-    }
-    h2 {
-      color: #222;
-    }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+    h2 { color: #222; }
     form {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 600px;
-      margin: auto;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      background: #fff; padding: 20px; border-radius: 10px;
+      max-width: 600px; margin: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-    }
-    label {
-      font-weight: bold;
-    }
+    input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; }
+    label { font-weight: bold; }
     button {
-      padding: 10px 20px;
-      background: #e25a00;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      padding: 10px 20px; background: #e25a00; color: white;
+      border: none; border-radius: 5px; cursor: pointer;
     }
   </style>
 </head>
@@ -48,6 +28,13 @@
 <form id="vehicleForm">
   <label>Vehicle Images (Multiple)</label>
   <input type="file" id="images" accept="image/*" multiple required />
+
+  <label>Category</label>
+  <select id="category">
+    <option value="Car">Car</option>
+    <option value="Bike">Bike</option>
+    <option value="Scooter">Scooter</option>
+  </select>
 
   <label>Brand</label>
   <input type="text" id="brand" required />
@@ -137,11 +124,11 @@ const db = firebase.firestore();
 
 document.getElementById('vehicleForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-
   const files = document.getElementById('images').files;
   if (!files.length) return alert("Please select at least one image.");
 
   const formData = {
+    category: document.getElementById('category').value,
     brand: document.getElementById('brand').value,
     model: document.getElementById('model').value,
     year: document.getElementById('year').value,
@@ -172,7 +159,7 @@ document.getElementById('vehicleForm').addEventListener('submit', async (e) => {
 
   await db.collection('vehicles').add(formData);
 
-  alert("Vehicle with multiple images uploaded successfully!");
+  alert("✅ Vehicle with multiple images uploaded successfully!");
   document.getElementById('vehicleForm').reset();
 });
 </script>
