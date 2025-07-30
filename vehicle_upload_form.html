@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vehicle Upload Form</title>
+  <meta charset="UTF-8" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f4f4f4; }
+    form { background: white; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; }
+    label { display: block; margin-top: 10px; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; }
+    img { margin-top: 10px; max-width: 100%; height: auto; border: 1px solid #ccc; }
+    button { margin-top: 20px; padding: 10px 15px; background: green; color: white; border: none; border-radius: 5px; }
+  </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Vehicle Upload Form (Supabase)</h2>
+<form id="vehicleForm">
+  <label>Category</label>
+  <select name="category" required>
+    <option value="">Select</option>
+    <option>Car</option>
+    <option>Bike</option>
+    <option>Scooter</option>
+  </select>
+
+  <label>Brand</label><input type="text" name="brand" required>
+  <label>Model</label><input type="text" name="model" required>
+  <label>Year</label><input type="number" name="year" required>
+  <label>Price</label><input type="number" name="price" required>
+  <label>KM Driven</label><input type="number" name="km" required>
+  <label>City</label><input type="text" name="city" required>
+  <label>Fuel Type</label>
+  <select name="fuel" required>
+    <option>Petrol</option>
+    <option>Diesel</option>
+    <option>CNG</option>
+    <option>Electric</option>
+  </select>
+  <label>Condition</label>
+  <select name="condition">
+    <option>Excellent</option>
+    <option>Good</option>
+    <option>Average</option>
+    <option>Below Average</option>
+  </select>
+  <label>Ownership</label>
+  <select name="ownership">
+    <option>1</option><option>2</option><option>3</option><option>4</option><option>5+</option>
+  </select>
+  <label>RC Available</label>
+  <select name="rc">
+    <option>Yes</option><option>No</option>
+  </select>
+  <label>PUC Available</label>
+  <select name="puc">
+    <option>Yes</option><option>No</option>
+  </select>
+  <label>Fitness Valid</label>
+  <select name="fitness">
+    <option>Yes</option><option>No</option>
+  </select>
+
+  <label>Description</label>
+  <textarea name="description" rows="3"></textarea>
+
+  <label>Vehicle Image</label>
+  <input type="file" accept="image/*" id="imageUpload" required />
+  <img id="preview" src="#" alt="Image preview..." style="display:none;"/>
+
+  <button type="submit">Upload</button>
+</form>
+
+<script>
+  const supabase = supabase.createClient(
+    "https://wbjwvxckbfkutqqbgupq.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw"
+  );
+
+  const form = document.getElementById('vehicleForm');
+  const imageUpload = document.getElementById('imageUpload');
+  const preview = document.getElementById('preview');
+
+  imageUpload.onchange = evt => {
+    const [file] = imageUpload.files;
+    if (file) {
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
+    }
+  };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    // Upload image to Supabase Storage
+    const imageFile = imageUpload.files[0];
+    const fileName = `${Date.now()}_${imageFile.name}`;
+    const { data: storageData, error: storageError } = await supabase.storage
+      .from("vehicle-images")
+      .upload(fileName, imageFile);
+
+    if (storageError) {
+      alert("Image upload failed!");
+      console.error(storageError);
+      return;
+    }
+
+    const imageUrl = `https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicle-images/${fileName}`;
+
+    const { error } = await supabase.from("vehicles").insert([{ ...data, image_url: imageUrl }]);
+
+    if (error) {
+      alert("Data upload failed!");
+      console.error(error);
+    } else {
+      alert("Vehicle uploaded successfully!");
+      form.reset();
+      preview.src = "#";
+      preview.style.display = "none";
+    }
+  });
+</script>
+
+</body>
+</html>
