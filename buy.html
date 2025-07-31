@@ -3,14 +3,8 @@
 <head>
   <title>Buy Vehicles - Gallery</title>
   <style>
-    body {
-      font-family: Arial;
-      padding: 20px;
-      background: #eee;
-    }
-    h2 {
-      text-align: center;
-    }
+    body { font-family: Arial; padding: 20px; background: #eee; }
+    h2 { text-align: center; }
     .card {
       border: 1px solid #ccc;
       padding: 10px;
@@ -34,44 +28,45 @@
   <div id="gallery">Loading...</div>
 
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    (async () => {
+      const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
+      const supabase = createClient(
+        'https://wbjwvxckbfkutqqbgupq.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
+      );
 
-    const supabaseUrl = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-    const supabase = createClient(supabaseUrl, supabaseKey);
+      const gallery = document.getElementById("gallery");
+      const { data, error } = await supabase
+        .from('vehicles')
+        .select('*')
+        .order('id', { ascending: false });
 
-    const gallery = document.getElementById("gallery");
+      if (error) {
+        gallery.innerHTML = "<p>❌ Error loading gallery</p>";
+        console.error("Supabase error:", error);
+      } else {
+        gallery.innerHTML = "";
+        data.forEach(vehicle => {
+          const card = document.createElement("div");
+          card.className = "card";
 
-    const { data, error } = await supabase
-      .from('vehicles')
-      .select('*')
-      .order('id', { ascending: false });
+          const img = document.createElement("img");
+          img.src = vehicle.image_urls?.[0] || "";
+          img.alt = vehicle.model || "Vehicle Image";
 
-    if (error) {
-      gallery.innerHTML = "<p>❌ Error loading gallery</p>";
-      console.error("Supabase error:", error);
-    } else {
-      gallery.innerHTML = "";
-      data.forEach(vehicle => {
-        const card = document.createElement("div");
-        card.className = "card";
+          const info = document.createElement("div");
+          info.innerHTML = `
+            <strong>${vehicle.brand} ${vehicle.model}</strong><br/>
+            ₹${vehicle.price} - ${vehicle.city}<br/>
+            ${vehicle.year} • ${vehicle.fuel} • ${vehicle.condition}
+          `;
 
-        const img = document.createElement("img");
-        img.src = vehicle.image_urls?.[0] || "";
-        img.alt = vehicle.model || "Vehicle Image";
-
-        const info = document.createElement("div");
-        info.innerHTML = `
-          <strong>${vehicle.brand} ${vehicle.model}</strong><br/>
-          ₹${vehicle.price} - ${vehicle.city}<br/>
-          ${vehicle.year} • ${vehicle.fuel} • ${vehicle.condition}
-        `;
-
-        card.appendChild(img);
-        card.appendChild(info);
-        gallery.appendChild(card);
-      });
-    }
+          card.appendChild(img);
+          card.appendChild(info);
+          gallery.appendChild(card);
+        });
+      }
+    })();
   </script>
 </body>
 </html>
