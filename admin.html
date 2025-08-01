@@ -47,17 +47,17 @@
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const fileName = Date.now() + "_" + file.name;
-
-        const { data, error } = await supabase.storage.from('vehicals').upload(fileName, file);
+        const uniqueName = `vehicle_${Date.now()}_${Math.floor(Math.random()*1000)}_${file.name}`;
+        const { data, error } = await supabase.storage.from('vehicals').upload(uniqueName, file);
 
         if (error) {
           alert("Image upload failed: " + error.message);
+          console.error(error);
           return;
         }
 
-        const imageUrl = `https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/${fileName}`;
-        uploadedUrls.push(imageUrl);
+        const publicUrl = `https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/${uniqueName}`;
+        uploadedUrls.push(publicUrl);
       }
 
       const { error: insertError } = await supabase
