@@ -1,153 +1,116 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Vehicle Upload - Second Wheel</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>Second Wheel – Admin Upload</title>
   <style>
-    body { font-family: Arial; padding: 20px; background: #f5f5f5; }
-    form { background: white; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; }
-    input, select, textarea { width: 100%; padding: 10px; margin: 8px 0; }
-    button { padding: 10px 20px; background: #e25a00; color: white; border: none; border-radius: 5px; }
-    img { max-width: 100%; margin-top: 10px; border-radius: 10px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 20px;
+    }
+    .form-container {
+      background: white;
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    h2 { text-align: center; color: #444; }
+    label { display: block; margin-top: 12px; font-weight: bold; }
+    select, textarea, input[type="file"], button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      background: #ff8800;
+      color: white;
+      font-weight: bold;
+      border: none;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    .success {
+      color: green;
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
+  <div class="form-container">
+    <h2>Admin Vehicle Upload</h2>
+    <label>Category</label>
+    <select id="category" required>
+      <option value="">Select Category</option>
+      <option value="Car">Car</option>
+      <option value="Bike">Bike</option>
+      <option value="Scooter">Scooter</option>
+      <option value="EV">EV</option>
+    </select>
 
-<h2>Upload Vehicle Details</h2>
-<form id="vehicleForm">
-  <input type="file" id="image" required />
-  <img id="preview" style="display:none"/>
+    <label>Description</label>
+    <textarea id="description" rows="4" placeholder="e.g. Swift 2015, MH12, 2nd Owner, ₹2.45L, Insurance Valid" required></textarea>
 
-  <select id="category" required>
-    <option value="">Select Category</option>
-    <option value="Car">Car</option>
-    <option value="Bike">Bike</option>
-    <option value="Scooter">Scooter</option>
-  </select>
+    <label>Vehicle Image</label>
+    <input type="file" id="image" accept="image/*" required />
 
-  <input type="text" id="brand" placeholder="Brand" required />
-  <input type="text" id="model" placeholder="Model" required />
-  <input type="number" id="year" placeholder="Year" required />
-  <input type="number" id="price" placeholder="Price (₹)" required />
-  <input type="number" id="km" placeholder="Kilometers Driven" required />
-  <input type="text" id="city" placeholder="City" required />
+    <button onclick="uploadVehicle()">Upload</button>
+    <div class="success" id="successMsg"></div>
+  </div>
 
-  <select id="fuel" required>
-    <option value="">Select Fuel</option>
-    <option value="Petrol">Petrol</option>
-    <option value="Diesel">Diesel</option>
-    <option value="CNG">CNG</option>
-    <option value="Electric">Electric</option>
-  </select>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-  <select id="condition" required>
-    <option value="">Select Condition</option>
-    <option value="Excellent">Excellent</option>
-    <option value="Good">Good</option>
-    <option value="Average">Average</option>
-    <option value="Below Average">Below Average</option>
-  </select>
+    const supabaseUrl = 'https://wbjwvxckbfkutqqbgupq.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
+    const supabase = createClient(supabaseUrl, supabaseKey)
 
-  <select id="ownership" required>
-    <option value="">Select Ownership</option>
-    <option value="1">1st</option>
-    <option value="2">2nd</option>
-    <option value="3">3rd</option>
-    <option value="4">4th</option>
-    <option value="5+">5+</option>
-  </select>
+    async function uploadVehicle() {
+      const category = document.getElementById('category').value
+      const description = document.getElementById('description').value
+      const imageFile = document.getElementById('image').files[0]
+      const successMsg = document.getElementById('successMsg')
+      successMsg.textContent = ''
 
-  <select id="rc" required>
-    <option value="">RC Available?</option>
-    <option value="Yes">Yes</option>
-    <option value="No">No</option>
-  </select>
+      if (!category || !description || !imageFile) {
+        alert('Please fill all fields and select an image.')
+        return
+      }
 
-  <select id="puc" required>
-    <option value="">PUC Available?</option>
-    <option value="Yes">Yes</option>
-    <option value="No">No</option>
-  </select>
+      const fileName = `vehicle-${Date.now()}-${imageFile.name}`
+      const { data: uploadData, error: uploadError } = await supabase
+        .storage.from('vehicals')
+        .upload(fileName, imageFile)
 
-  <select id="fitness" required>
-    <option value="">Fitness Valid?</option>
-    <option value="Yes">Yes</option>
-    <option value="No">No</option>
-  </select>
+      if (uploadError) {
+        console.error('Upload error:', uploadError)
+        alert('Image upload failed.')
+        return
+      }
 
-  <input type="text" id="rto" placeholder="RTO Code (e.g., MH12)" required />
-  <textarea id="description" placeholder="Description (optional)"></textarea>
+      const imageUrl = `${supabaseUrl}/storage/v1/object/public/vehicals/${fileName}`
 
-  <button type="submit">Submit</button>
-</form>
+      const { data: insertData, error: insertError } = await supabase
+        .from('vehicles')
+        .insert([{ category, description, image_url: imageUrl }])
 
-<script>
-const supabase = supabase.createClient(
-  'https://wbjwvxckbfkutqqbgupq.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
-);
+      if (insertError) {
+        console.error('Insert error:', insertError)
+        alert('Failed to save vehicle data.')
+        return
+      }
 
-// Image preview
-document.getElementById("image").addEventListener("change", function(e) {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      const img = document.getElementById("preview");
-      img.src = event.target.result;
-      img.style.display = "block";
-    };
-    reader.readAsDataURL(file);
-  }
-});
-
-document.getElementById("vehicleForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
-  const file = document.getElementById("image").files[0];
-  const filePath = `${Date.now()}_${file.name}`;
-
-  // 1. Upload to Supabase Storage
-  const { data: imgData, error: imgErr } = await supabase.storage
-    .from("vehicals")
-    .upload(filePath, file);
-
-  if (imgErr) {
-    alert("Image upload failed!");
-    return;
-  }
-
-  const { data: publicUrl } = supabase.storage
-    .from("vehicals")
-    .getPublicUrl(filePath);
-
-  // 2. Insert into Supabase Database
-  const { error } = await supabase.from("vehicles").insert([{
-    category: document.getElementById("category").value,
-    brand: document.getElementById("brand").value,
-    model: document.getElementById("model").value,
-    year: parseInt(document.getElementById("year").value),
-    price: parseInt(document.getElementById("price").value),
-    km: parseInt(document.getElementById("km").value),
-    city: document.getElementById("city").value,
-    fuel: document.getElementById("fuel").value,
-    condition: document.getElementById("condition").value,
-    ownership: document.getElementById("ownership").value,
-    rc: document.getElementById("rc").value,
-    puc: document.getElementById("puc").value,
-    fitness: document.getElementById("fitness").value,
-    rto: document.getElementById("rto").value,
-    description: document.getElementById("description").value,
-    image_url: publicUrl.publicUrl
-  }]);
-
-  if (error) {
-    alert("Insert failed: " + error.message);
-  } else {
-    alert("Vehicle uploaded successfully!");
-    document.getElementById("vehicleForm").reset();
-    document.getElementById("preview").style.display = "none";
-  }
-});
-</script>
+      successMsg.textContent = '✅ Vehicle uploaded successfully!'
+      document.getElementById('category').value = ''
+      document.getElementById('description').value = ''
+      document.getElementById('image').value = ''
+    }
+  </script>
 </body>
 </html>
