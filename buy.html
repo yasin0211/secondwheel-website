@@ -30,42 +30,48 @@
   <script type="module">
     (async () => {
       const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
+
       const supabase = createClient(
         'https://wbjwvxckbfkutqqbgupq.supabase.co',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
       );
 
       const gallery = document.getElementById("gallery");
-      const { data, error } = await supabase
-        .from('vehicles')
-        .select('*')
-        .order('id', { ascending: false });
+
+      // 1. Get image list from 'vehicals' storage bucket
+      const { data, error } = await supabase.storage.from('vehicals').list('', {
+        limit: 100,
+        sortBy: { column: 'created_at', order: 'desc' }
+      });
 
       if (error) {
-        gallery.innerHTML = "<p>❌ Error loading gallery</p>";
-        console.error("Supabase error:", error);
-      } else {
-        gallery.innerHTML = "";
-        data.forEach(vehicle => {
-          const card = document.createElement("div");
-          card.className = "card";
-
-          const img = document.createElement("img");
-          img.src = vehicle.image_urls?.[0] || "";
-          img.alt = vehicle.model || "Vehicle Image";
-
-          const info = document.createElement("div");
-          info.innerHTML = `
-            <strong>${vehicle.brand} ${vehicle.model}</strong><br/>
-            ₹${vehicle.price} - ${vehicle.city}<br/>
-            ${vehicle.year} • ${vehicle.fuel} • ${vehicle.condition}
-          `;
-
-          card.appendChild(img);
-          card.appendChild(info);
-          gallery.appendChild(card);
-        });
+        console.error("Error loading storage:", error);
+        gallery.innerHTML = "<p>❌ Failed to load gallery</p>";
+        return;
       }
+
+      gallery.innerHTML = "";
+
+      data.forEach(file => {
+        const publicUrl = `https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/${file.name}`;
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const img = document.createElement("img");
+        img.src = publicUrl;
+        img.alt = file.name;
+
+        const info = document.createElement("div");
+        info.innerHTML = `
+          <strong>${file.name}</strong><br/>
+          (image only - full data fetch yet to be added)
+        `;
+
+        card.appendChild(img);
+        card.appendChild(info);
+        gallery.appendChild(card);
+      });
     })();
   </script>
 </body>
