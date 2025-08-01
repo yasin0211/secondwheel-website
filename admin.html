@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -60,7 +61,7 @@
     <label>Vehicle Image</label>
     <input type="file" id="image" accept="image/*" required />
 
-    <button onclick="uploadVehicle()">Upload</button>
+    <button id="uploadBtn">Upload</button>
     <div class="success" id="successMsg"></div>
   </div>
 
@@ -70,6 +71,8 @@
     const supabaseUrl = 'https://wbjwvxckbfkutqqbgupq.supabase.co'
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
     const supabase = createClient(supabaseUrl, supabaseKey)
+
+    document.getElementById('uploadBtn').addEventListener('click', uploadVehicle)
 
     async function uploadVehicle() {
       const category = document.getElementById('category').value
@@ -84,25 +87,25 @@
       }
 
       const fileName = `vehicle-${Date.now()}-${imageFile.name}`
-      const { data: uploadData, error: uploadError } = await supabase
+      const { error: uploadError } = await supabase
         .storage.from('vehicals')
         .upload(fileName, imageFile)
 
       if (uploadError) {
-        console.error('Upload error:', uploadError)
-        alert('Image upload failed.')
+        alert('❌ Image upload failed.')
+        console.error(uploadError)
         return
       }
 
       const imageUrl = `${supabaseUrl}/storage/v1/object/public/vehicals/${fileName}`
 
-      const { data: insertData, error: insertError } = await supabase
+      const { error: insertError } = await supabase
         .from('vehicles')
         .insert([{ category, description, image_url: imageUrl }])
 
       if (insertError) {
-        console.error('Insert error:', insertError)
-        alert('Failed to save vehicle data.')
+        alert('❌ Failed to save vehicle data.')
+        console.error(insertError)
         return
       }
 
