@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Vehicle Upload (Multiple Images)</title>
+  <title>Admin Vehicle Upload (with Featured)</title>
 </head>
 <body>
   <h2>Admin Vehicle Upload</h2>
@@ -21,6 +21,8 @@
     <label for="vehicleImage">Vehicle Images:</label><br />
     <input type="file" id="vehicleImage" accept="image/*" multiple required/><br /><br />
 
+    <label><input type="checkbox" id="featured" /> Mark as Featured</label><br /><br />
+
     <button type="submit">Upload</button>
   </form>
 
@@ -36,6 +38,7 @@
 
       const category = document.getElementById('category').value;
       const description = document.getElementById('description').value;
+      const featured = document.getElementById('featured').checked;
       const files = document.getElementById('vehicleImage').files;
 
       if (!files.length) {
@@ -66,7 +69,8 @@
           {
             category: category,
             description: description,
-            image_urls: uploadedUrls, // insert as text[] array
+            image_urls: uploadedUrls,
+            featured: featured,
             created_at: new Date().toISOString()
           }
         ]);
