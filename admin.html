@@ -1,121 +1,84 @@
-<!DOCTYPE html><html lang="en">
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Vehicle Upload</title>
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-    input, textarea, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      margin-bottom: 10px;
-    }
-    button {
-      background-color: orange;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      cursor: pointer;
-    }
-    .preview-imgs img {
-      width: 100px;
-      margin: 5px;
-      border-radius: 8px;
-    }
-  </style>
 </head>
 <body>
-  <h2>Admin Vehicle Upload</h2>  <form id="uploadForm">
-    <label for="category">Category:</label>
-    <select id="category">
+  <h2>Admin Vehicle Upload</h2>
+  <form id="uploadForm">
+    <label for="category">Category:</label><br />
+    <select id="category" required>
       <option value="Car">Car</option>
       <option value="Bike">Bike</option>
-    </select><label for="description">Description:</label>
-<textarea id="description" rows="4"></textarea>
+    </select><br /><br />
 
-<label for="vehicleImage">Vehicle Images:</label>
-<input type="file" id="vehicleImage" accept="image/*" multiple />
+    <label for="description">Description:</label><br />
+    <textarea id="description" required></textarea><br /><br />
 
-<div class="preview-imgs" id="preview"></div>
+    <label for="vehicleImage">Vehicle Image(s):</label><br />
+    <input type="file" id="vehicleImage" accept="image/*" multiple required/><br /><br />
 
-<button type="button" onclick="uploadVehicle()">Upload</button>
+    <button type="submit">Upload</button>
+  </form>
 
-  </form>  <script>
-    const supabase = supabase.createClient(
-      "https://wbjwvxckbfkutqqbgupq.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw"
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabase = window.supabase.createClient(
+      'https://wbjwvxckbfkutqqbgupq.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
     );
 
-    // Preview multiple images
-    document.getElementById("vehicleImage").addEventListener("change", function () {
-      const preview = document.getElementById("preview");
-      preview.innerHTML = "";
-      for (const file of this.files) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const img = document.createElement("img");
-          img.src = e.target.result;
-          preview.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+    document.getElementById('uploadForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
 
-    async function uploadVehicle() {
-      const category = document.getElementById("category").value;
-      const description = document.getElementById("description").value;
-      const files = document.getElementById("vehicleImage").files;
+      const category = document.getElementById('category').value;
+      const description = document.getElementById('description').value;
+      const files = document.getElementById('vehicleImage').files;
 
-      if (files.length === 0) {
-        alert("कृपया एक तरी image निवडा.");
+      if (!files.length) {
+        alert("Please select at least one image.");
         return;
       }
 
-      let imageUrls = [];
+      const uploadedUrls = [];
+
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const filePath = `vehicle_${Date.now()}_${file.name}`;
-        const { data, error } = await supabase.storage.from("vehicles").upload(filePath, file);
+        const fileName = Date.now() + "_" + file.name;
+
+        const { data, error } = await supabase.storage.from('vehicals').upload(fileName, file);
 
         if (error) {
-          alert("Image upload मध्ये त्रुटी: " + error.message);
+          alert("Image upload failed: " + error.message);
           return;
         }
 
-        const { data: publicUrlData } = supabase.storage.from("vehicles").getPublicUrl(filePath);
-        imageUrls.push(publicUrlData.publicUrl);
+        const imageUrl = `https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/${fileName}`;
+        uploadedUrls.push(imageUrl);
       }
 
-      const mainImage = imageUrls[0]; // Keep only the first for now
-
-      const { error: insertError } = await supabase.from("vehicles").insert([
-        {
-          category: category,
-          description: description,
-          image_url: mainImage,
-          created_at: new Date().toISOString()
-        }
-      ]);
+      const { error: insertError } = await supabase
+        .from('vehicles')
+        .insert([
+          {
+            category: category,
+            description: description,
+            image_url: uploadedUrls[0] || '',
+            created_at: new Date().toISOString()
+          }
+        ]);
 
       if (insertError) {
         alert("❌ Failed to save vehicle data.");
         console.error(insertError);
       } else {
         alert("✅ Vehicle uploaded successfully!");
-        document.getElementById("uploadForm").reset();
-        document.getElementById("preview").innerHTML = "";
+        document.getElementById('uploadForm').reset();
       }
-    }
-  </script></body>
+    });
+  </script>
+</body>
 </html>
