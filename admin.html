@@ -1,119 +1,121 @@
-
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html lang="en">
 <head>
-  <title>Second Wheel – Admin Upload</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Vehicle Upload</title>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f0f0;
       padding: 20px;
-    }
-    .form-container {
-      background: white;
-      max-width: 400px;
+      max-width: 600px;
       margin: auto;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.1);
     }
-    h2 { text-align: center; color: #444; }
-    label { display: block; margin-top: 12px; font-weight: bold; }
-    select, textarea, input[type="file"], button {
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, textarea, select {
       width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 10px;
     }
     button {
-      background: #ff8800;
+      background-color: orange;
       color: white;
-      font-weight: bold;
+      padding: 10px 20px;
       border: none;
-      margin-top: 20px;
       cursor: pointer;
     }
-    .success {
-      color: green;
-      text-align: center;
-      margin-top: 15px;
-      font-weight: bold;
+    .preview-imgs img {
+      width: 100px;
+      margin: 5px;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
-  <div class="form-container">
-    <h2>Admin Vehicle Upload</h2>
-    <label>Category</label>
-    <select id="category" required>
-      <option value="">Select Category</option>
+  <h2>Admin Vehicle Upload</h2>  <form id="uploadForm">
+    <label for="category">Category:</label>
+    <select id="category">
       <option value="Car">Car</option>
       <option value="Bike">Bike</option>
-      <option value="Scooter">Scooter</option>
-      <option value="EV">EV</option>
-    </select>
+    </select><label for="description">Description:</label>
+<textarea id="description" rows="4"></textarea>
 
-    <label>Description</label>
-    <textarea id="description" rows="4" placeholder="e.g. Swift 2015, MH12, 2nd Owner, ₹2.45L, Insurance Valid" required></textarea>
+<label for="vehicleImage">Vehicle Images:</label>
+<input type="file" id="vehicleImage" accept="image/*" multiple />
 
-    <label>Vehicle Image</label>
-    <input type="file" id="image" accept="image/*" required />
+<div class="preview-imgs" id="preview"></div>
 
-    <button id="uploadBtn">Upload</button>
-    <div class="success" id="successMsg"></div>
-  </div>
+<button type="button" onclick="uploadVehicle()">Upload</button>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+  </form>  <script>
+    const supabase = supabase.createClient(
+      "https://wbjwvxckbfkutqqbgupq.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw"
+    );
 
-    const supabaseUrl = 'https://wbjwvxckbfkutqqbgupq.supabase.co'
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
-    const supabase = createClient(supabaseUrl, supabaseKey)
-
-    document.getElementById('uploadBtn').addEventListener('click', uploadVehicle)
+    // Preview multiple images
+    document.getElementById("vehicleImage").addEventListener("change", function () {
+      const preview = document.getElementById("preview");
+      preview.innerHTML = "";
+      for (const file of this.files) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
 
     async function uploadVehicle() {
-      const category = document.getElementById('category').value
-      const description = document.getElementById('description').value
-      const imageFile = document.getElementById('image').files[0]
-      const successMsg = document.getElementById('successMsg')
-      successMsg.textContent = ''
+      const category = document.getElementById("category").value;
+      const description = document.getElementById("description").value;
+      const files = document.getElementById("vehicleImage").files;
 
-      if (!category || !description || !imageFile) {
-        alert('Please fill all fields and select an image.')
-        return
+      if (files.length === 0) {
+        alert("कृपया एक तरी image निवडा.");
+        return;
       }
 
-      const fileName = `vehicle-${Date.now()}-${imageFile.name}`
-      const { error: uploadError } = await supabase
-        .storage.from('vehicals')
-        .upload(fileName, imageFile)
+      let imageUrls = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const filePath = `vehicle_${Date.now()}_${file.name}`;
+        const { data, error } = await supabase.storage.from("vehicles").upload(filePath, file);
 
-      if (uploadError) {
-        alert('❌ Image upload failed.')
-        console.error(uploadError)
-        return
+        if (error) {
+          alert("Image upload मध्ये त्रुटी: " + error.message);
+          return;
+        }
+
+        const { data: publicUrlData } = supabase.storage.from("vehicles").getPublicUrl(filePath);
+        imageUrls.push(publicUrlData.publicUrl);
       }
 
-      const imageUrl = `${supabaseUrl}/storage/v1/object/public/vehicals/${fileName}`
+      const mainImage = imageUrls[0]; // Keep only the first for now
 
-      const { error: insertError } = await supabase
-        .from('vehicles')
-        .insert([{ category, description, image_url: imageUrl }])
+      const { error: insertError } = await supabase.from("vehicles").insert([
+        {
+          category: category,
+          description: description,
+          image_url: mainImage,
+          created_at: new Date().toISOString()
+        }
+      ]);
 
       if (insertError) {
-        alert('❌ Failed to save vehicle data.')
-        console.error(insertError)
-        return
+        alert("❌ Failed to save vehicle data.");
+        console.error(insertError);
+      } else {
+        alert("✅ Vehicle uploaded successfully!");
+        document.getElementById("uploadForm").reset();
+        document.getElementById("preview").innerHTML = "";
       }
-
-      successMsg.textContent = '✅ Vehicle uploaded successfully!'
-      document.getElementById('category').value = ''
-      document.getElementById('description').value = ''
-      document.getElementById('image').value = ''
     }
-  </script>
-</body>
+  </script></body>
 </html>
