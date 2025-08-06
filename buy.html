@@ -64,7 +64,7 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    /* Popup */
+    /* Popup Slider */
     .popup {
       display: none;
       position: fixed;
@@ -83,13 +83,13 @@
       border-radius: 8px;
       max-width: 90%;
       max-height: 90%;
-      overflow: auto;
+      overflow: hidden;
+      position: relative;
       text-align: center;
     }
     .popup-content img {
       max-width: 100%;
       max-height: 400px;
-      margin-bottom: 10px;
     }
     .close-btn {
       background: red;
@@ -97,17 +97,34 @@
       border: none;
       padding: 6px 10px;
       border-radius: 4px;
-      float: right;
+      position: absolute;
+      top: 10px;
+      right: 10px;
       cursor: pointer;
     }
+    .nav-btn {
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      font-size: 24px;
+      padding: 10px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+    .prev-btn { left: 10px; }
+    .next-btn { right: 10px; }
   </style>
 </head>
 <body>
-  <h2>Buy Used Cars</h2>
-  <div class="gallery" id="gallery"></div>  <!-- Popup -->  <div class="popup" id="popup">
-    <div class="popup-content" id="popupContent">
-      <button class="close-btn" onclick="closePopup()">Close</button>
-      <div id="popupImages"></div>
+  <h2>Buy Used Bikes</h2>
+  <div class="gallery" id="gallery"></div>  <!-- Popup with Slider -->  <div class="popup" id="popup">
+    <div class="popup-content">
+      <button class="close-btn" onclick="closePopup()">×</button>
+      <button class="nav-btn prev-btn" onclick="prevImage()">←</button>
+      <img id="sliderImage" src="" alt="Slider Image" />
+      <button class="nav-btn next-btn" onclick="nextImage()">→</button>
     </div>
   </div>  <script>
     const supabase = supabase.createClient(
@@ -115,10 +132,14 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
     );
 
+    let currentImages = [];
+    let currentIndex = 0;
+
     async function loadVehicles() {
       const { data, error } = await supabase
         .from('vehicles')
         .select('*')
+        .eq('category', 'bike')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -151,22 +172,31 @@
           </div>
         `;
 
-        // Open popup on card click
         card.addEventListener('click', () => showPopup(images));
         gallery.appendChild(card);
       });
     }
 
     function showPopup(images) {
-      const popup = document.getElementById('popup');
-      const popupImages = document.getElementById('popupImages');
-      popupImages.innerHTML = '';
-      images.forEach(url => {
-        const img = document.createElement('img');
-        img.src = url;
-        popupImages.appendChild(img);
-      });
-      popup.style.display = 'flex';
+      currentImages = images;
+      currentIndex = 0;
+      updateSlider();
+      document.getElementById('popup').style.display = 'flex';
+    }
+
+    function updateSlider() {
+      const sliderImage = document.getElementById('sliderImage');
+      sliderImage.src = currentImages[currentIndex];
+    }
+
+    function nextImage() {
+      currentIndex = (currentIndex + 1) % currentImages.length;
+      updateSlider();
+    }
+
+    function prevImage() {
+      currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+      updateSlider();
     }
 
     function closePopup() {
