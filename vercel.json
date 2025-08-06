@@ -5,7 +5,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src * 'self' data: blob:; connect-src * 'self' https://ph.supabase.co https://*.supabase.co"
+          "value": "default-src 'self' data: blob:; connect-src *; script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.vercel.app https://*.cloudflare.com; img-src 'self' data: https: blob:; style-src 'self' 'unsafe-inline';"
         }
       ]
     }
