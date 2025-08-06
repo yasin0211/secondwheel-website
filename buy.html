@@ -1,78 +1,114 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html lang="en">
 <head>
-  <title>Buy Vehicles - Gallery</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OLX Style Gallery - Supabase</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
-    body { font-family: Arial; padding: 20px; background: #eee; }
-    h2 { text-align: center; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
     .card {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin: 10px;
-      width: 240px;
-      display: inline-block;
-      vertical-align: top;
-      background: #fff;
+      background: white;
       border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
     .card img {
       width: 100%;
-      height: 160px;
+      height: 180px;
       object-fit: cover;
-      border-radius: 6px;
+    }
+    .card .info {
+      padding: 12px;
+    }
+    .card h3 {
+      margin: 0;
+    }
+    .card .details {
+      font-size: 14px;
+      color: #555;
+      margin: 4px 0;
+    }
+    .badge {
+      font-size: 12px;
+      display: inline-block;
+      padding: 4px 8px;
+      background: #d4f4d4;
+      color: #2e7d32;
+      border-radius: 4px;
+      margin-right: 5px;
+    }
+    .price {
+      font-weight: bold;
+      font-size: 18px;
+      color: green;
+    }
+    .enquire-btn {
+      margin-top: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h2>Available Vehicles for Sale</h2>
-  <div id="gallery">Loading...</div>
+  <h2>Second Wheel Vehicles</h2>
+  <div class="gallery" id="gallery"></div>  <script>
+    const supabase = supabase.createClient(
+      'https://wbjwvxckbfkutqqbgupq.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
+    );
 
-  <script type="module">
-    (async () => {
-      const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
-
-      const supabase = createClient(
-        'https://wbjwvxckbfkutqqbgupq.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
-      );
-
-      const gallery = document.getElementById("gallery");
-
-      // 1. Get image list from 'vehicals' storage bucket
-      const { data, error } = await supabase.storage.from('vehicals').list('', {
-        limit: 100,
-        sortBy: { column: 'created_at', order: 'desc' }
-      });
+    async function loadVehicles() {
+      const { data, error } = await supabase
+        .from('vehicles')
+        .select('*')
+        .order('created_at', { ascending: false });
 
       if (error) {
-        console.error("Error loading storage:", error);
-        gallery.innerHTML = "<p>❌ Failed to load gallery</p>";
+        console.error('Error:', error);
         return;
       }
 
-      gallery.innerHTML = "";
+      const gallery = document.getElementById('gallery');
 
-      data.forEach(file => {
-        const publicUrl = `https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/${file.name}`;
+      data.forEach(vehicle => {
+        const img = JSON.parse(vehicle.image_urls)[0] || '';
+        const verified =
+          vehicle.rc?.toLowerCase() === 'valid' &&
+          vehicle.puc?.toLowerCase() === 'valid';
 
-        const card = document.createElement("div");
-        card.className = "card";
-
-        const img = document.createElement("img");
-        img.src = publicUrl;
-        img.alt = file.name;
-
-        const info = document.createElement("div");
-        info.innerHTML = `
-          <strong>${file.name}</strong><br/>
-          (image only - full data fetch yet to be added)
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${img}" alt="${vehicle.brand} ${vehicle.model}" />
+          <div class="info">
+            <h3>${vehicle.brand} ${vehicle.model}</h3>
+            <div class="details">${vehicle.year} • ${vehicle.km} KM • ${vehicle.fuel}</div>
+            <div class="details">${vehicle.city}</div>
+            <div class="price">₹${vehicle.price}</div>
+            ${verified ? '<div class="badge">✔ Verified</div>' : ''}
+            <button class="enquire-btn">Enquire Now</button>
+          </div>
         `;
-
-        card.appendChild(img);
-        card.appendChild(info);
         gallery.appendChild(card);
       });
-    })();
-  </script>
-</body>
+    }
+
+    loadVehicles();
+  </script></body>
 </html>
