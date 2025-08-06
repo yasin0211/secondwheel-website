@@ -23,6 +23,7 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      cursor: pointer;
     }
     .card img {
       width: 100%;
@@ -63,11 +64,52 @@
       border-radius: 4px;
       cursor: pointer;
     }
+    /* Popup */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .popup-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 90%;
+      max-height: 90%;
+      overflow: auto;
+      text-align: center;
+    }
+    .popup-content img {
+      max-width: 100%;
+      max-height: 400px;
+      margin-bottom: 10px;
+    }
+    .close-btn {
+      background: red;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      float: right;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <h2>Second Wheel Vehicles</h2>
-  <div class="gallery" id="gallery"></div>  <script>
+  <h2>Buy Used Cars</h2>
+  <div class="gallery" id="gallery"></div>  <!-- Popup -->  <div class="popup" id="popup">
+    <div class="popup-content" id="popupContent">
+      <button class="close-btn" onclick="closePopup()">Close</button>
+      <div id="popupImages"></div>
+    </div>
+  </div>  <script>
     const supabase = supabase.createClient(
       'https://wbjwvxckbfkutqqbgupq.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
@@ -87,7 +129,10 @@
       const gallery = document.getElementById('gallery');
 
       data.forEach(vehicle => {
-        const img = JSON.parse(vehicle.image_urls)[0] || '';
+        const images = Array.isArray(vehicle.image_urls)
+          ? vehicle.image_urls
+          : JSON.parse(vehicle.image_urls);
+        const img = images[0] || '';
         const verified =
           vehicle.rc?.toLowerCase() === 'valid' &&
           vehicle.puc?.toLowerCase() === 'valid';
@@ -105,8 +150,27 @@
             <button class="enquire-btn">Enquire Now</button>
           </div>
         `;
+
+        // Open popup on card click
+        card.addEventListener('click', () => showPopup(images));
         gallery.appendChild(card);
       });
+    }
+
+    function showPopup(images) {
+      const popup = document.getElementById('popup');
+      const popupImages = document.getElementById('popupImages');
+      popupImages.innerHTML = '';
+      images.forEach(url => {
+        const img = document.createElement('img');
+        img.src = url;
+        popupImages.appendChild(img);
+      });
+      popup.style.display = 'flex';
+    }
+
+    function closePopup() {
+      document.getElementById('popup').style.display = 'none';
     }
 
     loadVehicles();
