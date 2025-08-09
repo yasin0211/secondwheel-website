@@ -5,40 +5,68 @@
   <title>Buy Vehicles – Second Wheel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    *{box-sizing:border-box} body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#f5f7fb;color:#142033;margin:0}
+    *{box-sizing:border-box}
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#f5f7fb;color:#142033;margin:0}
     header{background:#0a2c5f;color:#fff;text-align:center;padding:16px}
+    header h1{margin:0;font-size:22px}
+    header .sub{opacity:.9;font-size:.95rem;margin-top:4px}
+
     .wrap{max-width:1100px;margin:18px auto;padding:0 14px}
     .controls{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
-    input,select,button{padding:10px;border-radius:8px;border:1px solid #cfd6e4}
-    .btn{background:#0a2c5f;color:#fff;border:none;cursor:pointer} .btn.alt{background:#ff7a00;color:#fff}
-    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:10px}
-    .card{background:#fff;border:1px solid #e6ebf3;border-radius:12px;overflow:hidden}
-    .card img{width:100%;height:150px;object-fit:cover;background:#eef2f7}
-    .meta{padding:10px} .muted{color:#5a6b85;font-size:.9rem}
-    .bar{display:flex;gap:8px;align-items:center}
-    @media(max-width:480px){.gallery{grid-template-columns:1fr 1fr}}
+    input,select,button{padding:10px;border-radius:10px;border:1px solid #cfd6e4;background:#fff}
+    input,select{min-width:160px}
+    .btn{background:#0a2c5f;color:#fff;border:none;cursor:pointer}
+    .btn.alt{background:#ff7a00}
+    .btn.ghost{background:#fff;border:1px solid #cfd6e4;color:#142033}
+    .tabs button{padding:10px 14px;border-radius:999px;border:1px solid #cfd6e4;background:#fff;color:#142033;font-weight:600}
+    .tabs button.active{background:#0a2c5f;color:#fff;border-color:#0a2c5f}
+    .spacer{flex:1}
+
+    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:10px}
+    .card{background:#fff;border:1px solid #e6ebf3;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+    .card .cover{width:100%;height:160px;object-fit:cover;background:#eef2f7}
+    .meta{padding:10px}
+    .muted{color:#5a6b85;font-size:.9rem}
+    .thumbs{display:flex;gap:6px;margin-top:8px;overflow:auto}
+    .thumbs img{width:52px;height:52px;object-fit:cover;border-radius:8px;border:1px solid #e0e6ef;cursor:pointer;flex:0 0 auto}
+    .bar{display:flex;gap:8px;align-items:center;margin-top:10px}
+    .price{font-weight:700}
+    .count{margin:6px 0 0 2px}
+    .empty{padding:16px;background:#fff;border:1px dashed #cfd6e4;border-radius:14px;text-align:center}
+
+    footer{color:#5a6b85;text-align:center;margin:24px 0}
+
+    @media(max-width:480px){
+      .gallery{grid-template-columns:1fr 1fr}
+      .thumbs img{width:44px;height:44px}
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>Buy Vehicles</h1>
-    <div class="muted">Filter आणि Browse करा — Cars किंवा Bikes</div>
+    <div class="sub">Filter करा आणि Browse करा — Cars किंवा Bikes</div>
   </header>
 
   <div class="wrap">
     <div class="controls">
-      <button class="btn" id="carsBtn">Cars</button>
-      <button class="btn alt" id="bikesBtn">Bikes</button>
-      <input id="brandFilter" placeholder="Brand (e.g., Maruti, Hyundai)" style="flex:1 1 240px" />
-      <select id="cityFilter">
+      <div class="tabs" id="tabs">
+        <button id="carsBtn" class="active">Cars</button>
+        <button id="bikesBtn">Bikes</button>
+      </div>
+      <div class="spacer"></div>
+      <input id="brandFilter" placeholder="Brand (e.g., Maruti, Hyundai)" />
+      <select id="cityFilter" title="City">
         <option value="">All Cities</option>
         <option>Pune</option><option>Mumbai</option><option>Nashik</option><option>Satara</option>
       </select>
-      <button class="btn" id="clearBtn" title="Clear filters">Clear</button>
+      <button class="btn ghost" id="clearBtn" title="Clear filters">Clear</button>
     </div>
 
-    <div id="count" class="muted"></div>
+    <div id="count" class="count muted"></div>
     <div id="gallery" class="gallery">Loading…</div>
+
+    <footer>© 2025 SecondWheel.in</footer>
   </div>
 
   <script type="module">
@@ -51,24 +79,42 @@
     );
 
     // Expected table: vehicles
-    // cols: id, type('car'|'bike'), title, brand, model, year, km, city, price, image, featured(bool), created_at
+    // cols: id, type('car'|'bike'), title, brand, model, year, km, city, price, image, images(jsonb), featured(bool), created_at
 
+    // ---- Dom refs ----
     const gallery = document.getElementById('gallery');
     const countEl = document.getElementById('count');
     const brandEl = document.getElementById('brandFilter');
     const cityEl = document.getElementById('cityFilter');
     const carsBtn = document.getElementById('carsBtn');
     const bikesBtn = document.getElementById('bikesBtn');
+    const tabs = document.getElementById('tabs');
     const clearBtn = document.getElementById('clearBtn');
 
+    // ---- State ----
     let buyType = 'car';
+    let typingTimer;
 
-    carsBtn.onclick = () => { buyType = 'car'; fetchAndRender(); };
-    bikesBtn.onclick = () => { buyType = 'bike'; fetchAndRender(); };
-    brandEl.oninput = () => fetchAndRender();
+    // ---- Events ----
+    carsBtn.onclick = () => setType('car');
+    bikesBtn.onclick = () => setType('bike');
+    brandEl.oninput = () => { debounceFetch(); };
     cityEl.onchange = () => fetchAndRender();
     clearBtn.onclick = () => { brandEl.value=''; cityEl.value=''; fetchAndRender(); };
 
+    function setType(t){
+      buyType = t;
+      [...tabs.children].forEach(b=>b.classList.remove('active'));
+      (t==='car' ? carsBtn : bikesBtn).classList.add('active');
+      fetchAndRender();
+    }
+
+    function debounceFetch(delay=300){
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(fetchAndRender, delay);
+    }
+
+    // ---- Fetch & Render ----
     async function fetchAndRender(){
       gallery.innerHTML = 'Loading…';
       let q = supabase.from('vehicles')
@@ -85,7 +131,7 @@
       const { data, error } = await q;
       if (error) {
         console.error(error);
-        gallery.innerHTML = '<div class="muted">❌ Could not load vehicles.</div>';
+        gallery.innerHTML = '<div class="empty">❌ Could not load vehicles.</div>';
         countEl.textContent = '';
         return;
       }
@@ -95,30 +141,55 @@
     }
 
     function renderCards(list){
-      if (!list || !list.length) {
-        gallery.innerHTML = '<div class="muted">No vehicles found. Try different filters.</div>';
+      if (!list?.length) {
+        gallery.innerHTML = '<div class="empty">No vehicles found. Try different filters.</div>';
         return;
       }
-      gallery.innerHTML = list.map(v => `
-        <div class="card">
-          <img src="${sanitize(v.image) || 'https://placehold.co/600x360?text=Vehicle'}" alt="${escapeHtml(v.title||'Vehicle')}" onerror="this.src='https://placehold.co/600x360?text=Image+NA'"/>
-          <div class="meta">
-            <div><b>${escapeHtml(v.title || (v.brand+' '+v.model))}</b></div>
-            <div class="muted">₹${Number(v.price||0).toLocaleString('en-IN')} • ${escapeHtml(v.city||'')}</div>
-            <div class="muted">${v.year||''} • ${v.km||''} KM</div>
-            <div class="bar" style="margin-top:8px">
-              <button class="btn" onclick="alert('Enquiry for ID: ${v.id}')">Enquire</button>
+      gallery.innerHTML = list.map(v => {
+        const imgs = (Array.isArray(v.images) && v.images.length ? v.images : [v.image]).filter(Boolean);
+        const cover = imgs[0] || 'https://placehold.co/600x360?text=Vehicle';
+
+        const thumbs = imgs.slice(0,8).map((u,i)=>`
+          <img src="${escapeAttr(u)}" alt="thumb${i}"
+               onclick="this.closest('.card').querySelector('.cover').src='${escapeAttr(u)}'"
+               onerror="this.style.display='none'">
+        `).join('');
+
+        return `
+          <div class="card">
+            <img class="cover" src="${escapeAttr(cover)}"
+                 alt="${escapeAttr(v.title||'Vehicle')}"
+                 onerror="this.src='https://placehold.co/600x360?text=Image+NA'"/>
+            <div class="meta">
+              <div><b>${escapeHtml(v.title || (v.brand+' '+v.model))}</b></div>
+              <div class="muted"><span class="price">₹${Number(v.price||0).toLocaleString('en-IN')}</span> • ${escapeHtml(v.city||'')}</div>
+              <div class="muted">${v.year||''} • ${v.km||''} KM</div>
+              <div class="thumbs">${thumbs}</div>
+              <div class="bar">
+                <button class="btn" onclick="alert('Enquiry for ID: ${v.id}')">Enquire</button>
+                <button class="btn alt" onclick="copyShare('${escapeAttr(buildShareText(v))}')">Share</button>
+              </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
-    // helpers
+    // ---- Helpers ----
     function escapeHtml(s=''){ return String(s).replace(/[&<>"]/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[m])); }
-    function sanitize(u){ try{ return new URL(u).href }catch{ return '' } }
+    function escapeAttr(s=''){ return String(s).replace(/"/g,'&quot;'); }
+    function buildShareText(v){
+      const title = v.title || `${v.brand||''} ${v.model||''}`.trim();
+      const price = v.price ? `₹${Number(v.price).toLocaleString('en-IN')}` : '';
+      const city = v.city || '';
+      return `${title} ${price} ${city}`.trim();
+    }
+    async function copyShare(text){
+      try{ await navigator.clipboard.writeText(text); alert('Copied!'); }
+      catch{ alert(text); }
+    }
 
-    // initial
+    // ---- Initial ----
     fetchAndRender();
   </script>
 </body>
