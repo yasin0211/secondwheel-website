@@ -81,6 +81,12 @@ https://.../side.jpg"></textarea>
         </div>
       </div>
 
+      <!-- ✅ Description field added -->
+      <div style="margin-top:12px">
+        <label>Description</label>
+        <textarea id="desc" placeholder="Extra details about the vehicle"></textarea>
+      </div>
+
       <div style="margin-top:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <button id="saveBtn" class="btn">Save</button>
         <button id="resetBtn" class="btn ghost">Reset</button>
@@ -185,7 +191,7 @@ https://.../side.jpg"></textarea>
       }
     }
 
-    // Build row data
+    // Build row data  ✅ desc आता आहे
     const row = {
       type: type.value,
       title: title.value.trim(),
@@ -196,7 +202,7 @@ https://.../side.jpg"></textarea>
       city: city.value.trim(),
       price: Number(price.value)||null,
       featured: featured.value === 'true',
-      description: (desc?.value||'').trim() || null,
+      description: (document.getElementById('desc').value || '').trim() || null,
       image: urls[0] || null,
       images: urls.length ? urls : null
     };
@@ -219,6 +225,7 @@ https://.../side.jpg"></textarea>
     rowId.value=''; type.value='car'; title.value=brand.value=model.value=city.value='';
     year.value=km.value=price.value=''; featured.value='';
     imageUrls.value=''; files.value=''; thumbs.innerHTML=''; msg.textContent='';
+    document.getElementById('desc').value='';
   }
 
   // ===== Table load / render =====
@@ -239,7 +246,8 @@ https://.../side.jpg"></textarea>
     const term = q.value.trim().toLowerCase();
     const tfl  = typeFilter.value;
     const filtered = allRows.filter(r=>{
-      const hit = (r.title||''+' '+r.brand||''+' '+r.model||''+' '+r.city||'').toLowerCase().includes(term);
+      const hay = [r.title,r.brand,r.model,r.city].filter(Boolean).join(' ').toLowerCase();
+      const hit = hay.includes(term);
       const tOk = tfl ? (r.type||'')===tfl : true;
       return hit && tOk;
     });
@@ -272,7 +280,7 @@ https://.../side.jpg"></textarea>
     </tr>`;
   }
 
-  // ===== Row actions exposed to window =====
+  // ===== Row actions =====
   window.editRow = (r) => {
     formTitle.textContent = 'Edit Vehicle';
     rowId.value = r.id || '';
@@ -288,6 +296,7 @@ https://.../side.jpg"></textarea>
     imageUrls.value = Array.isArray(r.images)? r.images.join('\n') : (r.image||'');
     thumbs.innerHTML = (Array.isArray(r.images)?r.images:[r.image]).filter(Boolean).slice(0,8)
       .map(u=>`<img src="${escapeAttr(u)}">`).join('');
+    document.getElementById('desc').value = (r.description || '');
     window.scrollTo({top:0, behavior:'smooth'});
   };
 
@@ -310,7 +319,7 @@ https://.../side.jpg"></textarea>
     await loadAll();
   };
 
-  // ===== small helpers =====
+  // ===== helpers =====
   function escapeHtml(s=''){ return String(s).replace(/[&<>"]/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[m])); }
   function escapeAttr(s=''){ return String(s).replace(/"/g,'&quot;'); }
 </script>
