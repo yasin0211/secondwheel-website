@@ -5,30 +5,23 @@
   <title>Buy – Second Wheel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    *{box-sizing:border-box}
-    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#f5f7fb;color:#142033;margin:0}
-    header{background:#0a2c5f;color:#fff;text-align:center;padding:16px}
-    header h1{margin:0;font-size:22px}
-
+    *{box-sizing:border-box} body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#f5f7fb;color:#142033;margin:0}
+    header{background:#0a2c5f;color:#fff;text-align:center;padding:16px} header h1{margin:0;font-size:22px}
     .wrap{max-width:1100px;margin:18px auto;padding:0 14px}
     .tabs{display:flex;gap:8px;justify-content:center;margin:6px 0 14px}
     .tabs button{padding:10px 16px;border-radius:999px;border:1px solid #cfd6e4;background:#fff;color:#142033;font-weight:600;cursor:pointer}
     .tabs button.active{background:#0a2c5f;color:#fff;border-color:#0a2c5f}
-
     .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
     .card{background:#fff;border:1px solid #e6ebf3;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
     .cover{width:100%;height:160px;object-fit:cover;background:#eef2f7}
-    .meta{padding:10px}
-    .muted{color:#5a6b85;font-size:.9rem}
+    .meta{padding:10px} .muted{color:#5a6b85;font-size:.9rem}
     .thumbs{display:flex;gap:6px;margin-top:8px;overflow:auto}
     .thumbs img{width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #e0e6ef;cursor:pointer;flex:0 0 auto}
     .bar{display:flex;gap:8px;align-items:center;margin-top:10px}
     .btn{background:#0a2c5f;color:#fff;border:none;border-radius:10px;padding:10px 14px;cursor:pointer}
-    .btn.alt{background:#ff7a00}
-    .count{margin:8px 0 12px;text-align:center;color:#5a6b85}
+    .btn.alt{background:#ff7a00} .count{margin:8px 0 12px;text-align:center;color:#5a6b85}
     .empty{padding:16px;background:#fff;border:1px dashed #cfd6e4;border-radius:14px;text-align:center}
     footer{color:#5a6b85;text-align:center;margin:24px 0}
-
     @media(max-width:480px){.gallery{grid-template-columns:1fr 1fr}}
   </style>
 </head>
@@ -36,7 +29,6 @@
   <header><h1>Buy Vehicles</h1></header>
 
   <div class="wrap">
-    <!-- फक्त दोन tabs: Cars / Bikes -->
     <div class="tabs" id="tabs">
       <button id="carsBtn" class="active" type="button">Cars</button>
       <button id="bikesBtn" type="button">Bikes</button>
@@ -51,13 +43,11 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-    // Supabase init (तुमचे URL/Key)
+    // Supabase
     const sb = createClient(
       'https://wbjwvxckbfkutqqbgupq.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
     );
-
-    // अपेक्षित टेबल: vehicles (columns: id, type('car'|'bike'), title, brand, model, year, km, city, price, image, images(jsonb), created_at…)
 
     // DOM
     const gallery = document.getElementById('gallery');
@@ -66,6 +56,7 @@
     const bikesBtn = document.getElementById('bikesBtn');
     const tabs     = document.getElementById('tabs');
 
+    // State
     let buyType = 'car';
     carsBtn.onclick  = () => setType('car');
     bikesBtn.onclick = () => setType('bike');
@@ -86,22 +77,13 @@
         .order('created_at', { ascending:false })
         .limit(60);
 
-      if (error) {
-        console.error(error);
-        gallery.innerHTML = '<div class="empty">❌ Could not load vehicles.</div>';
-        countEl.textContent = '';
-        return;
-      }
-
+      if (error) { console.error(error); gallery.innerHTML = '<div class="empty">❌ Could not load vehicles.</div>'; countEl.textContent=''; return; }
       countEl.textContent = `${data.length} ${buyType==='car'?'Cars':'Bikes'} found`;
       renderCards(data);
     }
 
     function renderCards(list){
-      if (!list?.length) {
-        gallery.innerHTML = '<div class="empty">No listings yet.</div>';
-        return;
-      }
+      if (!list?.length) { gallery.innerHTML = '<div class="empty">No listings yet.</div>'; return; }
       gallery.innerHTML = list.map(v => {
         const imgs = (Array.isArray(v.images) && v.images.length ? v.images : [v.image]).filter(Boolean);
         const cover = imgs[0] || 'https://placehold.co/600x360?text=Vehicle';
@@ -110,7 +92,6 @@
                onclick="this.closest('.card').querySelector('.cover').src='${escapeAttr(u)}'"
                onerror="this.style.display='none'">
         `).join('');
-
         return `
           <div class="card">
             <img class="cover" src="${escapeAttr(cover)}" alt="${escapeAttr(v.title||'Vehicle')}"
@@ -122,24 +103,15 @@
               <div class="thumbs">${thumbs}</div>
               <div class="bar">
                 <a class="btn" href="${waLink(v)}" target="_blank" rel="noopener">Enquire on WhatsApp</a>
-                <button class="btn alt" onclick="copyShare('${escapeAttr(buildShareText(v))}')">Share</button>
               </div>
             </div>
-          </div>
-        `;
+          </div>`;
       }).join('');
     }
 
-    // Helpers
+    // helpers
     function escapeHtml(s=''){ return String(s).replace(/[&<>"]/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[m])); }
     function escapeAttr(s=''){ return String(s).replace(/"/g,'&quot;'); }
-    function buildShareText(v){
-      const title = v.title || `${v.brand||''} ${v.model||''}`.trim();
-      const price = v.price ? `₹${Number(v.price).toLocaleString('en-IN')}` : '';
-      const city  = v.city || '';
-      const yearKm = [v.year, v.km ? `${v.km} KM` : ''].filter(Boolean).join(' • ');
-      return `${title} ${price} ${city} ${yearKm}`.trim();
-    }
     function waLink(v){
       const title = v.title || `${v.brand||''} ${v.model||''}`.trim();
       const price = v.price ? `₹${Number(v.price).toLocaleString('en-IN')}` : '—';
@@ -147,7 +119,6 @@
       const msg = `Hello Second Wheel,%0AI want to enquire about:%0A• ${encodeURIComponent(title)}%0A• Price: ${encodeURIComponent(price)}%0A• ${encodeURIComponent(v.year||'')} • ${encodeURIComponent(v.km||'')} KM • ${encodeURIComponent(city)}%0AID: ${encodeURIComponent(v.id)}%0ASource: Buy Page`;
       return `https://wa.me/919822292955?text=${msg}`;
     }
-    async function copyShare(text){ try{ await navigator.clipboard.writeText(text); alert('Copied!'); } catch{ alert(text); } }
 
     // start
     setType('car');
