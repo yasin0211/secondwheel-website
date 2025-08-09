@@ -2,133 +2,155 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Cars & Bikes – Second Wheel</title>
+  <title>Buy – Second Wheel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    *{box-sizing:border-box} 
+    *{box-sizing:border-box}
     body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#f5f7fb;color:#142033;margin:0}
     header{background:#0a2c5f;color:#fff;text-align:center;padding:16px}
     header h1{margin:0;font-size:22px}
     .wrap{max-width:1100px;margin:18px auto;padding:0 14px}
     h2.sec{margin:14px 0 10px;color:#0a2c5f}
+
     .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-    .card{background:#fff;border:1px solid #e6ebf3;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-    .cover{width:100%;height:160px;object-fit:cover;background:#eef2f7}
+    .card{background:#fff;border:1px solid #e6ebf3;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .15s, box-shadow .15s}
+    .card:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,.08)}
+    .cover{width:100%;height:clamp(160px,28vw,220px);object-fit:cover;background:#eef2f7;opacity:.85;transition:opacity .3s}
     .meta{padding:10px}
     .muted{color:#5a6b85;font-size:.9rem}
-    .thumbs{display:flex;gap:6px;margin-top:8px;overflow:auto}
-    .thumbs img{width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #e0e6ef;cursor:pointer;flex:0 0 auto}
-    .bar{display:flex;gap:8px;align-items:center;margin-top:10px}
+
+    /* Thumbs = grid */
+    .thumbs{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:6px;
+      margin-top:8px;
+    }
+    .thumbs img{
+      width:100%; height:62px; object-fit:cover;
+      border-radius:8px; border:1px solid #e0e6ef; cursor:pointer;
+    }
+
+    .bar{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
     .btn{background:#0a2c5f;color:#fff;border:none;border-radius:10px;padding:10px 14px;cursor:pointer;text-decoration:none;display:inline-block}
+    .btn.ghost{background:#fff;color:#142033;border:1px solid #cfd6e4}
     .empty{padding:16px;background:#fff;border:1px dashed #cfd6e4;border-radius:14px;text-align:center}
     footer{color:#5a6b85;text-align:center;margin:24px 0}
-    @media(max-width:480px){.gallery{grid-template-columns:1fr 1fr}}
+
+    /* Skeleton loaders */
+    .skel{background:#eef2f7;border:1px solid #e6ebf3;border-radius:14px;height:260px;animation:pulse 1.2s infinite}
+    @keyframes pulse{0%{opacity:.75}50%{opacity:.45}100%{opacity:.75}}
+
+    /* Fullscreen gallery modal */
+    #galModal{position:fixed;inset:0;background:rgba(0,0,0,.86);display:none;z-index:9999}
+    #galWrap{max-width:1100px;margin:40px auto;padding:10px}
+    #galGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:40px}
+    #galGrid img{width:100%;height:180px;object-fit:cover;border-radius:12px}
+    #closeBtn{float:right;padding:8px 12px;border:0;border-radius:10px;background:#fff;cursor:pointer}
+
+    @media(max-width:480px){
+      .gallery{grid-template-columns:1fr 1fr}
+      .thumbs{grid-template-columns:repeat(3,1fr)}
+      .thumbs img{height:54px}
+      #galGrid img{height:140px}
+    }
   </style>
 </head>
 <body>
-  <header><h1>Cars & Bikes for Sale</h1></header>
+  <header><h1>Buy Vehicles</h1></header>
 
   <div class="wrap">
     <h2 class="sec">Cars</h2>
-    <div id="carsGallery" class="gallery">Loading…</div>
+    <div id="carsGallery" class="gallery"></div>
+    <div style="text-align:center;margin:10px 0 24px">
+      <button id="carsMore" class="btn ghost">Load more cars</button>
+    </div>
 
     <h2 class="sec">Bikes</h2>
-    <div id="bikesGallery" class="gallery">Loading…</div>
+    <div id="bikesGallery" class="gallery"></div>
+    <div style="text-align:center;margin:10px 0 24px">
+      <button id="bikesMore" class="btn ghost">Load more bikes</button>
+    </div>
 
     <footer>© 2025 SecondWheel.in</footer>
+  </div>
+
+  <!-- Fullscreen Gallery Modal -->
+  <div id="galModal">
+    <div id="galWrap">
+      <button id="closeBtn" onclick="closeGal()">Close ✕</button>
+      <div id="galGrid"></div>
+    </div>
   </div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
+    // Supabase (तुमचेच क्रेडेन्शियल्स)
     const sb = createClient(
       'https://wbjwvxckbfkutqqbgupq.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
     );
 
-    const carsBox = document.getElementById('carsGallery');
+    const carsBox  = document.getElementById('carsGallery');
     const bikesBox = document.getElementById('bikesGallery');
+    const carsMoreBtn  = document.getElementById('carsMore');
+    const bikesMoreBtn = document.getElementById('bikesMore');
 
-    async function loadVehicles() {
-      carsBox.textContent = bikesBox.textContent = 'Loading…';
+    // Pagination state
+    let carPage = 0, bikePage = 0;
+    const PAGE_SIZE = 12;
 
-      const { data, error } = await sb
-        .from('vehicles')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(120);
-
-      if (error) {
-        console.error(error);
-        carsBox.innerHTML = '<div class="empty">❌ Could not load cars.</div>';
-        bikesBox.innerHTML = '<div class="empty">❌ Could not load bikes.</div>';
-        return;
-      }
-
-      const cars = (data || []).filter(v => (v.type || '').toLowerCase() === 'car');
-      const bikes = (data || []).filter(v => (v.type || '').toLowerCase() === 'bike');
-
-      renderCardsTo(cars, carsBox);
-      renderCardsTo(bikes, bikesBox);
+    // Skeleton helpers
+    function showSkeleton(mount, n=6){
+      mount.innerHTML = Array.from({length:n}, _=>'<div class="skel"></div>').join('');
     }
 
-    function renderCardsTo(list, mount) {
-      if (!list.length) { 
-        mount.innerHTML = '<div class="empty">No listings yet.</div>'; 
-        return; 
-      }
-      mount.innerHTML = list.map(v => cardHtml(v)).join('');
+    // Initial skeleton
+    showSkeleton(carsBox,6); showSkeleton(bikesBox,6);
+
+    // Loaders
+    async function loadCars(reset=false){
+      if(reset){ carPage=0; carsBox.innerHTML=''; }
+      if(carPage===0) showSkeleton(carsBox,4);
+      const from = carPage*PAGE_SIZE, to = from + PAGE_SIZE - 1;
+      const { data, error } = await sb.from('vehicles')
+        .select('*').eq('type','car').order('created_at',{ascending:false}).range(from,to);
+      if(error){ carsBox.innerHTML='<div class="empty">❌ Could not load cars.</div>'; return; }
+      appendTo(carsBox, data||[]);
+      carPage++;
+      toggleLoadMoreBtn(carsMoreBtn, (data||[]).length === PAGE_SIZE);
     }
 
-    function cardHtml(v) {
-      const imgs = (Array.isArray(v.images) && v.images.length ? v.images : [v.image]).filter(Boolean);
-      const cover = imgs[0] || 'https://placehold.co/600x360?text=Vehicle';
-      const thumbs = imgs.slice(0, 8).map((u, i) => `
-        <img src="${attr(u)}" alt="thumb${i}" loading="lazy"
+    async function loadBikes(reset=false){
+      if(reset){ bikePage=0; bikesBox.innerHTML=''; }
+      if(bikePage===0) showSkeleton(bikesBox,4);
+      const from = bikePage*PAGE_SIZE, to = from + PAGE_SIZE - 1;
+      const { data, error } = await sb.from('vehicles')
+        .select('*').eq('type','bike').order('created_at',{ascending:false}).range(from,to);
+      if(error){ bikesBox.innerHTML='<div class="empty">❌ Could not load bikes.</div>'; return; }
+      appendTo(bikesBox, data||[]);
+      bikePage++;
+      toggleLoadMoreBtn(bikesMoreBtn, (data||[]).length === PAGE_SIZE);
+    }
+
+    function toggleLoadMoreBtn(btn, show){ btn.style.display = show ? 'inline-block' : 'none'; }
+
+    function appendTo(mount, list){
+      if (!list.length && !mount.children.length){
+        mount.innerHTML = '<div class="empty">No listings yet.</div>'; return;
+      }
+      mount.insertAdjacentHTML('beforeend', list.map(v=>cardHtml(v)).join(''));
+    }
+
+    function cardHtml(v){
+      const arr = (Array.isArray(v.images) && v.images.length ? v.images : (v.image ? [v.image] : [])).filter(Boolean);
+      const cover = arr[0] || 'https://placehold.co/600x360?text=Vehicle';
+
+      const thumbs = arr.slice(0,12).map((u,i)=>`
+        <img src="${attr(u)}" alt="thumb${i}"
              onclick="this.closest('.card').querySelector('.cover').src='${attr(u)}'"
              onerror="this.style.display='none'">
-      `).join('');
-      const title = v.title || [v.brand, v.model].filter(Boolean).join(' ');
-      const price = v.price ? `₹${Number(v.price).toLocaleString('en-IN')}` : '—';
-      const city = v.city || '';
-      const yearKm = [v.year, v.km ? `${v.km} KM` : ''].filter(Boolean).join(' • ');
+      }).join('');
 
-      return `
-        <div class="card">
-          <img class="cover" src="${attr(cover)}" alt="${attr(title)}" loading="lazy"
-               onerror="this.src='https://placehold.co/600x360?text=Image+NA'">
-          <div class="meta">
-            <div><b>${html(title || 'Vehicle')}</b></div>
-            <div class="muted">${price} • ${html(city)}</div>
-            <div class="muted">${html(yearKm)}</div>
-            <div class="thumbs">${thumbs}</div>
-            <div class="bar">
-              <a class="btn" href="${waLink(v)}" target="_blank" rel="noopener">Enquire on WhatsApp</a>
-            </div>
-          </div>
-        </div>`;
-    }
-
-    // Helpers for safe HTML rendering
-    const html = (s = '') => String(s).replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
-    const attr = (s = '') => String(s).replace(/"/g, '&quot;');
-
-    function waLink(v) {
-      const title = v.title || [v.brand, v.model].filter(Boolean).join(' ');
-      const price = v.price ? `₹${Number(v.price).toLocaleString('en-IN')}` : '—';
-      const city = v.city || '—';
-      const msg = encodeURIComponent(
-        `Hello Second Wheel,
-I want to enquire about:
-• ${title}
-• Price: ${price}
-• ${v.year || ''} • ${v.km || ''} KM • ${city}
-ID: ${v.id || ''}`
-      );
-      return `https://wa.me/919822292955?text=${msg}`;
-    }
-
-    loadVehicles();
-  </script>
-</body>
-</html>
+Wait there is a syntax error; need to continue properly.
