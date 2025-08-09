@@ -1,391 +1,246 @@
-
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<title>Second Wheel - Trusted Vehicles</title>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      background: url('./assets/bg.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    .dark-mode {
-      background-color: #111;
-      color: #eee;
-    }
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(0,0,0,0.7);
-      padding: 15px;
-    }
-    header img {
-      height: 40px;
-      margin-right: 10px;
-    }
-    header h1 {
-      font-size: 22px;
-      margin: 0;
-    }
-    .lang-toggle {
-      font-size: 14px;
-      color: #ffc107;
-      cursor: pointer;
-    }
-    .hero {
-      text-align: center;
-      padding: 40px 20px 20px;
-    }
-    .hero-box {
-      background: rgba(0,0,0,0.6);
-      display: inline-block;
-      padding: 30px 20px;
-      border-radius: 12px;
-      backdrop-filter: blur(6px);
-    }
-    .hero h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
-    }
-    .hero p {
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-    .hero img {
-      width: 220px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    }
-    .hero .buttons button {
-      margin: 10px;
-      padding: 12px 25px;
-      background: #e25a00;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .hero .buttons button:hover {
-      background: #ff7700;
-    }
-    .grid, .gallery-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      padding: 30px 10px;
-    }
-    .card, .gallery-card {
-      background: rgba(0,0,0,0.6);
-      border-radius: 10px;
-      padding: 15px;
-      text-align: center;
-      color: #ffd700;
-      font-weight: bold;
-      min-width: 140px;
-    }
-    .gallery-card img {
-      width: 180px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    .floating-wa {
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
-      background: #25D366;
-      color: white;
-      padding: 12px 16px;
-      border-radius: 50px;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .sticky-bottom {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(0,0,0,0.85);
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-    }
-    .sticky-bottom button {
-      background: #e25a00;
-      border: none;
-      padding: 10px 15px;
-      color: white;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    footer {
-      background: rgba(0,0,0,0.7);
-      text-align: center;
-      padding: 20px;
-      color: white;
-      margin-top: 30px;
-    }
-    footer a {
-      color: #ffc107;
-      margin: 0 10px;
-      text-decoration: none;
-    }
-    .testimonial {
-      background: rgba(255,255,255,0.1);
-      margin: 0 auto 30px;
-      max-width: 600px;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-    }
-    .dark-toggle {
-      cursor: pointer;
-      font-size: 14px;
-      color: #ffc107;
-    }
-  
-/* Mobile Friendly Responsive Styles */
-@media screen and (max-width: 600px) {
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  header h1 {
-    margin-top: 10px;
-  }
-  .hero-box {
-    width: 90%;
-    padding: 20px 10px;
-  }
-  .hero h1 {
-    font-size: 24px;
-  }
-  .hero p {
-    font-size: 16px;
-  }
-  .hero .buttons button {
-    font-size: 14px;
-    padding: 10px 14px;
-  }
-  .grid, .gallery-row {
-    flex-direction: column;
-    align-items: center;
-  }
-  .card, .gallery-card {
-    width: 90%;
-    font-size: 14px;
-  }
-  .gallery-card img {
-    width: 100%;
-  }
-  .features, .testimonials, .faq, .steps {
-    width: 90%;
-    padding: 20px 10px;
-    margin: 20px auto;
-  }
-  footer {
-    font-size: 14px;
-  }
-}
-
-.features, .testimonials, .faq, .steps {
-  background: rgba(0, 0, 0, 0.6);
-  margin: 20px auto;
-  max-width: 1000px;
-  border-radius: 10px;
-  padding: 30px 20px;
-  text-align: center;
-  color: white;
-}
-.features h2, .testimonials h2, .faq h2, .steps h2 {
-  color: white;
-  margin-bottom: 20px;
-}
-.features p, .testimonials p, .steps p {
-  color: #ddd;
-}
-.faq details {
-  margin: 10px auto;
-  max-width: 600px;
-  text-align: left;
-  background: rgba(255,255,255,0.1);
-  padding: 10px;
-  border-radius: 8px;
-}
-.faq summary {
-  font-weight: bold;
-  cursor: pointer;
-  color: white;
-}
-
-
-/* Further Mobile Optimization */
-@media screen and (max-width: 600px) {
-  .grid, .gallery-row {
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  .card {
-    max-width: 45%;
-    margin-bottom: 10px;
-  }
-  .gallery-card img {
-    width: 90%;
-    max-width: 200px;
-  }
-  .features, .testimonials, .faq, .steps {
-    margin-bottom: 20px;
-  }
-}
-
-/* Sticky Header */
-header {
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-/* Lighten Dark Mode text */
-.dark-mode .features h2,
-.dark-mode .testimonials h2,
-.dark-mode .faq h2,
-.dark-mode .steps h2 {
-  color: #f5f5f5;
-}
-.dark-mode .features p,
-.dark-mode .testimonials p,
-.dark-mode .steps p {
-  color: #ccc;
-}
-.dark-mode .faq summary {
-  color: #f5f5f5;
-}
-</style>
+  <meta charset="UTF-8" />
+  <title>SecondWheel.in – Trusted Vehicles, Smart Deals</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Supabase v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Noto Sans',sans-serif;background:#f5f7fb;color:#142033;line-height:1.45}
+    header{background:#0a2c5f;color:#fff;text-align:center;padding:18px}
+    header img{height:48px}
+    header h1{font-size:1.15rem;margin-top:8px}
+    nav{position:sticky;top:0;z-index:50;display:flex;gap:4px;justify-content:center;background:#0f356e;padding:6px 8px}
+    nav button{padding:10px 14px;border:none;background:transparent;color:#fff;font-weight:700;cursor:pointer;border-radius:8px}
+    nav button.active{background:#1b4fa0}
+    .container{max-width:1100px;margin:18px auto;padding:0 14px}
+    .section{display:none;background:#fff;border:1px solid #e6ebf2;border-radius:14px;padding:22px;box-shadow:0 6px 18px rgba(23,29,40,.06);margin-bottom:18px}
+    .section.active{display:block}
+    h2{color:#0a2c5f;margin:6px 0 12px}
+    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+    .card{background:#fff;border:1px solid #e8ebf3;border-radius:12px;overflow:hidden}
+    .card img{width:100%;height:150px;object-fit:cover;background:#eef2f7}
+    .card .meta{padding:10px}
+    footer{text-align:center;padding:14px;color:#fff;background:#0a2c5f;border-radius:12px}
+    .sticky{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:10px;z-index:60}
+    .sticky a{background:#25D366;color:#fff;padding:12px 16px;border-radius:999px;text-decoration:none;font-weight:700}
+    a.link{color:#ffe6b3;text-decoration:none}
+    @media (max-width:480px){.gallery{grid-template-columns:1fr 1fr}}
+    .btn{background:#0a2c5f;color:#fff;border:none;border-radius:10px;padding:10px 14px;cursor:pointer}
+    .btn.secondary{background:#ff7a00}
+    input,select,textarea{padding:10px;border-radius:8px;border:1px solid #cfd6e4}
+  </style>
 </head>
 <body>
-<header>
-<div style="display: flex; align-items: center;">
-<img alt="Logo" src="./assets/logo-yellow-metallic.png"/>
-<h1>Second Wheel</h1>
-</div>
-<div>
-<span class="lang-toggle">EN | HI | MR</span> |
-    <span class="dark-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</span>
-</div>
-</header>
-<div class="hero">
-<div class="hero-box">
-<img alt="Vehicle Thumbnail" src="https://via.placeholder.com/220x120?text=Vehicle+Thumbnail"/>
-<h1>Trusted Vehicles, Smart Deals</h1>
-<p>Maharashtra’s Reliable Vehicle Partner</p>
-<!-- Toggle Style Buttons -->
-<div class="buttons">
-  <button onclick="toggleBuy()">🛒 Buy</button>
-  <div id="buy-options" style="display:none; margin-top: 10px;">
-    <button onclick="window.location.href='buycar.html'">🚗 Buy Car</button>
-    <button onclick="window.location.href='buybike.html'">🏍️ Buy Bike</button>
+
+  <header>
+    <!-- तुमचा final लोगो URL -->
+    <img src="assets/logo-yellow-metallic.png" alt="Second Wheel Logo" onerror="this.src='https://placehold.co/220x48?text=SECOND+WHEEL'">
+    <h1>Trusted Vehicles, Smart Deals</h1>
+  </header>
+
+  <nav>
+    <button onclick="showSection('home')" id="homeTab" class="active">Home</button>
+    <button onclick="showSection('buy')" id="buyTab">Buy</button>
+    <button onclick="showSection('featured')" id="featuredTab">Featured</button>
+    <button onclick="showSection('sell')" id="sellTab">Sell</button>
+    <button onclick="showSection('services')" id="servicesTab">Tools</button>
+  </nav>
+
+  <div class="container">
+    <!-- HOME -->
+    <section id="home" class="section active">
+      <h2>Featured Cars</h2>
+      <div id="homeFeat" class="gallery"></div>
+    </section>
+
+    <!-- BUY -->
+    <section id="buy" class="section">
+      <h2>Buy Vehicles</h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0">
+        <button class="btn" onclick="setBuyType('car')">Cars</button>
+        <button class="btn secondary" onclick="setBuyType('bike')">Bikes</button>
+        <input id="brandFilter" placeholder="Filter by brand" oninput="renderBuy()" style="flex:1 1 240px">
+        <select id="cityFilter" onchange="renderBuy()">
+          <option value="">All Cities</option>
+          <option>Pune</option><option>Mumbai</option><option>Nashik</option><option>Satara</option>
+        </select>
+      </div>
+      <div id="buyGrid" class="gallery"></div>
+    </section>
+
+    <!-- FEATURED PAGE -->
+    <section id="featured" class="section">
+      <h2>🚗 Featured Cars</h2>
+      <div id="featCars" class="gallery"></div>
+      <h2 style="margin-top:14px">🏍️ Featured Bikes</h2>
+      <div id="featBikes" class="gallery"></div>
+    </section>
+
+    <!-- SELL -->
+    <section id="sell" class="section">
+      <h2>Sell Your Vehicle</h2>
+      <form id="sellForm">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0">
+          <select id="vType" required>
+            <option disabled selected value="">Vehicle Type</option>
+            <option>Car</option><option>Bike</option>
+          </select>
+          <input id="brand" placeholder="Brand" required />
+          <input id="model" placeholder="Model" required />
+          <input id="year" type="number" placeholder="Year" required />
+          <input id="km" placeholder="KM Driven" required />
+          <input id="city" placeholder="City" required />
+          <input id="mobile" type="tel" placeholder="Mobile (10 digits)" required />
+        </div>
+        <textarea id="notes" placeholder="Additional Notes" style="width:100%;margin-top:8px"></textarea>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px">
+          <button type="submit" class="btn">Submit</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- TOOLS -->
+    <section id="services" class="section">
+      <h2>Online Tools</h2>
+      <p>Insurance, FASTag, RTO, HSRP आणि इतर links पुढच्या update मध्ये add करू.</p>
+    </section>
+
+    <footer>
+      © 2025 SecondWheel.in • 
+      <a class="link" href="mailto:sales@secondwheel.in">sales@secondwheel.in</a>
+    </footer>
   </div>
 
-  <button onclick="toggleSell()">📤 Sell</button>
-  <div id="sell-options" style="display:none; margin-top: 10px;">
-    <button onclick="window.location.href='sellcar.html'">🚙 Sell Car</button>
-    <button onclick="window.location.href='sellbike.html'">🛵 Sell Bike</button>
+  <!-- WhatsApp -->
+  <div class="sticky">
+    <a href="https://wa.me/919822292955" target="_blank">WhatsApp</a>
   </div>
-</div>
 
-<script>
-function toggleBuy() {
-  const buyDiv = document.getElementById('buy-options');
-  buyDiv.style.display = (buyDiv.style.display === 'none') ? 'block' : 'none';
-  document.getElementById('sell-options').style.display = 'none';
-}
-function toggleSell() {
-  const sellDiv = document.getElementById('sell-options');
-  sellDiv.style.display = (sellDiv.style.display === 'none') ? 'block' : 'none';
-  document.getElementById('buy-options').style.display = 'none';
-}
-</script>
-<div class="grid">
-<div class="card" onclick="window.location.href='valuation.html'">💰 Valuation</div>
-<div class="card" onclick="window.location.href='insurance.html'">📄 Insurance</div>
-<div class="card" onclick="window.location.href='challan.html'">🧾 Challan</div>
-<div class="card" onclick="window.location.href='fastag.html'">🚦 FASTag</div>
-<div class="card" onclick="window.location.href='hsrp.html'">🏷️ HSRP</div>
-<div class="card" onclick="window.location.href='carloan.html'">🚘 Car Loan</div>
-<div class="card" onclick="window.location.href='bikeloan.html'">🏍️ Bike Loan</div>
-<div class="card" onclick="window.location.href='rtocheck.html'">📍 RTO Check</div>
-</div>
-<h2 style="text-align:center;">🚗 Featured Cars</h2>
-<div class="gallery-row">
-<div class="gallery-card"><img src="https://via.placeholder.com/200x120?text=Swift+2019"/><div>Swift 2019<br/>₹4.8L</div></div>
-<div class="gallery-card"><img src="https://via.placeholder.com/200x120?text=i20+2020"/><div>i20 2020<br/>₹5.9L</div></div>
-</div>
-<h2 style="text-align:center;">🏍️ Featured Bikes</h2>
-<div class="gallery-row">
-<div class="gallery-card"><img src="https://via.placeholder.com/200x120?text=Splendor+2021"/><div>Splendor 2021<br/>₹62K</div></div>
-<div class="gallery-card"><img src="https://via.placeholder.com/200x120?text=Activa+6G+2022"/><div>Activa 6G 2022<br/>₹68K</div></div>
-</div>
-<div class="testimonial">
-<p>“Second Wheel made my car sale effortless!” – Ravi J.</p>
-<p>“Quick loan and smooth experience.” – Priya M.</p>
-</div>
-<section class="features">
-<h2>Why Choose Us?</h2>
-<p>✔️ Instant Vehicle Valuation</p>
-<p>✔️ 100% Transparency</p>
-<p>✔️ Secure Payment &amp; Pickup</p>
-<p>✔️ Trusted by 500+ Customers in Satara</p>
-</section>
-<section class="testimonials">
-<h2>What Our Customers Say</h2>
-<p>"Second Wheel made my car sale effortless." – Ravi J.</p>
-<p>"Got my bike loan quickly. Great service!" – Priya M.</p>
-</section>
-<section class="faq">
-<h2>FAQs</h2>
-<details>
-<summary>How to sell my car?</summary>
-<p>Just click 'Sell Car', fill the form &amp; get valuation instantly.</p>
-</details>
-<details>
-<summary>Do I need insurance to buy?</summary>
-<p>No, but we offer vehicle insurance services too.</p>
-</details>
-<details>
-<summary>Can I get a loan for used bikes?</summary>
-<p>Yes, we offer bike loan services with minimal paperwork.</p>
-</details>
-</section>
-<section class="steps">
-<h2>How It Works</h2>
-<p>1️⃣ Select Service</p>
-<p>2️⃣ Fill Basic Info</p>
-<p>3️⃣ Get Instant Help</p>
-<p>4️⃣ Finalize Deal</p>
-</section>
-<footer>
-<p>
-<a href="about.html">About</a> |
-    <a href="contact.html">Contact</a> |
-    <a href="wishlist.html">Wishlist</a> |
-    <a href="disclaimer.html">Disclaimer</a>
-</p>
-<p>© 2025 Second Wheel - The Car Bazaar</p>
-</footer>
-<a class="floating-wa" href="https://wa.me/917038697038" target="_blank">💬 WhatsApp Us</a>
-<script>
-function toggleDarkMode() {
-  document.body.classList.toggle("dark-mode");
-}
-</script>
+  <script>
+    // Supabase init
+    const SUPABASE_URL = "https://wbjwvxckbfkutqqbgupq.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Home featured cars
+    async function loadHomeFeatured(){
+      const wrap = document.getElementById('homeFeat');
+      wrap.innerHTML = "";
+      const { data, error } = await sb
+        .from("vehicles")
+        .select("*")
+        .eq("featured", true)
+        .eq("type","car")
+        .order("created_at",{ascending:false})
+        .limit(6);
+      if(error){ console.error(error); }
+      if(!data || !data.length){ renderStaticHome(); return; }
+      renderCards(data, wrap);
+    }
+
+    function renderStaticHome(){
+      const wrap = document.getElementById('homeFeat');
+      wrap.innerHTML = `
+        <div class="card">
+          <img src="https://placehold.co/400x240?text=Alto+K10+2011" alt="Alto K10 LXI">
+          <div class="meta">
+            <b>Maruti Suzuki Alto K10 LXI</b><br>
+            ₹1,45,000 • Satara<br>
+            <small>2011 • 67,000 KM</small>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://placehold.co/400x240?text=i20+Sportz+2016" alt="Hyundai i20 Sportz">
+          <div class="meta">
+            <b>Hyundai i20 Sportz</b><br>
+            ₹5,10,000 • Satara<br>
+            <small>2016 • 88,000 KM</small>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://placehold.co/400x240?text=Swift+Dzire+2013" alt="Swift Dzire VXI">
+          <div class="meta">
+            <b>Maruti Suzuki Swift Dzire VXI</b><br>
+            ₹4,80,000 • Satara<br>
+            <small>2013 • 69,000 KM</small>
+          </div>
+        </div>
+      `;
+    }
+
+    // Featured page
+    async function loadFeatured(){
+      const { data, error } = await sb
+        .from("vehicles")
+        .select("*")
+        .eq("featured", true)
+        .order("created_at",{ascending:false})
+        .limit(40);
+      if(error){ console.error(error); return; }
+      renderCards(data.filter(x=>x.type==='car'), document.getElementById("featCars"));
+      renderCards(data.filter(x=>x.type==='bike'), document.getElementById("featBikes"));
+    }
+
+    // Buy
+    let buyType = 'car';
+    function setBuyType(t){ buyType=t; renderBuy(); }
+    async function renderBuy(){
+      const brandQ = document.getElementById('brandFilter').value.trim();
+      const cityQ = document.getElementById('cityFilter').value;
+      let q = sb.from("vehicles").select("*").eq("type", buyType).order("created_at",{ascending:false}).limit(60);
+      if(brandQ) q = q.ilike("brand", `%${brandQ}%`);
+      if(cityQ) q = q.eq("city", cityQ);
+      const { data, error } = await q;
+      if(error){ console.error(error); return; }
+      renderCards(data, document.getElementById("buyGrid"));
+    }
+
+    // Render cards
+    function renderCards(list, mount){
+      mount.innerHTML = (list||[]).map(v => `
+        <div class="card">
+          <img src="${v.image || 'https://placehold.co/400x240?text=Vehicle'}" alt="${v.title||''}" />
+          <div class="meta">
+            <b>${v.title || (v.brand+' '+v.model)}</b><br/>
+            ₹${Number(v.price||0).toLocaleString('en-IN')} • ${v.city||''}<br/>
+            <small>${v.year||''} • ${v.km||''} KM</small>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Sell form
+    document.getElementById("sellForm").addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      const mobile = document.getElementById('mobile').value || '';
+      if(mobile.replace(/\D/g,'').length!==10){ alert("Enter 10-digit mobile"); return; }
+      const payload = {
+        type: document.getElementById('vType').value.toLowerCase(),
+        brand: brand.value, model: model.value, year: +year.value,
+        km: km.value, city: city.value, mobile, notes: notes.value || "",
+        title: brand.value+" "+model.value, price: null, image: null, featured: false
+      };
+      const { error } = await sb.from("sell_leads").insert(payload);
+      if(error){ alert("Error saving form."); console.error(error); }
+      else{ alert("Submitted! We will contact you soon."); e.target.reset(); }
+    });
+
+    // Navigation
+    function showSection(id){
+      document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+      document.getElementById(id+'Tab')?.classList.add('active');
+      if(id==='featured') loadFeatured();
+      if(id==='buy') renderBuy();
+      if(id==='home') loadHomeFeatured();
+    }
+
+    // Initial
+    loadHomeFeatured();
+  </script>
 </body>
 </html>
