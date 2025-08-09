@@ -19,7 +19,7 @@
     .thumbs img{width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #e0e6ef;cursor:pointer;flex:0 0 auto}
     .bar{display:flex;gap:8px;align-items:center;margin-top:10px}
     .btn{background:#0a2c5f;color:#fff;border:none;border-radius:10px;padding:10px 14px;cursor:pointer}
-    .btn.alt{background:#ff7a00} .count{margin:8px 0 12px;text-align:center;color:#5a6b85}
+    .count{margin:8px 0 12px;text-align:center;color:#5a6b85}
     .empty{padding:16px;background:#fff;border:1px dashed #cfd6e4;border-radius:14px;text-align:center}
     footer{color:#5a6b85;text-align:center;margin:24px 0}
     @media(max-width:480px){.gallery{grid-template-columns:1fr 1fr}}
@@ -43,11 +43,14 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-    // Supabase
+    // Supabase (तुमचा प्रोजेक्ट URL/Anon key)
     const sb = createClient(
       'https://wbjwvxckbfkutqqbgupq.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw'
     );
+
+    // अपेक्षित टेबल: vehicles  (महत्त्वाचे कॉलम)
+    // id, type ('car'|'bike'), title, brand, model, year, km, city, price, image, images(jsonb optional), created_at
 
     // DOM
     const gallery = document.getElementById('gallery');
@@ -73,7 +76,7 @@
       const { data, error } = await sb
         .from('vehicles')
         .select('*')
-        .eq('type', buyType)
+        .eq('type', buyType)        // फक्त 'type' कॉलम वापरतो
         .order('created_at', { ascending:false })
         .limit(60);
 
