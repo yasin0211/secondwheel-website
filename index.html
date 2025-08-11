@@ -20,12 +20,13 @@
     .container{max-width:1120px;margin:18px auto;padding:0 14px}
     .section{display:none;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 6px 18px rgba(23,29,40,.06);margin-bottom:18px}
     .section.active{display:block}
-    h2{color:var(--brand);margin:6px 0 12px}/* = OLX-style gallery */
+    h2{color:var(--brand);margin:6px 0 12px}/* Toolbar */
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
 .toolbar .input, .toolbar select{padding:10px;border-radius:10px;border:1px solid #cfd6e4;background:#fff}
 .toolbar .btn{padding:10px 14px;border:none;border-radius:10px;background:var(--brand);color:#fff;cursor:pointer}
 .toolbar .btn.alt{background:var(--accent)}
 
+/* OLX-style grid */
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 @media (max-width:1024px){.grid{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}}
@@ -54,22 +55,33 @@
 @keyframes sh{0%{background-position:100% 0}100%{background-position:0 0}}
 .sk.card{border-radius:14px;height:280px}
 
-footer{text-align:center;padding:14px;color:#fff;background:var(--brand);border-radius:12px}
-.sticky{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:10px;z-index:60}
-.sticky a{background:#25D366;color:#fff;padding:12px 16px;border-radius:999px;text-decoration:none;font-weight:700}
-a.link{color:#ffe6b3;text-decoration:none}
+/* Sell Tabs */
+.seg{display:flex;gap:8px;margin:8px 0 14px}
+.seg button{border:1px solid var(--border);background:#fff;padding:10px 12px;border-radius:10px;cursor:pointer}
+.seg button.active{background:var(--chip)}
+
+/* Footer */
+footer{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(23,29,40,.06)}
+.foot{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:680px){.foot{grid-template-columns:1fr}}
+.foot h4{margin-bottom:8px;color:var(--brand)}
+.foot a{color:var(--muted);text-decoration:none;display:block;margin:4px 0}
+.sub{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+/* WhatsApp Floating */
+.wa{position:fixed;right:14px;bottom:14px;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#25D366;color:#fff;box-shadow:0 10px 20px rgba(0,0,0,.15);z-index:80;font-weight:900}
 
   </style>
 </head>
-<body>  <header>
+<body>  <!-- HEADER -->  <header>
     <img src="assets/logo-yellow-metallic.png" alt="Second Wheel Logo" onerror="this.src='https://placehold.co/220x48?text=SECOND+WHEEL'">
     <h1>Trusted Vehicles, Smart Deals</h1>
-  </header>  <nav>
+  </header>  <!-- NAV -->  <nav>
     <button onclick="showSection('home')" id="homeTab" class="active">Home</button>
     <button onclick="showSection('buy')" id="buyTab">Buy</button>
     <button onclick="showSection('featured')" id="featuredTab">Featured</button>
     <button onclick="showSection('sell')" id="sellTab">Sell</button>
-    <button onclick="showSection('services')" id="servicesTab">Tools</button>
+    <button onclick="showSection('tools')" id="toolsTab">Tools</button>
   </nav>  <div class="container">
     <!-- HOME -->
     <section id="home" class="section active">
@@ -106,56 +118,94 @@ a.link{color:#ffe6b3;text-decoration:none}
   <div id="featBikes" class="grid"></div>
 </section>
 
-<!-- SELL -->
+<!-- SELL (Car / Bike tabs + gallery) -->
 <section id="sell" class="section">
   <h2>Sell Your Vehicle</h2>
-  <form id="sellForm">
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0">
-      <select id="vType" required>
-        <option disabled selected value="">Vehicle Type</option>
-        <option>Car</option><option>Bike</option>
-      </select>
-      <input id="brand" placeholder="Brand" required />
-      <input id="model" placeholder="Model" required />
-      <input id="year" type="number" placeholder="Year" required />
-      <input id="km" placeholder="KM Driven" required />
-      <input id="city" placeholder="City" required />
-      <input id="mobile" type="tel" placeholder="Mobile (10 digits)" required />
-    </div>
-    <textarea id="notes" placeholder="Additional Notes" style="width:100%;margin-top:8px"></textarea>
-    <div style="display:flex;justify-content:flex-end;margin-top:8px">
-      <button type="submit" class="btn">Submit</button>
-    </div>
-  </form>
+  <div class="seg">
+    <button id="sellCarBtn" class="active" onclick="setSellTab('car')">Sell Car</button>
+    <button id="sellBikeBtn" onclick="setSellTab('bike')">Sell Bike</button>
+  </div>
+  <p style="color:var(--muted);margin-bottom:6px">Pick your category and preview recent deals like OLX – then proceed to form (next page) to submit your vehicle.</p>
+  <div id="sellCar" class="grid"></div>
+  <div id="sellBike" class="grid" style="display:none"></div>
+  <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+    <a class="toolbar btn" href="sell-car.html">Proceed to Sell Car Form →</a>
+    <a class="toolbar btn alt" href="sell-bike.html">Proceed to Sell Bike Form →</a>
+  </div>
 </section>
 
 <!-- TOOLS -->
-<section id="services" class="section">
+<section id="tools" class="section">
   <h2>Online Tools</h2>
-  <p>Insurance, FASTag, RTO, HSRP आणि इतर links पुढच्या update मध्ये add करू.</p>
+  <div class="foot" style="border:none;box-shadow:none;padding:0">
+    <div>
+      <h4>RTO & Legal</h4>
+      <a href="https://parivahan.gov.in" target="_blank">Vehicle Number Check</a>
+      <a href="https://echallan.parivahan.gov.in" target="_blank">eChallan Payment</a>
+      <a href="https://maharashtra.hsrp.in" target="_blank">Apply HSRP</a>
+    </div>
+    <div>
+      <h4>Finance & Docs</h4>
+      <a href="#">Used Car Loan</a>
+      <a href="#">Used Bike Loan</a>
+      <a href="#">Insurance (Turtlemint)</a>
+    </div>
+    <div>
+      <h4>FASTag & More</h4>
+      <a href="#">Buy FASTag</a>
+      <a href="#">Recharge FASTag</a>
+      <a href="#">Doorstep Inspection</a>
+    </div>
+  </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
-  © 2025 SecondWheel.in • 
-  <a class="link" href="mailto:sales@secondwheel.in">sales@secondwheel.in</a>
+  <div class="foot">
+    <div>
+      <h4>About Us</h4>
+      <p style="color:var(--muted)">Second Wheel is a pre‑owned cars & bikes marketplace based in Maharashtra. We focus on transparent pricing and quick documentation.</p>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <a href="#home">Home</a>
+      <a href="#buy">Buy</a>
+      <a href="#featured">Featured</a>
+      <a href="#sell">Sell</a>
+      <a href="#tools">Tools</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="mailto:sales@secondwheel.in">sales@secondwheel.in</a>
+      <a href="https://wa.me/919890507278" target="_blank">WhatsApp</a>
+      <a href="#">Instagram</a>
+      <a href="#">Facebook</a>
+      <p style="color:var(--muted);margin-top:6px">Molacha Odha, Satara, Maharashtra • Pin 415002</p>
+    </div>
+  </div>
+  <div class="sub">
+    <span>© <span id="year"></span> SecondWheel.in • Trusted Vehicles, Smart Deals</span>
+    <span><a href="#" style="text-decoration:none;color:var(--muted)">Privacy Policy</a> · <a href="#" style="text-decoration:none;color:var(--muted)">Terms</a></span>
+  </div>
 </footer>
 
-  </div>  <!-- WhatsApp -->  <div class="sticky">
-    <a href="https://wa.me/919822292955" target="_blank">WhatsApp</a>
-  </div>  <script>
+  </div>  <!-- WhatsApp Floating (round, bottom-right) --><a class="wa" href="https://wa.me/919822292955" target="_blank" aria-label="Chat on WhatsApp">WA</a>
+
+  <script>
     // Supabase init
     const SUPABASE_URL = "https://wbjwvxckbfkutqqbgupq.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     // ===== Helpers
-    const fmtINR = n => \`₹\${Number(n||0).toLocaleString('en-IN')}\`;
-    const relTime = iso => { try { const d=new Date(iso); const diff=(Date.now()-d.getTime())/1000; if(diff<60) return 'just now'; const m=Math.floor(diff/60); if(m<60) return \`${m} min ago\`; const h=Math.floor(m/60); if(h<24) return \`${h}h ago\`; const d2=Math.floor(h/24); return \`${d2}d ago\`; } catch{ return '' }};
+    const fmtINR = n => `₹${Number(n||0).toLocaleString('en-IN')}`;
+    const relTime = iso => { try { const d=new Date(iso); const diff=(Date.now()-d.getTime())/1000; if(diff<60) return 'just now'; const m=Math.floor(diff/60); if(m<60) return `${m} min ago`; const h=Math.floor(m/60); if(h<24) return `${h}h ago`; const d2=Math.floor(h/24); return `${d2}d ago`; } catch{ return '' } };
     const wishKey = 'sw_wishlist';
     const getWish = () => new Set(JSON.parse(localStorage.getItem(wishKey)||'[]'));
     const setWish = s => localStorage.setItem(wishKey, JSON.stringify([...s]));
 
-    // ===== OLX-style card renderer
+    // ===== Card Renderer (OLX style)
     function card(v){
       const verified = v.verified || v.docs_complete || false;
       const status = (v.status||'Available');
@@ -200,24 +250,20 @@ a.link{color:#ffe6b3;text-decoration:none}
       wrap.insertAdjacentHTML('beforeend', data.map(card).join(''));
       homePage++; more.hidden = (from+data.length)>=count;
     }
-    document.getElementById('homeMore').addEventListener('click', ()=>loadHomeFeatured());
+    document.getElementById('homeMore')?.addEventListener('click', ()=>loadHomeFeatured());
 
     function renderStaticHome(){
       const wrap = document.getElementById('homeFeat');
       wrap.innerHTML = [
-        {title:'Maruti Suzuki Alto K10 LXI',price:145000,city:'Satara',year:2011,km:'67,000',image:'https://placehold.co/640x480?text=Alto+K10+2011'},
-        {title:'Hyundai i20 Sportz',price:510000,city:'Satara',year:2016,km:'88,000',image:'https://placehold.co/640x480?text=i20+Sportz+2016'},
-        {title:'Swift Dzire VXI',price:480000,city:'Satara',year:2013,km:'69,000',image:'https://placehold.co/640x480?text=Dzire+2013'}
+        {title:'Maruti Suzuki Alto K10 LXI',price:145000,city:'Satara',year:2011,km:'67000',image:'https://placehold.co/640x480?text=Alto+K10+2011'},
+        {title:'Hyundai i20 Sportz',price:510000,city:'Satara',year:2016,km:'88000',image:'https://placehold.co/640x480?text=i20+Sportz+2016'},
+        {title:'Swift Dzire VXI',price:480000,city:'Satara',year:2013,km:'69000',image:'https://placehold.co/640x480?text=Dzire+2013'}
       ].map(card).join('');
     }
 
     // ===== FEATURED PAGE
     async function loadFeatured(){
-      const { data, error } = await sb
-        .from("vehicles").select("*")
-        .eq("featured", true)
-        .order("created_at",{ascending:false})
-        .limit(40);
+      const { data, error } = await sb.from("vehicles").select("*").eq("featured", true).order("created_at",{ascending:false}).limit(40);
       if(error){ console.error(error); return; }
       document.getElementById("featCars").innerHTML = (data||[]).filter(x=>x.type==='car').map(card).join('');
       document.getElementById("featBikes").innerHTML = (data||[]).filter(x=>x.type==='bike').map(card).join('');
@@ -226,7 +272,7 @@ a.link{color:#ffe6b3;text-decoration:none}
     // ===== BUY with infinite scroll
     let buyType='car', buyPage=0, buyDone=false; const BUY_SIZE=20;
     function setBuyType(t){ buyType=t; resetBuy(); }
-    function resetBuy(){ buyPage=0; buyDone=false; document.getElementById('buyGrid').innerHTML=''; loadMoreBuy(); }
+    function resetBuy(){ buyPage=0; buyDone=false; document.getElementById('buyGrid').innerHTML=''; document.getElementById('buyMore').hidden=false; loadMoreBuy(); }
 
     async function loadMoreBuy(){
       if(buyDone) return;
@@ -255,11 +301,30 @@ a.link{color:#ffe6b3;text-decoration:none}
     }
     document.getElementById('buyMore').addEventListener('click', loadMoreBuy);
 
-    // Infinite scroll
+    // Infinite scroll helper
     const io = new IntersectionObserver((entries)=>{
       entries.forEach(e=>{ if(e.isIntersecting && !buyDone && document.getElementById('buy').classList.contains('active')) loadMoreBuy(); })
     },{rootMargin:'200px'});
     io.observe(document.getElementById('buyMore'));
+
+    // ===== SELL tabs (separate mini‑galleries)
+    function setSellTab(t){
+      document.getElementById('sellCarBtn').classList.toggle('active', t==='car');
+      document.getElementById('sellBikeBtn').classList.toggle('active', t==='bike');
+      document.getElementById('sellCar').style.display = (t==='car')?'grid':'none';
+      document.getElementById('sellBike').style.display = (t==='bike')?'grid':'none';
+      if(t==='car') loadSellGallery('car'); else loadSellGallery('bike');
+    }
+    async function loadSellGallery(type){
+      const mount = type==='car'?document.getElementById('sellCar'):document.getElementById('sellBike');
+      if(mount.dataset.loaded==='1') return; // load once
+      mount.insertAdjacentHTML('beforeend', skel(6));
+      const { data, error } = await sb.from('vehicles').select('*').eq('type', type).order('created_at',{ascending:false}).limit(12);
+      mount.querySelectorAll('.sk.card').forEach(el=>el.remove());
+      if(error){ console.error(error); return; }
+      mount.innerHTML = (data||[]).map(card).join('');
+      mount.dataset.loaded = '1';
+    }
 
     // ===== Wishlist toggle
     function toggleWish(id){
@@ -270,22 +335,6 @@ a.link{color:#ffe6b3;text-decoration:none}
       if(el) el.classList.toggle('active');
     }
 
-    // ===== SELL form (unchanged)
-    document.getElementById("sellForm").addEventListener("submit", async (e)=>{
-      e.preventDefault();
-      const mobile = document.getElementById('mobile').value || '';
-      if(mobile.replace(/\D/g,'').length!==10){ alert("Enter 10-digit mobile"); return; }
-      const payload = {
-        type: document.getElementById('vType').value.toLowerCase(),
-        brand: brand.value, model: model.value, year: +year.value,
-        km: km.value, city: city.value, mobile, notes: notes.value || "",
-        title: brand.value+" "+model.value, price: null, image: null, featured: false
-      };
-      const { error } = await sb.from("sell_leads").insert(payload);
-      if(error){ alert("Error saving form."); console.error(error); }
-      else{ alert("Submitted! We will contact you soon."); e.target.reset(); }
-    });
-
     // ===== Nav
     function showSection(id){
       document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -295,9 +344,11 @@ a.link{color:#ffe6b3;text-decoration:none}
       if(id==='featured') loadFeatured();
       if(id==='buy') resetBuy();
       if(id==='home') loadHomeFeatured(true);
+      if(id==='sell') { setSellTab('car'); }
     }
 
     // ===== Init
+    document.getElementById('year').textContent = new Date().getFullYear();
     loadHomeFeatured(true);
   </script></body>
 </html>
