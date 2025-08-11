@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>SecondWheel.in – Trusted Vehicles, Smart Deals</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Supabase v2 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -21,7 +20,7 @@
     h2{color:#0a2c5f;margin:6px 0 12px}
     .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
     .card{background:#fff;border:1px solid #e8ebf3;border-radius:12px;overflow:hidden}
-    .card img{width:100%;height:150px;object-fit:cover;background:#eef2f7}
+    .card img{width:100%;height:150px;object-fit:cover;background:#eef2f7;cursor:pointer}
     .card .meta{padding:10px}
     footer{text-align:center;padding:14px;color:#fff;background:#0a2c5f;border-radius:12px}
     .sticky{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:10px;z-index:60}
@@ -31,12 +30,15 @@
     .btn{background:#0a2c5f;color:#fff;border:none;border-radius:10px;padding:10px 14px;cursor:pointer}
     .btn.secondary{background:#ff7a00}
     input,select,textarea{padding:10px;border-radius:8px;border:1px solid #cfd6e4}
+    /* Gallery Modal styles: */
+    #galleryModal {display:none;position:fixed;z-index:9999;top:0;left:0;right:0;bottom:0;background:rgba(20,32,51,0.95);align-items:center;justify-content:center;flex-direction:column;}
+    #galleryClose {font-size:2rem;color:#fff;position:absolute;top:25px;right:30px;cursor:pointer;}
+    #galleryMainImg {max-width:95vw;max-height:80vh;border-radius:16px;box-shadow:0 3px 16px #333;}
   </style>
 </head>
 <body>
 
   <header>
-    <!-- तुमचा final लोगो URL -->
     <img src="assets/logo-yellow-metallic.png" alt="Second Wheel Logo" onerror="this.src='https://placehold.co/220x48?text=SECOND+WHEEL'">
     <h1>Trusted Vehicles, Smart Deals</h1>
   </header>
@@ -119,128 +121,43 @@
     <a href="https://wa.me/919822292955" target="_blank">WhatsApp</a>
   </div>
 
+  <!-- Gallery Modal -->
+  <div id="galleryModal">
+    <span id="galleryClose">×</span>
+    <img id="galleryMainImg" src="">
+    <div style="margin-top:20px;">
+      <button id="galleryPrev" class="btn" style="margin-right:10px;">Previous</button>
+      <button id="galleryNext" class="btn">Next</button>
+    </div>
+  </div>
+
   <script>
     // Supabase init
     const SUPABASE_URL = "https://wbjwvxckbfkutqqbgupq.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Home featured cars
-    async function loadHomeFeatured(){
-      const wrap = document.getElementById('homeFeat');
-      wrap.innerHTML = "";
-      const { data, error } = await sb
-        .from("vehicles")
-        .select("*")
-        .eq("featured", true)
-        .eq("type","car")
-        .order("created_at",{ascending:false})
-        .limit(6);
-      if(error){ console.error(error); }
-      if(!data || !data.length){ renderStaticHome(); return; }
-      renderCards(data, wrap);
+    // --- Gallery Variables ---
+    let galleryData = [];
+    let galleryIndex = 0;
+
+    // Gallery Functions
+    function initGallery(list) {
+      galleryData = (list||[]).map(v => v.image || 'https://placehold.co/400x240?text=Vehicle');
     }
-
-    function renderStaticHome(){
-      const wrap = document.getElementById('homeFeat');
-      wrap.innerHTML = `
-        <div class="card">
-          <img src="https://placehold.co/400x240?text=Alto+K10+2011" alt="Alto K10 LXI">
-          <div class="meta">
-            <b>Maruti Suzuki Alto K10 LXI</b><br>
-            ₹1,45,000 • Satara<br>
-            <small>2011 • 67,000 KM</small>
-          </div>
-        </div>
-        <div class="card">
-          <img src="https://placehold.co/400x240?text=i20+Sportz+2016" alt="Hyundai i20 Sportz">
-          <div class="meta">
-            <b>Hyundai i20 Sportz</b><br>
-            ₹5,10,000 • Satara<br>
-            <small>2016 • 88,000 KM</small>
-          </div>
-        </div>
-        <div class="card">
-          <img src="https://placehold.co/400x240?text=Swift+Dzire+2013" alt="Swift Dzire VXI">
-          <div class="meta">
-            <b>Maruti Suzuki Swift Dzire VXI</b><br>
-            ₹4,80,000 • Satara<br>
-            <small>2013 • 69,000 KM</small>
-          </div>
-        </div>
-      `;
+    function openGallery(idx){
+      document.getElementById('galleryModal').style.display = 'flex';
+      galleryIndex = idx;
+      updateGalleryImage();
     }
-
-    // Featured page
-    async function loadFeatured(){
-      const { data, error } = await sb
-        .from("vehicles")
-        .select("*")
-        .eq("featured", true)
-        .order("created_at",{ascending:false})
-        .limit(40);
-      if(error){ console.error(error); return; }
-      renderCards(data.filter(x=>x.type==='car'), document.getElementById("featCars"));
-      renderCards(data.filter(x=>x.type==='bike'), document.getElementById("featBikes"));
+    function updateGalleryImage(){
+      document.getElementById('galleryMainImg').src = galleryData[galleryIndex];
     }
-
-    // Buy
-    let buyType = 'car';
-    function setBuyType(t){ buyType=t; renderBuy(); }
-    async function renderBuy(){
-      const brandQ = document.getElementById('brandFilter').value.trim();
-      const cityQ = document.getElementById('cityFilter').value;
-      let q = sb.from("vehicles").select("*").eq("type", buyType).order("created_at",{ascending:false}).limit(60);
-      if(brandQ) q = q.ilike("brand", `%${brandQ}%`);
-      if(cityQ) q = q.eq("city", cityQ);
-      const { data, error } = await q;
-      if(error){ console.error(error); return; }
-      renderCards(data, document.getElementById("buyGrid"));
-    }
-
-    // Render cards
-    function renderCards(list, mount){
-      mount.innerHTML = (list||[]).map(v => `
-        <div class="card">
-          <img src="${v.image || 'https://placehold.co/400x240?text=Vehicle'}" alt="${v.title||''}" />
-          <div class="meta">
-            <b>${v.title || (v.brand+' '+v.model)}</b><br/>
-            ₹${Number(v.price||0).toLocaleString('en-IN')} • ${v.city||''}<br/>
-            <small>${v.year||''} • ${v.km||''} KM</small>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Sell form
-    document.getElementById("sellForm").addEventListener("submit", async (e)=>{
-      e.preventDefault();
-      const mobile = document.getElementById('mobile').value || '';
-      if(mobile.replace(/\D/g,'').length!==10){ alert("Enter 10-digit mobile"); return; }
-      const payload = {
-        type: document.getElementById('vType').value.toLowerCase(),
-        brand: brand.value, model: model.value, year: +year.value,
-        km: km.value, city: city.value, mobile, notes: notes.value || "",
-        title: brand.value+" "+model.value, price: null, image: null, featured: false
-      };
-      const { error } = await sb.from("sell_leads").insert(payload);
-      if(error){ alert("Error saving form."); console.error(error); }
-      else{ alert("Submitted! We will contact you soon."); e.target.reset(); }
-    });
-
-    // Navigation
-    function showSection(id){
-      document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-      document.getElementById(id+'Tab')?.classList.add('active');
-      if(id==='featured') loadFeatured();
-      if(id==='buy') renderBuy();
-      if(id==='home') loadHomeFeatured();
-    }
-
-    // Initial
-    loadHomeFeatured();
-  </script>
-</body>
-</html>
+    document.getElementById('galleryClose').onclick = function() {
+      document.getElementById('galleryModal').style.display = 'none';
+    };
+    document.getElementById('galleryPrev').onclick = function() {
+      galleryIndex = (galleryIndex-1+galleryData.length) % galleryData.length;
+      updateGalleryImage();
+    };
+    document
