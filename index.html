@@ -1,163 +1,303 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>SecondWheel.in – Trusted Vehicles, Smart Deals</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Supabase v2 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Noto Sans',sans-serif;background:#f5f7fb;color:#142033;line-height:1.45}
-    header{background:#0a2c5f;color:#fff;text-align:center;padding:18px}
+    :root{
+      --ink:#142033;--muted:#6b7280;--bg:#f5f7fb;--card:#fff;--brand:#0a2c5f;--accent:#ff7a00;--ok:#17b26a;--warn:#ef4444;--border:#e6ebf2;--chip:#eef2f7
+    }
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+    header{background:var(--brand);color:#fff;text-align:center;padding:18px}
     header img{height:48px}
     header h1{font-size:1.15rem;margin-top:8px}
     nav{position:sticky;top:0;z-index:50;display:flex;gap:4px;justify-content:center;background:#0f356e;padding:6px 8px}
     nav button{padding:10px 14px;border:none;background:transparent;color:#fff;font-weight:700;cursor:pointer;border-radius:8px}
     nav button.active{background:#1b4fa0}
-    .container{max-width:1100px;margin:18px auto;padding:0 14px}
-    .section{display:none;background:#fff;border:1px solid #e6ebf2;border-radius:14px;padding:22px;box-shadow:0 6px 18px rgba(23,29,40,.06);margin-bottom:18px}
+    .container{max-width:1120px;margin:18px auto;padding:0 14px}
+    .section{display:none;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 6px 18px rgba(23,29,40,.06);margin-bottom:18px}
     .section.active{display:block}
-    h2{color:#0a2c5f;margin:6px 0 12px}
-    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
-    .card{background:#fff;border:1px solid #e8ebf3;border-radius:12px;overflow:hidden}
-    .card img{width:100%;height:150px;object-fit:cover;background:#eef2f7;cursor:pointer}
-    .card .meta{padding:10px}
-    footer{text-align:center;padding:14px;color:#fff;background:#0a2c5f;border-radius:12px}
-    .sticky{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:10px;z-index:60}
-    .sticky a{background:#25D366;color:#fff;padding:12px 16px;border-radius:999px;text-decoration:none;font-weight:700}
-    a.link{color:#ffe6b3;text-decoration:none}
-    @media (max-width:480px){.gallery{grid-template-columns:1fr 1fr}}
-    .btn{background:#0a2c5f;color:#fff;border:none;border-radius:10px;padding:10px 14px;cursor:pointer}
-    .btn.secondary{background:#ff7a00}
-    input,select,textarea{padding:10px;border-radius:8px;border:1px solid #cfd6e4}
-    /* Gallery Modal styles: */
-    #galleryModal {display:none;position:fixed;z-index:9999;top:0;left:0;right:0;bottom:0;background:rgba(20,32,51,0.95);align-items:center;justify-content:center;flex-direction:column;}
-    #galleryClose {font-size:2rem;color:#fff;position:absolute;top:25px;right:30px;cursor:pointer;}
-    #galleryMainImg {max-width:95vw;max-height:80vh;border-radius:16px;box-shadow:0 3px 16px #333;}
+    h2{color:var(--brand);margin:6px 0 12px}/* = OLX-style gallery */
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+.toolbar .input, .toolbar select{padding:10px;border-radius:10px;border:1px solid #cfd6e4;background:#fff}
+.toolbar .btn{padding:10px 14px;border:none;border-radius:10px;background:var(--brand);color:#fff;cursor:pointer}
+.toolbar .btn.alt{background:var(--accent)}
+
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:1024px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:460px){.grid{grid-template-columns:1fr}}
+
+.tile{position:relative;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:box-shadow .2s ease,border-color .2s ease}
+.tile:hover{box-shadow:0 10px 24px rgba(20,32,51,.12);border-color:#dfe5ef}
+.thumb{width:100%;aspect-ratio:4/3;object-fit:cover;background:#e9eef6}
+.flag{position:absolute;top:10px;left:10px;display:flex;gap:6px;align-items:center}
+.badge{font-size:12px;color:#fff;padding:6px 10px;border-radius:999px;background:var(--accent)}
+.badge.green{background:var(--ok)}
+.badge.gray{background:#64748b}
+.wish{position:absolute;top:10px;right:10px;background:#fff;border:1px solid var(--border);width:36px;height:36px;border-radius:50%;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,.08)}
+.wish.active{color:#ef4444;border-color:#fecaca}
+
+.meta{padding:10px 12px;display:grid;gap:6px}
+.price{font-weight:800;font-size:1.05rem}
+.title{font-weight:700;color:#111827}
+.spec{font-size:12px;color:var(--muted)}
+.loc{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+
+.loadmore{margin:14px auto 4px;display:block;padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:#fff;cursor:pointer}
+
+/* Skeleton */
+.sk{background:linear-gradient(90deg,#eef2f7, #f6f8fc, #eef2f7);background-size:200% 100%;animation:sh 1.2s infinite}
+@keyframes sh{0%{background-position:100% 0}100%{background-position:0 0}}
+.sk.card{border-radius:14px;height:280px}
+
+footer{text-align:center;padding:14px;color:#fff;background:var(--brand);border-radius:12px}
+.sticky{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:10px;z-index:60}
+.sticky a{background:#25D366;color:#fff;padding:12px 16px;border-radius:999px;text-decoration:none;font-weight:700}
+a.link{color:#ffe6b3;text-decoration:none}
+
   </style>
 </head>
-<body>
-
-  <header>
+<body>  <header>
     <img src="assets/logo-yellow-metallic.png" alt="Second Wheel Logo" onerror="this.src='https://placehold.co/220x48?text=SECOND+WHEEL'">
     <h1>Trusted Vehicles, Smart Deals</h1>
-  </header>
-
-  <nav>
+  </header>  <nav>
     <button onclick="showSection('home')" id="homeTab" class="active">Home</button>
     <button onclick="showSection('buy')" id="buyTab">Buy</button>
     <button onclick="showSection('featured')" id="featuredTab">Featured</button>
     <button onclick="showSection('sell')" id="sellTab">Sell</button>
     <button onclick="showSection('services')" id="servicesTab">Tools</button>
-  </nav>
-
-  <div class="container">
+  </nav>  <div class="container">
     <!-- HOME -->
     <section id="home" class="section active">
       <h2>Featured Cars</h2>
-      <div id="homeFeat" class="gallery"></div>
-    </section>
-
-    <!-- BUY -->
-    <section id="buy" class="section">
-      <h2>Buy Vehicles</h2>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0">
-        <button class="btn" onclick="setBuyType('car')">Cars</button>
-        <button class="btn secondary" onclick="setBuyType('bike')">Bikes</button>
-        <input id="brandFilter" placeholder="Filter by brand" oninput="renderBuy()" style="flex:1 1 240px">
-        <select id="cityFilter" onchange="renderBuy()">
-          <option value="">All Cities</option>
-          <option>Pune</option><option>Mumbai</option><option>Nashik</option><option>Satara</option>
-        </select>
-      </div>
-      <div id="buyGrid" class="gallery"></div>
-    </section>
-
-    <!-- FEATURED PAGE -->
-    <section id="featured" class="section">
-      <h2>🚗 Featured Cars</h2>
-      <div id="featCars" class="gallery"></div>
-      <h2 style="margin-top:14px">🏍️ Featured Bikes</h2>
-      <div id="featBikes" class="gallery"></div>
-    </section>
-
-    <!-- SELL -->
-    <section id="sell" class="section">
-      <h2>Sell Your Vehicle</h2>
-      <form id="sellForm">
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0">
-          <select id="vType" required>
-            <option disabled selected value="">Vehicle Type</option>
-            <option>Car</option><option>Bike</option>
-          </select>
-          <input id="brand" placeholder="Brand" required />
-          <input id="model" placeholder="Model" required />
-          <input id="year" type="number" placeholder="Year" required />
-          <input id="km" placeholder="KM Driven" required />
-          <input id="city" placeholder="City" required />
-          <input id="mobile" type="tel" placeholder="Mobile (10 digits)" required />
-        </div>
-        <textarea id="notes" placeholder="Additional Notes" style="width:100%;margin-top:8px"></textarea>
-        <div style="display:flex;justify-content:flex-end;margin-top:8px">
-          <button type="submit" class="btn">Submit</button>
-        </div>
-      </form>
-    </section>
-
-    <!-- TOOLS -->
-    <section id="services" class="section">
-      <h2>Online Tools</h2>
-      <p>Insurance, FASTag, RTO, HSRP आणि इतर links पुढच्या update मध्ये add करू.</p>
-    </section>
-
-    <footer>
-      © 2025 SecondWheel.in • 
-      <a class="link" href="mailto:sales@secondwheel.in">sales@secondwheel.in</a>
-    </footer>
+      <div id="homeFeat" class="grid"></div>
+      <button id="homeMore" class="loadmore" hidden>Load more</button>
+    </section><!-- BUY -->
+<section id="buy" class="section">
+  <h2>Buy Vehicles</h2>
+  <div class="toolbar">
+    <button class="btn" onclick="setBuyType('car')">Cars</button>
+    <button class="btn alt" onclick="setBuyType('bike')">Bikes</button>
+    <input id="brandFilter" class="input" placeholder="Brand (e.g. Maruti)" oninput="resetBuy()">
+    <input id="qFilter" class="input" placeholder="Model / Variant" oninput="resetBuy()">
+    <select id="cityFilter" onchange="resetBuy()">
+      <option value="">All Cities</option>
+      <option>Pune</option><option>Mumbai</option><option>Nashik</option><option>Satara</option>
+    </select>
+    <select id="sortFilter" onchange="resetBuy()">
+      <option value="new">Newest</option>
+      <option value="price_low">Price: Low to High</option>
+      <option value="price_high">Price: High to Low</option>
+    </select>
   </div>
+  <div id="buyGrid" class="grid"></div>
+  <button id="buyMore" class="loadmore" hidden>Load more</button>
+</section>
 
-  <!-- WhatsApp -->
-  <div class="sticky">
-    <a href="https://wa.me/919822292955" target="_blank">WhatsApp</a>
-  </div>
+<!-- FEATURED PAGE -->
+<section id="featured" class="section">
+  <h2>🚗 Featured Cars</h2>
+  <div id="featCars" class="grid"></div>
+  <h2 style="margin-top:14px">🏍️ Featured Bikes</h2>
+  <div id="featBikes" class="grid"></div>
+</section>
 
-  <!-- Gallery Modal -->
-  <div id="galleryModal">
-    <span id="galleryClose">×</span>
-    <img id="galleryMainImg" src="">
-    <div style="margin-top:20px;">
-      <button id="galleryPrev" class="btn" style="margin-right:10px;">Previous</button>
-      <button id="galleryNext" class="btn">Next</button>
+<!-- SELL -->
+<section id="sell" class="section">
+  <h2>Sell Your Vehicle</h2>
+  <form id="sellForm">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0">
+      <select id="vType" required>
+        <option disabled selected value="">Vehicle Type</option>
+        <option>Car</option><option>Bike</option>
+      </select>
+      <input id="brand" placeholder="Brand" required />
+      <input id="model" placeholder="Model" required />
+      <input id="year" type="number" placeholder="Year" required />
+      <input id="km" placeholder="KM Driven" required />
+      <input id="city" placeholder="City" required />
+      <input id="mobile" type="tel" placeholder="Mobile (10 digits)" required />
     </div>
-  </div>
+    <textarea id="notes" placeholder="Additional Notes" style="width:100%;margin-top:8px"></textarea>
+    <div style="display:flex;justify-content:flex-end;margin-top:8px">
+      <button type="submit" class="btn">Submit</button>
+    </div>
+  </form>
+</section>
 
-  <script>
+<!-- TOOLS -->
+<section id="services" class="section">
+  <h2>Online Tools</h2>
+  <p>Insurance, FASTag, RTO, HSRP आणि इतर links पुढच्या update मध्ये add करू.</p>
+</section>
+
+<footer>
+  © 2025 SecondWheel.in • 
+  <a class="link" href="mailto:sales@secondwheel.in">sales@secondwheel.in</a>
+</footer>
+
+  </div>  <!-- WhatsApp -->  <div class="sticky">
+    <a href="https://wa.me/919822292955" target="_blank">WhatsApp</a>
+  </div>  <script>
     // Supabase init
     const SUPABASE_URL = "https://wbjwvxckbfkutqqbgupq.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // --- Gallery Variables ---
-    let galleryData = [];
-    let galleryIndex = 0;
+    // ===== Helpers
+    const fmtINR = n => \`₹\${Number(n||0).toLocaleString('en-IN')}\`;
+    const relTime = iso => { try { const d=new Date(iso); const diff=(Date.now()-d.getTime())/1000; if(diff<60) return 'just now'; const m=Math.floor(diff/60); if(m<60) return \`${m} min ago\`; const h=Math.floor(m/60); if(h<24) return \`${h}h ago\`; const d2=Math.floor(h/24); return \`${d2}d ago\`; } catch{ return '' }};
+    const wishKey = 'sw_wishlist';
+    const getWish = () => new Set(JSON.parse(localStorage.getItem(wishKey)||'[]'));
+    const setWish = s => localStorage.setItem(wishKey, JSON.stringify([...s]));
 
-    // Gallery Functions
-    function initGallery(list) {
-      galleryData = (list||[]).map(v => v.image || 'https://placehold.co/400x240?text=Vehicle');
+    // ===== OLX-style card renderer
+    function card(v){
+      const verified = v.verified || v.docs_complete || false;
+      const status = (v.status||'Available');
+      const wished = getWish().has(v.id);
+      return `
+      <article class="tile" data-id="${v.id}">
+        <div class="flag">
+          ${v.featured?'<span class="badge">Featured</span>':''}
+          <span class="badge ${status==='Available'?'green':'gray'}">${status}</span>
+          ${verified?'<span class="badge green">Verified</span>':''}
+        </div>
+        <button class="wish ${wished?'active':''}" title="Save" onclick="toggleWish('${v.id}')">❤</button>
+        <img class="thumb" loading="lazy" src="${v.image || 'https://placehold.co/640x480?text=Vehicle'}" alt="${v.title||v.brand+' '+v.model}">
+        <div class="meta">
+          <div class="price">${fmtINR(v.price||0)}</div>
+          <div class="title">${v.title || (v.brand+' '+v.model)}</div>
+          <div class="spec">${[v.year,v.fuel,v.km?`${v.km} KM`:null].filter(Boolean).join(' • ')}</div>
+          <div class="loc"><span>${v.city||''}${v.location?(' · '+v.location):''}</span><span>${relTime(v.created_at)}</span></div>
+        </div>
+      </article>`
     }
-    function openGallery(idx){
-      document.getElementById('galleryModal').style.display = 'flex';
-      galleryIndex = idx;
-      updateGalleryImage();
+
+    function skel(n){ return Array.from({length:n}).map(()=>'<div class="sk card"></div>').join(''); }
+
+    // ===== HOME FEATURED with pagination
+    let homePage=0, homeDone=false; const HOME_SIZE=8;
+    async function loadHomeFeatured(reset=false){
+      const wrap = document.getElementById('homeFeat');
+      const more = document.getElementById('homeMore');
+      if(reset){ homePage=0; homeDone=false; wrap.innerHTML=''; }
+      if(homeDone) return; 
+      wrap.insertAdjacentHTML('beforeend', skel(4));
+      const from = homePage*HOME_SIZE;
+      const { data, error, count } = await sb
+        .from("vehicles").select("*", { count:'exact' })
+        .eq("featured", true).eq("type","car")
+        .order("created_at",{ascending:false})
+        .range(from, from+HOME_SIZE-1);
+      wrap.querySelectorAll('.sk.card').forEach(el=>el.remove());
+      if(error){ console.error(error); if(!wrap.children.length) renderStaticHome(); return; }
+      if(!data || !data.length){ homeDone=true; more.hidden=true; if(!wrap.children.length) renderStaticHome(); return; }
+      wrap.insertAdjacentHTML('beforeend', data.map(card).join(''));
+      homePage++; more.hidden = (from+data.length)>=count;
     }
-    function updateGalleryImage(){
-      document.getElementById('galleryMainImg').src = galleryData[galleryIndex];
+    document.getElementById('homeMore').addEventListener('click', ()=>loadHomeFeatured());
+
+    function renderStaticHome(){
+      const wrap = document.getElementById('homeFeat');
+      wrap.innerHTML = [
+        {title:'Maruti Suzuki Alto K10 LXI',price:145000,city:'Satara',year:2011,km:'67,000',image:'https://placehold.co/640x480?text=Alto+K10+2011'},
+        {title:'Hyundai i20 Sportz',price:510000,city:'Satara',year:2016,km:'88,000',image:'https://placehold.co/640x480?text=i20+Sportz+2016'},
+        {title:'Swift Dzire VXI',price:480000,city:'Satara',year:2013,km:'69,000',image:'https://placehold.co/640x480?text=Dzire+2013'}
+      ].map(card).join('');
     }
-    document.getElementById('galleryClose').onclick = function() {
-      document.getElementById('galleryModal').style.display = 'none';
-    };
-    document.getElementById('galleryPrev').onclick = function() {
-      galleryIndex = (galleryIndex-1+galleryData.length) % galleryData.length;
-      updateGalleryImage();
-    };
-    document
+
+    // ===== FEATURED PAGE
+    async function loadFeatured(){
+      const { data, error } = await sb
+        .from("vehicles").select("*")
+        .eq("featured", true)
+        .order("created_at",{ascending:false})
+        .limit(40);
+      if(error){ console.error(error); return; }
+      document.getElementById("featCars").innerHTML = (data||[]).filter(x=>x.type==='car').map(card).join('');
+      document.getElementById("featBikes").innerHTML = (data||[]).filter(x=>x.type==='bike').map(card).join('');
+    }
+
+    // ===== BUY with infinite scroll
+    let buyType='car', buyPage=0, buyDone=false; const BUY_SIZE=20;
+    function setBuyType(t){ buyType=t; resetBuy(); }
+    function resetBuy(){ buyPage=0; buyDone=false; document.getElementById('buyGrid').innerHTML=''; loadMoreBuy(); }
+
+    async function loadMoreBuy(){
+      if(buyDone) return;
+      const grid = document.getElementById('buyGrid');
+      grid.insertAdjacentHTML('beforeend', skel(6));
+      const brandQ = document.getElementById('brandFilter').value.trim();
+      const modelQ = document.getElementById('qFilter').value.trim();
+      const cityQ = document.getElementById('cityFilter').value;
+      const sort = document.getElementById('sortFilter').value;
+
+      let query = sb.from('vehicles').select('*', { count:'exact' }).eq('type', buyType);
+      if(brandQ) query = query.ilike('brand', `%${brandQ}%`);
+      if(modelQ) query = query.or(`model.ilike.%${modelQ}%,title.ilike.%${modelQ}%`);
+      if(cityQ) query = query.eq('city', cityQ);
+      if(sort==='price_low') query = query.order('price', { ascending:true, nullsFirst:true });
+      else if(sort==='price_high') query = query.order('price', { ascending:false, nullsLast:true });
+      else query = query.order('created_at', { ascending:false });
+
+      const from = buyPage*BUY_SIZE;
+      const { data, error, count } = await query.range(from, from+BUY_SIZE-1);
+      grid.querySelectorAll('.sk.card').forEach(el=>el.remove());
+      if(error){ console.error(error); return; }
+      if(!data || !data.length){ buyDone=true; document.getElementById('buyMore').hidden=true; return; }
+      grid.insertAdjacentHTML('beforeend', data.map(card).join(''));
+      buyPage++; document.getElementById('buyMore').hidden = (from+data.length)>=count;
+    }
+    document.getElementById('buyMore').addEventListener('click', loadMoreBuy);
+
+    // Infinite scroll
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting && !buyDone && document.getElementById('buy').classList.contains('active')) loadMoreBuy(); })
+    },{rootMargin:'200px'});
+    io.observe(document.getElementById('buyMore'));
+
+    // ===== Wishlist toggle
+    function toggleWish(id){
+      const s = getWish();
+      if(s.has(id)) s.delete(id); else s.add(id);
+      setWish(s);
+      const el = document.querySelector(`.tile[data-id="${id}"] .wish`);
+      if(el) el.classList.toggle('active');
+    }
+
+    // ===== SELL form (unchanged)
+    document.getElementById("sellForm").addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      const mobile = document.getElementById('mobile').value || '';
+      if(mobile.replace(/\D/g,'').length!==10){ alert("Enter 10-digit mobile"); return; }
+      const payload = {
+        type: document.getElementById('vType').value.toLowerCase(),
+        brand: brand.value, model: model.value, year: +year.value,
+        km: km.value, city: city.value, mobile, notes: notes.value || "",
+        title: brand.value+" "+model.value, price: null, image: null, featured: false
+      };
+      const { error } = await sb.from("sell_leads").insert(payload);
+      if(error){ alert("Error saving form."); console.error(error); }
+      else{ alert("Submitted! We will contact you soon."); e.target.reset(); }
+    });
+
+    // ===== Nav
+    function showSection(id){
+      document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+      document.getElementById(id+'Tab')?.classList.add('active');
+      if(id==='featured') loadFeatured();
+      if(id==='buy') resetBuy();
+      if(id==='home') loadHomeFeatured(true);
+    }
+
+    // ===== Init
+    loadHomeFeatured(true);
+  </script></body>
+</html>
