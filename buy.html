@@ -2,226 +2,169 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Second Wheel — Buy Vehicles</title>
-  <meta name="theme-color" content="#0b0f17"/>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Second Wheel — Buy</title>
+  <meta name="theme-color" content="#111827" />
   <style>
     :root{
-      --bg:#0b0f17; --card:#0f172a; --line:#243047;
-      --text:#e5e7eb; --muted:#94a3b8; --accent:#f59e0b;
+      --bg:#0b0f17; --card:#121826; --muted:#9aa3b2; --text:#e5e7eb;
+      --brand:#f59e0b; --ink:#111; --line:rgba(255,255,255,.10);
+      --shadow:0 10px 30px rgba(0,0,0,.35);
     }
     *{box-sizing:border-box}
-    body{margin:0; background:var(--bg); color:var(--text); font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif}
-    a{color:inherit; text-decoration:none}
-
-    header{position:sticky; top:0; z-index:5; background:#0d1423; border-bottom:1px solid var(--line)}
-    .wrap{max-width:1100px; margin:auto; padding:14px}
-    .brandbar{display:flex; gap:12px; align-items:center}
-    .brandbar img{height:42px; width:auto}
-    h1{margin:0; font-size:18px; font-weight:700}
-
-    /* Tabs + filters */
-    .filters{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:10px; flex-wrap:wrap}
-    .tabs{display:flex; gap:8px; background:#0c1322; padding:6px; border:1px solid var(--line); border-radius:999px}
-    .pill{padding:8px 12px; border-radius:999px; border:1px solid var(--line); color:#cbd5e1; cursor:pointer}
-    .pill.active{background:linear-gradient(180deg,#ffb02e,#b45309); color:#111; border-color:transparent}
-    select, input[type="search"]{background:#0c1322; color:#e5e7eb; border:1px solid var(--line); border-radius:10px; padding:10px 12px}
-
-    /* Grid & card */
-    .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-top:14px}
-    .card{background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden}
+    body{margin:0;background:var(--bg);color:var(--text);
+         font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1100px;margin:0 auto;padding:18px}
+    header{position:sticky;top:0;z-index:10;background:rgba(11,15,23,.7);backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(255,255,255,.08)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+    .tabs{display:flex;gap:8px;align-items:center}
+    .tab{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#0f1522;cursor:pointer}
+    .tab.active{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
+    h1{font-size:20px;margin:0}
+    .section{margin-top:18px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px}
+    @media(min-width:720px){ .grid{grid-template-columns:repeat(2,1fr)} }
+    @media(min-width:1000px){ .grid{grid-template-columns:repeat(3,1fr)} }
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+    .thumb{width:100%;height:240px;object-fit:cover;display:block}
+    @media(min-width:720px){ .thumb{height:220px} }
     .body{padding:12px}
-    .meta{display:flex; justify-content:space-between; align-items:center; color:#cbd5e1}
-    .title{font-weight:700; color:#e2e8f0}
-    .badge{font-size:12px; padding:4px 8px; border-radius:999px; background:#1f2937; border:1px solid #2f3b52}
-    .actions{display:flex; gap:8px; margin-top:10px}
-    .btn{padding:10px 12px; border-radius:12px; background:#0b1220; color:#eee; border:1px solid #374151; cursor:pointer}
-    .btn-primary{background:linear-gradient(180deg,#ff9e0b,#b45309); color:#111; border-color:transparent}
-
-    /* Mini carousel */
-    .gallery{display:flex; gap:8px; overflow:auto; padding:8px; scroll-snap-type:x mandatory; scrollbar-width:none}
-    .gallery::-webkit-scrollbar{display:none}
-    .gallery img{flex:0 0 auto; width:260px; height:180px; object-fit:cover; border-radius:10px; scroll-snap-align:center; background:#0b1220}
-    @media (min-width:720px){
-      .gallery img{width:320px; height:200px}
-    }
-
-    footer{margin:20px 0 30px; color:var(--muted); text-align:center}
+    .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .muted{color:var(--muted)}
+    .badge{display:inline-block;background:rgba(255,255,255,.08);border:1px solid var(--line);
+           color:#ffd16b;padding:4px 8px;border-radius:999px;font-size:12px}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;
+         border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));cursor:pointer}
+    .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
+    .empty{padding:18px;border:1px dashed var(--line);border-radius:12px;text-align:center;color:var(--muted)}
+    .foot{margin-top:18px;text-align:center;color:var(--muted)}
   </style>
 </head>
 <body>
   <header>
-    <div class="wrap">
-      <div class="brandbar">
-        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel"/>
-        <h1>Buy Vehicles</h1>
-      </div>
-
-      <div class="filters">
-        <div class="tabs" id="typeTabs">
-          <button class="pill active" data-type="">All</button>
-          <button class="pill" data-type="Car">Car</button>
-          <button class="pill" data-type="Bike">Bike</button>
-          <button class="pill" data-type="Scooter">Scooter</button>
-        </div>
-        <div style="display:flex; gap:8px; align-items:center;">
-          <select id="brandFilter">
-            <option value="">All Brands</option>
-          </select>
-          <input id="q" type="search" placeholder="Search title / brand"/>
-        </div>
+    <div class="container nav">
+      <h1>Buy Vehicles</h1>
+      <div class="tabs" id="typeTabs">
+        <button class="tab active" data-type="all">All</button>
+        <button class="tab" data-type="car">Car</button>
+        <button class="tab" data-type="bike">Bike</button>
+        <button class="tab" data-type="scooter">Scooter</button>
       </div>
     </div>
   </header>
 
-  <main class="wrap">
-    <section>
-      <div style="display:flex; align-items:center; gap:10px; margin:6px 0 8px">
-        <span class="pill" style="background:#111827; color:#f1f5f9; border-color:#2a3448">Featured</span>
-        <span class="pill" style="border-style:dashed">Latest picks</span>
+  <main class="container">
+    <section class="section">
+      <div class="section-head">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="badge">Featured</span>
+          <strong>Latest picks</strong>
+        </div>
       </div>
-      <div id="grid" class="grid" aria-live="polite"></div>
+      <div id="grid" class="grid">
+        <div class="empty">Loading…</div>
+      </div>
+      <div class="foot">© 2025 Second Wheel</div>
     </section>
   </main>
 
-  <footer class="wrap">
-    &copy; 2025 Second Wheel
-  </footer>
-
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ====== EDIT येथे काहीही बदलू नका (URL/KEY सोडून) ======
-    const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-    const STORAGE_BUCKET = 'vehicals';
-    const WHATSAPP = '919822292955';
+    // ---- Supabase config (ready to use) ----
+    const SUPABASE_URL='https://wbjwvxckbfkutqqbgupq.supabase.co';
+    const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
+    const BUCKET='vehicals';
+    const FOLDER='featured';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // ---- Wishlist (localStorage) ----
+    const WL_KEY='secondwheel_wishlist';
+    const getWL = ()=>{ try{return new Set(JSON.parse(localStorage.getItem(WL_KEY)||'[]'));}catch(e){return new Set();}};
+    const saveWL = (set)=> localStorage.setItem(WL_KEY, JSON.stringify([...set]));
+    const wlText = (vid)=> getWL().has(vid) ? '♥ In wishlist' : '♡ Wishlist';
+    function toggleWL(vid, btn){
+      const s=getWL();
+      if(s.has(vid)){s.delete(vid);btn.textContent='♡ Wishlist';}
+      else{s.add(vid);btn.textContent='♥ In wishlist';}
+      saveWL(s);
+    }
 
+    // ---- Helpers ----
+    function publicUrl(path){ const {data}=sb.storage.from(BUCKET).getPublicUrl(path); return data?.publicUrl || ''; }
+    async function firstImage(vid){
+      const {data}=await sb.storage.from(BUCKET).list(`${FOLDER}/${vid}`,{limit:100});
+      const img=(data||[]).find(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name));
+      return img? publicUrl(`${FOLDER}/${vid}/${img.name}`) : '';
+    }
+    async function readMeta(vid){
+      const {data,error}=await sb.storage.from(BUCKET).download(`${FOLDER}/${vid}/meta.json`);
+      if(error) return null;
+      try{ return JSON.parse(await data.text()); }catch(e){ return null; }
+    }
+
+    // ---- Render ----
     const grid = document.getElementById('grid');
-    const brandFilter = document.getElementById('brandFilter');
-    const q = document.getElementById('q');
-    const typeTabs = document.getElementById('typeTabs');
+    let ALL = []; // cached items
+    let CURR_TYPE = 'all';
 
-    let ALL = [];            // सर्व vehicles
-    let CURR_TYPE = '';      // फिल्टर टॅब
-
-    // ===== Helpers =====
-    function purl(path){
-      if(!path) return '';
-      if(/^https?:\/\//i.test(path)) return path;
-      return sb.storage.from(STORAGE_BUCKET).getPublicUrl(path).data.publicUrl;
-    }
-
-    function inquiry(id){
-      const v = ALL.find(x => x.id === id) || {};
-      const msg = encodeURIComponent(`Hi, I'm interested in "${v.title || 'this vehicle'}".`);
-      window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, '_blank');
-    }
-
-    function toggleWish(id){
-      const key = 'wish_'+id;
-      const now = localStorage.getItem(key) ? '' : '1';
-      localStorage.setItem(key, now);
-      render(ALL); // UI refresh
-    }
-
-    function cardHTML(v){
-      const imgs = (v.images && v.images.length ? v.images : (v.gallery || [])).map(purl);
-      const pics = (imgs.length? imgs : [purl(v.image)]).filter(Boolean);
-      const picsHTML = pics.slice(0,10).map(src => `<img src="${src}" alt="${v.title||'Vehicle'}">`).join('');
-      const wished = localStorage.getItem('wish_'+v.id) ? '♥' : '♡';
-      return `
-        <div class="card">
-          <div class="gallery">${picsHTML}</div>
+    function render(){
+      const items = ALL.filter(v => CURR_TYPE==='all' ? true : (v.type||'').toLowerCase()===CURR_TYPE);
+      if(!items.length){ grid.innerHTML = '<div class="empty">No items yet</div>'; return; }
+      grid.innerHTML='';
+      for(const v of items){
+        const msg = encodeURIComponent(`Hi, I'm interested in ${v.title||''} (${v.brand||''}) — Price: ${v.price||''}`);
+        const wa = `https://wa.me/?text=${msg}`; // opens WhatsApp and lets user pick contact
+        const div = document.createElement('div');
+        div.className='card';
+        div.innerHTML = `
+          <img class="thumb" src="${v.img||''}" alt="${v.title||v.vid}">
           <div class="body">
-            <div class="meta">
-              <div>
-                <div class="title">${v.title || '—'}</div>
-                <div>${v.brand || ''} ${v.year? '• '+v.year:''}</div>
-              </div>
-              <span class="badge">${v.type || 'Car'}</span>
+            <div class="badge">Featured</div>
+            <h3 style="margin:8px 0 4px">${v.title||''}</h3>
+            <div class="muted">${v.brand||''}</div>
+            <div class="row" style="margin-top:6px">
+              <div class="muted">${v.year||''} • ${v.km||''} km</div>
+              <div><strong>${v.price||''}</strong></div>
             </div>
-            <div style="margin-top:6px; color:#cbd5e1">${v.description || ''}</div>
-            <div class="actions">
-              <button class="btn" onclick="toggleWish('${v.id}')">${wished} Wishlist</button>
-              <button class="btn btn-primary" onclick="inquiry('${v.id}')">Inquiry Now</button>
+            <div class="row" style="margin-top:8px">
+              <button class="btn wlBtn">${wlText(v.vid)}</button>
+              <a class="btn primary" href="${wa}" target="_blank" rel="noopener">Inquiry Now</a>
             </div>
-          </div>
-        </div>`;
-    }
-
-    function render(list){
-      // फिल्टर्स
-      let out = list.filter(v => (CURR_TYPE? (v.type||'').toLowerCase()===CURR_TYPE.toLowerCase(): true));
-      const b = brandFilter.value.trim().toLowerCase();
-      if(b) out = out.filter(v => (v.brand||'').toLowerCase()===b);
-      const s = q.value.trim().toLowerCase();
-      if(s) out = out.filter(v =>
-        (v.title||'').toLowerCase().includes(s) ||
-        (v.brand||'').toLowerCase().includes(s)
-      );
-
-      grid.innerHTML = out.map(cardHTML).join('') || `<div style="opacity:.8">No items yet</div>`;
-    }
-
-    // ===== Data loaders =====
-    async function loadFromTable(){
-      const { data, error } = await sb.from('vehicles').select('*').order('created_at', { ascending:false });
-      if(error) throw error;
-      return data || [];
-    }
-
-    async function loadFromStorageFeatured(){
-      const { data, error } = await sb.storage.from(STORAGE_BUCKET).list('featured', { limit: 100, sortBy:{column:'name', order:'desc'} });
-      if(error) throw error;
-
-      // flat files under /featured (jpeg/png/webp)
-      const files = (data||[]).filter(f => /\.(jpe?g|png|webp)$/i.test(f.name));
-      return files.map((f,i) => ({
-        id: 'f_'+i+'_'+f.name,
-        title: f.name.replace(/\.(jpe?g|png|webp)$/i,'').replace(/[_-]+/g,' '),
-        brand: '',
-        type: 'Car',
-        images: [`featured/${f.name}`],
-        description: ''
-      }));
-    }
-
-    async function init(){
-      try{
-        // vehicles टेबल असल्यास ते वापरू; नसेल तर storage/featured fallback
-        let rows = await loadFromTable();
-        if(!rows.length) rows = await loadFromStorageFeatured();
-
-        ALL = rows;
-
-        // Brand dropdown
-        const uniq = [...new Set(ALL.map(v => (v.brand||'').trim()).filter(Boolean))].sort();
-        brandFilter.innerHTML = `<option value="">All Brands</option>` + uniq.map(b=>`<option>${b}</option>`).join('');
-
-        render(ALL);
-      }catch(e){
-        console.error('Load error:', e);
-        grid.innerHTML = `<div style="opacity:.8">Could not load vehicles.</div>`;
+          </div>`;
+        div.querySelector('.wlBtn').addEventListener('click', (e)=> toggleWL(v.vid, e.currentTarget));
+        grid.appendChild(div);
       }
     }
 
-    // ===== UI wiring =====
-    typeTabs.addEventListener('click', (e)=>{
-      const b = e.target.closest('.pill');
-      if(!b) return;
-      typeTabs.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
-      b.classList.add('active');
-      CURR_TYPE = b.dataset.type || '';
-      render(ALL);
-    });
-    brandFilter.addEventListener('change', ()=>render(ALL));
-    q.addEventListener('input', ()=>render(ALL));
+    // ---- Load featured from Supabase ----
+    async function loadFeatured(){
+      grid.innerHTML='<div class="empty">Loading…</div>';
+      const {data,error}=await sb.storage.from(BUCKET).list(FOLDER,{limit:200});
+      if(error){ grid.innerHTML='<div class="empty">Failed to load</div>'; return; }
+      const folders=(data||[]).filter(x=>x && !/\./.test(x.name)); // only subfolders (VIDs)
+      const items = await Promise.all(folders.map(async f=>{
+        const [meta,img] = await Promise.all([readMeta(f.name), firstImage(f.name)]);
+        if(!meta) return null;
+        return { vid:f.name, ...meta, img };
+      }));
+      ALL = items.filter(Boolean).sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
+      render();
+    }
 
-    init();
+    // ---- Type tabs ----
+    document.getElementById('typeTabs').addEventListener('click', (e)=>{
+      const b = e.target.closest('.tab'); if(!b) return;
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      CURR_TYPE = b.dataset.type;
+      render();
+    });
+
+    // init
+    loadFeatured();
   </script>
 </body>
 </html>
