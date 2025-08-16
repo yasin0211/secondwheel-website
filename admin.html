@@ -1,263 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Second Wheel — Admin (No Slug)</title>
-<meta name="theme-color" content="#111827"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Second Wheel — Admin</title>
 <style>
-:root{--bg:#0b0f17;--card:#121826;--muted:#9aa3b2;--text:#e5e7eb;--brand:#f59e0b;--ok:#22c55e;--err:#ef4444;--line:rgba(255,255,255,.1);--shadow:0 8px 28px rgba(0,0,0,.35)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
-.container{max-width:1200px;margin:0 auto;padding:18px}
-header{position:sticky;top:0;z-index:10;background:rgba(11,15,23,.75);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px}
-.grid{display:grid;gap:14px}
-@media(min-width:980px){.layout{grid-template-columns:300px 1fr 1fr}}
-label{display:block;margin:8px 0 4px;color:var(--muted)}
-input,select,textarea{width:100%;padding:10px 12px;background:#0f1522;color:var(--text);border:1px solid var(--line);border-radius:10px;outline:none}
-textarea{min-height:110px;resize:vertical}
-input:focus,select:focus,textarea:focus{border-color:#3b82f6}
-.row{display:flex;gap:10px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));cursor:pointer}
-.btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
-.btn.danger{background:linear-gradient(180deg,#ef4444,#991b1b);color:#fff;border-color:transparent}
-.ok{color:var(--ok)} .err{color:var(--err)} .muted{color:var(--muted)}
-.list{max-height:440px;overflow:auto;border:1px solid var(--line);border-radius:12px}
-.item{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
-.item.active{background:rgba(255,255,255,.06)}
-.pill{padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12px}
-.progress{height:8px;background:#0f1522;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.bar{height:100%;width:0%;background:#3b82f6;transition:width .2s}
-.thumbs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-@media(min-width:700px){.thumbs{grid-template-columns:repeat(4,1fr)}}
-.thumb{position:relative;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.thumb img{width:100%;display:block}
-.thumb .actions{position:absolute;right:6px;top:6px;display:flex;gap:6px}
+  :root{--bg:#0b0f17;--card:#121826;--ink:#e5e7eb;--muted:#9aa3b2;--brand:#f59e0b;--danger:#ef4444;--ok:#22c55e;--shadow:0 8px 28px rgba(0,0,0,.35)}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 system-ui,Segoe UI,Roboto,Arial}
+  header{position:sticky;top:0;background:rgba(11,15,23,.7);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+  .wrap{max-width:1200px;margin:0 auto;padding:14px}
+  h1{margin:0;font-size:18px}
+  .grid{display:grid;gap:14px}
+  @media(min-width:1000px){.grid-3{grid-template-columns:300px 1fr 380px}}
+  .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
+  label{display:block;color:var(--muted);margin:8px 0 4px}
+  input,select,textarea{width:100%;padding:10px 12px;background:#0f1522;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:var(--ink);outline:none}
+  textarea{min-height:110px;resize:vertical}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);cursor:pointer;background:transparent;color:var(--ink)}
+  .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);border-color:transparent;color:#111}
+  .btn.danger{background:linear-gradient(180deg,#ef4444,#991b1b);border-color:transparent;color:#fff}
+  .list{max-height:460px;overflow:auto;border:1px solid rgba(255,255,255,.08);border-radius:12px}
+  .item{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+  .item.active{background:rgba(255,255,255,.06)}
+  .thumbs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  @media(min-width:700px){.thumbs{grid-template-columns:repeat(3,1fr)}}
+  .thumb{position:relative;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden}
+  .thumb img{width:100%;display:block}
+  .thumb .act{position:absolute;top:6px;right:6px;display:flex;gap:6px}
+  .muted{color:var(--muted)} .ok{color:var(--ok)} .err{color:#ff7070}
+  .bar{height:8px;width:0;background:#3b82f6;border-radius:8px}
+  .progress{height:8px;border-radius:8px;background:#0f1522;border:1px solid rgba(255,255,255,.12);overflow:hidden}
 </style>
 </head>
 <body>
-<header>
-  <div class="container nav">
-    <strong>Second Wheel — Admin (No Slug)</strong>
-    <div class="row">
-      <button id="btnRefresh" class="btn">Refresh</button>
-      <button id="btnNew" class="btn">New Vehicle</button>
-    </div>
-  </div>
-</header>
-
-<main class="container grid layout">
-  <!-- LEFT : list -->
+<header><div class="wrap"><h1>Second Wheel — Admin</h1></div></header>
+<main class="wrap grid grid-3">
+  <!-- Left: list -->
   <section class="card">
-    <h3 style="margin:0 0 10px">Featured List</h3>
-    <input id="search" placeholder="Search…"/>
+    <div class="row" style="justify-content:space-between;align-items:center">
+      <strong>Featured List</strong>
+      <button id="btnNew" class="btn">+ New</button>
+    </div>
     <div id="list" class="list" style="margin-top:10px"></div>
   </section>
 
-  <!-- MIDDLE : form -->
+  <!-- Center: form -->
   <section class="card">
-    <h3 id="formTitle">Create / Edit</h3>
-    <div class="row"><div class="pill">VID: <span id="vidShow">—</span></div></div>
-    <div class="grid">
-      <div><label>Brand</label><input id="brand" placeholder="Hyundai"/></div>
-      <div><label>Title / Model</label><input id="title" placeholder="i10 Sportz 2008"/></div>
-      <div class="row">
-        <div style="flex:1"><label>Price</label><input id="price" placeholder="145000"/></div>
-        <div style="width:120px"><label>Year</label><input id="year" type="number" min="1990" max="2099" placeholder="2008"/></div>
-        <div style="width:140px"><label>KM</label><input id="km" placeholder="88890"/></div>
-      </div>
-      <div class="row">
-        <div style="width:160px"><label>Type</label>
-          <select id="vtype"><option value="car">car</option><option value="bike">bike</option><option value="scooter">scooter</option></select>
-        </div>
-      </div>
-      <div><label>Description</label><textarea id="desc" placeholder="all ok"></textarea></div>
+    <div class="row" style="justify-content:space-between;align-items:center">
+      <strong id="formTitle">Create new</strong>
+      <span class="muted">VID: <code id="vidShow">—</code></span>
     </div>
-    <div class="row" style="margin-top:12px">
+    <div class="row">
+      <div style="flex:1">
+        <label>Brand</label><input id="brand" placeholder="Hyundai">
+      </div>
+      <div style="flex:1">
+        <label>Title / Model</label><input id="title" placeholder="i10 Sportz 2008">
+      </div>
+    </div>
+    <div class="row">
+      <div style="flex:1"><label>Price</label><input id="price" placeholder="145000"></div>
+      <div style="width:120px"><label>Year</label><input id="year" type="number" min="1990" max="2099" placeholder="2008"></div>
+      <div style="width:140px"><label>KM</label><input id="km" placeholder="87000"></div>
+    </div>
+    <div class="row">
+      <div style="width:160px">
+        <label>Type</label>
+        <select id="vtype"><option value="car">car</option><option value="bike">bike</option><option value="scooter">scooter</option></select>
+      </div>
+      <div style="flex:1">
+        <label>Description</label>
+        <textarea id="desc" placeholder="all ok / single owner / ..."></textarea>
+      </div>
+    </div>
+    
+    <div class="row" style="margin-top:10px">
       <button id="btnSave" class="btn primary">Save / Update</button>
       <button id="btnDelete" class="btn danger">Delete Vehicle</button>
     </div>
     <div id="metaMsg" class="muted" style="margin-top:8px"></div>
   </section>
 
-  <!-- RIGHT : gallery -->
+  <!-- Right: gallery -->
   <section class="card">
-    <h3>Gallery</h3>
-    <div class="row">
-      <input id="files" type="file" accept=".jpg,.jpeg,.png,.webp" multiple/>
+    <strong>Gallery</strong>
+    <div class="row" style="margin-top:8px">
+      <input id="files" type="file" accept=".jpg,.jpeg,.png,.webp" multiple />
       <button id="btnUpload" class="btn primary">Upload Images</button>
     </div>
-    <div class="progress" style="margin-top:12px"><div id="bar" class="bar"></div></div>
-    <div id="upMsg" class="muted" style="margin-top:8px"></div>
+    <div class="progress" style="margin:10px 0"><div id="bar" class="bar"></div></div>
+    <div id="upMsg" class="muted"></div>
     <div id="thumbs" class="thumbs" style="margin-top:12px"></div>
   </section>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ---------- CONFIG (ready) ---------- */
-const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-const BUCKET = 'vehicals';
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  // ------- Supabase config (तुझंच प्रोजेक्ट) -------
+  const SUPABASE_URL = "https://wbjwvxckbfkutqqbgupq.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
+  const STORAGE_BUCKET = "vehicals";
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* ---------- Elements ---------- */
-const listEl = document.getElementById('list'), search = document.getElementById('search');
-const brand = document.getElementById('brand'), title = document.getElementById('title');
-const price = document.getElementById('price'), year = document.getElementById('year'), km = document.getElementById('km');
-const vtype = document.getElementById('vtype'), desc = document.getElementById('desc');
-const files = document.getElementById('files'), btnUpload = document.getElementById('btnUpload');
-const bar = document.getElementById('bar'), upMsg = document.getElementById('upMsg'), thumbs = document.getElementById('thumbs');
-const btnRefresh = document.getElementById('btnRefresh'), btnNew = document.getElementById('btnNew');
-const btnSave = document.getElementById('btnSave'), btnDelete = document.getElementById('btnDelete'), metaMsg = document.getElementById('metaMsg');
-const vidShow = document.getElementById('vidShow'), formTitle = document.getElementById('formTitle');
+  // ------- Elements -------
+  const listEl=document.getElementById('list');
+  const btnNew=document.getElementById('btnNew');
+  const btnSave=document.getElementById('btnSave');
+  const btnDelete=document.getElementById('btnDelete');
+  const files=document.getElementById('files');
+  const btnUpload=document.getElementById('btnUpload');
+  const bar=document.getElementById('bar');
+  const upMsg=document.getElementById('upMsg');
+  const thumbs=document.getElementById('thumbs');
+  const metaMsg=document.getElementById('metaMsg');
+  const vidShow=document.getElementById('vidShow');
+  const formTitle=document.getElementById('formTitle');
 
-let CURR_VID = null;
+  const brand=document.getElementById('brand');
+  const title=document.getElementById('title');
+  const price=document.getElementById('price');
+  const year=document.getElementById('year');
+  const km=document.getElementById('km');
+  const vtype=document.getElementById('vtype');
+  const desc=document.getElementById('desc');
 
-/* ---------- Helpers ---------- */
-const nowId = () => 'v' + new Date().toISOString().replace(/[-:.TZ]/g,'').slice(0,14) + '-' + Math.random().toString(36).slice(2,6);
-function msg(el, txt, type){ el.textContent = txt; el.classList.remove('ok','err'); if(type==='ok')el.classList.add('ok'); if(type==='err')el.classList.add('err'); }
-function buildMeta(){
-  return { vid: CURR_VID, brand: brand.value.trim(), title: title.value.trim(),
-    price: price.value.trim(), year: Number(year.value||'0'), km: km.value.trim(),
-    type: vtype.value, description: desc.value.trim(), updatedAt: new Date().toISOString() };
-}
+  // ------- State -------
+  let currentVID = null;
 
-/* ---------- Index ---------- */
-async function getIndex(){
-  const { data, error } = await sb.storage.from(BUCKET).download('featured/_index.json');
-  if(error) return [];
-  try{ return JSON.parse(await data.text()); }catch{ return []; }
-}
-async function setIndex(arr){
-  const blob = new Blob([JSON.stringify(arr,null,2)], { type:'application/json' });
-  await sb.storage.from(BUCKET).upload('featured/_index.json', blob, { upsert:true, contentType:'application/json' });
-}
-async function addToIndex(vid){ let idx = await getIndex(); if(!idx.includes(vid)){ idx.push(vid); await setIndex(idx);} }
-async function removeFromIndex(vid){ let idx = await getIndex(); idx = idx.filter(x=>x!==vid); await setIndex(idx); }
+  function toast(el,msg,type){ el.textContent=msg; el.classList.remove('ok','err'); if(type==='ok')el.classList.add('ok'); if(type==='err')el.classList.add('err'); }
 
-/* ---------- Meta ---------- */
-async function saveMeta(){
-  if(!CURR_VID){ CURR_VID = nowId(); }
-  const meta = buildMeta();
-  const blob = new Blob([JSON.stringify(meta,null,2)], { type:'application/json' });
-  const { error } = await sb.storage.from(BUCKET).upload(`featured/items/${CURR_VID}.json`, blob, { upsert:true, contentType:'application/json' });
-  if(error){ msg(metaMsg,'Save failed: '+error.message,'err'); return; }
-  await addToIndex(CURR_VID);
-  msg(metaMsg,'Saved ✔','ok'); await listFeatured(); showVID();
-}
-async function fetchMeta(vid){
-  const { data, error } = await sb.storage.from(BUCKET).download(`featured/items/${vid}.json`);
-  if(error) return null; try{ return JSON.parse(await data.text()); }catch{ return null; }
-}
+  function newVID(){ return 'v'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6); }
 
-/* ---------- Gallery ---------- */
-async function loadGallery(vid){
-  thumbs.innerHTML = '<div class="muted">Loading images…</div>';
-  const base = `featured/gallery/${vid}`;
-  const { data, error } = await sb.storage.from(BUCKET).list(base, { limit:1000 });
-  if(error){ thumbs.innerHTML = '<div class="err">Failed to load</div>'; return; }
-  const imgs = (data||[]).filter(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name));
-  if(!imgs.length){ thumbs.innerHTML = '<div class="muted">No images yet</div>'; return; }
-  thumbs.innerHTML = '';
-  for(const im of imgs){
-    const path = `${base}/${im.name}`;
-    const { data:pub } = sb.storage.from(BUCKET).getPublicUrl(path);
-    const url = pub?.publicUrl || '#';
-    const d = document.createElement('div'); d.className='thumb';
-    d.innerHTML = `<img src="${url}" alt="${im.name}">
-      <div class="actions">
-        <button class="btn danger" title="Delete">🗑️</button>
-        <a class="btn" href="${url}" target="_blank" title="Open">🔍</a>
-      </div>`;
-    d.querySelector('button').addEventListener('click', async ()=>{
-      if(!confirm('Delete this image?')) return;
-      const { error } = await sb.storage.from(BUCKET).remove([path]);
-      if(error){ alert('Delete failed: '+error.message); return; }
-      loadGallery(vid);
+  function formData(){
+    return {
+      vid: currentVID,
+      brand: brand.value.trim(),
+      title: title.value.trim(),
+      price: price.value.trim(),
+      year: Number(year.value||'0'),
+      km: km.value.trim(),
+      type: vtype.value,
+      description: desc.value.trim(),
+      updatedAt: new Date().toISOString()
+    };
+  }
+
+  function fillForm(meta){
+    brand.value=meta.brand||''; title.value=meta.title||''; price.value=meta.price||''; 
+    year.value=meta.year||''; km.value=meta.km||''; vtype.value=meta.type||'car'; desc.value=meta.description||'';
+    formTitle.textContent = 'Edit: '+(meta.title||meta.vid||currentVID);
+    vidShow.textContent = currentVID||'-';
+  }
+
+  async function loadList(){
+    listEl.innerHTML='<div class="item">Loading…</div>';
+    const {data,error}=await sb.storage.from(STORAGE_BUCKET).list('featured',{limit:500});
+    if(error){ listEl.innerHTML='<div class="item">List failed</div>'; return; }
+    const folders=(data||[]).filter(x=>x && !/\./.test(x.name)).map(x=>x.name);
+    if(!folders.length){ listEl.innerHTML='<div class="item">No vehicles yet</div>'; return; }
+    const out=[];
+    for(const vid of folders){
+      const meta=await readMeta(vid);
+      out.push({vid, ...(meta||{})});
+    }
+    out.sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
+    listEl.innerHTML='';
+    out.forEach(it=>{
+      const d=document.createElement('div');
+      d.className='item';
+      d.innerHTML=`<strong>${it.title||it.vid}</strong><div class="muted">${it.brand||''} • ${it.price||''} <span style="float:right">${it.type||''}</span></div>`;
+      d.onclick=()=>select(it.vid);
+      listEl.appendChild(d);
     });
-    thumbs.appendChild(d);
   }
-}
 
-btnUpload.addEventListener('click', async ()=>{
-  if(!CURR_VID){ CURR_VID = nowId(); await saveMeta(); } // ensure VID exists
-  const filesArr = Array.from(files.files||[]);
-  if(!filesArr.length){ msg(upMsg,'Select images to upload','err'); return; }
-  const base = `featured/gallery/${CURR_VID}`;
-  let done=0; bar.style.width='0%'; msg(upMsg,'Uploading…');
-  for(const f of filesArr){
-    const safe = f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
-    const path = `${base}/${Date.now()}-${safe}`;
-    const { error } = await sb.storage.from(BUCKET).upload(path, f, { upsert:false });
-    if(error){ msg(upMsg,'Upload failed: '+error.message,'err'); return; }
-    done++; bar.style.width = Math.round(done/filesArr.length*100)+'%';
+  async function readMeta(vid){
+    const {data,error}=await sb.storage.from(STORAGE_BUCKET).download(`featured/${vid}/meta.json`);
+    if(error) return null;
+    try{ return JSON.parse(await data.text()); }catch(_){ return null; }
   }
-  msg(upMsg,`Uploaded ${done}/${filesArr.length} ✔`,'ok'); loadGallery(CURR_VID);
-});
 
-/* ---------- List & select ---------- */
-async function listFeatured(){
-  const idx = await getIndex();
-  const q = (search.value||'').toLowerCase();
-  const items = [];
-  for(const vid of idx){
-    const m = await fetchMeta(vid);
-    if(!m) continue;
-    if(q && !(vid.includes(q) || (m.title||'').toLowerCase().includes(q) || (m.brand||'').toLowerCase().includes(q))) continue;
-    items.push(m);
+  async function select(vid){
+    currentVID = vid; vidShow.textContent=vid; formTitle.textContent='Edit: '+vid; toast(metaMsg,'',null);
+    const meta = await readMeta(vid) || {vid};
+    fillForm(meta);
+    await loadGallery(vid);
+    // mark selected in list
+    listEl.querySelectorAll('.item').forEach(x=>x.classList.remove('active'));
+    [...listEl.children].find(li=>li.textContent.includes(meta.title||vid))?.classList.add('active');
   }
-  items.sort((a,b)=> (b.updatedAt||'').localeCompare(a.updatedAt||'') );
-  listEl.innerHTML = items.map(m=>(
-    `<div class="item" data-vid="${m.vid}">
-      <strong>${m.title||m.vid}</strong>
-      <div class="muted">${m.brand||''} • ${m.price||''} <span class="pill">${m.type||''}</span></div>
-    </div>`
-  )).join('') || '<div class="item">No items</div>';
-  listEl.querySelectorAll('.item').forEach(div=>{
-    div.addEventListener('click', async ()=>{
-      listEl.querySelectorAll('.item').forEach(x=>x.classList.remove('active'));
-      div.classList.add('active');
-      CURR_VID = div.getAttribute('data-vid');
-      const m = await fetchMeta(CURR_VID);
-      if(m){ brand.value=m.brand||''; title.value=m.title||''; price.value=m.price||'';
-        year.value=m.year||''; km.value=m.km||''; vtype.value=m.type||'car'; desc.value=m.description||''; }
-      showVID();
-      loadGallery(CURR_VID);
-    });
-  });
-}
-search.addEventListener('input', listFeatured);
 
-function showVID(){ vidShow.textContent = CURR_VID || '—'; formTitle.textContent = CURR_VID ? ('Edit • '+CURR_VID) : 'Create / Edit'; }
+  async function loadGallery(vid){
+    thumbs.innerHTML='<div class="muted">Loading images…</div>';
+    const {data,error}=await sb.storage.from(STORAGE_BUCKET).list(`featured/${vid}`,{limit:1000});
+    if(error){ thumbs.innerHTML='<div class="err">Failed to list</div>'; return; }
+    const imgs=(data||[]).filter(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name));
+    if(!imgs.length){ thumbs.innerHTML='<div class="muted">No images</div>'; return; }
+    thumbs.innerHTML='';
+    for(const im of imgs){
+      const path=`featured/${vid}/${im.name}`;
+      const {data:pub}=sb.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+      const url=pub?.publicUrl || '#';
+      const c=document.createElement('div');
+      c.className='thumb';
+      c.innerHTML=`<img src="${url}"><div class="act"><button class="btn danger" data-p="${path}">🗑</button><a class="btn" target="_blank" href="${url}">🔍</a></div>`;
+      c.querySelector('button').onclick=async(e)=>{
+        if(!confirm('Delete this image?')) return;
+        const {error}=await sb.storage.from(STORAGE_BUCKET).remove([path]);
+        if(error){ alert('Delete failed: '+error.message); return; }
+        loadGallery(vid);
+      };
+      thumbs.appendChild(c);
+    }
+  }
 
-/* ---------- New / Save / Delete ---------- */
-btnNew.addEventListener('click', ()=>{
-  CURR_VID = nowId(); brand.value=title.value=price.value=km.value=desc.value=''; year.value=''; vtype.value='car';
-  thumbs.innerHTML=''; showVID(); msg(metaMsg,'','info'); msg(upMsg,'','info'); bar.style.width='0%';
-});
-btnSave.addEventListener('click', saveMeta);
+  btnNew.onclick=()=>{
+    currentVID = newVID();
+    vidShow.textContent = currentVID;
+    brand.value=title.value=price.value=km.value=desc.value=''; year.value=''; vtype.value='car';
+    formTitle.textContent='Create new';
+    thumbs.innerHTML='<div class="muted">Upload images and Save</div>';
+  };
 
-btnDelete.addEventListener('click', async ()=>{
-  if(!CURR_VID){ msg(metaMsg,'No VID selected','err'); return; }
-  if(!confirm('Delete this vehicle and all its images?')) return;
-  // delete meta
-  await sb.storage.from(BUCKET).remove([`featured/items/${CURR_VID}.json`]);
-  // delete gallery folder files
-  const base = `featured/gallery/${CURR_VID}`;
-  const { data } = await sb.storage.from(BUCKET).list(base,{limit:1000});
-  const paths = (data||[]).map(o=>`${base}/${o.name}`);
-  if(paths.length) await sb.storage.from(BUCKET).remove(paths);
-  await removeFromIndex(CURR_VID);
-  CURR_VID = null; brand.value=title.value=price.value=km.value=desc.value=''; year.value='';
-  thumbs.innerHTML=''; showVID(); msg(metaMsg,'Deleted ✔','ok'); listFeatured();
-});
+  btnSave.onclick=async()=>{
+    if(!currentVID){ btnNew.click(); }
+    const meta=formData();
+    const blob=new Blob([JSON.stringify(meta,null,2)],{type:'application/json'});
+    const {error}=await sb.storage.from(STORAGE_BUCKET).upload(`featured/${currentVID}/meta.json`,blob,{upsert:true});
+    if(error){ toast(metaMsg,'Save failed: '+error.message,'err'); return; }
+    toast(metaMsg,'Saved ✔','ok');
+    loadList();
+  };
 
-/* ---------- Init ---------- */
-btnRefresh.addEventListener('click', listFeatured);
-listFeatured();
+  btnDelete.onclick=async()=>{
+    if(!currentVID){ toast(metaMsg,'Nothing to delete','err'); return; }
+    if(!confirm('Delete this vehicle and all its images?')) return;
+    const base=`featured/${currentVID}`;
+    const {data,error}=await sb.storage.from(STORAGE_BUCKET).list(base,{limit:1000});
+    if(error){ toast(metaMsg,'List failed: '+error.message,'err'); return; }
+    const paths=(data||[]).map(o=>`${base}/${o.name}`);
+    if(paths.length){
+      const {error:err2}=await sb.storage.from(STORAGE_BUCKET).remove(paths);
+      if(err2){ toast(metaMsg,'Delete failed: '+err2.message,'err'); return; }
+    }
+    toast(metaMsg,'Vehicle deleted ✔','ok');
+    currentVID=null; vidShow.textContent='—'; formTitle.textContent='Create new';
+    btnNew.click(); loadList();
+  };
+
+  btnUpload.onclick=async()=>{
+    if(!currentVID){ btnNew.click(); toast(upMsg,'New VID created, now choose files and click Upload','ok'); return; }
+    const fileList=[...(files.files||[])];
+    if(!fileList.length){ toast(upMsg,'Choose image files','err'); return; }
+    bar.style.width='0%'; toast(upMsg,'Uploading…');
+    let done=0;
+    for(const f of fileList){
+      const safe=f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+      const path=`featured/${currentVID}/${Date.now()}-${safe}`;
+      const {error}=await sb.storage.from(STORAGE_BUCKET).upload(path,f,{upsert:false});
+      if(error){ toast(upMsg,'Upload failed: '+error.message,'err'); return; }
+      done++; bar.style.width= Math.round((done/fileList.length)*100)+'%';
+    }
+    toast(upMsg,`Uploaded ${done}/${fileList.length} ✔`,'ok');
+    loadGallery(currentVID);
+  };
+
+  // init
+  btnNew.click();  // start with a fresh VID
+  loadList();
 </script>
 </body>
 </html>
