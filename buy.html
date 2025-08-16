@@ -60,11 +60,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ---- Supabase config ----
+    // ---- Supabase config (तुझं project) ----
     const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-    const STORAGE_BUCKET = 'vehicals';
-    const WHATSAPP = '919822292955'; // Inquiry Now #
+    const STORAGE_BUCKET = 'vehicals';                // <-- spell exactly like bucket
+    const WHATSAPP = '919822292955';                  // Inquiry Now number
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const grid = document.getElementById('grid');
@@ -84,7 +84,6 @@
       const idx = list.indexOf(slug);
       if(idx>=0) list.splice(idx,1); else list.push(slug);
       setWishlist(list);
-      // update all buttons of same slug
       document.querySelectorAll(`[data-wish="${slug}"]`).forEach(b=>{
         b.classList.toggle('wish-on', list.includes(slug));
         b.querySelector('.heart').textContent = list.includes(slug) ? '❤️' : '🤍';
@@ -99,6 +98,7 @@
     async function listSlugs(){
       const { data, error } = await sb.storage.from(STORAGE_BUCKET).list('featured', { limit: 400 });
       if(error){ console.error(error); return []; }
+      // keep only "folders" (no dot)
       return (data||[]).filter(x => x && !(/\./.test(x.name))).map(x=>x.name);
     }
     async function readMeta(slug){
@@ -107,6 +107,7 @@
       try{ return JSON.parse(await data.text()); }catch{ return { slug, title: slug }; }
     }
     async function listImages(slug){
+      // list files actually present; pick first image => 404 नाही
       const { data, error } = await sb.storage.from(STORAGE_BUCKET).list(`featured/${slug}`, { limit: 200 });
       if(error) return [];
       return (data||[])
@@ -114,7 +115,7 @@
         .map(o => publicUrl(`featured/${slug}/${o.name}`));
     }
 
-    // ---- UI render ----
+    // ---- UI ----
     function fillBrandOptions(items){
       const brands = Array.from(new Set(items.map(v=>v.brand).filter(Boolean))).sort();
       brandFilter.innerHTML = '<option value="">All Brands</option>' + brands.map(b=>`<option value="${b}">${b}</option>`).join('');
@@ -166,7 +167,6 @@
       );
       grid.innerHTML = list.length ? list.map(cardHTML).join('') :
         '<div class="muted" style="grid-column:1/-1">No results</div>';
-      // update wish count
       wishCount.textContent = getWishlist().length;
     }
 
@@ -195,7 +195,7 @@
       }
       ALL = items;
       fillBrandOptions(items);
-      // hash route support: #cars | #bikes | #scooters
+      // optional hash routing: #cars | #bikes | #scooters
       const hash = (location.hash||'').replace('#','');
       if(hash==='cars') CURR_TYPE='car';
       else if(hash==='bikes') CURR_TYPE='bike';
@@ -207,8 +207,7 @@
     }
 
     loadAll();
-    // Expose toggleWish globally for inline onclick
-    window.toggleWish = toggleWish;
+    window.toggleWish = toggleWish; // for inline onclick
   </script>
 </body>
 </html>
