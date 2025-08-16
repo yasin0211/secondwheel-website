@@ -56,10 +56,10 @@
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // --- Supabase config (तुझाच project) ---
+    // --- Supabase config (तुझं project) ---
     const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-    const STORAGE_BUCKET = 'vehicals';        // bucket spelling exactly like your bucket
+    const STORAGE_BUCKET = 'vehicals';        // स्पेलिंग बकेटसारखंच
     const WHATSAPP = '919822292955';          // Inquiry Now number
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -88,29 +88,47 @@
     window.toggleWish = toggleWish; // inline handler साठी
 
     // --- Supabase helpers ---
-    function publicUrl(path){ const { data } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path); return data?.publicUrl || ''; }
+    function publicUrl(path){
+      const { data } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+      return data?.publicUrl || '';
+    }
 
+    // featured/ मधून फोल्डर्स (slugs)
     async function listSlugs(){
       const { data, error } = await sb.storage.from(STORAGE_BUCKET).list('featured', { limit: 400 });
-      if(error){ console.error(error); return []; }
-      // Only folders (no dot)
-      return (data||[]).filter(x => x && !(/\./.test(x.name))).map(x=>x.name);
+      if (error) { console.error('[listSlugs]', error); return []; }
+      const folders = (data || []).filter(x => x && !(/\./.test(x.name))).map(x => x.name);
+      if (!folders.length) console.warn('[listSlugs] no folders in featured/');
+      return folders;
     }
 
+    // meta.json सुरक्षित पद्धतीने — आधी list, मग download (असेल तरच)
     async function readMeta(slug){
-      // meta.json optional – नसल्यास default वापर
+      const { data: files, error } = await sb.storage.from(STORAGE_BUCKET).list(`featured/${slug}`, { limit: 200 });
+      if (error) {
+        console.warn('[readMeta:list]', slug, error);
+        return { slug, title: slug, brand:'', price:'', year:'', km:'', description:'', type:'' };
+      }
+      const hasMeta = (files || []).some(f => f.name === 'meta.json');
+      if (!hasMeta) {
+        return { slug, title: slug, brand:'', price:'', year:'', km:'', description:'', type:'' };
+      }
       const res = await sb.storage.from(STORAGE_BUCKET).download(`featured/${slug}/meta.json`);
-      if(res.error){ return { slug, title: slug, brand:'', price:'', year:'', km:'', description:'', type:'' }; }
-      try{ return JSON.parse(await res.data.text()); }catch{ return { slug, title: slug }; }
+      if (res.error) {
+        console.warn('[readMeta:download]', slug, res.error);
+        return { slug, title: slug };
+      }
+      try { return JSON.parse(await res.data.text()); }
+      catch { return { slug, title: slug }; }
     }
 
+    // images — प्रत्यक्ष फाइल यादीवरून public URL (404 टाळतो)
     async function listImages(slug){
-      // Actual files list करून URL तयार करतो (manual name नको → 404 टळतो)
       const { data, error } = await sb.storage.from(STORAGE_BUCKET).list(`featured/${slug}`, { limit: 200 });
-      if(error) return [];
-      return (data||[])
-        .filter(o => o.name && /\.(jpg|jpeg|png|webp)$/i.test(o.name))
-        .map(o => publicUrl(`featured/${slug}/${o.name}`));
+      if (error) { console.warn('[listImages]', slug, error); return []; }
+      const imgs = (data || []).filter(o => o.name && /\.(jpg|jpeg|png|webp)$/i.test(o.name));
+      if (!imgs.length) console.warn('[listImages] no images in', slug);
+      return imgs.map(o => publicUrl(`featured/${slug}/${o.name}`));
     }
 
     // --- UI ---
@@ -118,6 +136,7 @@
       const brands = Array.from(new Set(items.map(v=>v.brand).filter(Boolean))).sort();
       brandFilter.innerHTML = '<option value="">All Brands</option>' + brands.map(b=>`<option value="${b}">${b}</option>`).join('');
     }
+
     function placeholder(slug){
       return `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'>
         <rect width='100%' height='100%' fill='%23111827'/>
@@ -125,6 +144,7 @@
          fill='%23f59e0b' font-family='Arial' font-size='22'>No images • ${encodeURIComponent(slug)}</text>
       </svg>`;
     }
+
     function cardHTML(v){
       const img = (v.images && v.images[0]) || placeholder(v.slug||'item');
       const wishOn = getWishlist().includes(v.slug);
@@ -183,17 +203,25 @@
     async function loadAll(){
       wishCount.textContent = getWishlist().length;
       grid.innerHTML = '<div class="muted" style="grid-column:1/-1">Loading…</div>';
+
       const slugs = await listSlugs();
-      if(!slugs.length){ grid.innerHTML = '<div class="muted" style="grid-column:1/-1">No featured vehicles yet</div>'; return; }
+      if(!slugs.length){
+        grid.innerHTML = '<div class="muted" style="grid-column:1/-1">No featured vehicles yet</div>';
+        return;
+      }
+
       const items = [];
       for(const slug of slugs){
-        const meta = await readMeta(slug);
+        const meta = await readMeta(slug);   // 404-safe
         meta.slug = slug;
-        meta.images = await listImages(slug);   // auto urls
+        meta.images = await listImages(slug); // actual files → real URLs
         items.push(meta);
       }
+
       ALL = items;
       fillBrandOptions(items);
+
+      // Optional hash routing: #cars | #bikes | #scooters
       const hash = (location.hash||'').replace('#','');
       if(hash==='cars') CURR_TYPE='car';
       else if(hash==='bikes') CURR_TYPE='bike';
@@ -201,6 +229,7 @@
       if(CURR_TYPE){
         typeTabs.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b.dataset.type===CURR_TYPE));
       }
+
       render(items);
     }
 
