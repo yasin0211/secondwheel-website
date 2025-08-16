@@ -1,35 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Second Wheel — Buy</title>
 <style>
   :root{--bg:#111827;--card:#1f2937;--ink:#e5e7eb;--muted:#9aa3b2;--brand:#f59e0b;--line:rgba(255,255,255,.08)}
-  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Arial}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Arial}
   header{background:#0b0f17;padding:14px;text-align:center;font-weight:800;color:var(--brand)}
   .wrap{max-width:1160px;margin:0 auto;padding:16px}
+
+  /* Top bar */
   .top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
   .tabs{display:inline-grid;grid-auto-flow:column;gap:8px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:6px}
   .tabs button{border:0;background:transparent;color:var(--ink);padding:8px 12px;border-radius:999px;cursor:pointer}
   .tabs button.active{background:var(--brand);color:#111;font-weight:800}
   .filters{display:flex;gap:10px;flex-wrap:wrap}
   .filters input,.filters select{background:#0f172a;border:1px solid var(--line);color:var(--ink);padding:10px 12px;border-radius:10px;min-width:180px}
+
+  /* Featured row */
+  .featured-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(260px,1fr);gap:12px;overflow:auto;padding-bottom:6px}
+  .featured-title{display:flex;align-items:center;gap:10px;margin:10px 0}
+  .pill{background:rgba(245,158,11,.18);border:1px solid var(--line);color:#fbbf24;border-radius:999px;padding:6px 10px;font-weight:700}
+
+  /* Cards */
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-  .thumb{width:100%;height:170px;object-fit:cover;background:#0f172a}
+  .thumb{width:100%;height:220px;object-fit:cover;display:block;background:#0f172a}
   .body{padding:12px}
   .meta{display:flex;justify-content:space-between;color:#cbd5e1;font-size:12px}
   .muted{color:var(--muted)}
   .actions{display:flex;gap:8px;margin-top:10px}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));cursor:pointer}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));cursor:pointer;text-decoration:none;color:var(--ink)}
   .btn-primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
   .wish-on{background:rgba(245,158,11,.18);border-color:#b45309}
 </style>
 </head>
 <body>
 <header>Buy Vehicles</header>
+
 <main class="wrap">
+  <!-- Filters -->
   <div class="top">
     <div class="tabs" id="typeTabs">
       <button data-type="" class="active">All</button>
@@ -43,6 +55,17 @@
       <span class="muted">❤️ <span id="wishCount">0</span></span>
     </div>
   </div>
+
+  <!-- Featured -->
+  <div class="featured-title">
+    <span class="pill">Featured</span>
+    <span class="muted">Latest picks</span>
+  </div>
+  <div id="featured" class="featured-row">
+    <div class="muted" style="padding:8px">Loading…</div>
+  </div>
+
+  <!-- All vehicles -->
   <div id="grid" class="grid"></div>
 </main>
 
@@ -55,6 +78,7 @@ const WHATSAPP = '919822292955';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const grid = document.getElementById('grid');
+const featuredRow = document.getElementById('featured');
 const brandFilter = document.getElementById('brandFilter');
 const q = document.getElementById('q');
 const typeTabs = document.getElementById('typeTabs');
@@ -69,9 +93,10 @@ function toggleWish(id){
   document.querySelectorAll(`[data-wish="${id}"]`).forEach(b=>b.classList.toggle('wish-on', w.includes(id)));
 }
 function purl(path){ return sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl; }
+function placeholder(t){ return `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'><rect width='100%' height='100%' fill='%23111827'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23f59e0b' font-family='Arial' font-size='20'>${encodeURIComponent(t||'Vehicle')}</text></svg>`; }
 
 async function listVIDs(){
-  const { data, error } = await sb.storage.from(BUCKET).list('featured', {limit:400});
+  const { data, error } = await sb.storage.from(BUCKET).list('featured', {limit:500, sortBy:{column:'name', order:'desc'}});
   if(error){ console.error(error); return []; }
   return (data||[]).filter(x=>x && !(/\./.test(x.name))).map(x=>x.name);
 }
@@ -88,8 +113,7 @@ async function listImages(id){
   return (data||[]).filter(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name)).map(o=>purl(`featured/${id}/${o.name}`));
 }
 
-function placeholder(t){ return `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'><rect width='100%' height='100%' fill='%23111827'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23f59e0b' font-family='Arial' font-size='20'>${encodeURIComponent(t||'Vehicle')}</text></svg>`; }
-
+/* ----- UI builders ----- */
 function card(v){
   const img = v.images?.[0] || placeholder(v.title||v.id);
   const wa = encodeURIComponent(`Hi, I am interested in ${v.title||v.id}.`);
@@ -108,7 +132,20 @@ function card(v){
     </div>
   </article>`;
 }
+function cardSmall(v){
+  const img = v.images?.[0] || placeholder(v.title||v.id);
+  const wa = encodeURIComponent(`Hi, I am interested in ${v.title||v.id}.`);
+  return `<article class="card">
+    <img class="thumb" src="${img}" alt="${v.title||v.id}">
+    <div class="body">
+      <strong>${v.title||v.id}</strong>
+      <div class="meta" style="margin-top:6px"><span>${v.brand||''}</span><span>${v.price||''}</span></div>
+      <a class="btn btn-primary" style="margin-top:8px" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}?text=${wa}">Inquiry Now</a>
+    </div>
+  </article>`;
+}
 
+/* ----- Render helpers ----- */
 function render(list){
   const text = (q.value||'').toLowerCase(); const brand = brandFilter.value;
   const items = list.filter(v =>
@@ -119,12 +156,12 @@ function render(list){
   grid.innerHTML = items.length ? items.map(card).join('') : '<div class="muted" style="grid-column:1/-1">No results</div>';
   wishCount.textContent = getWish().length;
 }
-
 function fillBrands(list){
   const brands = Array.from(new Set(list.map(v=>v.brand).filter(Boolean))).sort();
   brandFilter.innerHTML = '<option value="">All Brands</option>'+brands.map(b=>`<option>${b}</option>`).join('');
 }
 
+/* ----- Events ----- */
 brandFilter.addEventListener('change', ()=>render(ALL));
 q.addEventListener('input', ()=>render(ALL));
 typeTabs.addEventListener('click', e=>{
@@ -135,10 +172,31 @@ typeTabs.addEventListener('click', e=>{
   }
 });
 
+/* ----- Loaders ----- */
+async function loadFeatured(idsAll){
+  // IDs already sorted DESC (name starts with timestamp)
+  const pick = idsAll.slice(0,3);
+  const rows = [];
+  for(const id of pick){
+    const meta = await readMeta(id);
+    meta.id = id; meta.images = await listImages(id);
+    rows.push(cardSmall(meta));
+  }
+  featuredRow.innerHTML = rows.join('') || '<div class="muted" style="padding:8px">No featured items</div>';
+}
+
 async function loadAll(){
   setWish(getWish());
   grid.innerHTML = '<div class="muted" style="grid-column:1/-1">Loading…</div>';
-  const ids = await listVIDs(); if(!ids.length){ grid.innerHTML='<div class="muted" style="grid-column:1/-1">No vehicles</div>'; return; }
+  const ids = await listVIDs(); 
+  if(!ids.length){ 
+    featuredRow.innerHTML = '<div class="muted" style="padding:8px">No featured items</div>';
+    grid.innerHTML='<div class="muted" style="grid-column:1/-1">No vehicles</div>'; 
+    return; 
+  }
+  // Featured first
+  loadFeatured(ids);
+
   const arr = [];
   for(const id of ids){
     const meta = await readMeta(id);
