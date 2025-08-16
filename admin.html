@@ -1,169 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Second Wheel Admin Panel</title>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <style>
-    body { font-family: Arial, sans-serif; background: #111; color: #eee; padding: 20px; }
-    h2 { color: orange; }
-    .box { background: #222; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
-    input, select, textarea { width: 100%; margin: 5px 0; padding: 8px; }
-    button { background: orange; border: none; padding: 10px 15px; cursor: pointer; }
-    #featuredList div { border: 1px solid #555; margin: 5px; padding: 5px; }
-    img { max-width: 100px; display: block; margin: 5px 0; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Second Wheel • Admin</title>
+<style>
+  :root{--bg:#0b0f17;--card:#111827;--ink:#e5e7eb;--line:rgba(255,255,255,.08);--brand:#f59e0b}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Arial}
+  header{padding:14px 16px;background:#030712;font-weight:800;color:var(--brand)}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
+  .grid{display:grid;gap:16px}
+  @media(min-width:860px){.grid{grid-template-columns:1fr 1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+  label{font-size:12px;color:#94a3b8;display:block;margin:6px 0 4px}
+  input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0f172a;color:var(--ink)}
+  textarea{min-height:90px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  button{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));color:var(--ink);padding:10px 12px;border-radius:12px;cursor:pointer}
+  .primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
+  .muted{color:#9aa3b2}
+  .list{display:grid;gap:10px;max-height:420px;overflow:auto}
+  .item{border:1px solid var(--line);border-radius:10px;padding:10px;background:#0f172a;display:flex;gap:10px;align-items:center}
+  .item img{width:80px;height:60px;object-fit:cover;border-radius:8px;background:#111}
+  .copy{font-size:12px;color:#a3e635;cursor:pointer}
+</style>
 </head>
 <body>
-  <h1>⚙️ Second Wheel Admin Panel</h1>
+<header>Admin Panel (No Slug Needed)</header>
+<div class="wrap">
 
-  <!-- LOGIN / SIGNUP -->
-  <div class="box">
-    <h2>Login / Signup</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="signup()">Signup</button>
-    <button onclick="login()">Login</button>
-    <p id="authStatus"></p>
+  <div class="card">
+    <div><b>Current VID:</b> <span id="currVid" class="muted">—</span>
+      <span class="copy" id="copyVid" title="Copy VID">Copy</span>
+    </div>
+    <div class="btns" style="margin-top:6px">
+      <button onclick="newVid()">Create New VID</button>
+      <button onclick="clearVid()">Reset</button>
+    </div>
   </div>
 
-  <!-- CREATE / EDIT VEHICLE -->
-  <div class="box">
-    <h2>Create / Edit Vehicle</h2>
-    <input id="brand" placeholder="Brand (e.g. Maruti Suzuki)" />
-    <input id="title" placeholder="Title (e.g. Swift VXI 2016)" />
-    <input id="price" placeholder="Price (₹)" />
-    <input id="year" placeholder="Year" />
-    <input id="km" placeholder="Kilometers Driven" />
-    <select id="type">
-      <option value="car">Car</option>
-      <option value="bike">Bike</option>
-      <option value="scooter">Scooter</option>
-    </select>
-    <input id="slug" placeholder="Slug (e.g. swift-vxi-2016)" />
-    <button onclick="makeSlug()">Make Slug</button>
-    <textarea id="description" placeholder="Description"></textarea>
-    <input id="location" placeholder="Location" />
-    <input id="fuel" placeholder="Fuel Type" />
-    <input id="transmission" placeholder="Transmission" />
-    <input id="owners" placeholder="Owners (1st, 2nd...)" />
-    <button onclick="saveVehicle()">Save / Update Featured</button>
-    <button onclick="deleteVehicle()">Delete Vehicle</button>
-    <p id="saveStatus"></p>
+  <div class="grid">
+    <div class="card">
+      <h3 style="margin:0 0 8px">Vehicle Details</h3>
+      <div class="row">
+        <div>
+          <label>Brand</label>
+          <input id="brand" placeholder="Maruti Suzuki">
+        </div>
+        <div>
+          <label>Title / Model</label>
+          <input id="title" placeholder="Swift VXI 2016">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Price</label>
+          <input id="price" placeholder="₹3,45,000">
+        </div>
+        <div>
+          <label>Year</label>
+          <input id="year" placeholder="2016">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>KM</label>
+          <input id="km" placeholder="38,500">
+        </div>
+        <div>
+          <label>Type</label>
+          <select id="type">
+            <option value="">Select</option>
+            <option value="car">Car</option>
+            <option value="bike">Bike</option>
+            <option value="scooter">Scooter</option>
+          </select>
+        </div>
+      </div>
+      <label>Description</label>
+      <textarea id="desc" placeholder="Well maintained, single owner..."></textarea>
+      <div class="btns">
+        <button class="primary" onclick="saveVehicle()">Save Vehicle</button>
+      </div>
+      <div class="muted" style="margin-top:6px">Save केल्यानंतरच फोटो Upload करा.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 8px">Gallery Upload</h3>
+      <label>Images (multiple)</label>
+      <input id="images" type="file" accept="image/*" multiple>
+      <div class="btns">
+        <button onclick="uploadImages()">Upload Images</button>
+        <button onclick="refreshList()">Refresh List</button>
+      </div>
+      <div class="list" id="galList"><div class="muted">No items</div></div>
+    </div>
   </div>
 
-  <!-- GALLERY MANAGER -->
-  <div class="box">
-    <h2>Gallery Manager</h2>
-    <input type="file" id="images" multiple />
-    <button onclick="uploadImages()">Upload Images</button>
-    <div id="gallery"></div>
+  <div class="card">
+    <h3 style="margin:0 0 8px">All Featured (from Storage)</h3>
+    <div id="allList" class="list"><div class="muted">Loading…</div></div>
   </div>
 
-  <!-- FEATURED LIST -->
-  <div class="box">
-    <h2>Featured List</h2>
-    <div id="featuredList">Loading...</div>
-  </div>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const supabaseUrl = "https://wbjwvxckbfkutqqbgupq.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
+const BUCKET = 'vehicals';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const VID_KEY = 'sw_current_vid';
+const currVidEl = document.getElementById('currVid');
+const galList = document.getElementById('galList');
+const allList = document.getElementById('allList');
 
-// AUTH
-async function signup() {
-  let { error } = await supabase.auth.signUp({ email: email.value, password: password.value });
-  authStatus.textContent = error ? error.message : "Signup successful. Please login.";
-}
-async function login() {
-  let { data, error } = await supabase.auth.signInWithPassword({ email: email.value, password: password.value });
-  authStatus.textContent = error ? error.message : "Login successful ✅";
-  if (!error) loadFeatured();
-}
+function setVid(id){ localStorage.setItem(VID_KEY,id); currVidEl.textContent=id||'—'; }
+function getVid(){ return localStorage.getItem(VID_KEY)||''; }
 
-// MAKE SLUG
-function makeSlug() {
-  slug.value = title.value.toLowerCase().replace(/\s+/g, "-");
+function sluggify(s){
+  return String(s||'').toLowerCase().trim()
+    .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
 }
+function newVid(){
+  const base = sluggify(document.getElementById('title').value || document.getElementById('brand').value || 'vehicle');
+  const id = `${Date.now()}-${base||'item'}`;
+  setVid(id); alert('VID created: '+id);
+}
+function clearVid(){ localStorage.removeItem(VID_KEY); setVid(''); }
 
-// SAVE VEHICLE
-async function saveVehicle() {
-  const slugVal = slug.value;
-  if (!slugVal) { alert("Please enter slug"); return; }
+document.getElementById('copyVid').onclick = () => {
+  const id = getVid(); if(!id) return;
+  navigator.clipboard.writeText(id); alert('Copied: '+id);
+};
+
+async function saveVehicle(){
+  let vid = getVid();
+  if(!vid){ newVid(); vid = getVid(); }
   const meta = {
-    brand: brand.value,
-    title: title.value,
-    price: price.value,
-    year: year.value,
-    km: km.value,
-    type: type.value,
-    description: description.value,
-    location: location.value,
-    fuel: fuel.value,
-    transmission: transmission.value,
-    owners: owners.value,
+    title: document.getElementById('title').value.trim(),
+    brand: document.getElementById('brand').value.trim(),
+    price: document.getElementById('price').value.trim(),
+    year:  document.getElementById('year').value.trim(),
+    km:    document.getElementById('km').value.trim(),
+    type:  document.getElementById('type').value,
+    description: document.getElementById('desc').value.trim()
   };
-  const { error } = await supabase.storage.from("vehicals")
-    .upload(`featured/${slugVal}/meta.json`, new Blob([JSON.stringify(meta)], { type: "application/json" }), { upsert: true });
-  saveStatus.textContent = error ? error.message : "✅ Vehicle saved/updated!";
-  loadFeatured();
+  const blob = new Blob([JSON.stringify(meta,null,2)], {type:'application/json'});
+  const path = `featured/${vid}/meta.json`;
+  const { error } = await sb.storage.from(BUCKET).upload(path, blob, {upsert:true, contentType:'application/json', cacheControl:'3600'});
+  if(error){ alert('Meta upload failed: '+error.message); console.error(error); }
+  else { alert('Saved ✅'); refreshList(); loadAll(); }
 }
 
-// DELETE VEHICLE
-async function deleteVehicle() {
-  const slugVal = slug.value;
-  if (!slugVal) { alert("Enter slug to delete"); return; }
-  const { data, error } = await supabase.storage.from("vehicals").list(`featured/${slugVal}`);
-  if (error) { alert(error.message); return; }
-  for (let file of data) {
-    await supabase.storage.from("vehicals").remove([`featured/${slugVal}/${file.name}`]);
+async function uploadImages(){
+  const vid = getVid();
+  if(!vid){ alert('पहिले Save Vehicle करा (VID तयार होईल)'); return; }
+  const files = document.getElementById('images').files;
+  if(!files.length){ alert('Images निवडा'); return; }
+  for(const f of files){
+    const p = `featured/${vid}/${f.name}`;
+    const { error } = await sb.storage.from(BUCKET).upload(p, f, {upsert:true, contentType:f.type||'application/octet-stream', cacheControl:'3600'});
+    if(error){ console.error('IMG FAIL', p, error.message); } else { console.log('IMG OK', p); }
   }
-  saveStatus.textContent = "❌ Vehicle deleted";
-  loadFeatured();
+  alert('Uploads done ✅'); refreshList();
 }
 
-// UPLOAD IMAGES
-async function uploadImages() {
-  const slugVal = slug.value;
-  if (!slugVal) { alert("Enter slug first"); return; }
-  for (let file of images.files) {
-    await supabase.storage.from("vehicals")
-      .upload(`featured/${slugVal}/${Date.now()}-${file.name}`, file, { upsert: true });
-  }
-  loadGallery(slugVal);
+async function refreshList(){
+  const vid = getVid(); if(!vid){ galList.innerHTML='<div class="muted">No VID</div>'; return; }
+  const { data, error } = await sb.storage.from(BUCKET).list(`featured/${vid}`, {limit:200});
+  if(error){ galList.innerHTML='<div class="muted">Error</div>'; return; }
+  const imgs = (data||[]).filter(x=>/\.(jpg|jpeg|png|webp)$/i.test(x.name));
+  if(!imgs.length){ galList.innerHTML='<div class="muted">No images yet</div>'; return; }
+  galList.innerHTML = imgs.map(f=>{
+    const { data } = sb.storage.from(BUCKET).getPublicUrl(`featured/${vid}/${f.name}`);
+    return `<div class="item"><img src="${data.publicUrl}"><div>${f.name}</div></div>`;
+  }).join('');
 }
 
-// LOAD GALLERY
-async function loadGallery(slugVal) {
-  const { data, error } = await supabase.storage.from("vehicals").list(`featured/${slugVal}`);
-  gallery.innerHTML = "";
-  if (error) return;
-  for (let file of data) {
-    if (file.name.endsWith(".json")) continue;
-    const { data: urlData } = supabase.storage.from("vehicals").getPublicUrl(`featured/${slugVal}/${file.name}`);
-    gallery.innerHTML += `<div>
-      <img src="${urlData.publicUrl}" />
-      <button onclick="deleteImage('${slugVal}','${file.name}')">🗑️</button>
-      <a href="${urlData.publicUrl}" target="_blank">🔍</a>
-    </div>`;
+async function loadAll(){
+  allList.innerHTML='<div class="muted">Loading…</div>';
+  const { data, error } = await sb.storage.from(BUCKET).list('featured', {limit:400});
+  if(error){ allList.innerHTML='<div class="muted">Error</div>'; return; }
+  const folders = (data||[]).filter(x=>x && !(/\./.test(x.name))).map(x=>x.name);
+  if(!folders.length){ allList.innerHTML='<div class="muted">No vehicles</div>'; return; }
+  const rows = [];
+  for(const id of folders){
+    const metaTry = await sb.storage.from(BUCKET).download(`featured/${id}/meta.json`);
+    let meta = { title:id, brand:'', price:'' };
+    if(!metaTry.error){ try{ meta = JSON.parse(await metaTry.data.text()); }catch{} }
+    const imgList = await sb.storage.from(BUCKET).list(`featured/${id}`, {limit:1});
+    let url = '';
+    if(!imgList.error && imgList.data?.length){
+      const file = imgList.data.find(f=>/\.(jpg|jpeg|png|webp)$/i.test(f.name));
+      if(file){ url = sb.storage.from(BUCKET).getPublicUrl(`featured/${id}/${file.name}`).data.publicUrl; }
+    }
+    rows.push(`<div class="item">
+      <img src="${url||'data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 width=%2780%27 height=%2760%27><rect width=%2780%27 height=%2760%27 fill=%27%23111827%27/></svg>'}">
+      <div style="flex:1">
+        <div><b>${meta.title||id}</b></div>
+        <div class="muted">${meta.brand||''} ${meta.price||''}</div>
+        <div class="copy" onclick="setVid('${id}');refreshList();window.scrollTo({top:0,behavior:'smooth'})">Use this VID</div>
+      </div>
+    </div>`);
   }
-}
-async function deleteImage(slugVal, fileName) {
-  await supabase.storage.from("vehicals").remove([`featured/${slugVal}/${fileName}`]);
-  loadGallery(slugVal);
+  allList.innerHTML = rows.join('');
 }
 
-// LOAD FEATURED LIST
-async function loadFeatured() {
-  const { data, error } = await supabase.storage.from("vehicals").list("featured");
-  featuredList.innerHTML = "";
-  if (error) return;
-  for (let folder of data) {
-    featuredList.innerHTML += `<div onclick="loadGallery('${folder.name}'); slug.value='${folder.name}'">${folder.name}</div>`;
-  }
-}
+(function init(){
+  setVid(getVid());
+  refreshList();
+  loadAll();
+})();
 </script>
 </body>
 </html>
