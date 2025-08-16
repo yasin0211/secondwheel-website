@@ -3,21 +3,18 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Second Wheel — Admin (Featured)</title>
+<title>Second Wheel — Admin (No Slug)</title>
 <meta name="theme-color" content="#111827"/>
 <style>
 :root{--bg:#0b0f17;--card:#121826;--muted:#9aa3b2;--text:#e5e7eb;--brand:#f59e0b;--ok:#22c55e;--err:#ef4444;--line:rgba(255,255,255,.1);--shadow:0 8px 28px rgba(0,0,0,.35)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
-a{color:inherit}
 .container{max-width:1200px;margin:0 auto;padding:18px}
 header{position:sticky;top:0;z-index:10;background:rgba(11,15,23,.75);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
-.brand{display:flex;gap:12px;align-items:center}
-.brand img{width:36px;height:36px;border-radius:10px;box-shadow:var(--shadow)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px}
 .grid{display:grid;gap:14px}
-@media(min-width:980px){.layout{grid-template-columns:280px 1fr 1fr}}
+@media(min-width:980px){.layout{grid-template-columns:300px 1fr 1fr}}
 label{display:block;margin:8px 0 4px;color:var(--muted)}
 input,select,textarea{width:100%;padding:10px 12px;background:#0f1522;color:var(--text);border:1px solid var(--line);border-radius:10px;outline:none}
 textarea{min-height:110px;resize:vertical}
@@ -26,9 +23,8 @@ input:focus,select:focus,textarea:focus{border-color:#3b82f6}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));cursor:pointer}
 .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
 .btn.danger{background:linear-gradient(180deg,#ef4444,#991b1b);color:#fff;border-color:transparent}
-.btn.ghost{background:transparent}
 .ok{color:var(--ok)} .err{color:var(--err)} .muted{color:var(--muted)}
-.list{max-height:430px;overflow:auto;border:1px solid var(--line);border-radius:12px}
+.list{max-height:440px;overflow:auto;border:1px solid var(--line);border-radius:12px}
 .item{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
 .item.active{background:rgba(255,255,255,.06)}
 .pill{padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12px}
@@ -39,93 +35,54 @@ input:focus,select:focus,textarea:focus{border-color:#3b82f6}
 .thumb{position:relative;border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .thumb img{width:100%;display:block}
 .thumb .actions{position:absolute;right:6px;top:6px;display:flex;gap:6px}
-.hide{display:none!important}
 </style>
 </head>
 <body>
 <header>
   <div class="container nav">
-    <div class="brand">
-      <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="logo"/>
-      <div>
-        <strong>Second Wheel — Admin (Featured)</strong>
-        <div class="muted">Create • Upload • Edit • Delete</div>
-      </div>
-    </div>
+    <strong>Second Wheel — Admin (No Slug)</strong>
     <div class="row">
       <button id="btnRefresh" class="btn">Refresh</button>
+      <button id="btnNew" class="btn">New Vehicle</button>
     </div>
   </div>
 </header>
 
 <main class="container grid layout">
-  <!-- LEFT : Featured list -->
+  <!-- LEFT : list -->
   <section class="card">
-    <div class="row" style="justify-content:space-between;align-items:center">
-      <h3 style="margin:0">Featured List</h3>
-      <button id="btnRebuild" class="btn ghost">Rebuild index</button>
-    </div>
+    <h3 style="margin:0 0 10px">Featured List</h3>
     <input id="search" placeholder="Search…"/>
     <div id="list" class="list" style="margin-top:10px"></div>
   </section>
 
   <!-- MIDDLE : form -->
   <section class="card">
-    <h3 id="formTitle">Create / Edit Vehicle</h3>
+    <h3 id="formTitle">Create / Edit</h3>
+    <div class="row"><div class="pill">VID: <span id="vidShow">—</span></div></div>
     <div class="grid">
-      <div>
-        <label>Brand</label>
-        <input id="brand" placeholder="Hyundai"/>
-      </div>
-      <div>
-        <label>Title / Model</label>
-        <input id="title" placeholder="i10 Sportz 2008"/>
+      <div><label>Brand</label><input id="brand" placeholder="Hyundai"/></div>
+      <div><label>Title / Model</label><input id="title" placeholder="i10 Sportz 2008"/></div>
+      <div class="row">
+        <div style="flex:1"><label>Price</label><input id="price" placeholder="145000"/></div>
+        <div style="width:120px"><label>Year</label><input id="year" type="number" min="1990" max="2099" placeholder="2008"/></div>
+        <div style="width:140px"><label>KM</label><input id="km" placeholder="88890"/></div>
       </div>
       <div class="row">
-        <div style="flex:1">
-          <label>Price</label>
-          <input id="price" placeholder="145000"/>
-        </div>
-        <div style="width:120px">
-          <label>Year</label>
-          <input id="year" type="number" min="1990" max="2099" placeholder="2008"/>
-        </div>
-        <div style="width:140px">
-          <label>KM</label>
-          <input id="km" placeholder="88890"/>
+        <div style="width:160px"><label>Type</label>
+          <select id="vtype"><option value="car">car</option><option value="bike">bike</option><option value="scooter">scooter</option></select>
         </div>
       </div>
-      <div class="row">
-        <div style="width:160px">
-          <label>Type</label>
-          <select id="vtype">
-            <option value="car">car</option>
-            <option value="bike">bike</option>
-            <option value="scooter">scooter</option>
-          </select>
-        </div>
-        <div style="flex:1">
-          <label>Slug</label>
-          <input id="slug" placeholder="i10-sportz-2008"/>
-        </div>
-        <div style="width:140px">
-          <label>&nbsp;</label>
-          <button id="btnMakeSlug" class="btn">Make Slug</button>
-        </div>
-      </div>
-      <div>
-        <label>Description</label>
-        <textarea id="desc" placeholder="all ok"></textarea>
-      </div>
+      <div><label>Description</label><textarea id="desc" placeholder="all ok"></textarea></div>
     </div>
     <div class="row" style="margin-top:12px">
-      <button id="btnSaveMeta" class="btn primary">Save / Update Featured</button>
-      <button id="btnDeleteVehicle" class="btn danger">Delete Vehicle</button>
+      <button id="btnSave" class="btn primary">Save / Update</button>
+      <button id="btnDelete" class="btn danger">Delete Vehicle</button>
     </div>
     <div id="metaMsg" class="muted" style="margin-top:8px"></div>
   </section>
 
-  <!-- RIGHT : Gallery -->
+  <!-- RIGHT : gallery -->
   <section class="card">
     <h3>Gallery</h3>
     <div class="row">
@@ -140,194 +97,165 @@ input:focus,select:focus,textarea:focus{border-color:#3b82f6}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ------------ CONFIG (already set) ------------ */
+/* ---------- CONFIG (ready) ---------- */
 const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-const STORAGE_BUCKET = 'vehicals';
+const BUCKET = 'vehicals';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* ------------ Elements ------------ */
+/* ---------- Elements ---------- */
 const listEl = document.getElementById('list'), search = document.getElementById('search');
 const brand = document.getElementById('brand'), title = document.getElementById('title');
-const price = document.getElementById('price'), year = document.getElementById('year');
-const km = document.getElementById('km'), vtype = document.getElementById('vtype');
-const slug = document.getElementById('slug'), desc = document.getElementById('desc');
-const btnMakeSlug = document.getElementById('btnMakeSlug'), btnSaveMeta = document.getElementById('btnSaveMeta');
-const btnDeleteVehicle = document.getElementById('btnDeleteVehicle'), metaMsg = document.getElementById('metaMsg');
+const price = document.getElementById('price'), year = document.getElementById('year'), km = document.getElementById('km');
+const vtype = document.getElementById('vtype'), desc = document.getElementById('desc');
 const files = document.getElementById('files'), btnUpload = document.getElementById('btnUpload');
 const bar = document.getElementById('bar'), upMsg = document.getElementById('upMsg'), thumbs = document.getElementById('thumbs');
-const btnRefresh = document.getElementById('btnRefresh'), btnRebuild = document.getElementById('btnRebuild');
+const btnRefresh = document.getElementById('btnRefresh'), btnNew = document.getElementById('btnNew');
+const btnSave = document.getElementById('btnSave'), btnDelete = document.getElementById('btnDelete'), metaMsg = document.getElementById('metaMsg');
+const vidShow = document.getElementById('vidShow'), formTitle = document.getElementById('formTitle');
 
-function msg(el, text, type){ el.textContent = text;
-  el.classList.remove('ok','err'); if(type==='ok') el.classList.add('ok'); if(type==='err') el.classList.add('err'); }
+let CURR_VID = null;
 
-function makeSlug(){
-  const base = (title.value||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-  const y = (year.value||'').toString().trim(); slug.value = y ? `${base}-${y}` : base;
-}
-btnMakeSlug.addEventListener('click', makeSlug);
-title.addEventListener('input', ()=>{ if(!slug.value) makeSlug(); });
-
+/* ---------- Helpers ---------- */
+const nowId = () => 'v' + new Date().toISOString().replace(/[-:.TZ]/g,'').slice(0,14) + '-' + Math.random().toString(36).slice(2,6);
+function msg(el, txt, type){ el.textContent = txt; el.classList.remove('ok','err'); if(type==='ok')el.classList.add('ok'); if(type==='err')el.classList.add('err'); }
 function buildMeta(){
-  return { slug: slug.value.trim(), brand: brand.value.trim(), title: title.value.trim(),
+  return { vid: CURR_VID, brand: brand.value.trim(), title: title.value.trim(),
     price: price.value.trim(), year: Number(year.value||'0'), km: km.value.trim(),
     type: vtype.value, description: desc.value.trim(), updatedAt: new Date().toISOString() };
 }
 
-/* ------------ Index helpers ------------ */
+/* ---------- Index ---------- */
 async function getIndex(){
-  const { data, error } = await sb.storage.from(STORAGE_BUCKET).download('featured/_index.json');
+  const { data, error } = await sb.storage.from(BUCKET).download('featured/_index.json');
   if(error) return [];
-  try { return JSON.parse(await data.text()); } catch(e){ return []; }
+  try{ return JSON.parse(await data.text()); }catch{ return []; }
 }
 async function setIndex(arr){
-  const blob = new Blob([JSON.stringify(arr, null, 2)], { type:'application/json' });
-  await sb.storage.from(STORAGE_BUCKET).upload('featured/_index.json', blob, { upsert:true, contentType:'application/json' });
+  const blob = new Blob([JSON.stringify(arr,null,2)], { type:'application/json' });
+  await sb.storage.from(BUCKET).upload('featured/_index.json', blob, { upsert:true, contentType:'application/json' });
 }
-async function updateIndex(sl, add=true){
-  let idx = await getIndex(); idx = Array.isArray(idx)?idx:[];
-  if(add && !idx.includes(sl)) idx.push(sl);
-  if(!add) idx = idx.filter(x=>x!==sl);
-  await setIndex(idx);
-}
+async function addToIndex(vid){ let idx = await getIndex(); if(!idx.includes(vid)){ idx.push(vid); await setIndex(idx);} }
+async function removeFromIndex(vid){ let idx = await getIndex(); idx = idx.filter(x=>x!==vid); await setIndex(idx); }
 
-/* ------------ Meta fetch ------------ */
-async function fetchMeta(sl){
-  const { data, error } = await sb.storage.from(STORAGE_BUCKET).download(`featured/${sl}/meta.json`);
-  if(error) return null; try { return JSON.parse(await data.text()); } catch { return null; }
-}
-
-/* ------------ List featured ------------ */
-async function listFeatured(){
-  listEl.innerHTML = '<div class="item">Loading…</div>';
-  let slugs = await getIndex();
-  // simple client-side search filter
-  const q = (search.value||'').trim().toLowerCase();
-  const items = [];
-  for(const sl of slugs){
-    const meta = await fetchMeta(sl);
-    if(!meta) continue;
-    if(q && !(sl.toLowerCase().includes(q) || (meta.title||'').toLowerCase().includes(q) || (meta.brand||'').toLowerCase().includes(q))) continue;
-    items.push({ slug:sl, ...meta });
-  }
-  listEl.innerHTML = '';
-  if(!items.length){ listEl.innerHTML = '<div class="item">No items</div>'; return; }
-  items.sort((a,b)=> (b.updatedAt||'').localeCompare(a.updatedAt||''));  
-  for(const it of items){
-    const div = document.createElement('div');
-    div.className = 'item';
-    div.innerHTML = `<strong>${it.title||it.slug}</strong>
-      <div class="muted">${it.brand||''} • ${it.price||''} <span class="pill">${it.type||''}</span></div>`;
-    div.addEventListener('click', ()=>{ listEl.querySelectorAll('.item').forEach(x=>x.classList.remove('active'));
-      div.classList.add('active'); selectItem(it); });
-    listEl.appendChild(div);
-  }
-}
-search.addEventListener('input', listFeatured);
-
-/* ------------ Rebuild index (optional) ------------ */
-btnRebuild.addEventListener('click', async ()=>{
-  // Tries to find slugs by probing common slugs from existing meta files under known folders.
-  // If you already save from this admin once, index auto-maintains — so rebuild rarely needed.
-  const guess = ['i10-sportz-2008']; // fallback example; keep minimal to avoid noise.
-  const found = [];
-  for(const sl of guess){
-    const meta = await fetchMeta(sl);
-    if(meta) found.push(sl);
-  }
-  if(found.length){ await setIndex(found); msg(metaMsg, 'Index rebuilt', 'ok'); listFeatured(); }
-  else msg(metaMsg, 'Nothing to rebuild (save something first)', 'err');
-});
-
-/* ------------ Select item to form ------------ */
-function selectItem(item){
-  brand.value = item.brand||''; title.value = item.title||item.slug||'';
-  price.value = item.price||''; year.value = item.year||''; km.value=item.km||'';
-  vtype.value = item.type||'car'; slug.value=item.slug||''; desc.value=item.description||'';
-  document.getElementById('formTitle').textContent = 'Edit: '+(item.slug||'');
-  loadGallery(item.slug);
-}
-
-/* ------------ Save / Update ------------ */
-btnSaveMeta.addEventListener('click', async ()=>{
-  if(!slug.value){ msg(metaMsg,'Please fill slug','err'); return; }
-  const item = buildMeta();
-  const blob = new Blob([JSON.stringify(item,null,2)], { type:'application/json' });
-  const { error } = await sb.storage.from(STORAGE_BUCKET)
-    .upload(`featured/${item.slug}/meta.json`, blob, { upsert:true, contentType:'application/json' });
+/* ---------- Meta ---------- */
+async function saveMeta(){
+  if(!CURR_VID){ CURR_VID = nowId(); }
+  const meta = buildMeta();
+  const blob = new Blob([JSON.stringify(meta,null,2)], { type:'application/json' });
+  const { error } = await sb.storage.from(BUCKET).upload(`featured/items/${CURR_VID}.json`, blob, { upsert:true, contentType:'application/json' });
   if(error){ msg(metaMsg,'Save failed: '+error.message,'err'); return; }
-  await updateIndex(item.slug, true);
-  msg(metaMsg,'Saved ✔','ok');
-  listFeatured();
-});
+  await addToIndex(CURR_VID);
+  msg(metaMsg,'Saved ✔','ok'); await listFeatured(); showVID();
+}
+async function fetchMeta(vid){
+  const { data, error } = await sb.storage.from(BUCKET).download(`featured/items/${vid}.json`);
+  if(error) return null; try{ return JSON.parse(await data.text()); }catch{ return null; }
+}
 
-/* ------------ Delete vehicle ------------ */
-btnDeleteVehicle.addEventListener('click', async ()=>{
-  if(!slug.value){ msg(metaMsg,'No slug to delete','err'); return; }
-  if(!confirm('Delete entire vehicle folder? This cannot be undone.')) return;
-  const base = `featured/${slug.value}`;
-  const { data, error } = await sb.storage.from(STORAGE_BUCKET).list(base, { limit:1000 });
-  if(error){ msg(metaMsg,'List failed: '+error.message,'err'); return; }
-  const paths = (data||[]).map(o=>`${base}/${o.name}`);
-  if(paths.length){
-    const { error:err2 } = await sb.storage.from(STORAGE_BUCKET).remove(paths);
-    if(err2){ msg(metaMsg,'Delete failed: '+err2.message,'err'); return; }
-  }
-  await updateIndex(slug.value, false);
-  msg(metaMsg,'Vehicle deleted ✔','ok');
-  brand.value=title.value=price.value=km.value=desc.value=''; year.value=''; slug.value=''; vtype.value='car';
-  thumbs.innerHTML='';
-  listFeatured();
-});
-
-/* ------------ Gallery ------------ */
-async function loadGallery(sl){
+/* ---------- Gallery ---------- */
+async function loadGallery(vid){
   thumbs.innerHTML = '<div class="muted">Loading images…</div>';
-  const { data, error } = await sb.storage.from(STORAGE_BUCKET).list(`featured/${sl}`, { limit:1000 });
+  const base = `featured/gallery/${vid}`;
+  const { data, error } = await sb.storage.from(BUCKET).list(base, { limit:1000 });
   if(error){ thumbs.innerHTML = '<div class="err">Failed to load</div>'; return; }
-  const imgs = (data||[]).filter(o=>o.name && /\.(jpg|jpeg|png|webp)$/i.test(o.name));
+  const imgs = (data||[]).filter(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name));
   if(!imgs.length){ thumbs.innerHTML = '<div class="muted">No images yet</div>'; return; }
   thumbs.innerHTML = '';
   for(const im of imgs){
-    const path = `featured/${sl}/${im.name}`;
-    const { data:pub } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+    const path = `${base}/${im.name}`;
+    const { data:pub } = sb.storage.from(BUCKET).getPublicUrl(path);
     const url = pub?.publicUrl || '#';
-    const d = document.createElement('div');
-    d.className='thumb';
+    const d = document.createElement('div'); d.className='thumb';
     d.innerHTML = `<img src="${url}" alt="${im.name}">
       <div class="actions">
-        <button class="btn danger" data-path="${path}" title="Delete">🗑️</button>
+        <button class="btn danger" title="Delete">🗑️</button>
         <a class="btn" href="${url}" target="_blank" title="Open">🔍</a>
       </div>`;
     d.querySelector('button').addEventListener('click', async ()=>{
       if(!confirm('Delete this image?')) return;
-      const { error } = await sb.storage.from(STORAGE_BUCKET).remove([path]);
+      const { error } = await sb.storage.from(BUCKET).remove([path]);
       if(error){ alert('Delete failed: '+error.message); return; }
-      loadGallery(sl);
+      loadGallery(vid);
     });
     thumbs.appendChild(d);
   }
 }
 
 btnUpload.addEventListener('click', async ()=>{
-  if(!slug.value){ msg(upMsg,'Set slug then upload','err'); return; }
-  const fileList = Array.from(files.files||[]);
-  if(!fileList.length){ msg(upMsg,'Select images to upload','err'); return; }
-  bar.style.width='0%'; msg(upMsg,'Uploading…');
-  const base = `featured/${slug.value}/`;
-  let uploaded=0;
-  for(const f of fileList){
-    const nameSafe = f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
-    const path = `${base}${Date.now()}-${nameSafe}`;
-    const { error } = await sb.storage.from(STORAGE_BUCKET).upload(path, f, { upsert:false });
+  if(!CURR_VID){ CURR_VID = nowId(); await saveMeta(); } // ensure VID exists
+  const filesArr = Array.from(files.files||[]);
+  if(!filesArr.length){ msg(upMsg,'Select images to upload','err'); return; }
+  const base = `featured/gallery/${CURR_VID}`;
+  let done=0; bar.style.width='0%'; msg(upMsg,'Uploading…');
+  for(const f of filesArr){
+    const safe = f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    const path = `${base}/${Date.now()}-${safe}`;
+    const { error } = await sb.storage.from(BUCKET).upload(path, f, { upsert:false });
     if(error){ msg(upMsg,'Upload failed: '+error.message,'err'); return; }
-    uploaded++; bar.style.width = Math.round((uploaded/fileList.length)*100)+'%';
+    done++; bar.style.width = Math.round(done/filesArr.length*100)+'%';
   }
-  msg(upMsg,`Uploaded ${uploaded}/${fileList.length} ✔`,'ok');
-  loadGallery(slug.value);
+  msg(upMsg,`Uploaded ${done}/${filesArr.length} ✔`,'ok'); loadGallery(CURR_VID);
 });
 
-/* ------------ Init ------------ */
+/* ---------- List & select ---------- */
+async function listFeatured(){
+  const idx = await getIndex();
+  const q = (search.value||'').toLowerCase();
+  const items = [];
+  for(const vid of idx){
+    const m = await fetchMeta(vid);
+    if(!m) continue;
+    if(q && !(vid.includes(q) || (m.title||'').toLowerCase().includes(q) || (m.brand||'').toLowerCase().includes(q))) continue;
+    items.push(m);
+  }
+  items.sort((a,b)=> (b.updatedAt||'').localeCompare(a.updatedAt||'') );
+  listEl.innerHTML = items.map(m=>(
+    `<div class="item" data-vid="${m.vid}">
+      <strong>${m.title||m.vid}</strong>
+      <div class="muted">${m.brand||''} • ${m.price||''} <span class="pill">${m.type||''}</span></div>
+    </div>`
+  )).join('') || '<div class="item">No items</div>';
+  listEl.querySelectorAll('.item').forEach(div=>{
+    div.addEventListener('click', async ()=>{
+      listEl.querySelectorAll('.item').forEach(x=>x.classList.remove('active'));
+      div.classList.add('active');
+      CURR_VID = div.getAttribute('data-vid');
+      const m = await fetchMeta(CURR_VID);
+      if(m){ brand.value=m.brand||''; title.value=m.title||''; price.value=m.price||'';
+        year.value=m.year||''; km.value=m.km||''; vtype.value=m.type||'car'; desc.value=m.description||''; }
+      showVID();
+      loadGallery(CURR_VID);
+    });
+  });
+}
+search.addEventListener('input', listFeatured);
+
+function showVID(){ vidShow.textContent = CURR_VID || '—'; formTitle.textContent = CURR_VID ? ('Edit • '+CURR_VID) : 'Create / Edit'; }
+
+/* ---------- New / Save / Delete ---------- */
+btnNew.addEventListener('click', ()=>{
+  CURR_VID = nowId(); brand.value=title.value=price.value=km.value=desc.value=''; year.value=''; vtype.value='car';
+  thumbs.innerHTML=''; showVID(); msg(metaMsg,'','info'); msg(upMsg,'','info'); bar.style.width='0%';
+});
+btnSave.addEventListener('click', saveMeta);
+
+btnDelete.addEventListener('click', async ()=>{
+  if(!CURR_VID){ msg(metaMsg,'No VID selected','err'); return; }
+  if(!confirm('Delete this vehicle and all its images?')) return;
+  // delete meta
+  await sb.storage.from(BUCKET).remove([`featured/items/${CURR_VID}.json`]);
+  // delete gallery folder files
+  const base = `featured/gallery/${CURR_VID}`;
+  const { data } = await sb.storage.from(BUCKET).list(base,{limit:1000});
+  const paths = (data||[]).map(o=>`${base}/${o.name}`);
+  if(paths.length) await sb.storage.from(BUCKET).remove(paths);
+  await removeFromIndex(CURR_VID);
+  CURR_VID = null; brand.value=title.value=price.value=km.value=desc.value=''; year.value='';
+  thumbs.innerHTML=''; showVID(); msg(metaMsg,'Deleted ✔','ok'); listFeatured();
+});
+
+/* ---------- Init ---------- */
 btnRefresh.addEventListener('click', listFeatured);
 listFeatured();
 </script>
