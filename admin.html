@@ -20,28 +20,34 @@
   .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
   button{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));color:var(--ink);padding:10px 12px;border-radius:12px;cursor:pointer}
   .primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
+  .danger{border-color:#7f1d1d;background:linear-gradient(180deg,#dc2626,#991b1b);color:#fff}
   .muted{color:#9aa3b2}
   .list{display:grid;gap:10px;max-height:420px;overflow:auto}
   .item{border:1px solid var(--line);border-radius:10px;padding:10px;background:#0f172a;display:flex;gap:10px;align-items:center}
   .item img{width:80px;height:60px;object-fit:cover;border-radius:8px;background:#111}
-  .copy{font-size:12px;color:#a3e635;cursor:pointer}
+  .tiny{font-size:12px}
+  .pill{display:inline-flex;align-items:center;gap:8px}
 </style>
 </head>
 <body>
-<header>Admin Panel (No Slug Needed)</header>
+<header>Admin Panel — Add / Delete / Featured Upload</header>
 <div class="wrap">
 
+  <!-- VID Control -->
   <div class="card">
-    <div><b>Current VID:</b> <span id="currVid" class="muted">—</span>
-      <span class="copy" id="copyVid" title="Copy VID">Copy</span>
-    </div>
-    <div class="btns" style="margin-top:6px">
+    <div class="pill">
+      <b>Current VID:</b> <span id="currVid" class="muted">—</span>
       <button onclick="newVid()">Create New VID</button>
-      <button onclick="clearVid()">Reset</button>
+      <button onclick="clearVid()">Reset VID</button>
+      <button onclick="copyVid()">Copy VID</button>
+    </div>
+    <div class="tiny muted" style="margin-top:6px">
+      VID = ऑटो जनरेटेड unique id (timestamp–title). ह्याच VID फोल्डरमध्ये files जातील: <code>vehicals/featured/&lt;VID&gt;/</code>
     </div>
   </div>
 
   <div class="grid">
+    <!-- Left: Meta / Featured -->
     <div class="card">
       <h3 style="margin:0 0 8px">Vehicle Details</h3>
       <div class="row">
@@ -79,14 +85,28 @@
           </select>
         </div>
       </div>
+
       <label>Description</label>
       <textarea id="desc" placeholder="Well maintained, single owner..."></textarea>
-      <div class="btns">
-        <button class="primary" onclick="saveVehicle()">Save Vehicle</button>
+
+      <div style="margin-top:10px">
+        <label class="pill">
+          <input type="checkbox" id="featuredFlag"> Mark as Featured
+        </label>
+        <div class="tiny muted">हे ऑन ठेवल्यास <code>meta.json</code> मध्ये <code>featured: true</code> सेव्ह होईल.</div>
       </div>
-      <div class="muted" style="margin-top:6px">Save केल्यानंतरच फोटो Upload करा.</div>
+
+      <div class="btns">
+        <button class="primary" onclick="saveVehicle()">Save / Update Vehicle</button>
+        <button class="" onclick="loadMeta()">Load meta (from VID)</button>
+      </div>
+      <div class="btns">
+        <button class="danger" onclick="deleteVehicle()">Delete Vehicle (folder)</button>
+      </div>
+      <div class="muted tiny" style="margin-top:6px">Delete Vehicle: त्या VID फोल्डरमधील सर्व images + meta.json delete होतील.</div>
     </div>
 
+    <!-- Right: Gallery -->
     <div class="card">
       <h3 style="margin:0 0 8px">Gallery Upload</h3>
       <label>Images (multiple)</label>
@@ -99,43 +119,39 @@
     </div>
   </div>
 
+  <!-- All existing featured folders -->
   <div class="card">
-    <h3 style="margin:0 0 8px">All Featured (from Storage)</h3>
+    <h3 style="margin:0 0 8px">All Featured Vehicles (Storage)</h3>
     <div id="allList" class="list"><div class="muted">Loading…</div></div>
   </div>
 
 </div>
 
+<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+/* ====== Config ====== */
 const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-const BUCKET = 'vehicals';
+const BUCKET = 'vehicals';                // <- बकेट spelling तसंच
+const ROOT = 'featured';                  // <- सर्व फाईल्स इथेच जातील (upload = “featured मध्ये”)
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ====== VID helpers ====== */
 const VID_KEY = 'sw_current_vid';
 const currVidEl = document.getElementById('currVid');
-const galList = document.getElementById('galList');
-const allList = document.getElementById('allList');
-
+function sluggify(s){return String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');}
 function setVid(id){ localStorage.setItem(VID_KEY,id); currVidEl.textContent=id||'—'; }
 function getVid(){ return localStorage.getItem(VID_KEY)||''; }
-
-function sluggify(s){
-  return String(s||'').toLowerCase().trim()
-    .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-}
 function newVid(){
   const base = sluggify(document.getElementById('title').value || document.getElementById('brand').value || 'vehicle');
   const id = `${Date.now()}-${base||'item'}`;
-  setVid(id); alert('VID created: '+id);
+  setVid(id); alert('VID: '+id);
 }
 function clearVid(){ localStorage.removeItem(VID_KEY); setVid(''); }
+function copyVid(){ const id=getVid(); if(!id) return; navigator.clipboard.writeText(id); alert('Copied: '+id); }
 
-document.getElementById('copyVid').onclick = () => {
-  const id = getVid(); if(!id) return;
-  navigator.clipboard.writeText(id); alert('Copied: '+id);
-};
-
+/* ====== Meta (Add/Update/Load/Delete) ====== */
 async function saveVehicle(){
   let vid = getVid();
   if(!vid){ newVid(); vid = getVid(); }
@@ -146,69 +162,130 @@ async function saveVehicle(){
     year:  document.getElementById('year').value.trim(),
     km:    document.getElementById('km').value.trim(),
     type:  document.getElementById('type').value,
-    description: document.getElementById('desc').value.trim()
+    description: document.getElementById('desc').value.trim(),
+    featured: document.getElementById('featuredFlag').checked === true
   };
   const blob = new Blob([JSON.stringify(meta,null,2)], {type:'application/json'});
-  const path = `featured/${vid}/meta.json`;
+  const path = `${ROOT}/${vid}/meta.json`;
   const { error } = await sb.storage.from(BUCKET).upload(path, blob, {upsert:true, contentType:'application/json', cacheControl:'3600'});
   if(error){ alert('Meta upload failed: '+error.message); console.error(error); }
   else { alert('Saved ✅'); refreshList(); loadAll(); }
 }
 
+async function loadMeta(){
+  const vid = getVid();
+  if(!vid){ alert('VID नाही. आधी Create New VID करा किंवा सूचीमधून एक निवडा.'); return; }
+  const res = await sb.storage.from(BUCKET).download(`${ROOT}/${vid}/meta.json`);
+  if(res.error){ alert('meta.json सापडला नाही. आधी Save Vehicle करा.'); return; }
+  try{
+    const m = JSON.parse(await res.data.text());
+    document.getElementById('title').value = m.title || '';
+    document.getElementById('brand').value = m.brand || '';
+    document.getElementById('price').value = m.price || '';
+    document.getElementById('year').value  = m.year  || '';
+    document.getElementById('km').value    = m.km    || '';
+    document.getElementById('type').value  = m.type  || '';
+    document.getElementById('desc').value  = m.description || '';
+    document.getElementById('featuredFlag').checked = !!m.featured;
+    alert('Loaded meta ✅');
+  }catch(e){ alert('meta.json parse error'); }
+}
+
+async function deleteVehicle(){
+  const vid = getVid();
+  if(!vid){ alert('VID निवडा'); return; }
+  if(!confirm(`Delete vehicle folder?\n${ROOT}/${vid}`)) return;
+  // फोल्डरमधले सर्व files मिळवा आणि delete करा
+  const { data, error } = await sb.storage.from(BUCKET).list(`${ROOT}/${vid}`, {limit: 1000});
+  if(error){ alert('List error'); return; }
+  const paths = (data||[]).map(f => `${ROOT}/${vid}/${f.name}`);
+  if(paths.length){
+    const { error:delErr } = await sb.storage.from(BUCKET).remove(paths);
+    if(delErr){ alert('Delete failed: '+delErr.message); return; }
+  }
+  // रिकामे फोल्डर आपोआप हटत नाही—काही हरकत नाही.
+  alert('Vehicle deleted ✅');
+  clearVid(); refreshList(); loadAll();
+}
+
+/* ====== Images (Upload/List/Delete) ====== */
 async function uploadImages(){
   const vid = getVid();
   if(!vid){ alert('पहिले Save Vehicle करा (VID तयार होईल)'); return; }
   const files = document.getElementById('images').files;
   if(!files.length){ alert('Images निवडा'); return; }
   for(const f of files){
-    const p = `featured/${vid}/${f.name}`;
+    const p = `${ROOT}/${vid}/${f.name}`;
     const { error } = await sb.storage.from(BUCKET).upload(p, f, {upsert:true, contentType:f.type||'application/octet-stream', cacheControl:'3600'});
-    if(error){ console.error('IMG FAIL', p, error.message); } else { console.log('IMG OK', p); }
+    if(error){ console.error('IMG FAIL', p, error.message); }
   }
   alert('Uploads done ✅'); refreshList();
 }
 
 async function refreshList(){
-  const vid = getVid(); if(!vid){ galList.innerHTML='<div class="muted">No VID</div>'; return; }
-  const { data, error } = await sb.storage.from(BUCKET).list(`featured/${vid}`, {limit:200});
-  if(error){ galList.innerHTML='<div class="muted">Error</div>'; return; }
+  const vid = getVid(); const box = document.getElementById('galList');
+  if(!vid){ box.innerHTML='<div class="muted">No VID</div>'; return; }
+  const { data, error } = await sb.storage.from(BUCKET).list(`${ROOT}/${vid}`, {limit:200});
+  if(error){ box.innerHTML='<div class="muted">Error listing</div>'; return; }
   const imgs = (data||[]).filter(x=>/\.(jpg|jpeg|png|webp)$/i.test(x.name));
-  if(!imgs.length){ galList.innerHTML='<div class="muted">No images yet</div>'; return; }
-  galList.innerHTML = imgs.map(f=>{
-    const { data } = sb.storage.from(BUCKET).getPublicUrl(`featured/${vid}/${f.name}`);
-    return `<div class="item"><img src="${data.publicUrl}"><div>${f.name}</div></div>`;
+  if(!imgs.length){ box.innerHTML='<div class="muted">No images yet</div>'; return; }
+  box.innerHTML = imgs.map(f=>{
+    const url = sb.storage.from(BUCKET).getPublicUrl(`${ROOT}/${vid}/${f.name}`).data.publicUrl;
+    return `<div class="item">
+      <img src="${url}" alt="${f.name}">
+      <div style="flex:1">${f.name}<div class="tiny muted">${ROOT}/${vid}/${f.name}</div></div>
+      <button class="danger tiny" onclick="deleteImage('${f.name}')">Delete</button>
+    </div>`;
   }).join('');
 }
 
+async function deleteImage(fileName){
+  const vid = getVid(); if(!vid) return;
+  if(!confirm(`Delete image?\n${fileName}`)) return;
+  const path = `${ROOT}/${vid}/${fileName}`;
+  const { error } = await sb.storage.from(BUCKET).remove([path]);
+  if(error){ alert('Delete failed: '+error.message); }
+  else { refreshList(); }
+}
+
+/* ====== All folders list (pick VID quickly) ====== */
+const allList = document.getElementById('allList');
 async function loadAll(){
   allList.innerHTML='<div class="muted">Loading…</div>';
-  const { data, error } = await sb.storage.from(BUCKET).list('featured', {limit:400});
+  const { data, error } = await sb.storage.from(BUCKET).list(ROOT, {limit:500, sortBy:{column:'name', order:'desc'}});
   if(error){ allList.innerHTML='<div class="muted">Error</div>'; return; }
   const folders = (data||[]).filter(x=>x && !(/\./.test(x.name))).map(x=>x.name);
   if(!folders.length){ allList.innerHTML='<div class="muted">No vehicles</div>'; return; }
+
   const rows = [];
   for(const id of folders){
-    const metaTry = await sb.storage.from(BUCKET).download(`featured/${id}/meta.json`);
-    let meta = { title:id, brand:'', price:'' };
-    if(!metaTry.error){ try{ meta = JSON.parse(await metaTry.data.text()); }catch{} }
-    const imgList = await sb.storage.from(BUCKET).list(`featured/${id}`, {limit:1});
-    let url = '';
-    if(!imgList.error && imgList.data?.length){
-      const file = imgList.data.find(f=>/\.(jpg|jpeg|png|webp)$/i.test(f.name));
-      if(file){ url = sb.storage.from(BUCKET).getPublicUrl(`featured/${id}/${file.name}`).data.publicUrl; }
+    // first image (preview)
+    const files = await sb.storage.from(BUCKET).list(`${ROOT}/${id}`, {limit:200});
+    let url=''; if(!files.error){
+      const pic = (files.data||[]).find(f=>/\.(jpg|jpeg|png|webp)$/i.test(f.name));
+      if(pic){ url = sb.storage.from(BUCKET).getPublicUrl(`${ROOT}/${id}/${pic.name}`).data.publicUrl; }
     }
+    // title from meta (optional)
+    let title = id, brand='', price='';
+    const metaTry = await sb.storage.from(BUCKET).download(`${ROOT}/${id}/meta.json`);
+    if(!metaTry.error){ try{ const m = JSON.parse(await metaTry.data.text()); title = m.title||id; brand=m.brand||''; price=m.price||''; }catch{} }
+
     rows.push(`<div class="item">
       <img src="${url||'data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 width=%2780%27 height=%2760%27><rect width=%2780%27 height=%2760%27 fill=%27%23111827%27/></svg>'}">
       <div style="flex:1">
-        <div><b>${meta.title||id}</b></div>
-        <div class="muted">${meta.brand||''} ${meta.price||''}</div>
-        <div class="copy" onclick="setVid('${id}');refreshList();window.scrollTo({top:0,behavior:'smooth'})">Use this VID</div>
+        <div><b>${title}</b></div>
+        <div class="tiny muted">${brand} ${price}</div>
+        <div class="tiny">
+          <button onclick="setVid('${id}'); refreshList(); window.scrollTo({top:0,behavior:'smooth'})">Use this VID</button>
+          <button onclick="setVid('${id}'); loadMeta();">Load meta</button>
+        </div>
       </div>
     </div>`);
   }
   allList.innerHTML = rows.join('');
 }
 
+/* ====== Init ====== */
 (function init(){
   setVid(getVid());
   refreshList();
