@@ -2,334 +2,168 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Second Wheel — Admin (Featured Manager)</title>
-  <meta name="theme-color" content="#111827" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Second Wheel Admin Panel</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <style>
-    :root{ --bg:#0b0f17; --card:#121826; --muted:#9aa3b2; --text:#e5e7eb; --brand:#f59e0b; --ok:#22c55e; --err:#ef4444; --shadow:0 8px 28px rgba(0,0,0,.35); }
-    *{ box-sizing:border-box }
-    body{ margin:0; background:var(--bg); color:var(--text); font:14px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial }
-    a{ color:inherit }
-    .container{ max-width:1200px; margin:0 auto; padding:18px }
-    header{ position:sticky; top:0; z-index:10; background:rgba(11,15,23,.7); backdrop-filter:blur(12px); border-bottom:1px solid rgba(255,255,255,.08) }
-    .nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0 }
-    .brand{ display:flex; gap:12px; align-items:center }
-    .brand img{ width:40px; height:40px; border-radius:10px; box-shadow:var(--shadow) }
-    .grid{ display:grid; gap:14px }
-    @media(min-width:1000px){ .grid-2{ grid-template-columns:1fr 1fr } .grid-3{ grid-template-columns:280px 1fr 1fr } }
-    .card{ background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:14px; box-shadow:var(--shadow); padding:16px }
-    label{ display:block; margin:8px 0 4px; color:var(--muted) }
-    input, select, textarea{ width:100%; padding:10px 12px; background:#0f1522; color:var(--text); border:1px solid rgba(255,255,255,.12); border-radius:10px; outline:none }
-    textarea{ min-height:110px; resize:vertical }
-    input:focus, select:focus, textarea:focus{ border-color:#3b82f6; }
-    .row{ display:flex; gap:10px; flex-wrap:wrap }
-    .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:10px; border:1px solid rgba(255,255,255,.12); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); cursor:pointer }
-    .btn.primary{ background:linear-gradient(180deg, #f59e0b, #b45309); color:#111; border-color:transparent }
-    .btn.danger{ background:linear-gradient(180deg, #ef4444, #991b1b); color:#fff; border-color:transparent }
-    .btn.ghost{ background:transparent }
-    .muted{ color:var(--muted) }
-    .ok{ color:var(--ok) }
-    .err{ color:var(--err) }
-    .progress{ height:8px; background:#0f1522; border-radius:8px; overflow:hidden; border:1px solid rgba(255,255,255,.1) }
-    .bar{ height:100%; width:0%; background:#3b82f6; transition:width .2s }
-    .thumbs{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px }
-    @media(min-width:700px){ .thumbs{ grid-template-columns:repeat(4,1fr) } }
-    .thumb{ position:relative; border:1px solid rgba(255,255,255,.1); border-radius:12px; overflow:hidden }
-    .thumb img{ width:100%; display:block }
-    .thumb .actions{ position:absolute; right:6px; top:6px; display:flex; gap:6px }
-    .pill{ padding:4px 8px; border-radius:999px; background:rgba(255,255,255,.08); font-size:12px }
-    .list{ max-height:420px; overflow:auto; border:1px solid rgba(255,255,255,.08); border-radius:12px }
-    .item{ padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.06); cursor:pointer }
-    .item.active{ background:rgba(255,255,255,.06) }
-    .hide{ display:none !important }
+    body { font-family: Arial, sans-serif; background: #111; color: #eee; padding: 20px; }
+    h2 { color: orange; }
+    .box { background: #222; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+    input, select, textarea { width: 100%; margin: 5px 0; padding: 8px; }
+    button { background: orange; border: none; padding: 10px 15px; cursor: pointer; }
+    #featuredList div { border: 1px solid #555; margin: 5px; padding: 5px; }
+    img { max-width: 100px; display: block; margin: 5px 0; }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container nav">
-      <div class="brand">
-        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="logo">
-        <div>
-          <strong>Second Wheel — Admin (Featured Manager)</strong>
-          <div class="muted">Create • Upload • Edit • Delete</div>
-        </div>
-      </div>
-      <div class="row">
-        <button id="btnSignOut" class="btn ghost hide">Sign out</button>
-      </div>
-    </div>
-  </header>
+  <h1>⚙️ Second Wheel Admin Panel</h1>
 
-  <main class="container grid grid-3">
-    <!-- Left: Existing list -->
-    <section class="card">
-      <div class="row" style="justify-content:space-between; align-items:center">
-        <h3 style="margin:0">Featured List</h3>
-        <button id="btnRefresh" class="btn">Refresh</button>
-      </div>
-      <div id="list" class="list"></div>
-    </section>
+  <!-- LOGIN / SIGNUP -->
+  <div class="box">
+    <h2>Login / Signup</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="signup()">Signup</button>
+    <button onclick="login()">Login</button>
+    <p id="authStatus"></p>
+  </div>
 
-    <!-- Middle: Create / Edit form -->
-    <section class="card">
-      <h3 id="formTitle">Create / Edit Vehicle</h3>
-      <div class="grid">
-        <div>
-          <label>Brand</label>
-          <input id="brand" placeholder="Maruti Suzuki" />
-        </div>
-        <div>
-          <label>Title</label>
-          <input id="title" placeholder="Swift VXI 2016" />
-        </div>
-        <div class="row">
-          <div style="flex:1">
-            <label>Price</label>
-            <input id="price" placeholder="₹3.25L" />
-          </div>
-          <div style="width:120px">
-            <label>Year</label>
-            <input id="year" type="number" min="1990" max="2099" placeholder="2016" />
-          </div>
-          <div style="width:140px">
-            <label>KM</label>
-            <input id="km" placeholder="72,000" />
-          </div>
-        </div>
-        <div class="row">
-          <div style="width:160px">
-            <label>Type</label>
-            <select id="vtype">
-              <option value="car">car</option>
-              <option value="bike">bike</option>
-              <option value="scooter">scooter</option>
-            </select>
-          </div>
-          <div style="flex:1">
-            <label>Slug</label>
-            <input id="slug" placeholder="swift-2016" />
-          </div>
-          <div style="width:140px">
-            <label>&nbsp;</label>
-            <button id="btnMakeSlug" class="btn">Make Slug</button>
-          </div>
-        </div>
-        <div>
-          <label>Description</label>
-          <textarea id="desc" placeholder="Variant, owners, service history, condition, extras…"></textarea>
-        </div>
-      </div>
+  <!-- CREATE / EDIT VEHICLE -->
+  <div class="box">
+    <h2>Create / Edit Vehicle</h2>
+    <input id="brand" placeholder="Brand (e.g. Maruti Suzuki)" />
+    <input id="title" placeholder="Title (e.g. Swift VXI 2016)" />
+    <input id="price" placeholder="Price (₹)" />
+    <input id="year" placeholder="Year" />
+    <input id="km" placeholder="Kilometers Driven" />
+    <select id="type">
+      <option value="car">Car</option>
+      <option value="bike">Bike</option>
+      <option value="scooter">Scooter</option>
+    </select>
+    <input id="slug" placeholder="Slug (e.g. swift-vxi-2016)" />
+    <button onclick="makeSlug()">Make Slug</button>
+    <textarea id="description" placeholder="Description"></textarea>
+    <input id="location" placeholder="Location" />
+    <input id="fuel" placeholder="Fuel Type" />
+    <input id="transmission" placeholder="Transmission" />
+    <input id="owners" placeholder="Owners (1st, 2nd...)" />
+    <button onclick="saveVehicle()">Save / Update Featured</button>
+    <button onclick="deleteVehicle()">Delete Vehicle</button>
+    <p id="saveStatus"></p>
+  </div>
 
-      <div class="row" style="margin-top:12px">
-        <button id="btnSaveMeta" class="btn primary">Save / Update Featured</button>
-        <button id="btnDeleteVehicle" class="btn danger">Delete Vehicle</button>
-      </div>
-      <div id="metaMsg" class="muted" style="margin-top:8px"></div>
-    </section>
+  <!-- GALLERY MANAGER -->
+  <div class="box">
+    <h2>Gallery Manager</h2>
+    <input type="file" id="images" multiple />
+    <button onclick="uploadImages()">Upload Images</button>
+    <div id="gallery"></div>
+  </div>
 
-    <!-- Right: Gallery manager -->
-    <section class="card">
-      <h3>Gallery</h3>
-      <div class="row">
-        <input id="files" type="file" accept=".jpg,.jpeg,.png,.webp" multiple />
-        <button id="btnUpload" class="btn primary">Upload Images</button>
-      </div>
-      <div class="progress" style="margin-top:12px"><div id="bar" class="bar"></div></div>
-      <div id="upMsg" class="muted" style="margin-top:8px"></div>
-      <div id="thumbs" class="thumbs" style="margin-top:12px"></div>
-    </section>
-  </main>
+  <!-- FEATURED LIST -->
+  <div class="box">
+    <h2>Featured List</h2>
+    <div id="featuredList">Loading...</div>
+  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    // ---- CONFIG ----
-    const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-    const STORAGE_BUCKET = 'vehicals';
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+<script>
+const supabaseUrl = "https://wbjwvxckbfkutqqbgupq.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    // ---- Elements ----
-    const listEl = document.getElementById('list');
-    const btnRefresh = document.getElementById('btnRefresh');
+// AUTH
+async function signup() {
+  let { error } = await supabase.auth.signUp({ email: email.value, password: password.value });
+  authStatus.textContent = error ? error.message : "Signup successful. Please login.";
+}
+async function login() {
+  let { data, error } = await supabase.auth.signInWithPassword({ email: email.value, password: password.value });
+  authStatus.textContent = error ? error.message : "Login successful ✅";
+  if (!error) loadFeatured();
+}
 
-    const brand = document.getElementById('brand');
-    const title = document.getElementById('title');
-    const price = document.getElementById('price');
-    const year = document.getElementById('year');
-    const km = document.getElementById('km');
-    const vtype = document.getElementById('vtype');
-    const slug = document.getElementById('slug');
-    const desc = document.getElementById('desc');
-    const btnMakeSlug = document.getElementById('btnMakeSlug');
-    const btnSaveMeta = document.getElementById('btnSaveMeta');
-    const btnDeleteVehicle = document.getElementById('btnDeleteVehicle');
-    const metaMsg = document.getElementById('metaMsg');
+// MAKE SLUG
+function makeSlug() {
+  slug.value = title.value.toLowerCase().replace(/\s+/g, "-");
+}
 
-    const files = document.getElementById('files');
-    const btnUpload = document.getElementById('btnUpload');
-    const bar = document.getElementById('bar');
-    const upMsg = document.getElementById('upMsg');
-    const thumbs = document.getElementById('thumbs');
+// SAVE VEHICLE
+async function saveVehicle() {
+  const slugVal = slug.value;
+  if (!slugVal) { alert("Please enter slug"); return; }
+  const meta = {
+    brand: brand.value,
+    title: title.value,
+    price: price.value,
+    year: year.value,
+    km: km.value,
+    type: type.value,
+    description: description.value,
+    location: location.value,
+    fuel: fuel.value,
+    transmission: transmission.value,
+    owners: owners.value,
+  };
+  const { error } = await supabase.storage.from("vehicals")
+    .upload(`featured/${slugVal}/meta.json`, new Blob([JSON.stringify(meta)], { type: "application/json" }), { upsert: true });
+  saveStatus.textContent = error ? error.message : "✅ Vehicle saved/updated!";
+  loadFeatured();
+}
 
-    // ---- Helpers ----
-    function msg(el, text, type='info'){
-      el.textContent = text;
-      el.classList.remove('ok','err');
-      if(type==='ok') el.classList.add('ok');
-      if(type==='err') el.classList.add('err');
-    }
-    function makeSlug(){
-      const base = (title.value || '').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-      const y = (year.value || '').toString().trim();
-      slug.value = y ? `${base}-${y}` : base;
-    }
-    btnMakeSlug.addEventListener('click', makeSlug);
-    title.addEventListener('input', ()=>{ if(!slug.value) makeSlug(); });
+// DELETE VEHICLE
+async function deleteVehicle() {
+  const slugVal = slug.value;
+  if (!slugVal) { alert("Enter slug to delete"); return; }
+  const { data, error } = await supabase.storage.from("vehicals").list(`featured/${slugVal}`);
+  if (error) { alert(error.message); return; }
+  for (let file of data) {
+    await supabase.storage.from("vehicals").remove([`featured/${slugVal}/${file.name}`]);
+  }
+  saveStatus.textContent = "❌ Vehicle deleted";
+  loadFeatured();
+}
 
-    function buildItem(){
-      return {
-        slug: slug.value.trim(),
-        brand: brand.value.trim(),
-        title: title.value.trim(),
-        price: price.value.trim(),
-        year: Number(year.value||'0'),
-        km: km.value.trim(),
-        type: vtype.value,
-        description: desc.value.trim(),
-        updatedAt: new Date().toISOString()
-      };
-    }
+// UPLOAD IMAGES
+async function uploadImages() {
+  const slugVal = slug.value;
+  if (!slugVal) { alert("Enter slug first"); return; }
+  for (let file of images.files) {
+    await supabase.storage.from("vehicals")
+      .upload(`featured/${slugVal}/${Date.now()}-${file.name}`, file, { upsert: true });
+  }
+  loadGallery(slugVal);
+}
 
-    function selectItem(item){
-      // Fill form with selected metadata
-      brand.value = item.brand || '';
-      title.value = item.title || (item.slug||'');
-      price.value = item.price || '';
-      year.value = item.year || '';
-      km.value = item.km || '';
-      vtype.value = item.type || 'car';
-      slug.value = item.slug || '';
-      desc.value = item.description || '';
-      document.getElementById('formTitle').textContent = 'Edit Vehicle: ' + (item.slug||'');
-      loadGallery(item.slug);
-    }
+// LOAD GALLERY
+async function loadGallery(slugVal) {
+  const { data, error } = await supabase.storage.from("vehicals").list(`featured/${slugVal}`);
+  gallery.innerHTML = "";
+  if (error) return;
+  for (let file of data) {
+    if (file.name.endsWith(".json")) continue;
+    const { data: urlData } = supabase.storage.from("vehicals").getPublicUrl(`featured/${slugVal}/${file.name}`);
+    gallery.innerHTML += `<div>
+      <img src="${urlData.publicUrl}" />
+      <button onclick="deleteImage('${slugVal}','${file.name}')">🗑️</button>
+      <a href="${urlData.publicUrl}" target="_blank">🔍</a>
+    </div>`;
+  }
+}
+async function deleteImage(slugVal, fileName) {
+  await supabase.storage.from("vehicals").remove([`featured/${slugVal}/${fileName}`]);
+  loadGallery(slugVal);
+}
 
-    // ---- List featured ----
-    async function listFeatured(){
-      listEl.innerHTML = '<div class="item">Loading…</div>';
-      const { data, error } = await sb.storage.from(STORAGE_BUCKET).list('featured', { limit: 200 });
-      if(error){ listEl.innerHTML = '<div class="item err">List failed</div>'; return; }
-      const folders = (data||[]).filter(x=>x && !(/\./.test(x.name)));
-      if(folders.length===0){ listEl.innerHTML = '<div class="item">No items yet</div>'; return; }
-      const out = [];
-      for(const f of folders){
-        const meta = await fetchMeta(f.name);
-        out.push({ slug:f.name, ...(meta||{}) });
-      }
-      // render
-      listEl.innerHTML = '';
-      out.sort((a,b)=> (b.updatedAt||'').localeCompare(a.updatedAt||''));
-      for(const it of out){
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.innerHTML = `<strong>${it.title||it.slug}</strong><div class="muted">${it.brand||''} • ${it.price||''} <span class="pill">${it.type||''}</span></div>`;
-        div.addEventListener('click', ()=>{
-          listEl.querySelectorAll('.item').forEach(x=>x.classList.remove('active'));
-          div.classList.add('active');
-          selectItem(it);
-        });
-        listEl.appendChild(div);
-      }
-    }
-
-    async function fetchMeta(slug){
-      const { data, error } = await sb.storage.from(STORAGE_BUCKET).download(`featured/${slug}/meta.json`);
-      if(error) return null;
-      try{ return JSON.parse(await data.text()); }catch(e){ return null; }
-    }
-
-    // ---- Save / Update metadata ----
-    btnSaveMeta.addEventListener('click', async ()=>{
-      if(!slug.value){ msg(metaMsg, 'Please fill slug', 'err'); return; }
-      const item = buildItem();
-      const blob = new Blob([JSON.stringify(item, null, 2)], { type:'application/json' });
-      const { error } = await sb.storage.from(STORAGE_BUCKET).upload(`featured/${item.slug}/meta.json`, blob, { upsert:true });
-      if(error){ msg(metaMsg, 'Save failed: '+error.message, 'err'); return; }
-      msg(metaMsg, 'Saved ✔', 'ok');
-      listFeatured();
-    });
-
-    // ---- Delete vehicle (all files under folder) ----
-    btnDeleteVehicle.addEventListener('click', async ()=>{
-      if(!slug.value){ msg(metaMsg, 'No slug to delete', 'err'); return; }
-      if(!confirm('Delete entire vehicle folder? This cannot be undone.')) return;
-      const base = `featured/${slug.value}`;
-      // list all
-      const { data, error } = await sb.storage.from(STORAGE_BUCKET).list(base, { limit: 1000 });
-      if(error){ msg(metaMsg, 'List failed: '+error.message, 'err'); return; }
-      const paths = (data||[]).map(o=>`${base}/${o.name}`);
-      if(paths.length){
-        const { error:err2 } = await sb.storage.from(STORAGE_BUCKET).remove(paths);
-        if(err2){ msg(metaMsg, 'Delete failed: '+err2.message, 'err'); return; }
-      }
-      msg(metaMsg, 'Vehicle deleted ✔', 'ok');
-      // clear form
-      brand.value=title.value=price.value=km.value=desc.value=''; year.value=''; slug.value=''; vtype.value='car';
-      thumbs.innerHTML='';
-      listFeatured();
-    });
-
-    // ---- Upload images ----
-    async function loadGallery(sl){
-      thumbs.innerHTML = '<div class="muted">Loading images…</div>';
-      const { data, error } = await sb.storage.from(STORAGE_BUCKET).list(`featured/${sl}`, { limit: 1000 });
-      if(error){ thumbs.innerHTML = '<div class="err">Failed to load</div>'; return; }
-      const imgs = (data||[]).filter(o=>o.name && /\.(jpg|jpeg|png|webp)$/i.test(o.name));
-      if(imgs.length===0){ thumbs.innerHTML = '<div class="muted">No images yet</div>'; return; }
-      thumbs.innerHTML = '';
-      for(const im of imgs){
-        const path = `featured/${sl}/${im.name}`;
-        const { data:pub } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path);
-        const url = pub?.publicUrl || '#';
-        const d = document.createElement('div');
-        d.className='thumb';
-        d.innerHTML = `
-          <img src="${url}" alt="${im.name}">
-          <div class="actions">
-            <button class="btn danger" data-path="${path}" title="Delete">🗑️</button>
-            <a class="btn" href="${url}" target="_blank" title="Open">🔍</a>
-          </div>`;
-        d.querySelector('button').addEventListener('click', async ()=>{
-          if(!confirm('Delete this image?')) return;
-          const { error } = await sb.storage.from(STORAGE_BUCKET).remove([path]);
-          if(error){ alert('Delete failed: '+error.message); return; }
-          loadGallery(sl);
-        });
-        thumbs.appendChild(d);
-      }
-    }
-
-    btnUpload.addEventListener('click', async ()=>{
-      if(!slug.value){ msg(upMsg, 'Set slug then upload', 'err'); return; }
-      const fileList = Array.from(files.files||[]);
-      if(fileList.length===0){ msg(upMsg, 'Select images to upload', 'err'); return; }
-      bar.style.width='0%'; msg(upMsg, 'Uploading...');
-      const base = `featured/${slug.value}/`;
-      let uploaded=0;
-      for(const f of fileList){
-        const nameSafe = f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
-        const path = `${base}${Date.now()}-${nameSafe}`;
-        const { error } = await sb.storage.from(STORAGE_BUCKET).upload(path, f, { upsert:false });
-        if(error){ msg(upMsg, 'Upload failed: '+error.message, 'err'); return; }
-        uploaded++; bar.style.width = Math.round((uploaded/fileList.length)*100)+'%';
-      }
-      msg(upMsg, `Uploaded ${uploaded}/${fileList.length} ✔`, 'ok');
-      loadGallery(slug.value);
-    });
-
-    // ---- Init ----
-    btnRefresh.addEventListener('click', listFeatured);
-    listFeatured();
-  </script>
+// LOAD FEATURED LIST
+async function loadFeatured() {
+  const { data, error } = await supabase.storage.from("vehicals").list("featured");
+  featuredList.innerHTML = "";
+  if (error) return;
+  for (let folder of data) {
+    featuredList.innerHTML += `<div onclick="loadGallery('${folder.name}'); slug.value='${folder.name}'">${folder.name}</div>`;
+  }
+}
+</script>
 </body>
 </html>
