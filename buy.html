@@ -5,21 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Second Wheel — Buy</title>
   <style>
-    :root{
-      --bg:#111827; --card:#1f2937; --ink:#e5e7eb; --muted:#9aa3b2; --brand:#f59e0b;
-      --line:rgba(255,255,255,.08);
-    }
+    :root{--bg:#111827;--card:#1f2937;--ink:#e5e7eb;--muted:#9aa3b2;--brand:#f59e0b;--line:rgba(255,255,255,.08)}
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial;background:var(--bg);color:var(--ink)}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial;background:var(--bg);color:var(--ink)}
     header{background:#0b0f17;padding:14px;text-align:center;font-weight:800;color:var(--brand)}
     .wrap{max-width:1160px;margin:0 auto;padding:16px}
-    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
-    .filters input[type="search"], .filters select{
-      background:#0f172a;border:1px solid var(--line);color:var(--ink);padding:10px 12px;border-radius:10px;min-width:180px
-    }
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
     .tabs{display:inline-grid;grid-auto-flow:column;gap:8px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:6px}
     .tabs button{border:0;background:transparent;color:var(--ink);padding:8px 12px;border-radius:999px;cursor:pointer}
     .tabs button.active{background:var(--brand);color:#111;font-weight:800}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .filters input[type="search"], .filters select{background:#0f172a;border:1px solid var(--line);color:var(--ink);padding:10px 12px;border-radius:10px;min-width:180px}
+    .badge{background:rgba(255,255,255,.08);padding:6px 10px;border-radius:999px;border:1px solid var(--line)}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
     .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
     .thumb{width:100%;height:170px;object-fit:cover;background:#0f172a}
@@ -31,8 +28,6 @@
     .btn-primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
     .heart{font-size:16px}
     .wish-on{background:rgba(245,158,11,.18);border-color:#b45309}
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
-    .badge{background:rgba(255,255,255,.08);padding:6px 10px;border-radius:999px;border:1px solid var(--line)}
   </style>
 </head>
 <body>
@@ -58,13 +53,14 @@
     </section>
   </main>
 
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ---- Supabase config (तुझं project) ----
+    // --- Supabase config (तुझाच project) ---
     const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-    const STORAGE_BUCKET = 'vehicals';                // <-- spell exactly like bucket
-    const WHATSAPP = '919822292955';                  // Inquiry Now number
+    const STORAGE_BUCKET = 'vehicals';        // bucket spelling exactly like your bucket
+    const WHATSAPP = '919822292955';          // Inquiry Now number
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const grid = document.getElementById('grid');
@@ -75,39 +71,41 @@
 
     let ALL = []; let CURR_TYPE = '';
 
-    // ---- Wishlist helpers (localStorage) ----
+    // --- Wishlist (localStorage) ---
     const WKEY = 'sw_wishlist';
     function getWishlist(){ try{return JSON.parse(localStorage.getItem(WKEY)||'[]');}catch{ return []; } }
     function setWishlist(arr){ localStorage.setItem(WKEY, JSON.stringify(arr)); wishCount.textContent = arr.length; }
     function toggleWish(slug){
       const list = getWishlist();
-      const idx = list.indexOf(slug);
-      if(idx>=0) list.splice(idx,1); else list.push(slug);
+      const i = list.indexOf(slug);
+      if(i>=0) list.splice(i,1); else list.push(slug);
       setWishlist(list);
       document.querySelectorAll(`[data-wish="${slug}"]`).forEach(b=>{
         b.classList.toggle('wish-on', list.includes(slug));
         b.querySelector('.heart').textContent = list.includes(slug) ? '❤️' : '🤍';
       });
     }
+    window.toggleWish = toggleWish; // inline handler साठी
 
-    // ---- Supabase helpers ----
-    function publicUrl(path){
-      const { data } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path);
-      return data?.publicUrl || '';
-    }
+    // --- Supabase helpers ---
+    function publicUrl(path){ const { data } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path); return data?.publicUrl || ''; }
+
     async function listSlugs(){
       const { data, error } = await sb.storage.from(STORAGE_BUCKET).list('featured', { limit: 400 });
       if(error){ console.error(error); return []; }
-      // keep only "folders" (no dot)
+      // Only folders (no dot)
       return (data||[]).filter(x => x && !(/\./.test(x.name))).map(x=>x.name);
     }
+
     async function readMeta(slug){
-      const { data, error } = await sb.storage.from(STORAGE_BUCKET).download(`featured/${slug}/meta.json`);
-      if(error) return { slug, title: slug, brand:'', price:'', year:'', km:'', description:'', type:'' };
-      try{ return JSON.parse(await data.text()); }catch{ return { slug, title: slug }; }
+      // meta.json optional – नसल्यास default वापर
+      const res = await sb.storage.from(STORAGE_BUCKET).download(`featured/${slug}/meta.json`);
+      if(res.error){ return { slug, title: slug, brand:'', price:'', year:'', km:'', description:'', type:'' }; }
+      try{ return JSON.parse(await res.data.text()); }catch{ return { slug, title: slug }; }
     }
+
     async function listImages(slug){
-      // list files actually present; pick first image => 404 नाही
+      // Actual files list करून URL तयार करतो (manual name नको → 404 टळतो)
       const { data, error } = await sb.storage.from(STORAGE_BUCKET).list(`featured/${slug}`, { limit: 200 });
       if(error) return [];
       return (data||[])
@@ -115,7 +113,7 @@
         .map(o => publicUrl(`featured/${slug}/${o.name}`));
     }
 
-    // ---- UI ----
+    // --- UI ---
     function fillBrandOptions(items){
       const brands = Array.from(new Set(items.map(v=>v.brand).filter(Boolean))).sort();
       brandFilter.innerHTML = '<option value="">All Brands</option>' + brands.map(b=>`<option value="${b}">${b}</option>`).join('');
@@ -157,20 +155,21 @@
           </div>
         </article>`;
     }
+
     function render(items){
       const text = (q.value||'').toLowerCase();
       const brand = brandFilter.value;
-      const list = items.filter(v =>
+      const filtered = items.filter(v =>
         (!CURR_TYPE || v.type===CURR_TYPE) &&
         (!brand || v.brand===brand) &&
         (!text || (v.title||'').toLowerCase().includes(text) || (v.brand||'').toLowerCase().includes(text))
       );
-      grid.innerHTML = list.length ? list.map(cardHTML).join('') :
+      grid.innerHTML = filtered.length ? filtered.map(cardHTML).join('') :
         '<div class="muted" style="grid-column:1/-1">No results</div>';
       wishCount.textContent = getWishlist().length;
     }
 
-    // ---- Load & events ----
+    // --- Load & events ---
     brandFilter.addEventListener('change', ()=>render(ALL));
     q.addEventListener('input', ()=>render(ALL));
     typeTabs.addEventListener('click', e=>{
@@ -190,12 +189,11 @@
       for(const slug of slugs){
         const meta = await readMeta(slug);
         meta.slug = slug;
-        meta.images = await listImages(slug);
+        meta.images = await listImages(slug);   // auto urls
         items.push(meta);
       }
       ALL = items;
       fillBrandOptions(items);
-      // optional hash routing: #cars | #bikes | #scooters
       const hash = (location.hash||'').replace('#','');
       if(hash==='cars') CURR_TYPE='car';
       else if(hash==='bikes') CURR_TYPE='bike';
@@ -207,7 +205,6 @@
     }
 
     loadAll();
-    window.toggleWish = toggleWish; // for inline onclick
   </script>
 </body>
 </html>
