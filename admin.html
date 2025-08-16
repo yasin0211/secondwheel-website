@@ -1,296 +1,335 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Second Wheel • Admin</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Second Wheel — Admin (Featured)</title>
+<meta name="theme-color" content="#111827"/>
 <style>
-  :root{--bg:#0b0f17;--card:#111827;--ink:#e5e7eb;--line:rgba(255,255,255,.08);--brand:#f59e0b}
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Arial}
-  header{padding:14px 16px;background:#030712;font-weight:800;color:var(--brand)}
-  .wrap{max-width:980px;margin:0 auto;padding:16px}
-  .grid{display:grid;gap:16px}
-  @media(min-width:860px){.grid{grid-template-columns:1fr 1fr}}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
-  label{font-size:12px;color:#94a3b8;display:block;margin:6px 0 4px}
-  input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0f172a;color:var(--ink)}
-  textarea{min-height:90px}
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-  button{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));color:var(--ink);padding:10px 12px;border-radius:12px;cursor:pointer}
-  .primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
-  .danger{border-color:#7f1d1d;background:linear-gradient(180deg,#dc2626,#991b1b);color:#fff}
-  .muted{color:#9aa3b2}
-  .list{display:grid;gap:10px;max-height:420px;overflow:auto}
-  .item{border:1px solid var(--line);border-radius:10px;padding:10px;background:#0f172a;display:flex;gap:10px;align-items:center}
-  .item img{width:80px;height:60px;object-fit:cover;border-radius:8px;background:#111}
-  .tiny{font-size:12px}
-  .pill{display:inline-flex;align-items:center;gap:8px}
+:root{--bg:#0b0f17;--card:#121826;--muted:#9aa3b2;--text:#e5e7eb;--brand:#f59e0b;--ok:#22c55e;--err:#ef4444;--line:rgba(255,255,255,.1);--shadow:0 8px 28px rgba(0,0,0,.35)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
+a{color:inherit}
+.container{max-width:1200px;margin:0 auto;padding:18px}
+header{position:sticky;top:0;z-index:10;background:rgba(11,15,23,.75);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
+.brand{display:flex;gap:12px;align-items:center}
+.brand img{width:36px;height:36px;border-radius:10px;box-shadow:var(--shadow)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px}
+.grid{display:grid;gap:14px}
+@media(min-width:980px){.layout{grid-template-columns:280px 1fr 1fr}}
+label{display:block;margin:8px 0 4px;color:var(--muted)}
+input,select,textarea{width:100%;padding:10px 12px;background:#0f1522;color:var(--text);border:1px solid var(--line);border-radius:10px;outline:none}
+textarea{min-height:110px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:#3b82f6}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));cursor:pointer}
+.btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
+.btn.danger{background:linear-gradient(180deg,#ef4444,#991b1b);color:#fff;border-color:transparent}
+.btn.ghost{background:transparent}
+.ok{color:var(--ok)} .err{color:var(--err)} .muted{color:var(--muted)}
+.list{max-height:430px;overflow:auto;border:1px solid var(--line);border-radius:12px}
+.item{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+.item.active{background:rgba(255,255,255,.06)}
+.pill{padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12px}
+.progress{height:8px;background:#0f1522;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.bar{height:100%;width:0%;background:#3b82f6;transition:width .2s}
+.thumbs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:700px){.thumbs{grid-template-columns:repeat(4,1fr)}}
+.thumb{position:relative;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.thumb img{width:100%;display:block}
+.thumb .actions{position:absolute;right:6px;top:6px;display:flex;gap:6px}
+.hide{display:none!important}
 </style>
 </head>
 <body>
-<header>Admin Panel — Add / Delete / Featured Upload</header>
-<div class="wrap">
-
-  <!-- VID Control -->
-  <div class="card">
-    <div class="pill">
-      <b>Current VID:</b> <span id="currVid" class="muted">—</span>
-      <button onclick="newVid()">Create New VID</button>
-      <button onclick="clearVid()">Reset VID</button>
-      <button onclick="copyVid()">Copy VID</button>
+<header>
+  <div class="container nav">
+    <div class="brand">
+      <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="logo"/>
+      <div>
+        <strong>Second Wheel — Admin (Featured)</strong>
+        <div class="muted">Create • Upload • Edit • Delete</div>
+      </div>
     </div>
-    <div class="tiny muted" style="margin-top:6px">
-      VID = ऑटो जनरेटेड unique id (timestamp–title). ह्याच VID फोल्डरमध्ये files जातील: <code>vehicals/featured/&lt;VID&gt;/</code>
+    <div class="row">
+      <button id="btnRefresh" class="btn">Refresh</button>
     </div>
   </div>
+</header>
 
-  <div class="grid">
-    <!-- Left: Meta / Featured -->
-    <div class="card">
-      <h3 style="margin:0 0 8px">Vehicle Details</h3>
-      <div class="row">
-        <div>
-          <label>Brand</label>
-          <input id="brand" placeholder="Maruti Suzuki">
-        </div>
-        <div>
-          <label>Title / Model</label>
-          <input id="title" placeholder="Swift VXI 2016">
-        </div>
+<main class="container grid layout">
+  <!-- LEFT : Featured list -->
+  <section class="card">
+    <div class="row" style="justify-content:space-between;align-items:center">
+      <h3 style="margin:0">Featured List</h3>
+      <button id="btnRebuild" class="btn ghost">Rebuild index</button>
+    </div>
+    <input id="search" placeholder="Search…"/>
+    <div id="list" class="list" style="margin-top:10px"></div>
+  </section>
+
+  <!-- MIDDLE : form -->
+  <section class="card">
+    <h3 id="formTitle">Create / Edit Vehicle</h3>
+    <div class="grid">
+      <div>
+        <label>Brand</label>
+        <input id="brand" placeholder="Hyundai"/>
+      </div>
+      <div>
+        <label>Title / Model</label>
+        <input id="title" placeholder="i10 Sportz 2008"/>
       </div>
       <div class="row">
-        <div>
+        <div style="flex:1">
           <label>Price</label>
-          <input id="price" placeholder="₹3,45,000">
+          <input id="price" placeholder="145000"/>
         </div>
-        <div>
+        <div style="width:120px">
           <label>Year</label>
-          <input id="year" placeholder="2016">
+          <input id="year" type="number" min="1990" max="2099" placeholder="2008"/>
+        </div>
+        <div style="width:140px">
+          <label>KM</label>
+          <input id="km" placeholder="88890"/>
         </div>
       </div>
       <div class="row">
-        <div>
-          <label>KM</label>
-          <input id="km" placeholder="38,500">
-        </div>
-        <div>
+        <div style="width:160px">
           <label>Type</label>
-          <select id="type">
-            <option value="">Select</option>
-            <option value="car">Car</option>
-            <option value="bike">Bike</option>
-            <option value="scooter">Scooter</option>
+          <select id="vtype">
+            <option value="car">car</option>
+            <option value="bike">bike</option>
+            <option value="scooter">scooter</option>
           </select>
         </div>
-      </div>
-
-      <label>Description</label>
-      <textarea id="desc" placeholder="Well maintained, single owner..."></textarea>
-
-      <div style="margin-top:10px">
-        <label class="pill">
-          <input type="checkbox" id="featuredFlag"> Mark as Featured
-        </label>
-        <div class="tiny muted">हे ऑन ठेवल्यास <code>meta.json</code> मध्ये <code>featured: true</code> सेव्ह होईल.</div>
-      </div>
-
-      <div class="btns">
-        <button class="primary" onclick="saveVehicle()">Save / Update Vehicle</button>
-        <button class="" onclick="loadMeta()">Load meta (from VID)</button>
-      </div>
-      <div class="btns">
-        <button class="danger" onclick="deleteVehicle()">Delete Vehicle (folder)</button>
-      </div>
-      <div class="muted tiny" style="margin-top:6px">Delete Vehicle: त्या VID फोल्डरमधील सर्व images + meta.json delete होतील.</div>
-    </div>
-
-    <!-- Right: Gallery -->
-    <div class="card">
-      <h3 style="margin:0 0 8px">Gallery Upload</h3>
-      <label>Images (multiple)</label>
-      <input id="images" type="file" accept="image/*" multiple>
-      <div class="btns">
-        <button onclick="uploadImages()">Upload Images</button>
-        <button onclick="refreshList()">Refresh List</button>
-      </div>
-      <div class="list" id="galList"><div class="muted">No items</div></div>
-    </div>
-  </div>
-
-  <!-- All existing featured folders -->
-  <div class="card">
-    <h3 style="margin:0 0 8px">All Featured Vehicles (Storage)</h3>
-    <div id="allList" class="list"><div class="muted">Loading…</div></div>
-  </div>
-
-</div>
-
-<!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-/* ====== Config ====== */
-const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-const BUCKET = 'vehicals';                // <- बकेट spelling तसंच
-const ROOT = 'featured';                  // <- सर्व फाईल्स इथेच जातील (upload = “featured मध्ये”)
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-/* ====== VID helpers ====== */
-const VID_KEY = 'sw_current_vid';
-const currVidEl = document.getElementById('currVid');
-function sluggify(s){return String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');}
-function setVid(id){ localStorage.setItem(VID_KEY,id); currVidEl.textContent=id||'—'; }
-function getVid(){ return localStorage.getItem(VID_KEY)||''; }
-function newVid(){
-  const base = sluggify(document.getElementById('title').value || document.getElementById('brand').value || 'vehicle');
-  const id = `${Date.now()}-${base||'item'}`;
-  setVid(id); alert('VID: '+id);
-}
-function clearVid(){ localStorage.removeItem(VID_KEY); setVid(''); }
-function copyVid(){ const id=getVid(); if(!id) return; navigator.clipboard.writeText(id); alert('Copied: '+id); }
-
-/* ====== Meta (Add/Update/Load/Delete) ====== */
-async function saveVehicle(){
-  let vid = getVid();
-  if(!vid){ newVid(); vid = getVid(); }
-  const meta = {
-    title: document.getElementById('title').value.trim(),
-    brand: document.getElementById('brand').value.trim(),
-    price: document.getElementById('price').value.trim(),
-    year:  document.getElementById('year').value.trim(),
-    km:    document.getElementById('km').value.trim(),
-    type:  document.getElementById('type').value,
-    description: document.getElementById('desc').value.trim(),
-    featured: document.getElementById('featuredFlag').checked === true
-  };
-  const blob = new Blob([JSON.stringify(meta,null,2)], {type:'application/json'});
-  const path = `${ROOT}/${vid}/meta.json`;
-  const { error } = await sb.storage.from(BUCKET).upload(path, blob, {upsert:true, contentType:'application/json', cacheControl:'3600'});
-  if(error){ alert('Meta upload failed: '+error.message); console.error(error); }
-  else { alert('Saved ✅'); refreshList(); loadAll(); }
-}
-
-async function loadMeta(){
-  const vid = getVid();
-  if(!vid){ alert('VID नाही. आधी Create New VID करा किंवा सूचीमधून एक निवडा.'); return; }
-  const res = await sb.storage.from(BUCKET).download(`${ROOT}/${vid}/meta.json`);
-  if(res.error){ alert('meta.json सापडला नाही. आधी Save Vehicle करा.'); return; }
-  try{
-    const m = JSON.parse(await res.data.text());
-    document.getElementById('title').value = m.title || '';
-    document.getElementById('brand').value = m.brand || '';
-    document.getElementById('price').value = m.price || '';
-    document.getElementById('year').value  = m.year  || '';
-    document.getElementById('km').value    = m.km    || '';
-    document.getElementById('type').value  = m.type  || '';
-    document.getElementById('desc').value  = m.description || '';
-    document.getElementById('featuredFlag').checked = !!m.featured;
-    alert('Loaded meta ✅');
-  }catch(e){ alert('meta.json parse error'); }
-}
-
-async function deleteVehicle(){
-  const vid = getVid();
-  if(!vid){ alert('VID निवडा'); return; }
-  if(!confirm(`Delete vehicle folder?\n${ROOT}/${vid}`)) return;
-  // फोल्डरमधले सर्व files मिळवा आणि delete करा
-  const { data, error } = await sb.storage.from(BUCKET).list(`${ROOT}/${vid}`, {limit: 1000});
-  if(error){ alert('List error'); return; }
-  const paths = (data||[]).map(f => `${ROOT}/${vid}/${f.name}`);
-  if(paths.length){
-    const { error:delErr } = await sb.storage.from(BUCKET).remove(paths);
-    if(delErr){ alert('Delete failed: '+delErr.message); return; }
-  }
-  // रिकामे फोल्डर आपोआप हटत नाही—काही हरकत नाही.
-  alert('Vehicle deleted ✅');
-  clearVid(); refreshList(); loadAll();
-}
-
-/* ====== Images (Upload/List/Delete) ====== */
-async function uploadImages(){
-  const vid = getVid();
-  if(!vid){ alert('पहिले Save Vehicle करा (VID तयार होईल)'); return; }
-  const files = document.getElementById('images').files;
-  if(!files.length){ alert('Images निवडा'); return; }
-  for(const f of files){
-    const p = `${ROOT}/${vid}/${f.name}`;
-    const { error } = await sb.storage.from(BUCKET).upload(p, f, {upsert:true, contentType:f.type||'application/octet-stream', cacheControl:'3600'});
-    if(error){ console.error('IMG FAIL', p, error.message); }
-  }
-  alert('Uploads done ✅'); refreshList();
-}
-
-async function refreshList(){
-  const vid = getVid(); const box = document.getElementById('galList');
-  if(!vid){ box.innerHTML='<div class="muted">No VID</div>'; return; }
-  const { data, error } = await sb.storage.from(BUCKET).list(`${ROOT}/${vid}`, {limit:200});
-  if(error){ box.innerHTML='<div class="muted">Error listing</div>'; return; }
-  const imgs = (data||[]).filter(x=>/\.(jpg|jpeg|png|webp)$/i.test(x.name));
-  if(!imgs.length){ box.innerHTML='<div class="muted">No images yet</div>'; return; }
-  box.innerHTML = imgs.map(f=>{
-    const url = sb.storage.from(BUCKET).getPublicUrl(`${ROOT}/${vid}/${f.name}`).data.publicUrl;
-    return `<div class="item">
-      <img src="${url}" alt="${f.name}">
-      <div style="flex:1">${f.name}<div class="tiny muted">${ROOT}/${vid}/${f.name}</div></div>
-      <button class="danger tiny" onclick="deleteImage('${f.name}')">Delete</button>
-    </div>`;
-  }).join('');
-}
-
-async function deleteImage(fileName){
-  const vid = getVid(); if(!vid) return;
-  if(!confirm(`Delete image?\n${fileName}`)) return;
-  const path = `${ROOT}/${vid}/${fileName}`;
-  const { error } = await sb.storage.from(BUCKET).remove([path]);
-  if(error){ alert('Delete failed: '+error.message); }
-  else { refreshList(); }
-}
-
-/* ====== All folders list (pick VID quickly) ====== */
-const allList = document.getElementById('allList');
-async function loadAll(){
-  allList.innerHTML='<div class="muted">Loading…</div>';
-  const { data, error } = await sb.storage.from(BUCKET).list(ROOT, {limit:500, sortBy:{column:'name', order:'desc'}});
-  if(error){ allList.innerHTML='<div class="muted">Error</div>'; return; }
-  const folders = (data||[]).filter(x=>x && !(/\./.test(x.name))).map(x=>x.name);
-  if(!folders.length){ allList.innerHTML='<div class="muted">No vehicles</div>'; return; }
-
-  const rows = [];
-  for(const id of folders){
-    // first image (preview)
-    const files = await sb.storage.from(BUCKET).list(`${ROOT}/${id}`, {limit:200});
-    let url=''; if(!files.error){
-      const pic = (files.data||[]).find(f=>/\.(jpg|jpeg|png|webp)$/i.test(f.name));
-      if(pic){ url = sb.storage.from(BUCKET).getPublicUrl(`${ROOT}/${id}/${pic.name}`).data.publicUrl; }
-    }
-    // title from meta (optional)
-    let title = id, brand='', price='';
-    const metaTry = await sb.storage.from(BUCKET).download(`${ROOT}/${id}/meta.json`);
-    if(!metaTry.error){ try{ const m = JSON.parse(await metaTry.data.text()); title = m.title||id; brand=m.brand||''; price=m.price||''; }catch{} }
-
-    rows.push(`<div class="item">
-      <img src="${url||'data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 width=%2780%27 height=%2760%27><rect width=%2780%27 height=%2760%27 fill=%27%23111827%27/></svg>'}">
-      <div style="flex:1">
-        <div><b>${title}</b></div>
-        <div class="tiny muted">${brand} ${price}</div>
-        <div class="tiny">
-          <button onclick="setVid('${id}'); refreshList(); window.scrollTo({top:0,behavior:'smooth'})">Use this VID</button>
-          <button onclick="setVid('${id}'); loadMeta();">Load meta</button>
+        <div style="flex:1">
+          <label>Slug</label>
+          <input id="slug" placeholder="i10-sportz-2008"/>
+        </div>
+        <div style="width:140px">
+          <label>&nbsp;</label>
+          <button id="btnMakeSlug" class="btn">Make Slug</button>
         </div>
       </div>
-    </div>`);
-  }
-  allList.innerHTML = rows.join('');
+      <div>
+        <label>Description</label>
+        <textarea id="desc" placeholder="all ok"></textarea>
+      </div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button id="btnSaveMeta" class="btn primary">Save / Update Featured</button>
+      <button id="btnDeleteVehicle" class="btn danger">Delete Vehicle</button>
+    </div>
+    <div id="metaMsg" class="muted" style="margin-top:8px"></div>
+  </section>
+
+  <!-- RIGHT : Gallery -->
+  <section class="card">
+    <h3>Gallery</h3>
+    <div class="row">
+      <input id="files" type="file" accept=".jpg,.jpeg,.png,.webp" multiple/>
+      <button id="btnUpload" class="btn primary">Upload Images</button>
+    </div>
+    <div class="progress" style="margin-top:12px"><div id="bar" class="bar"></div></div>
+    <div id="upMsg" class="muted" style="margin-top:8px"></div>
+    <div id="thumbs" class="thumbs" style="margin-top:12px"></div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ------------ CONFIG (already set) ------------ */
+const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
+const STORAGE_BUCKET = 'vehicals';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ------------ Elements ------------ */
+const listEl = document.getElementById('list'), search = document.getElementById('search');
+const brand = document.getElementById('brand'), title = document.getElementById('title');
+const price = document.getElementById('price'), year = document.getElementById('year');
+const km = document.getElementById('km'), vtype = document.getElementById('vtype');
+const slug = document.getElementById('slug'), desc = document.getElementById('desc');
+const btnMakeSlug = document.getElementById('btnMakeSlug'), btnSaveMeta = document.getElementById('btnSaveMeta');
+const btnDeleteVehicle = document.getElementById('btnDeleteVehicle'), metaMsg = document.getElementById('metaMsg');
+const files = document.getElementById('files'), btnUpload = document.getElementById('btnUpload');
+const bar = document.getElementById('bar'), upMsg = document.getElementById('upMsg'), thumbs = document.getElementById('thumbs');
+const btnRefresh = document.getElementById('btnRefresh'), btnRebuild = document.getElementById('btnRebuild');
+
+function msg(el, text, type){ el.textContent = text;
+  el.classList.remove('ok','err'); if(type==='ok') el.classList.add('ok'); if(type==='err') el.classList.add('err'); }
+
+function makeSlug(){
+  const base = (title.value||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+  const y = (year.value||'').toString().trim(); slug.value = y ? `${base}-${y}` : base;
+}
+btnMakeSlug.addEventListener('click', makeSlug);
+title.addEventListener('input', ()=>{ if(!slug.value) makeSlug(); });
+
+function buildMeta(){
+  return { slug: slug.value.trim(), brand: brand.value.trim(), title: title.value.trim(),
+    price: price.value.trim(), year: Number(year.value||'0'), km: km.value.trim(),
+    type: vtype.value, description: desc.value.trim(), updatedAt: new Date().toISOString() };
 }
 
-/* ====== Init ====== */
-(function init(){
-  setVid(getVid());
-  refreshList();
-  loadAll();
-})();
+/* ------------ Index helpers ------------ */
+async function getIndex(){
+  const { data, error } = await sb.storage.from(STORAGE_BUCKET).download('featured/_index.json');
+  if(error) return [];
+  try { return JSON.parse(await data.text()); } catch(e){ return []; }
+}
+async function setIndex(arr){
+  const blob = new Blob([JSON.stringify(arr, null, 2)], { type:'application/json' });
+  await sb.storage.from(STORAGE_BUCKET).upload('featured/_index.json', blob, { upsert:true, contentType:'application/json' });
+}
+async function updateIndex(sl, add=true){
+  let idx = await getIndex(); idx = Array.isArray(idx)?idx:[];
+  if(add && !idx.includes(sl)) idx.push(sl);
+  if(!add) idx = idx.filter(x=>x!==sl);
+  await setIndex(idx);
+}
+
+/* ------------ Meta fetch ------------ */
+async function fetchMeta(sl){
+  const { data, error } = await sb.storage.from(STORAGE_BUCKET).download(`featured/${sl}/meta.json`);
+  if(error) return null; try { return JSON.parse(await data.text()); } catch { return null; }
+}
+
+/* ------------ List featured ------------ */
+async function listFeatured(){
+  listEl.innerHTML = '<div class="item">Loading…</div>';
+  let slugs = await getIndex();
+  // simple client-side search filter
+  const q = (search.value||'').trim().toLowerCase();
+  const items = [];
+  for(const sl of slugs){
+    const meta = await fetchMeta(sl);
+    if(!meta) continue;
+    if(q && !(sl.toLowerCase().includes(q) || (meta.title||'').toLowerCase().includes(q) || (meta.brand||'').toLowerCase().includes(q))) continue;
+    items.push({ slug:sl, ...meta });
+  }
+  listEl.innerHTML = '';
+  if(!items.length){ listEl.innerHTML = '<div class="item">No items</div>'; return; }
+  items.sort((a,b)=> (b.updatedAt||'').localeCompare(a.updatedAt||''));  
+  for(const it of items){
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `<strong>${it.title||it.slug}</strong>
+      <div class="muted">${it.brand||''} • ${it.price||''} <span class="pill">${it.type||''}</span></div>`;
+    div.addEventListener('click', ()=>{ listEl.querySelectorAll('.item').forEach(x=>x.classList.remove('active'));
+      div.classList.add('active'); selectItem(it); });
+    listEl.appendChild(div);
+  }
+}
+search.addEventListener('input', listFeatured);
+
+/* ------------ Rebuild index (optional) ------------ */
+btnRebuild.addEventListener('click', async ()=>{
+  // Tries to find slugs by probing common slugs from existing meta files under known folders.
+  // If you already save from this admin once, index auto-maintains — so rebuild rarely needed.
+  const guess = ['i10-sportz-2008']; // fallback example; keep minimal to avoid noise.
+  const found = [];
+  for(const sl of guess){
+    const meta = await fetchMeta(sl);
+    if(meta) found.push(sl);
+  }
+  if(found.length){ await setIndex(found); msg(metaMsg, 'Index rebuilt', 'ok'); listFeatured(); }
+  else msg(metaMsg, 'Nothing to rebuild (save something first)', 'err');
+});
+
+/* ------------ Select item to form ------------ */
+function selectItem(item){
+  brand.value = item.brand||''; title.value = item.title||item.slug||'';
+  price.value = item.price||''; year.value = item.year||''; km.value=item.km||'';
+  vtype.value = item.type||'car'; slug.value=item.slug||''; desc.value=item.description||'';
+  document.getElementById('formTitle').textContent = 'Edit: '+(item.slug||'');
+  loadGallery(item.slug);
+}
+
+/* ------------ Save / Update ------------ */
+btnSaveMeta.addEventListener('click', async ()=>{
+  if(!slug.value){ msg(metaMsg,'Please fill slug','err'); return; }
+  const item = buildMeta();
+  const blob = new Blob([JSON.stringify(item,null,2)], { type:'application/json' });
+  const { error } = await sb.storage.from(STORAGE_BUCKET)
+    .upload(`featured/${item.slug}/meta.json`, blob, { upsert:true, contentType:'application/json' });
+  if(error){ msg(metaMsg,'Save failed: '+error.message,'err'); return; }
+  await updateIndex(item.slug, true);
+  msg(metaMsg,'Saved ✔','ok');
+  listFeatured();
+});
+
+/* ------------ Delete vehicle ------------ */
+btnDeleteVehicle.addEventListener('click', async ()=>{
+  if(!slug.value){ msg(metaMsg,'No slug to delete','err'); return; }
+  if(!confirm('Delete entire vehicle folder? This cannot be undone.')) return;
+  const base = `featured/${slug.value}`;
+  const { data, error } = await sb.storage.from(STORAGE_BUCKET).list(base, { limit:1000 });
+  if(error){ msg(metaMsg,'List failed: '+error.message,'err'); return; }
+  const paths = (data||[]).map(o=>`${base}/${o.name}`);
+  if(paths.length){
+    const { error:err2 } = await sb.storage.from(STORAGE_BUCKET).remove(paths);
+    if(err2){ msg(metaMsg,'Delete failed: '+err2.message,'err'); return; }
+  }
+  await updateIndex(slug.value, false);
+  msg(metaMsg,'Vehicle deleted ✔','ok');
+  brand.value=title.value=price.value=km.value=desc.value=''; year.value=''; slug.value=''; vtype.value='car';
+  thumbs.innerHTML='';
+  listFeatured();
+});
+
+/* ------------ Gallery ------------ */
+async function loadGallery(sl){
+  thumbs.innerHTML = '<div class="muted">Loading images…</div>';
+  const { data, error } = await sb.storage.from(STORAGE_BUCKET).list(`featured/${sl}`, { limit:1000 });
+  if(error){ thumbs.innerHTML = '<div class="err">Failed to load</div>'; return; }
+  const imgs = (data||[]).filter(o=>o.name && /\.(jpg|jpeg|png|webp)$/i.test(o.name));
+  if(!imgs.length){ thumbs.innerHTML = '<div class="muted">No images yet</div>'; return; }
+  thumbs.innerHTML = '';
+  for(const im of imgs){
+    const path = `featured/${sl}/${im.name}`;
+    const { data:pub } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+    const url = pub?.publicUrl || '#';
+    const d = document.createElement('div');
+    d.className='thumb';
+    d.innerHTML = `<img src="${url}" alt="${im.name}">
+      <div class="actions">
+        <button class="btn danger" data-path="${path}" title="Delete">🗑️</button>
+        <a class="btn" href="${url}" target="_blank" title="Open">🔍</a>
+      </div>`;
+    d.querySelector('button').addEventListener('click', async ()=>{
+      if(!confirm('Delete this image?')) return;
+      const { error } = await sb.storage.from(STORAGE_BUCKET).remove([path]);
+      if(error){ alert('Delete failed: '+error.message); return; }
+      loadGallery(sl);
+    });
+    thumbs.appendChild(d);
+  }
+}
+
+btnUpload.addEventListener('click', async ()=>{
+  if(!slug.value){ msg(upMsg,'Set slug then upload','err'); return; }
+  const fileList = Array.from(files.files||[]);
+  if(!fileList.length){ msg(upMsg,'Select images to upload','err'); return; }
+  bar.style.width='0%'; msg(upMsg,'Uploading…');
+  const base = `featured/${slug.value}/`;
+  let uploaded=0;
+  for(const f of fileList){
+    const nameSafe = f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    const path = `${base}${Date.now()}-${nameSafe}`;
+    const { error } = await sb.storage.from(STORAGE_BUCKET).upload(path, f, { upsert:false });
+    if(error){ msg(upMsg,'Upload failed: '+error.message,'err'); return; }
+    uploaded++; bar.style.width = Math.round((uploaded/fileList.length)*100)+'%';
+  }
+  msg(upMsg,`Uploaded ${uploaded}/${fileList.length} ✔`,'ok');
+  loadGallery(slug.value);
+});
+
+/* ------------ Init ------------ */
+btnRefresh.addEventListener('click', listFeatured);
+listFeatured();
 </script>
 </body>
 </html>
