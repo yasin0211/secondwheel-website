@@ -1,239 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Second Wheel — Buy</title>
-  <style>
-    :root{--bg:#111827;--card:#1f2937;--ink:#e5e7eb;--muted:#9aa3b2;--brand:#f59e0b;--line:rgba(255,255,255,.08)}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial;background:var(--bg);color:var(--ink)}
-    header{background:#0b0f17;padding:14px;text-align:center;font-weight:800;color:var(--brand)}
-    .wrap{max-width:1160px;margin:0 auto;padding:16px}
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-    .tabs{display:inline-grid;grid-auto-flow:column;gap:8px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:6px}
-    .tabs button{border:0;background:transparent;color:var(--ink);padding:8px 12px;border-radius:999px;cursor:pointer}
-    .tabs button.active{background:var(--brand);color:#111;font-weight:800}
-    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .filters input[type="search"], .filters select{background:#0f172a;border:1px solid var(--line);color:var(--ink);padding:10px 12px;border-radius:10px;min-width:180px}
-    .badge{background:rgba(255,255,255,.08);padding:6px 10px;border-radius:999px;border:1px solid var(--line)}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-    .thumb{width:100%;height:170px;object-fit:cover;background:#0f172a}
-    .body{padding:12px}
-    .meta{display:flex;justify-content:space-between;color:#cbd5e1;font-size:12px}
-    .muted{color:var(--muted)}
-    .actions{display:flex;gap:8px;margin-top:10px}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));cursor:pointer}
-    .btn-primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
-    .heart{font-size:16px}
-    .wish-on{background:rgba(245,158,11,.18);border-color:#b45309}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Second Wheel — Buy</title>
+<style>
+  :root{--bg:#111827;--card:#1f2937;--ink:#e5e7eb;--muted:#9aa3b2;--brand:#f59e0b;--line:rgba(255,255,255,.08)}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Arial}
+  header{background:#0b0f17;padding:14px;text-align:center;font-weight:800;color:var(--brand)}
+  .wrap{max-width:1160px;margin:0 auto;padding:16px}
+  .top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .tabs{display:inline-grid;grid-auto-flow:column;gap:8px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:6px}
+  .tabs button{border:0;background:transparent;color:var(--ink);padding:8px 12px;border-radius:999px;cursor:pointer}
+  .tabs button.active{background:var(--brand);color:#111;font-weight:800}
+  .filters{display:flex;gap:10px;flex-wrap:wrap}
+  .filters input,.filters select{background:#0f172a;border:1px solid var(--line);color:var(--ink);padding:10px 12px;border-radius:10px;min-width:180px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .thumb{width:100%;height:170px;object-fit:cover;background:#0f172a}
+  .body{padding:12px}
+  .meta{display:flex;justify-content:space-between;color:#cbd5e1;font-size:12px}
+  .muted{color:var(--muted)}
+  .actions{display:flex;gap:8px;margin-top:10px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));cursor:pointer}
+  .btn-primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
+  .wish-on{background:rgba(245,158,11,.18);border-color:#b45309}
+</style>
 </head>
 <body>
-  <header>Buy Vehicles</header>
+<header>Buy Vehicles</header>
+<main class="wrap">
+  <div class="top">
+    <div class="tabs" id="typeTabs">
+      <button data-type="" class="active">All</button>
+      <button data-type="car">Car</button>
+      <button data-type="bike">Bike</button>
+      <button data-type="scooter">Scooter</button>
+    </div>
+    <div class="filters">
+      <select id="brandFilter"><option value="">All Brands</option></select>
+      <input id="q" type="search" placeholder="Search title or brand…">
+      <span class="muted">❤️ <span id="wishCount">0</span></span>
+    </div>
+  </div>
+  <div id="grid" class="grid"></div>
+</main>
 
-  <main class="wrap">
-    <div class="topbar">
-      <div class="tabs" id="typeTabs">
-        <button data-type="" class="active">All</button>
-        <button data-type="car">Car</button>
-        <button data-type="bike">Bike</button>
-        <button data-type="scooter">Scooter</button>
-      </div>
-      <div class="filters">
-        <select id="brandFilter"><option value="">All Brands</option></select>
-        <input id="q" type="search" placeholder="Search title or brand..." />
-        <span class="badge">❤️ <span id="wishCount">0</span></span>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
+const BUCKET = 'vehicals';
+const WHATSAPP = '919822292955';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const grid = document.getElementById('grid');
+const brandFilter = document.getElementById('brandFilter');
+const q = document.getElementById('q');
+const typeTabs = document.getElementById('typeTabs');
+const wishCount = document.getElementById('wishCount');
+
+let ALL = []; let CURR_TYPE = '';
+const WKEY = 'sw_wishlist';
+const getWish = ()=>{ try{return JSON.parse(localStorage.getItem(WKEY)||'[]');}catch{return[]} };
+const setWish = a => { localStorage.setItem(WKEY, JSON.stringify(a)); wishCount.textContent=a.length; };
+function toggleWish(id){
+  const w = getWish(); const i = w.indexOf(id); if(i>=0) w.splice(i,1); else w.push(id); setWish(w);
+  document.querySelectorAll(`[data-wish="${id}"]`).forEach(b=>b.classList.toggle('wish-on', w.includes(id)));
+}
+function purl(path){ return sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl; }
+
+async function listVIDs(){
+  const { data, error } = await sb.storage.from(BUCKET).list('featured', {limit:400});
+  if(error){ console.error(error); return []; }
+  return (data||[]).filter(x=>x && !(/\./.test(x.name))).map(x=>x.name);
+}
+async function readMeta(id){
+  const { data: files } = await sb.storage.from(BUCKET).list(`featured/${id}`, {limit:200});
+  const ok = (files||[]).some(f=>f.name==='meta.json');
+  if(!ok) return { id, title:id };
+  const res = await sb.storage.from(BUCKET).download(`featured/${id}/meta.json`);
+  if(res.error) return { id, title:id };
+  try{ const m = JSON.parse(await res.data.text()); m.id=id; return m; }catch{ return { id, title:id }; }
+}
+async function listImages(id){
+  const { data } = await sb.storage.from(BUCKET).list(`featured/${id}`, {limit:200});
+  return (data||[]).filter(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name)).map(o=>purl(`featured/${id}/${o.name}`));
+}
+
+function placeholder(t){ return `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'><rect width='100%' height='100%' fill='%23111827'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23f59e0b' font-family='Arial' font-size='20'>${encodeURIComponent(t||'Vehicle')}</text></svg>`; }
+
+function card(v){
+  const img = v.images?.[0] || placeholder(v.title||v.id);
+  const wa = encodeURIComponent(`Hi, I am interested in ${v.title||v.id}.`);
+  const wished = getWish().includes(v.id);
+  return `<article class="card">
+    <img class="thumb" src="${img}" alt="${v.title||v.id}">
+    <div class="body">
+      <strong>${v.title||v.id}</strong>
+      <div class="meta" style="margin-top:6px"><span>${v.brand||''}</span><span>${v.price||''}</span></div>
+      <div class="meta" style="margin-top:4px"><span>${v.year||''}</span><span>${v.km? v.km+' km':''}</span></div>
+      <p class="muted" style="min-height:28px;margin:8px 0 0">${v.description||''}</p>
+      <div class="actions">
+        <button class="btn ${wished?'wish-on':''}" data-wish="${v.id}" onclick="toggleWish('${v.id}')">❤️ Wishlist</button>
+        <a class="btn btn-primary" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}?text=${wa}">Inquiry Now</a>
       </div>
     </div>
+  </article>`;
+}
 
-    <section>
-      <div id="grid" class="grid"></div>
-    </section>
-  </main>
+function render(list){
+  const text = (q.value||'').toLowerCase(); const brand = brandFilter.value;
+  const items = list.filter(v =>
+    (!CURR_TYPE || v.type===CURR_TYPE) &&
+    (!brand || v.brand===brand) &&
+    (!text || (v.title||'').toLowerCase().includes(text) || (v.brand||'').toLowerCase().includes(text))
+  );
+  grid.innerHTML = items.length ? items.map(card).join('') : '<div class="muted" style="grid-column:1/-1">No results</div>';
+  wishCount.textContent = getWish().length;
+}
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    // --- Supabase config (तुझं project) ---
-    const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-    const STORAGE_BUCKET = 'vehicals';        // स्पेलिंग बकेटसारखंच
-    const WHATSAPP = '919822292955';          // Inquiry Now number
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+function fillBrands(list){
+  const brands = Array.from(new Set(list.map(v=>v.brand).filter(Boolean))).sort();
+  brandFilter.innerHTML = '<option value="">All Brands</option>'+brands.map(b=>`<option>${b}</option>`).join('');
+}
 
-    const grid = document.getElementById('grid');
-    const brandFilter = document.getElementById('brandFilter');
-    const q = document.getElementById('q');
-    const typeTabs = document.getElementById('typeTabs');
-    const wishCount = document.getElementById('wishCount');
+brandFilter.addEventListener('change', ()=>render(ALL));
+q.addEventListener('input', ()=>render(ALL));
+typeTabs.addEventListener('click', e=>{
+  if(e.target.tagName==='BUTTON'){
+    CURR_TYPE = e.target.dataset.type||'';
+    typeTabs.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b===e.target));
+    render(ALL);
+  }
+});
 
-    let ALL = []; let CURR_TYPE = '';
-
-    // --- Wishlist (localStorage) ---
-    const WKEY = 'sw_wishlist';
-    function getWishlist(){ try{return JSON.parse(localStorage.getItem(WKEY)||'[]');}catch{ return []; } }
-    function setWishlist(arr){ localStorage.setItem(WKEY, JSON.stringify(arr)); wishCount.textContent = arr.length; }
-    function toggleWish(slug){
-      const list = getWishlist();
-      const i = list.indexOf(slug);
-      if(i>=0) list.splice(i,1); else list.push(slug);
-      setWishlist(list);
-      document.querySelectorAll(`[data-wish="${slug}"]`).forEach(b=>{
-        b.classList.toggle('wish-on', list.includes(slug));
-        b.querySelector('.heart').textContent = list.includes(slug) ? '❤️' : '🤍';
-      });
-    }
-    window.toggleWish = toggleWish; // inline handler साठी
-
-    // --- Supabase helpers ---
-    function publicUrl(path){
-      const { data } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path);
-      return data?.publicUrl || '';
-    }
-
-    // featured/ मधून फोल्डर्स (slugs)
-    async function listSlugs(){
-      const { data, error } = await sb.storage.from(STORAGE_BUCKET).list('featured', { limit: 400 });
-      if (error) { console.error('[listSlugs]', error); return []; }
-      const folders = (data || []).filter(x => x && !(/\./.test(x.name))).map(x => x.name);
-      if (!folders.length) console.warn('[listSlugs] no folders in featured/');
-      return folders;
-    }
-
-    // meta.json सुरक्षित पद्धतीने — आधी list, मग download (असेल तरच)
-    async function readMeta(slug){
-      const { data: files, error } = await sb.storage.from(STORAGE_BUCKET).list(`featured/${slug}`, { limit: 200 });
-      if (error) {
-        console.warn('[readMeta:list]', slug, error);
-        return { slug, title: slug, brand:'', price:'', year:'', km:'', description:'', type:'' };
-      }
-      const hasMeta = (files || []).some(f => f.name === 'meta.json');
-      if (!hasMeta) {
-        return { slug, title: slug, brand:'', price:'', year:'', km:'', description:'', type:'' };
-      }
-      const res = await sb.storage.from(STORAGE_BUCKET).download(`featured/${slug}/meta.json`);
-      if (res.error) {
-        console.warn('[readMeta:download]', slug, res.error);
-        return { slug, title: slug };
-      }
-      try { return JSON.parse(await res.data.text()); }
-      catch { return { slug, title: slug }; }
-    }
-
-    // images — प्रत्यक्ष फाइल यादीवरून public URL (404 टाळतो)
-    async function listImages(slug){
-      const { data, error } = await sb.storage.from(STORAGE_BUCKET).list(`featured/${slug}`, { limit: 200 });
-      if (error) { console.warn('[listImages]', slug, error); return []; }
-      const imgs = (data || []).filter(o => o.name && /\.(jpg|jpeg|png|webp)$/i.test(o.name));
-      if (!imgs.length) console.warn('[listImages] no images in', slug);
-      return imgs.map(o => publicUrl(`featured/${slug}/${o.name}`));
-    }
-
-    // --- UI ---
-    function fillBrandOptions(items){
-      const brands = Array.from(new Set(items.map(v=>v.brand).filter(Boolean))).sort();
-      brandFilter.innerHTML = '<option value="">All Brands</option>' + brands.map(b=>`<option value="${b}">${b}</option>`).join('');
-    }
-
-    function placeholder(slug){
-      return `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'>
-        <rect width='100%' height='100%' fill='%23111827'/>
-        <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
-         fill='%23f59e0b' font-family='Arial' font-size='22'>No images • ${encodeURIComponent(slug)}</text>
-      </svg>`;
-    }
-
-    function cardHTML(v){
-      const img = (v.images && v.images[0]) || placeholder(v.slug||'item');
-      const wishOn = getWishlist().includes(v.slug);
-      const waText = encodeURIComponent(`Hi, I am interested in ${v.title||v.slug}.`);
-      return `
-        <article class="card">
-          <img class="thumb" src="${img}" alt="${(v.title||v.slug)||'Vehicle'}">
-          <div class="body">
-            <strong>${v.title || v.slug}</strong>
-            <div class="meta" style="margin-top:6px">
-              <span>${v.brand || ''}</span>
-              <span>${v.price || ''}</span>
-            </div>
-            <div class="meta" style="margin-top:4px">
-              <span>${v.year || ''}</span>
-              <span>${v.km ? (v.km + ' km') : ''}</span>
-            </div>
-            <p class="muted" style="min-height:28px;margin:8px 0 0">${v.description || ''}</p>
-            <div class="actions">
-              <button class="btn ${wishOn?'wish-on':''}" data-wish="${v.slug}" onclick="toggleWish('${v.slug}')">
-                <span class="heart">${wishOn?'❤️':'🤍'}</span> Wishlist
-              </button>
-              <a class="btn btn-primary" target="_blank" rel="noopener"
-                 href="https://wa.me/${WHATSAPP}?text=${waText}">
-                Inquiry Now
-              </a>
-            </div>
-          </div>
-        </article>`;
-    }
-
-    function render(items){
-      const text = (q.value||'').toLowerCase();
-      const brand = brandFilter.value;
-      const filtered = items.filter(v =>
-        (!CURR_TYPE || v.type===CURR_TYPE) &&
-        (!brand || v.brand===brand) &&
-        (!text || (v.title||'').toLowerCase().includes(text) || (v.brand||'').toLowerCase().includes(text))
-      );
-      grid.innerHTML = filtered.length ? filtered.map(cardHTML).join('') :
-        '<div class="muted" style="grid-column:1/-1">No results</div>';
-      wishCount.textContent = getWishlist().length;
-    }
-
-    // --- Load & events ---
-    brandFilter.addEventListener('change', ()=>render(ALL));
-    q.addEventListener('input', ()=>render(ALL));
-    typeTabs.addEventListener('click', e=>{
-      if(e.target.tagName==='BUTTON'){
-        CURR_TYPE = e.target.dataset.type || '';
-        typeTabs.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b===e.target));
-        render(ALL);
-      }
-    });
-
-    async function loadAll(){
-      wishCount.textContent = getWishlist().length;
-      grid.innerHTML = '<div class="muted" style="grid-column:1/-1">Loading…</div>';
-
-      const slugs = await listSlugs();
-      if(!slugs.length){
-        grid.innerHTML = '<div class="muted" style="grid-column:1/-1">No featured vehicles yet</div>';
-        return;
-      }
-
-      const items = [];
-      for(const slug of slugs){
-        const meta = await readMeta(slug);   // 404-safe
-        meta.slug = slug;
-        meta.images = await listImages(slug); // actual files → real URLs
-        items.push(meta);
-      }
-
-      ALL = items;
-      fillBrandOptions(items);
-
-      // Optional hash routing: #cars | #bikes | #scooters
-      const hash = (location.hash||'').replace('#','');
-      if(hash==='cars') CURR_TYPE='car';
-      else if(hash==='bikes') CURR_TYPE='bike';
-      else if(hash==='scooters') CURR_TYPE='scooter';
-      if(CURR_TYPE){
-        typeTabs.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b.dataset.type===CURR_TYPE));
-      }
-
-      render(items);
-    }
-
-    loadAll();
-  </script>
+async function loadAll(){
+  setWish(getWish());
+  grid.innerHTML = '<div class="muted" style="grid-column:1/-1">Loading…</div>';
+  const ids = await listVIDs(); if(!ids.length){ grid.innerHTML='<div class="muted" style="grid-column:1/-1">No vehicles</div>'; return; }
+  const arr = [];
+  for(const id of ids){
+    const meta = await readMeta(id);
+    meta.id = id; meta.images = await listImages(id);
+    arr.push(meta);
+  }
+  ALL = arr; fillBrands(arr); render(arr);
+}
+loadAll();
+</script>
 </body>
 </html>
