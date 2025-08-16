@@ -1,354 +1,470 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>SecondWheel.in – Trusted Vehicles, Smart Deals</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Supabase v2 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>Second Wheel – Trusted Vehicles, Smart Deals</title>
+  <meta name="theme-color" content="#111827" />
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
     :root{
-      --ink:#142033;--muted:#6b7280;--bg:#f5f7fb;--card:#fff;--brand:#0a2c5f;--accent:#ff7a00;--ok:#17b26a;--warn:#ef4444;--border:#e6ebf2;--chip:#eef2f7
+      --bg:#0b0f17; --card:#121826; --muted:#9aa3b2; --text:#e5e7eb; --brand:#f59e0b; --brand-2:#22c55e; --shadow:0 8px 28px rgba(0,0,0,.35);
     }
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
-    header{background:var(--brand);color:#fff;text-align:center;padding:18px}
-    header img{height:48px}
-    header h1{font-size:1.15rem;margin-top:8px}
-    nav{position:sticky;top:0;z-index:50;display:flex;gap:4px;justify-content:center;background:#0f356e;padding:6px 8px}
-    nav button{padding:10px 14px;border:none;background:transparent;color:#fff;font-weight:700;cursor:pointer;border-radius:8px}
-    nav button.active{background:#1b4fa0}
-    .container{max-width:1120px;margin:18px auto;padding:0 14px}
-    .section{display:none;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 6px 18px rgba(23,29,40,.06);margin-bottom:18px}
-    .section.active{display:block}
-    h2{color:var(--brand);margin:6px 0 12px}/* Toolbar */
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
-.toolbar .input, .toolbar select{padding:10px;border-radius:10px;border:1px solid #cfd6e4;background:#fff}
-.toolbar .btn{padding:10px 14px;border:none;border-radius:10px;background:var(--brand);color:#fff;cursor:pointer}
-.toolbar .btn.alt{background:var(--accent)}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    .container{max-width:1160px;margin:0 auto;padding:16px}
 
-/* OLX-style grid */
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-@media (max-width:1024px){.grid{grid-template-columns:repeat(3,1fr)}}
-@media (max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:460px){.grid{grid-template-columns:1fr}}
+    /* Header */
+    header{position:sticky;top:0;z-index:50;background:rgba(11,15,23,.72);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
+    .nav{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:10px 12px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand img{width:44px;height:44px;border-radius:12px;box-shadow:var(--shadow)}
+    .brand h1{font-size:16px;margin:0;font-weight:800;letter-spacing:.3px}
+    .top-links{display:flex;gap:10px;flex-wrap:wrap}
+    .pill{padding:10px 14px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.04)}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));cursor:pointer}
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{background:linear-gradient(180deg, #f59e0b, #b45309);color:#111}
+    .toolbar{display:flex;gap:8px;align-items:center}
+    .seg{display:inline-flex;border:1px solid rgba(255,255,255,.1);border-radius:999px;overflow:hidden}
+    .seg button{border:0;background:transparent;padding:8px 10px;color:var(--text);cursor:pointer}
+    .seg button.active{background:rgba(255,255,255,.16)}
 
-.tile{position:relative;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:box-shadow .2s ease,border-color .2s ease}
-.tile:hover{box-shadow:0 10px 24px rgba(20,32,51,.12);border-color:#dfe5ef}
-.thumb{width:100%;aspect-ratio:4/3;object-fit:cover;background:#e9eef6}
-.flag{position:absolute;top:10px;left:10px;display:flex;gap:6px;align-items:center}
-.badge{font-size:12px;color:#fff;padding:6px 10px;border-radius:999px;background:var(--accent)}
-.badge.green{background:var(--ok)}
-.badge.gray{background:#64748b}
-.wish{position:absolute;top:10px;right:10px;background:#fff;border:1px solid var(--border);width:36px;height:36px;border-radius:50%;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,.08)}
-.wish.active{color:#ef4444;border-color:#fecaca}
+    /* Hero */
+    .hero{position:relative;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.06)}
+    .hero-bg{position:absolute;inset:0;background:radial-gradient(90% 60% at 50% 40%, rgba(245,158,11,.12), transparent 60%), linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.55));}
+    .hero-inner{position:relative;z-index:1;padding:48px 16px 28px}
+    .hero h2{font-size:28px;margin:0 0 10px}
+    .hero p{margin:0 0 18px;color:#cbd5e1}
+    .toggle{display:inline-grid;grid-auto-flow:column;gap:8px;background:rgba(0,0,0,.35);padding:6px;border-radius:999px;border:1px solid rgba(255,255,255,.12)}
+    .toggle button{padding:10px 14px;border-radius:999px;border:none;background:transparent;color:var(--text);cursor:pointer}
+    .toggle button.active{background:var(--brand);color:#111;font-weight:700}
 
-.meta{padding:10px 12px;display:grid;gap:6px}
-.price{font-weight:800;font-size:1.05rem}
-.title{font-weight:700;color:#111827}
-.spec{font-size:12px;color:var(--muted)}
-.loc{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+    /* Grids */
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    @media(min-width:720px){.grid{grid-template-columns:repeat(4,1fr)}}
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:14px;box-shadow:var(--shadow);transition:transform .15s ease}
+    .card:hover{transform:translateY(-2px)}
+    .card h3{margin:10px 0 4px;font-size:15px}
+    .muted{color:var(--muted)}
 
-.loadmore{margin:14px auto 4px;display:block;padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:#fff;cursor:pointer}
+    /* Featured row */
+    .row{display:flex;gap:12px;overflow:auto;scroll-snap-type:x mandatory;padding-bottom:2px}
+    .vehicle{min-width:292px;background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:18px;box-shadow:var(--shadow);scroll-snap-align:center}
+    .vehicle .media{position:relative}
+    .vehicle .tag{position:absolute;top:10px;left:10px;background:var(--brand);color:#111;padding:4px 8px;border-radius:999px;font-weight:700;font-size:12px}
+    .vehicle .body{padding:12px}
+    .vehicle .title{font-weight:700}
+    .vehicle .meta{display:flex;justify-content:space-between;color:#cbd5e1;font-size:12px}
+    .vehicle .actions{display:flex;gap:8px;margin-top:10px}
+    .wish{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04)}
 
-/* Skeleton */
-.sk{background:linear-gradient(90deg,#eef2f7, #f6f8fc, #eef2f7);background-size:200% 100%;animation:sh 1.2s infinite}
-@keyframes sh{0%{background-position:100% 0}100%{background-position:0 0}}
-.sk.card{border-radius:14px;height:280px}
+    /* Tools icons */
+    .toolcard{display:flex;gap:10px;align-items:center}
+    .toolicon{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.06);display:grid;place-items:center}
 
-/* Sell Tabs */
-.seg{display:flex;gap:8px;margin:8px 0 14px}
-.seg button{border:1px solid var(--border);background:#fff;padding:10px 12px;border-radius:10px;cursor:pointer}
-.seg button.active{background:var(--chip)}
+    /* Bottom nav */
+    .bottom-nav{position:sticky;bottom:0;background:rgba(11,15,23,.85);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.08)}
+    .bn-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:8px}
+    .bn-btn{padding:10px;border-radius:12px;background:rgba(255,255,255,.06);text-align:center}
 
-/* Footer */
-footer{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(23,29,40,.06)}
-.foot{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-@media (max-width:680px){.foot{grid-template-columns:1fr}}
-.foot h4{margin-bottom:8px;color:var(--brand)}
-.foot a{color:var(--muted);text-decoration:none;display:block;margin:4px 0}
-.sub{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    /* FAQ */
+    details{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:10px}
+    details+details{margin-top:8px}
+    summary{cursor:pointer;font-weight:600}
 
-/* WhatsApp Floating */
-.wa{position:fixed;right:14px;bottom:14px;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#25D366;color:#fff;box-shadow:0 10px 20px rgba(0,0,0,.15);z-index:80;font-weight:900}
+    /* Floaters */
+    .whatsapp{position:fixed;right:16px;bottom:86px;z-index:60}
+    .whatsapp a{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:#25D366;color:#111;font-weight:700;box-shadow:var(--shadow)}
 
+    .hidden{display:none !important}
+    .ok{color:var(--brand-2)}
+
+    /* Toast */
+    .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;border:1px solid rgba(255,255,255,.08);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .3s}
+    .toast.show{opacity:1}
+
+    /* Footer */
+    footer{border-top:1px solid rgba(255,255,255,.06);background:#0c121e}
+    footer .cols{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    @media(min-width:720px){footer .cols{grid-template-columns:repeat(4,1fr)}}
+    footer a{display:block;padding:6px 0;color:#cbd5e1}
   </style>
 </head>
-<body>  <!-- HEADER -->  <header>
-    <img src="assets/logo-yellow-metallic.png" alt="Second Wheel Logo" onerror="this.src='https://placehold.co/220x48?text=SECOND+WHEEL'">
-    <h1>Trusted Vehicles, Smart Deals</h1>
-  </header>  <!-- NAV -->  <nav>
-    <button onclick="showSection('home')" id="homeTab" class="active">Home</button>
-    <button onclick="showSection('buy')" id="buyTab">Buy</button>
-    <button onclick="showSection('featured')" id="featuredTab">Featured</button>
-    <button onclick="showSection('sell')" id="sellTab">Sell</button>
-    <button onclick="showSection('tools')" id="toolsTab">Tools</button>
-  </nav>  <div class="container">
-    <!-- HOME -->
-    <section id="home" class="section active">
-      <h2>Featured Cars</h2>
-      <div id="homeFeat" class="grid"></div>
-      <button id="homeMore" class="loadmore" hidden>Load more</button>
-    </section><!-- BUY -->
-<section id="buy" class="section">
-  <h2>Buy Vehicles</h2>
-  <div class="toolbar">
-    <button class="btn" onclick="setBuyType('car')">Cars</button>
-    <button class="btn alt" onclick="setBuyType('bike')">Bikes</button>
-    <input id="brandFilter" class="input" placeholder="Brand (e.g. Maruti)" oninput="resetBuy()">
-    <input id="qFilter" class="input" placeholder="Model / Variant" oninput="resetBuy()">
-    <select id="cityFilter" onchange="resetBuy()">
-      <option value="">All Cities</option>
-      <option>Pune</option><option>Mumbai</option><option>Nashik</option><option>Satara</option>
-    </select>
-    <select id="sortFilter" onchange="resetBuy()">
-      <option value="new">Newest</option>
-      <option value="price_low">Price: Low to High</option>
-      <option value="price_high">Price: High to Low</option>
-    </select>
-  </div>
-  <div id="buyGrid" class="grid"></div>
-  <button id="buyMore" class="loadmore" hidden>Load more</button>
-</section>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="nav container">
+      <div class="brand">
+        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel logo">
+        <h1>SECOND WHEEL</h1>
+      </div>
+      <div class="toolbar">
+        <div class="seg" id="langSeg">
+          <button data-lang="en" class="active">EN</button>
+          <button data-lang="hi">HI</button>
+          <button data-lang="mr">MR</button>
+        </div>
+        <button class="btn" id="darkToggle" aria-label="Toggle dark">🌙</button>
+      </div>
+    </div>
+    <nav class="container top-links" aria-label="Primary">
+      <a class="pill" href="index.html" data-i18n="nav.home">Home</a>
+      <a class="pill" href="buy.html" data-i18n="nav.buy">Buy</a>
+      <a class="pill" href="sell.html" data-i18n="nav.sell">Sell</a>
+      <a class="pill" href="valuation.html" data-i18n="nav.valuation">Valuation</a>
+      <a class="pill" href="tools.html" data-i18n="nav.tools">Tools</a>
+      <a class="pill" href="contact.html" data-i18n="nav.contact">Contact</a>
+    </nav>
+  </header>
 
-<!-- FEATURED PAGE -->
-<section id="featured" class="section">
-  <h2>🚗 Featured Cars</h2>
-  <div id="featCars" class="grid"></div>
-  <h2 style="margin-top:14px">🏍️ Featured Bikes</h2>
-  <div id="featBikes" class="grid"></div>
-</section>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-inner container">
+      <h2 data-i18n="hero.title">Trusted Vehicles, Smart Deals</h2>
+      <p data-i18n="hero.subtitle">Buy & Sell pre-owned Cars and Bikes with complete peace of mind.</p>
+      <div class="toggle" role="tablist" aria-label="Buy or Sell">
+        <button id="tabBuy" class="active" role="tab" aria-selected="true" data-i18n="hero.buy">Buy</button>
+        <button id="tabSell" role="tab" aria-selected="false" data-i18n="hero.sell">Sell</button>
+      </div>
+      <div id="panelBuy" role="tabpanel" aria-labelledby="tabBuy" style="margin-top:14px">
+        <div class="grid">
+          <a class="card" href="buy.html#cars">
+            <div class="toolcard"><span class="toolicon">🚗</span>
+            <div>
+              <h3 data-i18n="hero.buycar">Buy Car</h3>
+              <div class="muted">Explore verified listings</div>
+            </div></div>
+          </a>
+          <a class="card" href="buy.html#bikes">
+            <div class="toolcard"><span class="toolicon">🏍️</span>
+            <div>
+              <h3 data-i18n="hero.buybike">Buy Bike</h3>
+              <div class="muted">Curated options</div>
+            </div></div>
+          </a>
+          <a class="card" href="buy.html#scooters">
+            <div class="toolcard"><span class="toolicon">🛵</span>
+            <div>
+              <h3>Buy Scooter</h3>
+              <div class="muted">Popular picks</div>
+            </div></div>
+          </a>
+        </div>
+      </div>
+      <div id="panelSell" role="tabpanel" aria-labelledby="tabSell" class="hidden" style="margin-top:14px">
+        <div class="grid">
+          <a class="card" href="sell.html#car"><div class="toolcard"><span class="toolicon">🚘</span><div><h3 data-i18n="hero.sellcar">Sell Car</h3><div class="muted">Doorstep inspection</div></div></div></a>
+          <a class="card" href="sell.html#bike"><div class="toolcard"><span class="toolicon">🏍️</span><div><h3 data-i18n="hero.sellbike">Sell Bike</h3><div class="muted">Quick approval</div></div></div></a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<!-- SELL (Car / Bike tabs + gallery) -->
-<section id="sell" class="section">
-  <h2>Sell Your Vehicle</h2>
-  <div class="seg">
-    <button id="sellCarBtn" class="active" onclick="setSellTab('car')">Sell Car</button>
-    <button id="sellBikeBtn" onclick="setSellTab('bike')">Sell Bike</button>
-  </div>
-  <p style="color:var(--muted);margin-bottom:6px">Pick your category and preview recent deals like OLX – then proceed to form (next page) to submit your vehicle.</p>
-  <div id="sellCar" class="grid"></div>
-  <div id="sellBike" class="grid" style="display:none"></div>
-  <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
-    <a class="toolbar btn" href="sell-car.html">Proceed to Sell Car Form →</a>
-    <a class="toolbar btn alt" href="sell-bike.html">Proceed to Sell Bike Form →</a>
-  </div>
-</section>
+  <!-- FEATURED -->
+  <main class="container">
+    <section aria-labelledby="featHeading" style="margin:22px 0">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <h3 id="featHeading" style="margin:0" data-i18n="feat.title">Featured Vehicles</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <label for="brandFilter" class="muted" data-i18n="feat.filter">Brand</label>
+          <select id="brandFilter" class="btn" style="min-width:160px"></select>
+        </div>
+      </div>
+      <div id="vehiclesRow" class="row" aria-live="polite"></div>
+    </section>
 
-<!-- TOOLS -->
-<section id="tools" class="section">
-  <h2>Online Tools</h2>
-  <div class="foot" style="border:none;box-shadow:none;padding:0">
-    <div>
-      <h4>RTO & Legal</h4>
-      <a href="https://parivahan.gov.in" target="_blank">Vehicle Number Check</a>
-      <a href="https://echallan.parivahan.gov.in" target="_blank">eChallan Payment</a>
-      <a href="https://maharashtra.hsrp.in" target="_blank">Apply HSRP</a>
-    </div>
-    <div>
-      <h4>Finance & Docs</h4>
-      <a href="#">Used Car Loan</a>
-      <a href="#">Used Bike Loan</a>
-      <a href="#">Insurance (Turtlemint)</a>
-    </div>
-    <div>
-      <h4>FASTag & More</h4>
-      <a href="#">Buy FASTag</a>
-      <a href="#">Recharge FASTag</a>
-      <a href="#">Doorstep Inspection</a>
-    </div>
-  </div>
-</section>
+    <!-- TOOLS -->
+    <section aria-labelledby="toolsHeading" style="margin:28px 0">
+      <h3 id="toolsHeading" data-i18n="tools.title">Tools & Services</h3>
+      <div class="grid">
+        <a class="card" href="https://maharashtra.hsrp.in" target="_blank" rel="noopener">
+          <div class="toolcard"><span class="toolicon">🔖</span><div><h3>HSRP Booking</h3><div class="muted">Official site</div></div></div>
+        </a>
+        <a class="card" href="https://mahatrafficechallan.gov.in/" target="_blank" rel="noopener">
+          <div class="toolcard"><span class="toolicon">🧾</span><div><h3>Pay Challan</h3><div class="muted">Maharashtra</div></div></div>
+        </a>
+        <a class="card" href="insurance.html">
+          <div class="toolcard"><span class="toolicon">🛡️</span><div><h3>Insurance</h3><div class="muted">Buy / Renew</div></div></div>
+        </a>
+        <a class="card" href="tools.html#fastag">
+          <div class="toolcard"><span class="toolicon">🏷️</span><div><h3>FASTag</h3><div class="muted">Buy / Recharge</div></div></div>
+        </a>
+        <a class="card" href="https://parivahan.gov.in" target="_blank" rel="noopener">
+          <div class="toolcard"><span class="toolicon">🎫</span><div><h3>Driving Licence</h3><div class="muted">Apply Online</div></div></div>
+        </a>
+      </div>
+    </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="foot">
-    <div>
-      <h4>About Us</h4>
-      <p style="color:var(--muted)">Second Wheel is a pre‑owned cars & bikes marketplace based in Maharashtra. We focus on transparent pricing and quick documentation.</p>
-    </div>
-    <div>
-      <h4>Quick Links</h4>
-      <a href="#home">Home</a>
-      <a href="#buy">Buy</a>
-      <a href="#featured">Featured</a>
-      <a href="#sell">Sell</a>
-      <a href="#tools">Tools</a>
-      <a href="#faq">FAQ</a>
-    </div>
-    <div>
-      <h4>Contact</h4>
-      <a href="mailto:sales@secondwheel.in">sales@secondwheel.in</a>
-      <a href="https://wa.me/919890507278" target="_blank">WhatsApp</a>
-      <a href="#">Instagram</a>
-      <a href="#">Facebook</a>
-      <p style="color:var(--muted);margin-top:6px">Molacha Odha, Satara, Maharashtra • Pin 415002</p>
-    </div>
-  </div>
-  <div class="sub">
-    <span>© <span id="year"></span> SecondWheel.in • Trusted Vehicles, Smart Deals</span>
-    <span><a href="#" style="text-decoration:none;color:var(--muted)">Privacy Policy</a> · <a href="#" style="text-decoration:none;color:var(--muted)">Terms</a></span>
-  </div>
-</footer>
+    <!-- TESTIMONIALS -->
+    <section aria-labelledby="testHeading" style="margin:28px 0">
+      <h3 id="testHeading" data-i18n="test.title">What Customers Say</h3>
+      <div id="testimonials" class="row" role="list"></div>
+    </section>
 
-  </div>  <!-- WhatsApp Floating (round, bottom-right) --><a class="wa" href="https://wa.me/919822292955" target="_blank" aria-label="Chat on WhatsApp">WA</a>
+    <!-- FAQ (Multilingual) -->
+    <section aria-labelledby="faqHeading" style="margin:28px 0 80px">
+      <h3 id="faqHeading">FAQ</h3>
+      <details>
+        <summary data-i18n="faq.q1">How does valuation work?</summary>
+        <div class="muted" data-i18n="faq.a1">Enter vehicle details and get an instant estimate. Final price after inspection.</div>
+      </details>
+      <details>
+        <summary data-i18n="faq.q2">Do you offer doorstep inspection?</summary>
+        <div class="muted" data-i18n="faq.a2">Yes, available in select cities.</div>
+      </details>
+      <details>
+        <summary data-i18n="faq.q3">Is Satara district prioritized?</summary>
+        <div class="muted" data-i18n="faq.a3">Yes, doorstep approval currently only for Satara district.</div>
+      </details>
+    </section>
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav" role="navigation" aria-label="Quick actions">
+    <div class="bn-row container">
+      <a class="bn-btn" href="buy.html" data-i18n="nav.buy">Buy</a>
+      <a class="bn-btn" href="sell.html" data-i18n="nav.sell">Sell</a>
+      <a class="bn-btn" href="valuation.html" data-i18n="nav.valuation">Valuation</a>
+      <a class="bn-btn" href="tools.html" data-i18n="nav.tools">Tools</a>
+    </div>
+  </div>
+
+  <!-- FLOATING WHATSAPP -->
+  <div class="whatsapp"><a href="https://wa.me/919822292955" target="_blank" rel="noopener">WhatsApp</a></div>
+  <div id="toast" class="toast" role="status" aria-live="polite">Saved!</div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="cols" style="padding:20px 0 8px">
+        <div>
+          <h3>Second Wheel</h3>
+          <p class="muted">Trusted Vehicles, Smart Deals</p>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <a href="about.html">About Us</a>
+          <a href="contact.html">Contact Us</a>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <a href="terms.html">Terms & Conditions</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="disclaimer.html">Disclaimer</a>
+        </div>
+        <div>
+          <h4>Follow</h4>
+          <a href="#">Instagram</a>
+          <a href="#">Facebook</a>
+        </div>
+      </div>
+      <div class="muted" style="padding:8px 0 24px">© <span id="yr"></span> Second Wheel – All rights reserved.</div>
+    </div>
+  </footer>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-    // Supabase init
-    const SUPABASE_URL = "https://wbjwvxckbfkutqqbgupq.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // ---- i18n strings (EN / HI / MR) ----
+    const I18N = {
+      en:{
+        'nav.home':'Home','nav.buy':'Buy','nav.sell':'Sell','nav.valuation':'Valuation','nav.tools':'Tools','nav.contact':'Contact',
+        'hero.title':'Trusted Vehicles, Smart Deals','hero.subtitle':'Buy & Sell pre-owned Cars and Bikes with complete peace of mind.',
+        'hero.buy':'Buy','hero.sell':'Sell','hero.buycar':'Buy Car','hero.buybike':'Buy Bike','hero.sellcar':'Sell Car','hero.sellbike':'Sell Bike',
+        'feat.title':'Featured Vehicles','feat.filter':'Brand','tools.title':'Tools & Services','test.title':'What Customers Say',
+        'faq.q1':'How does valuation work?','faq.a1':'Enter vehicle details and get an instant estimate. Final price after inspection.',
+        'faq.q2':'Do you offer doorstep inspection?','faq.a2':'Yes, available in select cities.',
+        'faq.q3':'Is Satara district prioritized?','faq.a3':'Yes, doorstep approval currently only for Satara district.'
+      },
+      hi:{
+        'nav.home':'होम','nav.buy':'खरीदें','nav.sell':'बेचें','nav.valuation':'वैल्यूएशन','nav.tools':'टूल्स','nav.contact':'संपर्क',
+        'hero.title':'ट्रस्टेड व्हीकल्स, स्मार्ट डील्स','hero.subtitle':'पुरानी कार/बाइक निश्चिंत होकर खरीदें और बेचें।',
+        'hero.buy':'खरीदें','hero.sell':'बेचें','hero.buycar':'कार खरीदें','hero.buybike':'बाइक खरीदें','hero.sellcar':'कार बेचें','hero.sellbike':'बाइक बेचें',
+        'feat.title':'फ़ीचर्ड वाहन','feat.filter':'ब्रांड','tools.title':'टूल्स और सेवाएँ','test.title':'ग्राहक क्या कहते हैं',
+        'faq.q1':'वैल्यूएशन कैसे होता है?','faq.a1':'वाहन विवरण डालें और तुरंत अनुमान पाएं। अंतिम मूल्य निरीक्षण के बाद।',
+        'faq.q2':'डोरस्टेप इंस्पेक्शन मिलता है?','faq.a2':'हाँ, चुनिंदा शहरों में।',
+        'faq.q3':'क्या सतारा ज़िले को प्राथमिकता है?','faq.a3':'हाँ, फिलहाल डोरस्टेप अप्रूवल केवल सतारा ज़िले के लिए।'
+      },
+      mr:{
+        'nav.home':'मुखपृष्ठ','nav.buy':'खरेदी','nav.sell':'विक्री','nav.valuation':'मूल्यांकन','nav.tools':'साधने','nav.contact':'संपर्क',
+        'hero.title':'विश्वसनीय व्हेइकल्स, स्मार्ट डील्स','hero.subtitle':'जुन्या कार/बाईक निर्धास्तपणे खरेदी-विक्री करा.',
+        'hero.buy':'खरेदी','hero.sell':'विक्री','hero.buycar':'कार खरेदी','hero.buybike':'बाईक खरेदी','hero.sellcar':'कार विक्री','hero.sellbike':'बाईक विक्री',
+        'feat.title':'फीचर्ड वाहने','feat.filter':'ब्रँड','tools.title':'टूल्स आणि सेवा','test.title':'ग्राहकांचे मत',
+        'faq.q1':'मूल्यांकन कसे होते?','faq.a1':'वाहन माहिती द्या आणि तत्काळ अंदाज मिळवा. अंतिम किंमत तपासणीनंतर.',
+        'faq.q2':'डोअरस्टेप इन्स्पेक्शन आहे का?','faq.a2':'हो, निवडक शहरांमध्ये.',
+        'faq.q3':'सातारा जिल्ह्याला प्राधान्य आहे का?','faq.a3':'हो, सध्या डोअरस्टेप मंजुरी फक्त सातारा जिल्ह्यासाठी.'
+      }
+    };
 
-    // ===== Helpers
-    const fmtINR = n => `₹${Number(n||0).toLocaleString('en-IN')}`;
-    const relTime = iso => { try { const d=new Date(iso); const diff=(Date.now()-d.getTime())/1000; if(diff<60) return 'just now'; const m=Math.floor(diff/60); if(m<60) return `${m} min ago`; const h=Math.floor(m/60); if(h<24) return `${h}h ago`; const d2=Math.floor(h/24); return `${d2}d ago`; } catch{ return '' } };
-    const wishKey = 'sw_wishlist';
-    const getWish = () => new Set(JSON.parse(localStorage.getItem(wishKey)||'[]'));
-    const setWish = s => localStorage.setItem(wishKey, JSON.stringify([...s]));
+    const langSeg = document.getElementById('langSeg');
+    function applyLang(l){
+      [...document.querySelectorAll('[data-i18n]')].forEach(el=>{
+        const k=el.getAttribute('data-i18n');
+        if(I18N[l] && I18N[l][k]) el.textContent = I18N[l][k];
+      });
+      localStorage.setItem('lang', l);
+      [...langSeg.querySelectorAll('button')].forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
+      toast('Language: '+l.toUpperCase());
+    }
+    langSeg.addEventListener('click', e=>{ if(e.target.tagName==='BUTTON') applyLang(e.target.dataset.lang);});
 
-    // ===== Card Renderer (OLX style)
-    function card(v){
-      const verified = v.verified || v.docs_complete || false;
-      const status = (v.status||'Available');
-      const wished = getWish().has(v.id);
-      return `
-      <article class="tile" data-id="${v.id}">
-        <div class="flag">
-          ${v.featured?'<span class="badge">Featured</span>':''}
-          <span class="badge ${status==='Available'?'green':'gray'}">${status}</span>
-          ${verified?'<span class="badge green">Verified</span>':''}
-        </div>
-        <button class="wish ${wished?'active':''}" title="Save" onclick="toggleWish('${v.id}')">❤</button>
-        <img class="thumb" loading="lazy" src="${v.image || 'https://placehold.co/640x480?text=Vehicle'}" alt="${v.title||v.brand+' '+v.model}">
-        <div class="meta">
-          <div class="price">${fmtINR(v.price||0)}</div>
-          <div class="title">${v.title || (v.brand+' '+v.model)}</div>
-          <div class="spec">${[v.year,v.fuel,v.km?`${v.km} KM`:null].filter(Boolean).join(' • ')}</div>
-          <div class="loc"><span>${v.city||''}${v.location?(' · '+v.location):''}</span><span>${relTime(v.created_at)}</span></div>
-        </div>
-      </article>`
+    // ---- Dark toggle ----
+    const darkBtn = document.getElementById('darkToggle');
+    const DARK_KEY='secondwheel.dark';
+    function applyDark(v){
+      document.documentElement.style.colorScheme = v?'dark':'light';
+      localStorage.setItem(DARK_KEY, v?'1':'0');
+      darkBtn.textContent = v?'🌙':'☀️';
+    }
+    darkBtn.addEventListener('click', ()=>applyDark(!(localStorage.getItem(DARK_KEY)==='1')));
+    applyDark(localStorage.getItem(DARK_KEY)==='1');
+
+    // ---- Buy/Sell tabs ----
+    const tabBuy=document.getElementById('tabBuy');
+    const tabSell=document.getElementById('tabSell');
+    const panelBuy=document.getElementById('panelBuy');
+    const panelSell=document.getElementById('panelSell');
+    function setTab(which){
+      const isBuy=which==='buy';
+      tabBuy.classList.toggle('active', isBuy);
+      tabSell.classList.toggle('active', !isBuy);
+      panelBuy.classList.toggle('hidden', !isBuy);
+      panelSell.classList.toggle('hidden', isBuy);
+    }
+    tabBuy.addEventListener('click',()=>setTab('buy'));
+    tabSell.addEventListener('click',()=>setTab('sell'));
+
+    // ---- Toast ----
+    function toast(msg){
+      const t=document.getElementById('toast');
+      t.textContent=msg; t.classList.add('show');
+      clearTimeout(window.__t); window.__t=setTimeout(()=>t.classList.remove('show'), 1500);
     }
 
-    function skel(n){ return Array.from({length:n}).map(()=>'<div class="sk card"></div>').join(''); }
+    // ---- Supabase Featured Vehicles (Storage API via supabase-js) ----
+    const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
+    const STORAGE_BUCKET = 'vehicals';
+    const DEMO_MODE = false; // per your request
 
-    // ===== HOME FEATURED with pagination
-    let homePage=0, homeDone=false; const HOME_SIZE=8;
-    async function loadHomeFeatured(reset=false){
-      const wrap = document.getElementById('homeFeat');
-      const more = document.getElementById('homeMore');
-      if(reset){ homePage=0; homeDone=false; wrap.innerHTML=''; }
-      if(homeDone) return; 
-      wrap.insertAdjacentHTML('beforeend', skel(4));
-      const from = homePage*HOME_SIZE;
-      const { data, error, count } = await sb
-        .from("vehicles").select("*", { count:'exact' })
-        .eq("featured", true).eq("type","car")
-        .order("created_at",{ascending:false})
-        .range(from, from+HOME_SIZE-1);
-      wrap.querySelectorAll('.sk.card').forEach(el=>el.remove());
-      if(error){ console.error(error); if(!wrap.children.length) renderStaticHome(); return; }
-      if(!data || !data.length){ homeDone=true; more.hidden=true; if(!wrap.children.length) renderStaticHome(); return; }
-      wrap.insertAdjacentHTML('beforeend', data.map(card).join(''));
-      homePage++; more.hidden = (from+data.length)>=count;
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function listObjects(prefix){
+      // prefix like 'featured/swift-2016/'
+      const { data, error } = await supabaseClient
+        .storage
+        .from(STORAGE_BUCKET)
+        .list(prefix, { limit: 100 });
+      if(error){ console.error('Storage list error:', error); return []; }
+      return data || [];
     }
-    document.getElementById('homeMore')?.addEventListener('click', ()=>loadHomeFeatured());
-
-    function renderStaticHome(){
-      const wrap = document.getElementById('homeFeat');
-      wrap.innerHTML = [
-        {title:'Maruti Suzuki Alto K10 LXI',price:145000,city:'Satara',year:2011,km:'67000',image:'https://placehold.co/640x480?text=Alto+K10+2011'},
-        {title:'Hyundai i20 Sportz',price:510000,city:'Satara',year:2016,km:'88000',image:'https://placehold.co/640x480?text=i20+Sportz+2016'},
-        {title:'Swift Dzire VXI',price:480000,city:'Satara',year:2013,km:'69000',image:'https://placehold.co/640x480?text=Dzire+2013'}
-      ].map(card).join('');
+    function publicUrl(path){
+      // returns a public URL if the bucket is public
+      const { data } = supabaseClient.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+      return data?.publicUrl || `${SUPABASE_URL}/storage/v1/object/public/${path}`;
     }
 
-    // ===== FEATURED PAGE
-    async function loadFeatured(){
-      const { data, error } = await sb.from("vehicles").select("*").eq("featured", true).order("created_at",{ascending:false}).limit(40);
-      if(error){ console.error(error); return; }
-      document.getElementById("featCars").innerHTML = (data||[]).filter(x=>x.type==='car').map(card).join('');
-      document.getElementById("featBikes").innerHTML = (data||[]).filter(x=>x.type==='bike').map(card).join('');
+    const vehiclesRow = document.getElementById('vehiclesRow');
+    const brandFilter = document.getElementById('brandFilter');
+
+    // Registry of featured slugs
+    const FEATURED = [
+      {slug:'swift-2016', brand:'Maruti Suzuki', title:'Swift VXI 2016', price:'₹3.25L', year:2016, km:'72,000', type:'car'},
+      {slug:'i20-2015', brand:'Hyundai', title:'i20 Sportz 2015', price:'₹3.60L', year:2015, km:'68,500', type:'car'},
+      {slug:'splendor-2018', brand:'Hero', title:'Splendor Plus 2018', price:'₹45,000', year:2018, km:'24,000', type:'bike'},
+      {slug:'pulsar-2019', brand:'Bajaj', title:'Pulsar 150 2019', price:'₹62,000', year:2019, km:'31,000', type:'bike'}
+    ];
+
+    function fillBrandFilter(){
+      const brands = Array.from(new Set(FEATURED.map(v=>v.brand))).sort();
+      brandFilter.innerHTML = `<option value=\"\">All Brands</option>` + brands.map(b=>`<option value=\"${b}\">${b}</option>`).join('');
+      brandFilter.addEventListener('change', renderVehicles);
     }
 
-    // ===== BUY with infinite scroll
-    let buyType='car', buyPage=0, buyDone=false; const BUY_SIZE=20;
-    function setBuyType(t){ buyType=t; resetBuy(); }
-    function resetBuy(){ buyPage=0; buyDone=false; document.getElementById('buyGrid').innerHTML=''; document.getElementById('buyMore').hidden=false; loadMoreBuy(); }
-
-    async function loadMoreBuy(){
-      if(buyDone) return;
-      const grid = document.getElementById('buyGrid');
-      grid.insertAdjacentHTML('beforeend', skel(6));
-      const brandQ = document.getElementById('brandFilter').value.trim();
-      const modelQ = document.getElementById('qFilter').value.trim();
-      const cityQ = document.getElementById('cityFilter').value;
-      const sort = document.getElementById('sortFilter').value;
-
-      let query = sb.from('vehicles').select('*', { count:'exact' }).eq('type', buyType);
-      if(brandQ) query = query.ilike('brand', `%${brandQ}%`);
-      if(modelQ) query = query.or(`model.ilike.%${modelQ}%,title.ilike.%${modelQ}%`);
-      if(cityQ) query = query.eq('city', cityQ);
-      if(sort==='price_low') query = query.order('price', { ascending:true, nullsFirst:true });
-      else if(sort==='price_high') query = query.order('price', { ascending:false, nullsLast:true });
-      else query = query.order('created_at', { ascending:false });
-
-      const from = buyPage*BUY_SIZE;
-      const { data, error, count } = await query.range(from, from+BUY_SIZE-1);
-      grid.querySelectorAll('.sk.card').forEach(el=>el.remove());
-      if(error){ console.error(error); return; }
-      if(!data || !data.length){ buyDone=true; document.getElementById('buyMore').hidden=true; return; }
-      grid.insertAdjacentHTML('beforeend', data.map(card).join(''));
-      buyPage++; document.getElementById('buyMore').hidden = (from+data.length)>=count;
-    }
-    document.getElementById('buyMore').addEventListener('click', loadMoreBuy);
-
-    // Infinite scroll helper
-    const io = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{ if(e.isIntersecting && !buyDone && document.getElementById('buy').classList.contains('active')) loadMoreBuy(); })
-    },{rootMargin:'200px'});
-    io.observe(document.getElementById('buyMore'));
-
-    // ===== SELL tabs (separate mini‑galleries)
-    function setSellTab(t){
-      document.getElementById('sellCarBtn').classList.toggle('active', t==='car');
-      document.getElementById('sellBikeBtn').classList.toggle('active', t==='bike');
-      document.getElementById('sellCar').style.display = (t==='car')?'grid':'none';
-      document.getElementById('sellBike').style.display = (t==='bike')?'grid':'none';
-      if(t==='car') loadSellGallery('car'); else loadSellGallery('bike');
-    }
-    async function loadSellGallery(type){
-      const mount = type==='car'?document.getElementById('sellCar'):document.getElementById('sellBike');
-      if(mount.dataset.loaded==='1') return; // load once
-      mount.insertAdjacentHTML('beforeend', skel(6));
-      const { data, error } = await sb.from('vehicles').select('*').eq('type', type).order('created_at',{ascending:false}).limit(12);
-      mount.querySelectorAll('.sk.card').forEach(el=>el.remove());
-      if(error){ console.error(error); return; }
-      mount.innerHTML = (data||[]).map(card).join('');
-      mount.dataset.loaded = '1';
+    async function renderVehicles(){
+      vehiclesRow.innerHTML='';
+      const filter = brandFilter.value;
+      const list = FEATURED.filter(v=>!filter || v.brand===filter);
+      for(const v of list){
+        // Load images from storage folder vehicals/featured/<slug>/
+        let imgs=[];
+        const arr = await listObjects(`featured/${v.slug}/`);
+        imgs = (arr||[]).filter(o=>o.name && o.name.match(/\\.(jpg|jpeg|png|webp)$/i)).map(o=>publicUrl(`featured/${v.slug}/${o.name}`));
+        const first = imgs[0] || 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23121826%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23f59e0b%22 font-size=%2220%22>No images in vehicals/featured/'+v.slug+'</text></svg>';
+        const card = document.createElement('article');
+        card.className='vehicle';
+        card.innerHTML = `
+          <div class="media">
+            <img src="${first}" alt="${v.title}">
+            <span class="tag">Featured</span>
+          </div>
+          <div class="body">
+            <div class="title">${v.title}</div>
+            <div class="meta"><span>${v.brand}</span><span>${v.price}</span></div>
+            <div class="meta" style="margin-top:4px"><span>${v.year}</span><span>${v.km} km</span></div>
+            <div class="actions">
+              <button class="btn wish" aria-pressed="false">❤️ Wishlist</button>
+              <button class="btn btn-primary" data-slug="${v.slug}">Inquiry Now</button>
+            </div>
+          </div>`;
+        const btn = card.querySelector('.btn.btn-primary');
+        btn.addEventListener('click', ()=> openInquiry(v, imgs));
+        const wish = card.querySelector('.wish');
+        wish.addEventListener('click', ()=>{
+          const on = wish.getAttribute('aria-pressed')==='true';
+          wish.setAttribute('aria-pressed', String(!on));
+          saveWishlist(v.slug, !on);
+          toast(!on? 'Added to wishlist' : 'Removed from wishlist');
+        });
+        vehiclesRow.appendChild(card);
+      }
     }
 
-    // ===== Wishlist toggle
-    function toggleWish(id){
-      const s = getWish();
-      if(s.has(id)) s.delete(id); else s.add(id);
-      setWish(s);
-      const el = document.querySelector(`.tile[data-id="${id}"] .wish`);
-      if(el) el.classList.toggle('active');
+    // Wishlist in localStorage
+    function saveWishlist(slug, add){
+      const key='secondwheel.wishlist';
+      const arr = JSON.parse(localStorage.getItem(key)||'[]');
+      const set = new Set(arr);
+      if(add) set.add(slug); else set.delete(slug);
+      localStorage.setItem(key, JSON.stringify([...set]));
     }
 
-    // ===== Nav
-    function showSection(id){
-      document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-      document.getElementById(id+'Tab')?.classList.add('active');
-      if(id==='featured') loadFeatured();
-      if(id==='buy') resetBuy();
-      if(id==='home') loadHomeFeatured(true);
-      if(id==='sell') { setSellTab('car'); }
+    // Inquiry via WhatsApp with prefilled text
+    function openInquiry(v, imgs){
+      const msg = encodeURIComponent(`Hi Second Wheel, I am interested in ${v.title} (${v.brand}). Can you share more images and details?`);
+      window.open(`https://wa.me/919822292955?text=${msg}`, '_blank');
     }
 
-    // ===== Init
-    document.getElementById('year').textContent = new Date().getFullYear();
-    loadHomeFeatured(true);
-  </script></body>
+    // ---- Testimonials (simple auto-scroll) ----
+    function loadTestimonials(){
+      const data = [
+        {name:'Rahul P.', text:'Great deal and smooth paperwork!'},
+        {name:'Sana K.', text:'Doorstep inspection was super convenient.'},
+        {name:'Vivek S.', text:'Transparent pricing. Recommended.'}
+      ];
+      const wrap = document.getElementById('testimonials');
+      data.forEach(t=>{
+        const d=document.createElement('div'); d.className='card'; d.style.minWidth='280px';
+        d.innerHTML=`<h3>★ ★ ★ ★ ☆</h3><div class='muted' style='min-height:48px'>${t.text}</div><div class='ok'>— ${t.name}</div>`;
+        wrap.appendChild(d);
+      });
+      setInterval(()=>{ wrap.scrollBy({left:300,behavior:'smooth'}); if(wrap.scrollLeft+wrap.clientWidth>=wrap.scrollWidth-5) wrap.scrollTo({left:0,behavior:'smooth'}); }, 3000);
+    }
+
+    // Init
+    (function init(){
+      const saved = localStorage.getItem('lang')||'en';
+      applyLang(saved);
+      fillBrandFilter();
+      renderVehicles();
+      loadTestimonials();
+      document.getElementById('yr').textContent=new Date().getFullYear();
+    })();
+  </script>
+</body>
 </html>
+      
