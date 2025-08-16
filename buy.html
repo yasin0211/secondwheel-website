@@ -1,170 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Second Wheel — Buy</title>
-  <meta name="theme-color" content="#111827" />
-  <style>
-    :root{
-      --bg:#0b0f17; --card:#121826; --muted:#9aa3b2; --text:#e5e7eb;
-      --brand:#f59e0b; --ink:#111; --line:rgba(255,255,255,.10);
-      --shadow:0 10px 30px rgba(0,0,0,.35);
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);
-         font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
-    a{color:inherit;text-decoration:none}
-    .container{max-width:1100px;margin:0 auto;padding:18px}
-    header{position:sticky;top:0;z-index:10;background:rgba(11,15,23,.7);backdrop-filter:blur(12px);
-      border-bottom:1px solid rgba(255,255,255,.08)}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
-    .tabs{display:flex;gap:8px;align-items:center}
-    .tab{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#0f1522;cursor:pointer}
-    .tab.active{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
-    h1{font-size:20px;margin:0}
-    .section{margin-top:18px}
-    .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-    .grid{display:grid;grid-template-columns:1fr;gap:14px}
-    @media(min-width:720px){ .grid{grid-template-columns:repeat(2,1fr)} }
-    @media(min-width:1000px){ .grid{grid-template-columns:repeat(3,1fr)} }
-    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
-    .thumb{width:100%;height:200px;object-fit:cover;display:block}
-    @media(min-width:720px){ .thumb{height:220px} }
-    .body{padding:12px}
-    .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
-    .muted{color:var(--muted)}
-    .badge{display:inline-block;background:rgba(255,255,255,.08);border:1px solid var(--line);
-           color:#ffd16b;padding:4px 8px;border-radius:999px;font-size:12px}
-    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;
-         border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));cursor:pointer}
-    .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
-    .empty{padding:18px;border:1px dashed var(--line);border-radius:12px;text-align:center;color:var(--muted)}
-    .foot{margin-top:18px;text-align:center;color:var(--muted)}
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Buy Vehicles</title>
+<style>
+  :root{--bg:#0b0f17;--ink:#e5e7eb;--muted:#9aa3b2;--card:#121826;--line:rgba(255,255,255,.08);--pill:#f59e0b}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 system-ui,Segoe UI,Roboto,Arial}
+  .wrap{max-width:1200px;margin:0 auto;padding:16px}
+  h1{margin:0 0 10px}
+  .tabs{display:flex;gap:10px;margin:6px 0 14px}
+  .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  .pill.on{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
+  .grid{display:grid;gap:14px}
+  @media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .slides{display:flex;overflow:auto;scroll-snap-type:x mandatory;gap:8px;padding:8px;background:#0f1522}
+  .slides img{flex:0 0 100%;height:220px;scroll-snap-align:start;object-fit:cover;border-radius:10px;display:block;width:100%}
+  @media(min-width:720px){.slides img{height:240px}}
+  .meta{padding:12px}
+  .meta h3{margin:0 0 6px}
+  .muted{color:var(--muted)}
+  .price{float:right;font-weight:700}
+  .acts{display:flex;gap:8px;margin-top:8px}
+  .btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);cursor:pointer;background:transparent;color:var(--ink)}
+  .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
+  .wish.on{background:rgba(245,158,11,.15);border-color:#b45309}
+  .ribbon{position:absolute;left:10px;top:10px;background:var(--pill);color:#111;padding:4px 10px;border-radius:8px;font-weight:600}
+  .cover{position:relative}
+</style>
 </head>
 <body>
-  <header>
-    <div class="container nav">
-      <h1>Buy Vehicles</h1>
-      <div class="tabs" id="typeTabs">
-        <button class="tab active" data-type="all">All</button>
-        <button class="tab" data-type="car">Car</button>
-        <button class="tab" data-type="bike">Bike</button>
-        <button class="tab" data-type="scooter">Scooter</button>
-      </div>
+  <div class="wrap">
+    <h1>Buy Vehicles</h1>
+    <div class="tabs">
+      <button class="pill on" data-type="all">All</button>
+      <button class="pill" data-type="car">Car</button>
+      <button class="pill" data-type="bike">Bike</button>
+      <button class="pill" data-type="scooter">Scooter</button>
+      <div style="flex:1"></div>
+      <span class="muted">Wishlist: <strong id="wlCount">0</strong></span>
     </div>
-  </header>
+    <div id="grid" class="grid"></div>
+  </div>
 
-  <main class="container">
-    <section class="section">
-      <div class="section-head">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span class="badge">Featured</span>
-          <strong>Latest picks</strong>
-        </div>
-      </div>
-      <div id="grid" class="grid">
-        <div class="empty">Loading…</div>
-      </div>
-      <div class="foot">© 2025 Second Wheel</div>
-    </section>
-  </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ------- Supabase -------
+  const SUPABASE_URL = "https://wbjwvxckbfkutqqbgupq.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
+  const STORAGE_BUCKET = "vehicals";
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    // ---- Supabase config (ready to use) ----
-    const SUPABASE_URL='https://wbjwvxckbfkutqqbgupq.supabase.co';
-    const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-    const BUCKET='vehicals';
-    const FOLDER='featured';
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  // ------- Wishlist (localStorage) -------
+  const WL_KEY='sw_wishlist';
+  const getWL=()=>{try{return JSON.parse(localStorage.getItem(WL_KEY)||'[]');}catch(_){return[]}};
+  const setWL=(arr)=>{localStorage.setItem(WL_KEY,JSON.stringify(arr));document.getElementById('wlCount').textContent=arr.length}
+  setWL(getWL());
 
-    // ---- Wishlist (localStorage) ----
-    const WL_KEY='secondwheel_wishlist';
-    const getWL = ()=>{ try{return new Set(JSON.parse(localStorage.getItem(WL_KEY)||'[]'));}catch(e){return new Set();}};
-    const saveWL = (set)=> localStorage.setItem(WL_KEY, JSON.stringify([...set]));
-    const wlText = (vid)=> getWL().has(vid) ? '♥ In wishlist' : '♡ Wishlist';
-    function toggleWL(vid, btn){
-      const s=getWL();
-      if(s.has(vid)){s.delete(vid);btn.textContent='♡ Wishlist';}
-      else{s.add(vid);btn.textContent='♥ In wishlist';}
-      saveWL(s);
+  // ------- Filters -------
+  let activeType='all';
+  document.querySelectorAll('.pill[data-type]').forEach(p=>{
+    p.onclick=()=>{document.querySelectorAll('.pill').forEach(x=>x.classList.remove('on')); p.classList.add('on'); activeType=p.dataset.type; render(listCache);};
+  });
+
+  // ------- Fetch + Render -------
+  let listCache=[];
+  async function fetchAll(){
+    const {data,error}=await sb.storage.from(STORAGE_BUCKET).list('featured',{limit:500});
+    if(error){ document.getElementById('grid').innerHTML='<div class="muted">Load failed</div>'; return; }
+    const folders=(data||[]).filter(x=>x && !/\./.test(x.name)).map(x=>x.name);
+    const out=[];
+    for(const vid of folders){
+      const meta = await fetchMeta(vid); if(!meta) continue;
+      const images = await listImages(vid);
+      out.push({vid,meta,images});
     }
+    listCache=out.sort((a,b)=>(b.meta.updatedAt||'').localeCompare(a.meta.updatedAt||''));
+    render(listCache);
+  }
 
-    // ---- Helpers ----
-    function publicUrl(path){ const {data}=sb.storage.from(BUCKET).getPublicUrl(path); return data?.publicUrl || ''; }
-    async function firstImage(vid){
-      const {data}=await sb.storage.from(BUCKET).list(`${FOLDER}/${vid}`,{limit:100});
-      const img=(data||[]).find(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name));
-      return img? publicUrl(`${FOLDER}/${vid}/${img.name}`) : '';
-    }
-    async function readMeta(vid){
-      const {data,error}=await sb.storage.from(BUCKET).download(`${FOLDER}/${vid}/meta.json`);
-      if(error) return null;
-      try{ return JSON.parse(await data.text()); }catch(e){ return null; }
-    }
+  async function fetchMeta(vid){
+    const {data,error}=await sb.storage.from(STORAGE_BUCKET).download(`featured/${vid}/meta.json`);
+    if(error) return null; try{ return JSON.parse(await data.text()); }catch(_){ return null; }
+  }
 
-    // ---- Render ----
-    const grid = document.getElementById('grid');
-    let ALL = []; // cached items
-    let CURR_TYPE = 'all';
-
-    function render(){
-      const items = ALL.filter(v => CURR_TYPE==='all' ? true : (v.type||'').toLowerCase()===CURR_TYPE);
-      if(!items.length){ grid.innerHTML = '<div class="empty">No items yet</div>'; return; }
-      grid.innerHTML='';
-      for(const v of items){
-        const msg = encodeURIComponent(`Hi, I'm interested in ${v.title||''} (${v.brand||''}) — Price: ${v.price||''}`);
-        const wa = `https://wa.me/?text=${msg}`; // opens WhatsApp and lets user pick contact
-        const div = document.createElement('div');
-        div.className='card';
-        div.innerHTML = `
-          <img class="thumb" src="${v.img||''}" alt="${v.title||v.vid}">
-          <div class="body">
-            <div class="badge">Featured</div>
-            <h3 style="margin:8px 0 4px">${v.title||''}</h3>
-            <div class="muted">${v.brand||''}</div>
-            <div class="row" style="margin-top:6px">
-              <div class="muted">${v.year||''} • ${v.km||''} km</div>
-              <div><strong>${v.price||''}</strong></div>
-            </div>
-            <div class="row" style="margin-top:8px">
-              <button class="btn wlBtn">${wlText(v.vid)}</button>
-              <a class="btn primary" href="${wa}" target="_blank" rel="noopener">Inquiry Now</a>
-            </div>
-          </div>`;
-        div.querySelector('.wlBtn').addEventListener('click', (e)=> toggleWL(v.vid, e.currentTarget));
-        grid.appendChild(div);
-      }
-    }
-
-    // ---- Load featured from Supabase ----
-    async function loadFeatured(){
-      grid.innerHTML='<div class="empty">Loading…</div>';
-      const {data,error}=await sb.storage.from(BUCKET).list(FOLDER,{limit:200});
-      if(error){ grid.innerHTML='<div class="empty">Failed to load</div>'; return; }
-      const folders=(data||[]).filter(x=>x && !/\./.test(x.name)); // only subfolders (VIDs)
-      const items = await Promise.all(folders.map(async f=>{
-        const [meta,img] = await Promise.all([readMeta(f.name), firstImage(f.name)]);
-        if(!meta) return null;
-        return { vid:f.name, ...meta, img };
-      }));
-      ALL = items.filter(Boolean).sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
-      render();
-    }
-
-    // ---- Type tabs ----
-    document.getElementById('typeTabs').addEventListener('click', (e)=>{
-      const b = e.target.closest('.tab'); if(!b) return;
-      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      CURR_TYPE = b.dataset.type;
-      render();
+  async function listImages(vid){
+    const {data,error}=await sb.storage.from(STORAGE_BUCKET).list(`featured/${vid}`,{limit:100});
+    if(error||!data) return [];
+    const imgs=data.filter(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name));
+    return imgs.map(im=>{
+      const {data:pub}=sb.storage.from(STORAGE_BUCKET).getPublicUrl(`featured/${vid}/${im.name}`);
+      return pub?.publicUrl;
     });
+  }
 
-    // init
-    loadFeatured();
-  </script>
+  function render(list){
+    const g=document.getElementById('grid'); g.innerHTML='';
+    const filtered=list.filter(it=> activeType==='all' ? true : (it.meta.type===activeType));
+    if(!filtered.length){ g.innerHTML='<div class="muted">No items yet</div>'; return; }
+    const wl=getWL();
+    for(const it of filtered){
+      const imgs = it.images.length? it.images : ['https://dummyimage.com/1200x800/111827/ffffff&text=No+Image'];
+      const card=document.createElement('div'); card.className='card';
+      const sliderId='slides-'+it.vid;
+      card.innerHTML=`
+        <div class="cover">
+          <div class="ribbon">Featured</div>
+          <div id="${sliderId}" class="slides"></div>
+        </div>
+        <div class="meta">
+          <h3>${it.meta.title||''} <span class="price">${it.meta.price||''}</span></h3>
+          <div class="muted">${(it.meta.brand||'').toUpperCase()}</div>
+          <div class="muted">${it.meta.year||''} • ${it.meta.km||''} km</div>
+          <div class="acts">
+            <button class="btn wish ${wl.includes(it.vid)?'on':''}" data-vid="${it.vid}">❤ Wishlist</button>
+            <button class="btn primary" data-vid="${it.vid}">Inquiry Now</button>
+          </div>
+        </div>`;
+      g.appendChild(card);
+      // fill slides
+      const slides=card.querySelector('#'+sliderId);
+      imgs.forEach(u=>{
+        const im=document.createElement('img'); im.src=u; im.loading='lazy'; slides.appendChild(im);
+      });
+      // hook buttons
+      const wishBtn=card.querySelector('.wish');
+      wishBtn.onclick=()=>{
+        let a=getWL();
+        if(a.includes(it.vid)){ a=a.filter(x=>x!==it.vid); wishBtn.classList.remove('on'); }
+        else { a.push(it.vid); wishBtn.classList.add('on'); }
+        setWL(a);
+      };
+      const inqBtn=card.querySelector('.primary');
+      inqBtn.onclick=()=>{
+        const txt=encodeURIComponent(`Hi, I'm interested in ${it.meta.title} (${it.meta.year}) — Price: ${it.meta.price}. VID: ${it.vid}`);
+        // WhatsApp number ठेऊ इच्छित असाल तर खाली सेट करा (उदा. 91XXXXXXXXXX)
+        const WHATSAPP_NUMBER = ""; 
+        const url = WHATSAPP_NUMBER 
+          ? `https://wa.me/${WHATSAPP_NUMBER}?text=${txt}`
+          : `mailto:secondwheel@example.com?subject=${encodeURIComponent('Vehicle Inquiry — '+it.meta.title)}&body=${txt}`;
+        window.open(url,'_blank');
+      };
+    }
+  }
+
+  fetchAll();
+</script>
 </body>
 </html>
