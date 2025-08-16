@@ -4,48 +4,42 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Second Wheel — Buy</title>
-  <meta name="theme-color" content="#111827" />
   <style>
-    :root{ --bg:#0b0f17; --card:#121826; --muted:#9aa3b2; --text:#e5e7eb; --brand:#f59e0b; --ok:#22c55e; --shadow:0 8px 28px rgba(0,0,0,.35); }
-    *{ box-sizing:border-box }
-    body{ margin:0; background:var(--bg); color:var(--text); font:14px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial }
-    a{ color:inherit; text-decoration:none }
-    img{ max-width:100%; display:block }
-    header{ position:sticky; top:0; z-index:50; background:rgba(11,15,23,.72); backdrop-filter:blur(12px); border-bottom:1px solid rgba(255,255,255,.06) }
-    .nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 16px }
-    .brand{ display:flex; align-items:center; gap:12px }
-    .brand img{ width:44px; height:44px; border-radius:12px; box-shadow:var(--shadow) }
-    .brand h1{ margin:0; font-size:16px }
-    .container{ max-width:1160px; margin:0 auto; padding:16px }
-    .filters{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
-    select, input[type=search]{ padding:10px 12px; background:#0f1522; color:#e5e7eb; border:1px solid rgba(255,255,255,.12); border-radius:10px; min-width:160px }
-    .tabs{ display:inline-grid; grid-auto-flow:column; gap:8px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:999px; padding:6px }
-    .tabs button{ border:0; background:transparent; color:#e5e7eb; padding:8px 12px; border-radius:999px; cursor:pointer }
-    .tabs button.active{ background:var(--brand); color:#111; font-weight:700 }
-    .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px }
-    @media(min-width:720px){ .grid{ grid-template-columns:repeat(4,1fr) } }
-    .card{ background:var(--card); border:1px solid rgba(255,255,255,.06); border-radius:16px; overflow:hidden; box-shadow:var(--shadow) }
-    .card .body{ padding:12px }
-    .meta{ display:flex; justify-content:space-between; color:#cbd5e1; font-size:12px }
-    .actions{ display:flex; gap:8px; margin-top:8px }
-    .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); cursor:pointer }
-    .btn-primary{ background:linear-gradient(180deg, #f59e0b, #b45309); color:#111 }
-    .muted{ color:var(--muted) }
+    :root{
+      --bg:#111827; --card:#1f2937; --ink:#e5e7eb; --muted:#9aa3b2; --brand:#f59e0b;
+      --line:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial;background:var(--bg);color:var(--ink)}
+    header{background:#0b0f17;padding:14px;text-align:center;font-weight:800;color:var(--brand)}
+    .wrap{max-width:1160px;margin:0 auto;padding:16px}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+    .filters input[type="search"], .filters select{
+      background:#0f172a;border:1px solid var(--line);color:var(--ink);padding:10px 12px;border-radius:10px;min-width:180px
+    }
+    .tabs{display:inline-grid;grid-auto-flow:column;gap:8px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:6px}
+    .tabs button{border:0;background:transparent;color:var(--ink);padding:8px 12px;border-radius:999px;cursor:pointer}
+    .tabs button.active{background:var(--brand);color:#111;font-weight:800}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+    .thumb{width:100%;height:170px;object-fit:cover;background:#0f172a}
+    .body{padding:12px}
+    .meta{display:flex;justify-content:space-between;color:#cbd5e1;font-size:12px}
+    .muted{color:var(--muted)}
+    .actions{display:flex;gap:8px;margin-top:10px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));cursor:pointer}
+    .btn-primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
+    .heart{font-size:16px}
+    .wish-on{background:rgba(245,158,11,.18);border-color:#b45309}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+    .badge{background:rgba(255,255,255,.08);padding:6px 10px;border-radius:999px;border:1px solid var(--line)}
   </style>
 </head>
 <body>
-  <header>
-    <div class="nav container">
-      <div class="brand">
-        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="logo">
-        <h1>SECOND WHEEL — Buy</h1>
-      </div>
-      <a href="index.html" class="btn">← Home</a>
-    </div>
-  </header>
+  <header>Buy Vehicles</header>
 
-  <main class="container">
-    <div class="filters" style="justify-content:space-between">
+  <main class="wrap">
+    <div class="topbar">
       <div class="tabs" id="typeTabs">
         <button data-type="" class="active">All</button>
         <button data-type="car">Car</button>
@@ -53,90 +47,132 @@
         <button data-type="scooter">Scooter</button>
       </div>
       <div class="filters">
-        <label class="muted">Brand</label>
         <select id="brandFilter"><option value="">All Brands</option></select>
         <input id="q" type="search" placeholder="Search title or brand..." />
+        <span class="badge">❤️ <span id="wishCount">0</span></span>
       </div>
     </div>
 
-    <section style="margin-top:16px">
+    <section>
       <div id="grid" class="grid"></div>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    // ---- Supabase config ----
     const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
     const STORAGE_BUCKET = 'vehicals';
+    const WHATSAPP = '919822292955'; // Inquiry Now #
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const grid = document.getElementById('grid');
     const brandFilter = document.getElementById('brandFilter');
     const q = document.getElementById('q');
     const typeTabs = document.getElementById('typeTabs');
+    const wishCount = document.getElementById('wishCount');
+
     let ALL = []; let CURR_TYPE = '';
 
+    // ---- Wishlist helpers (localStorage) ----
+    const WKEY = 'sw_wishlist';
+    function getWishlist(){ try{return JSON.parse(localStorage.getItem(WKEY)||'[]');}catch{ return []; } }
+    function setWishlist(arr){ localStorage.setItem(WKEY, JSON.stringify(arr)); wishCount.textContent = arr.length; }
+    function toggleWish(slug){
+      const list = getWishlist();
+      const idx = list.indexOf(slug);
+      if(idx>=0) list.splice(idx,1); else list.push(slug);
+      setWishlist(list);
+      // update all buttons of same slug
+      document.querySelectorAll(`[data-wish="${slug}"]`).forEach(b=>{
+        b.classList.toggle('wish-on', list.includes(slug));
+        b.querySelector('.heart').textContent = list.includes(slug) ? '❤️' : '🤍';
+      });
+    }
+
+    // ---- Supabase helpers ----
     function publicUrl(path){
       const { data } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path);
-      return data?.publicUrl || `${SUPABASE_URL}/storage/v1/object/public/${path}`;
+      return data?.publicUrl || '';
     }
-
-    async function listTopFeatured(){
-      const { data, error } = await sb.storage.from(STORAGE_BUCKET).list('featured', { limit: 200 });
+    async function listSlugs(){
+      const { data, error } = await sb.storage.from(STORAGE_BUCKET).list('featured', { limit: 400 });
       if(error){ console.error(error); return []; }
-      return (data||[]).filter(x=>x && !(/\./.test(x.name)));
+      return (data||[]).filter(x => x && !(/\./.test(x.name))).map(x=>x.name);
     }
-
-    async function fetchMeta(slug){
+    async function readMeta(slug){
       const { data, error } = await sb.storage.from(STORAGE_BUCKET).download(`featured/${slug}/meta.json`);
-      if(error) return null;
-      try{ return JSON.parse(await data.text()); }catch(e){ return null; }
+      if(error) return { slug, title: slug, brand:'', price:'', year:'', km:'', description:'', type:'' };
+      try{ return JSON.parse(await data.text()); }catch{ return { slug, title: slug }; }
     }
-
     async function listImages(slug){
-      const { data, error } = await sb.storage.from(STORAGE_BUCKET).list(`featured/${slug}`, { limit: 100 });
+      const { data, error } = await sb.storage.from(STORAGE_BUCKET).list(`featured/${slug}`, { limit: 200 });
       if(error) return [];
-      return (data||[]).filter(o=>o.name && /\.(jpg|jpeg|png|webp)$/i.test(o.name)).map(o=>publicUrl(`featured/${slug}/${o.name}`));
+      return (data||[])
+        .filter(o => o.name && /\.(jpg|jpeg|png|webp)$/i.test(o.name))
+        .map(o => publicUrl(`featured/${slug}/${o.name}`));
     }
 
+    // ---- UI render ----
     function fillBrandOptions(items){
       const brands = Array.from(new Set(items.map(v=>v.brand).filter(Boolean))).sort();
-      brandFilter.innerHTML = '<option value=\"\">All Brands</option>' + brands.map(b=>`<option value=\"${b}\">${b}</option>`).join('');
+      brandFilter.innerHTML = '<option value="">All Brands</option>' + brands.map(b=>`<option value="${b}">${b}</option>`).join('');
     }
-
+    function placeholder(slug){
+      return `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'>
+        <rect width='100%' height='100%' fill='%23111827'/>
+        <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+         fill='%23f59e0b' font-family='Arial' font-size='22'>No images • ${encodeURIComponent(slug)}</text>
+      </svg>`;
+    }
+    function cardHTML(v){
+      const img = (v.images && v.images[0]) || placeholder(v.slug||'item');
+      const wishOn = getWishlist().includes(v.slug);
+      const waText = encodeURIComponent(`Hi, I am interested in ${v.title||v.slug}.`);
+      return `
+        <article class="card">
+          <img class="thumb" src="${img}" alt="${(v.title||v.slug)||'Vehicle'}">
+          <div class="body">
+            <strong>${v.title || v.slug}</strong>
+            <div class="meta" style="margin-top:6px">
+              <span>${v.brand || ''}</span>
+              <span>${v.price || ''}</span>
+            </div>
+            <div class="meta" style="margin-top:4px">
+              <span>${v.year || ''}</span>
+              <span>${v.km ? (v.km + ' km') : ''}</span>
+            </div>
+            <p class="muted" style="min-height:28px;margin:8px 0 0">${v.description || ''}</p>
+            <div class="actions">
+              <button class="btn ${wishOn?'wish-on':''}" data-wish="${v.slug}" onclick="toggleWish('${v.slug}')">
+                <span class="heart">${wishOn?'❤️':'🤍'}</span> Wishlist
+              </button>
+              <a class="btn btn-primary" target="_blank" rel="noopener"
+                 href="https://wa.me/${WHATSAPP}?text=${waText}">
+                Inquiry Now
+              </a>
+            </div>
+          </div>
+        </article>`;
+    }
     function render(items){
-      grid.innerHTML = '';
       const text = (q.value||'').toLowerCase();
       const brand = brandFilter.value;
-      const list = items.filter(v => (!CURR_TYPE || v.type===CURR_TYPE) &&
-                                     (!brand || v.brand===brand) &&
-                                     (!text || (v.title||'').toLowerCase().includes(text) || (v.brand||'').toLowerCase().includes(text))
-                           );
-      if(list.length===0){
-        grid.innerHTML = '<div class="muted">No results</div>';
-        return;
-      }
-      for(const v of list){
-        const first = (v.images && v.images[0]) || 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23121826%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23f59e0b%22 font-size=%2220%22>No images</text></svg>';
-        const el = document.createElement('article');
-        el.className = 'card';
-        el.innerHTML = `
-          <img src="${first}" alt="${v.title||v.slug}">
-          <div class="body">
-            <strong>${v.title||v.slug}</strong>
-            <div class="meta"><span>${v.brand||''}</span><span>${v.price||''}</span></div>
-            <div class="meta" style="margin-top:4px"><span>${v.year||''}</span><span>${v.km? v.km+' km':''}</span></div>
-            <p class="muted" style="min-height:32px">${v.description||''}</p>
-            <div class="actions">
-              <button class="btn">❤️ Wishlist</button>
-              <a class="btn btn-primary" target="_blank" href="https://wa.me/919822292955?text=${encodeURIComponent('Hi, I am interested in '+(v.title||v.slug))}">Inquiry Now</a>
-            </div>
-          </div>`;
-        grid.appendChild(el);
-      }
+      const list = items.filter(v =>
+        (!CURR_TYPE || v.type===CURR_TYPE) &&
+        (!brand || v.brand===brand) &&
+        (!text || (v.title||'').toLowerCase().includes(text) || (v.brand||'').toLowerCase().includes(text))
+      );
+      grid.innerHTML = list.length ? list.map(cardHTML).join('') :
+        '<div class="muted" style="grid-column:1/-1">No results</div>';
+      // update wish count
+      wishCount.textContent = getWishlist().length;
     }
 
+    // ---- Load & events ----
+    brandFilter.addEventListener('change', ()=>render(ALL));
+    q.addEventListener('input', ()=>render(ALL));
     typeTabs.addEventListener('click', e=>{
       if(e.target.tagName==='BUTTON'){
         CURR_TYPE = e.target.dataset.type || '';
@@ -144,21 +180,22 @@
         render(ALL);
       }
     });
-    brandFilter.addEventListener('change', ()=>render(ALL));
-    q.addEventListener('input', ()=>render(ALL));
 
     async function loadAll(){
-      const folders = await listTopFeatured();
+      wishCount.textContent = getWishlist().length;
+      grid.innerHTML = '<div class="muted" style="grid-column:1/-1">Loading…</div>';
+      const slugs = await listSlugs();
+      if(!slugs.length){ grid.innerHTML = '<div class="muted" style="grid-column:1/-1">No featured vehicles yet</div>'; return; }
       const items = [];
-      for(const f of folders){
-        const slug = f.name;
-        let meta = await fetchMeta(slug) || { slug, title: slug, brand:'', price:'', year:'', km:'', type:'' };
+      for(const slug of slugs){
+        const meta = await readMeta(slug);
+        meta.slug = slug;
         meta.images = await listImages(slug);
         items.push(meta);
       }
       ALL = items;
       fillBrandOptions(items);
-      // Hash route (#cars/#bikes/#scooters)
+      // hash route support: #cars | #bikes | #scooters
       const hash = (location.hash||'').replace('#','');
       if(hash==='cars') CURR_TYPE='car';
       else if(hash==='bikes') CURR_TYPE='bike';
@@ -170,6 +207,8 @@
     }
 
     loadAll();
+    // Expose toggleWish globally for inline onclick
+    window.toggleWish = toggleWish;
   </script>
 </body>
 </html>
