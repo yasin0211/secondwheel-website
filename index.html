@@ -1,254 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Second Wheel – Trusted Vehicles, Smart Deals</title>
-<meta name="theme-color" content="#111827" />
-<style>
-  :root{
-    --bg:#0b0f17; --card:#121826; --muted:#9aa3b2; --text:#e5e7eb;
-    --brand:#f59e0b; --brand2:#22c55e; --shadow:0 8px 28px rgba(0,0,0,.35);
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
-  a{color:inherit;text-decoration:none}
-  img{max-width:100%;display:block}
-  .container{max-width:1160px;margin:0 auto;padding:16px}
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Second Wheel – Trusted Vehicles, Smart Deals</title>
+  <meta name="theme-color" content="#111827"/>
+  <style>
+    :root{
+      --bg:#0b0f17; --panel:#121826; --ink:#e5e7eb; --muted:#9aa3b2;
+      --line:rgba(255,255,255,.10); --brand:#f59e0b; --ok:#22c55e;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    .wrap{max-width:1160px;margin:0 auto;padding:16px}
+    .muted{color:var(--muted)}
 
-  /* Header */
-  header{position:sticky;top:0;z-index:50;background:rgba(11,15,23,.72);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
-  .nav{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:10px 12px}
-  .brand{display:flex;align-items:center;gap:12px}
-  /* PATCH: Logo bigger + white tile */
-  .brand .logo-wrap{
-    background:#fff; padding:8px; border-radius:14px; display:grid; place-items:center;
-    box-shadow:var(--shadow)
-  }
-  .brand .logo-wrap img{ width:64px; height:64px; border-radius:10px; }
-  .brand h1{font-size:16px;margin:0;font-weight:800;letter-spacing:.3px}
-  .toolbar{display:flex;gap:8px;align-items:center}
+    /* Header: logo center + controls + big buttons below */
+    header{position:sticky;top:0;z-index:30;background:rgba(11,15,23,.78);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+    .controls{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;padding-top:8px}
+    .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+    .seg button{border:0;background:transparent;color:var(--ink);padding:8px 12px;cursor:pointer}
+    .seg button.active{background:rgba(255,255,255,.15)}
+    .toggle{border:1px solid var(--line);border-radius:999px;padding:8px 12px;cursor:pointer;background:rgba(255,255,255,.06)}
+    .brand-wrap{display:grid;place-items:center;text-align:center;padding:8px 0 6px}
+    .logo{width:min(22vw,100px);height:min(22vw,100px);border-radius:16px;box-shadow:var(--shadow);object-fit:contain;background:#fff}
+    h1{margin:8px 0 2px;font-size:20px;letter-spacing:.35px}
 
-  /* Header nav buttons */
-  .top-links{display:flex;gap:10px;flex-wrap:wrap}
-  .top-links .pill{padding:10px 14px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.04)}
+    .cta-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;padding:12px 0 16px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:14px;border:1px solid var(--line);
+         background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));cursor:pointer;font-weight:700}
+    .btn-primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
+    .btn:active{transform:translateY(1px)}
 
-  /* Hero */
-  .hero{position:relative;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.06)}
-  .hero-bg{position:absolute;inset:0;background:radial-gradient(90% 60% at 50% 40%, rgba(245,158,11,.12), transparent 60%), linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.55));}
-  .hero-inner{position:relative;z-index:1;padding:42px 16px 24px}
-  .hero h2{font-size:28px;margin:0 0 10px}
-  .hero p{margin:0 0 18px;color:#cbd5e1}
-  .toggle{display:inline-grid;grid-auto-flow:column;gap:8px;background:rgba(0,0,0,.35);padding:6px;border-radius:999px;border:1px solid rgba(255,255,255,.12)}
-  .toggle button{padding:10px 14px;border-radius:999px;border:none;background:transparent;color:var(--text);cursor:pointer}
-  .toggle button.active{background:var(--brand);color:#111;font-weight:700}
+    /* Sections */
+    .section{margin:20px 0}
+    .head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .head h3{margin:0;font-size:18px}
 
-  /* Cards / grids */
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  @media(min-width:720px){.grid{grid-template-columns:repeat(4,1fr)}}
-  .card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:14px;box-shadow:var(--shadow);transition:transform .15s ease}
-  .card:hover{transform:translateY(-2px)}
-  .card h3{margin:10px 0 4px;font-size:15px}
-  .muted{color:var(--muted)}
-  .toolcard{display:flex;gap:10px;align-items:center}
-  .toolicon{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.06);display:grid;place-items:center}
+    /* Featured cards */
+    .row{display:flex;gap:12px;overflow:auto;scroll-snap-type:x mandatory;padding:2px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+    .veh{min-width:300px;scroll-snap-align:center}
+    .veh .media{position:relative;border-radius:16px 16px 0 0;overflow:hidden}
+    .veh .media img{width:100%;height:220px;object-fit:cover;background:#0f1522}
+    @media(min-width:720px){ .veh .media img{height:220px} }
+    .tag{position:absolute;top:10px;left:10px;background:var(--brand);color:#111;padding:4px 8px;border-radius:999px;font-weight:800;font-size:12px}
+    .veh .body{padding:12px}
+    .veh .title{font-weight:800;margin:6px 0 4px}
+    .veh .meta{display:flex;justify-content:space-between;color:#cbd5e1;font-size:12px;margin-bottom:6px}
+    .veh .desc{color:#cbd5e1;font-size:13px;margin-top:6px;white-space:normal;overflow:visible}
+    .actions{display:flex;gap:8px;margin-top:10px}
+    .wish{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06)}
+    .inq{background:linear-gradient(180deg,#22c55e,#15803d);border-color:transparent;color:#fff}
 
-  /* Featured row */
-  .row{display:flex;gap:12px;overflow:auto;scroll-snap-type:x mandatory;padding-bottom:2px}
-  .vehicle{min-width:292px;background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:18px;box-shadow:var(--shadow);scroll-snap-align:center}
-  .vehicle .media{position:relative}
-  .vehicle .tag{position:absolute;top:10px;left:10px;background:var(--brand);color:#111;padding:4px 8px;border-radius:999px;font-weight:700;font-size:12px}
-  .vehicle .body{padding:12px}
-  .vehicle .title{font-weight:700}
-  .vehicle .meta{display:flex;justify-content:space-between;color:#cbd5e1;font-size:12px}
-  .vehicle .actions{display:flex;gap:8px;margin-top:10px}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));cursor:pointer}
-  .btn:active{transform:translateY(1px)}
-  .btn-primary{background:linear-gradient(180deg, #f59e0b, #b45309);color:#111;border-color:transparent}
-  .wish{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04)}
-  /* PATCH: media height smaller + crop */
-  .vehicle .media img{
-    width:100%; height:200px; object-fit:cover; display:block; border-radius:14px 14px 0 0;
-  }
-  @media(min-width:720px){ .vehicle .media img{ height:180px; } }
-  /* PATCH: description clamp */
-  .vehicle .desc{
-    color:#cbd5e1; font-size:12px; margin-top:6px;
-    display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden;
-  }
+    /* Tools grid */
+    .grid{display:grid;gap:12px;grid-template-columns:repeat(2,1fr)}
+    @media(min-width:720px){ .grid{grid-template-columns:repeat(4,1fr)} }
+    .tool{padding:14px;text-align:left}
 
-  /* Bottom nav (kept simple) */
-  .bottom-nav{position:sticky;bottom:0;background:rgba(11,15,23,.85);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.08)}
-  .bn-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:8px}
-  .bn-btn{padding:10px;border-radius:12px;background:rgba(255,255,255,.06);text-align:center}
+    /* Footer */
+    footer{border-top:1px solid var(--line);background:#0c121e;margin-top:24px}
+    footer .cols{display:grid;gap:16px;grid-template-columns:repeat(2,1fr)}
+    @media(min-width:720px){ footer .cols{grid-template-columns:repeat(4,1fr)} }
+    footer h4{margin:10px 0 6px}
+    footer a{display:block;padding:6px 0;color:#cbd5e1}
 
-  .hidden{display:none !important}
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;border:1px solid rgba(255,255,255,.08);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .3s}
-  .toast.show{opacity:1}
-</style>
+    /* WhatsApp float */
+    .wa{position:fixed;right:16px;bottom:18px;z-index:40}
+    .wa a{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:#25D366;color:#111;font-weight:800;box-shadow:var(--shadow)}
+  </style>
 </head>
 <body>
-  <!-- HEADER -->
   <header>
-    <div class="nav container">
-      <div class="brand">
-        <span class="logo-wrap">
-          <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel logo">
-        </span>
-        <h1>SECOND WHEEL</h1>
+    <div class="wrap">
+      <div class="controls">
+        <div class="seg" id="langSeg" aria-label="Language">
+          <button data-lang="en" class="active">EN</button>
+          <button data-lang="hi">HI</button>
+          <button data-lang="mr">MR</button>
+        </div>
+        <button id="darkBtn" class="toggle" aria-label="Dark mode">🌙</button>
       </div>
-      <div class="toolbar"></div>
+      <div class="brand-wrap">
+        <img class="logo" src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel logo">
+        <h1>SECOND WHEEL</h1>
+        <div class="muted">Trusted Vehicles, Smart Deals</div>
+      </div>
+      <!-- Stylish buttons under logo -->
+      <nav class="cta-row" aria-label="Primary">
+        <a class="btn btn-primary" href="index.html" data-i18n="nav.home">Home</a>
+        <a class="btn btn-primary" href="buy.html" data-i18n="nav.buy">Buy</a>
+        <a class="btn btn-primary" href="sell.html" data-i18n="nav.sell">Sell</a>
+        <a class="btn btn-primary" href="valuation.html" data-i18n="nav.valuation">Valuation</a>
+        <a class="btn btn-primary" href="tools.html" data-i18n="nav.tools">Tools</a>
+      </nav>
     </div>
-    <nav class="container top-links" aria-label="Primary">
-      <a class="pill" href="buy.html">Buy</a>
-      <a class="pill" href="sell.html">Sell</a>
-      <a class="pill" href="valuation.html">Valuation</a>
-      <a class="pill" href="tools.html">Tools</a>
-    </nav>
   </header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-inner container">
-      <h2>Trusted Vehicles, Smart Deals</h2>
-      <p>Buy & Sell pre-owned Cars and Bikes with complete peace of mind.</p>
-      <div class="toggle" role="tablist" aria-label="Buy or Sell">
-        <button id="tabBuy" class="active" role="tab" aria-selected="true">Buy</button>
-        <button id="tabSell" role="tab" aria-selected="false">Sell</button>
+  <main class="wrap">
+    <!-- FEATURED -->
+    <section class="section" aria-labelledby="featHead">
+      <div class="head">
+        <h3 id="featHead" data-i18n="feat.title">Featured Vehicles</h3>
+        <a class="btn" href="buy.html" data-i18n="feat.viewall">View all</a>
       </div>
+      <div id="featuredRow" class="row" aria-live="polite"></div>
+    </section>
 
-      <!-- Buy shortcuts -->
-      <div id="panelBuy" role="tabpanel" aria-labelledby="tabBuy" style="margin-top:14px">
-        <div class="grid">
-          <a class="card" href="buy.html#cars"><div class="toolcard"><span class="toolicon">🚗</span><div><h3>Buy Car</h3><div class="muted">Explore verified listings</div></div></div></a>
-          <a class="card" href="buy.html#bikes"><div class="toolcard"><span class="toolicon">🏍️</span><div><h3>Buy Bike</h3><div class="muted">Curated options</div></div></div></a>
-          <a class="card" href="buy.html#scooters"><div class="toolcard"><span class="toolicon">🛵</span><div><h3>Buy Scooter</h3><div class="muted">Popular picks</div></div></div></a>
-          <div class="card"><div class="toolcard"><span class="toolicon">🧰</span><div><h3>Tools & Services</h3><div class="muted">HSRP • Challan • Insurance • FASTag</div></div></div></div>
-        </div>
+    <!-- TOOLS & SERVICES -->
+    <section class="section" aria-labelledby="toolsHead">
+      <div class="head"><h3 id="toolsHead" data-i18n="tools.title">Tools & Services</h3></div>
+      <div class="grid">
+        <a class="card tool" href="https://hsrpmhzone2.in/" target="_blank" rel="noopener">
+          <strong>HSRP Booking</strong><div class="muted">Official MH portal</div>
+        </a>
+        <a class="card tool" href="https://mahatrafficechallan.gov.in/" target="_blank" rel="noopener">
+          <strong>Pay Challan</strong><div class="muted">Maharashtra e-challan</div>
+        </a>
+        <a class="card tool" href="insurance.html">
+          <strong>Insurance</strong><div class="muted">Buy / Renew</div>
+        </a>
+        <a class="card tool" href="tools.html#fastag">
+          <strong>FASTag</strong><div class="muted">Buy / Recharge</div>
+        </a>
       </div>
-
-      <!-- Sell shortcuts -->
-      <div id="panelSell" role="tabpanel" aria-labelledby="tabSell" class="hidden" style="margin-top:14px">
-        <div class="grid">
-          <a class="card" href="sell.html#car"><div class="toolcard"><span class="toolicon">🚘</span><div><h3>Sell Car</h3><div class="muted">Doorstep inspection</div></div></div></a>
-          <a class="card" href="sell.html#bike"><div class="toolcard"><span class="toolicon">🏍️</span><div><h3>Sell Bike</h3><div class="muted">Quick approval</div></div></div></a>
-          <a class="card" href="sell.html#scooter"><div class="toolcard"><span class="toolicon">🛵</span><div><h3>Sell Scooter</h3><div class="muted">Hassle-free</div></div></div></a>
-          <div class="card"><div class="toolcard"><span class="toolicon">☎️</span><div><h3>Contact</h3><div class="muted">WhatsApp 98222 92955</div></div></div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FEATURED -->
-  <main class="container">
-    <section aria-labelledby="featHeading" style="margin:22px 0">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-        <h3 id="featHeading" style="margin:0">Featured Vehicles</h3>
-      </div>
-      <div id="vehiclesRow" class="row" aria-live="polite"></div>
     </section>
   </main>
 
-  <!-- BOTTOM NAV -->
-  <div class="bottom-nav" role="navigation" aria-label="Quick actions">
-    <div class="bn-row container">
-      <a class="bn-btn" href="buy.html">Buy</a>
-      <a class="bn-btn" href="sell.html">Sell</a>
-      <a class="bn-btn" href="valuation.html">Valuation</a>
-      <a class="bn-btn" href="tools.html">Tools</a>
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="cols" style="padding:20px 0 8px">
+        <div>
+          <h4>Second Wheel</h4>
+          <p class="muted">Trusted Vehicles, Smart Deals</p>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <a href="about.html">About Us</a>
+          <a href="contact.html">Contact Us</a>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <a href="terms.html">Terms &amp; Conditions</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="disclaimer.html">Disclaimer</a>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <a href="buy.html">Buy</a>
+          <a href="sell.html">Sell</a>
+          <a href="valuation.html">Valuation</a>
+          <a href="tools.html">Tools</a>
+        </div>
+      </div>
+      <div class="muted" style="padding:8px 0 20px">© <span id="yr"></span> Second Wheel — All rights reserved.</div>
     </div>
-  </div>
+  </footer>
 
-  <div id="toast" class="toast" role="status" aria-live="polite">Saved!</div>
+  <!-- WhatsApp Float -->
+  <div class="wa"><a href="https://wa.me/919822292955" target="_blank" rel="noopener">WhatsApp</a></div>
 
-  <!-- Supabase JS -->
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Tabs
-    const tabBuy = document.getElementById('tabBuy');
-    const tabSell = document.getElementById('tabSell');
-    const panelBuy = document.getElementById('panelBuy');
-    const panelSell = document.getElementById('panelSell');
-    function setTab(which){
-      const isBuy = which === 'buy';
-      tabBuy.classList.toggle('active', isBuy);
-      tabSell.classList.toggle('active', !isBuy);
-      panelBuy.classList.toggle('hidden', !isBuy);
-      panelSell.classList.toggle('hidden', isBuy);
-    }
-    tabBuy.addEventListener('click', ()=>setTab('buy'));
-    tabSell.addEventListener('click', ()=>setTab('sell'));
+    // Year
+    document.getElementById('yr').textContent = new Date().getFullYear();
 
-    function toast(msg){
-      const t=document.getElementById('toast');
-      t.textContent=msg; t.classList.add('show');
-      clearTimeout(window.__t); window.__t=setTimeout(()=>t.classList.remove('show'), 1500);
+    // Dark mode
+    const darkBtn = document.getElementById('darkBtn');
+    const DARK_KEY='sw.dark';
+    function applyDark(v){
+      document.documentElement.style.colorScheme = v?'dark':'light';
+      localStorage.setItem(DARK_KEY, v?'1':'0');
+      darkBtn.textContent = v ? '🌙' : '☀️';
     }
+    applyDark(localStorage.getItem(DARK_KEY)==='1');
+    darkBtn.addEventListener('click', ()=>applyDark(!(localStorage.getItem(DARK_KEY)==='1')));
 
-    // ---- Supabase Featured ----
-    const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-    const BUCKET = 'vehicals';
+    // Simple i18n
+    const I18N = {
+      en:{'nav.home':'Home','nav.buy':'Buy','nav.sell':'Sell','nav.valuation':'Valuation','nav.tools':'Tools',
+          'feat.title':'Featured Vehicles','feat.viewall':'View all','tools.title':'Tools & Services'},
+      hi:{'nav.home':'होम','nav.buy':'खरीदें','nav.sell':'बेचें','nav.valuation':'वैल्यूएशन','nav.tools':'टूल्स',
+          'feat.title':'फ़ीचर्ड वाहन','feat.viewall':'सभी देखें','tools.title':'टूल्स और सेवाएँ'},
+      mr:{'nav.home':'मुखपृष्ठ','nav.buy':'खरेदी','nav.sell':'विक्री','nav.valuation':'मूल्यांकन','nav.tools':'साधने',
+          'feat.title':'फीचर्ड वाहने','feat.viewall':'सर्व पाहा','tools.title':'टूल्स आणि सेवा'}
+    };
+    const langSeg=document.getElementById('langSeg');
+    function applyLang(l){
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const k=el.getAttribute('data-i18n'); if(I18N[l] && I18N[l][k]) el.textContent = I18N[l][k];
+      });
+      [...langSeg.querySelectorAll('button')].forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
+      localStorage.setItem('sw.lang', l);
+    }
+    applyLang(localStorage.getItem('sw.lang')||'en');
+    langSeg.addEventListener('click', e=>{ if(e.target.tagName==='BUTTON') applyLang(e.target.dataset.lang); });
+
+    // Supabase Featured (with FULL description + buttons)
+    const SUPABASE_URL='https://wbjwvxckbfkutqqbgupq.supabase.co';
+    const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
+    const BUCKET='vehicals';
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const rowEl = document.getElementById('vehiclesRow');
+    const featuredRow = document.getElementById('featuredRow');
+    const purl = (path)=> sb.storage.from(BUCKET).getPublicUrl(path).data?.publicUrl || '';
 
-    function publicUrl(path){
-      const { data } = sb.storage.from(BUCKET).getPublicUrl(path);
-      return data?.publicUrl || `${SUPABASE_URL}/storage/v1/object/public/${path}`;
+    async function listSlugs(){
+      const {data}=await sb.storage.from(BUCKET).list('featured',{limit:200});
+      return (data||[]).filter(x=>x && !(/\./.test(x.name))).map(x=>x.name);
+    }
+    async function readMeta(slug){
+      const {data}=await sb.storage.from(BUCKET).download(`featured/${slug}/meta.json`);
+      if(!data) return null; try{ return JSON.parse(await data.text()); }catch{ return null; }
+    }
+    async function firstImg(slug){
+      const {data}=await sb.storage.from(BUCKET).list(`featured/${slug}`,{limit:100});
+      const f=(data||[]).find(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name));
+      return f? purl(`featured/${slug}/${f.name}`) : '';
     }
 
-    async function fetchMeta(vid){
-      const { data, error } = await sb.storage.from(BUCKET).download(`featured/${vid}/meta.json`);
-      if(error) return null;
-      try { return JSON.parse(await data.text()); } catch { return null; }
-    }
-
-    async function fetchFirstImage(vid){
-      const { data, error } = await sb.storage.from(BUCKET).list(`featured/${vid}`, { limit: 100 });
-      if(error || !data) return null;
-      const img = data.find(o => /\.(jpg|jpeg|png|webp)$/i.test(o.name));
-      return img ? publicUrl(`featured/${vid}/${img.name}`) : null;
-    }
-
-    function vehicleCard(item, imgUrl){
-      const card = document.createElement('div');
-      card.className = 'vehicle';
-      card.innerHTML = `
-        <div class="media">
-          <img src="${imgUrl || 'https://via.placeholder.com/600x400?text=No+Image'}" alt="${item.title||''}">
-          <span class="tag">Featured</span>
-        </div>
-        <div class="body">
-          <div class="title">${item.title||''}</div>
-          <div class="meta"><span>${(item.brand||'').toUpperCase()}</span><span>${item.price||''}</span></div>
-          <div class="meta"><span>${item.year||''}</span><span>${item.km||''} km</span></div>
-          <div class="desc">${item.description||''}</div>
-          <div class="actions">
-            <button class="btn wish">♡ Wishlist</button>
-            <a class="btn btn-primary" href="https://wa.me/919822292955?text=Inquiry:%20${encodeURIComponent(item.title||'Vehicle')}" target="_blank" rel="noopener">Inquiry Now</a>
+    function cardHTML(m, img){
+      const brand=(m.brand||'').toUpperCase();
+      const metaLine=[m.year||'', m.km?`${m.km} km`:'' ].filter(Boolean).join(' • ');
+      const desc=m.description||''; // FULL description
+      const title=m.title || m.slug || 'Vehicle';
+      const wa = `https://wa.me/919822292955?text=${encodeURIComponent('Inquiry: '+title)}`;
+      return `
+        <article class="card veh">
+          <div class="media">
+            ${img ? `<img src="${img}" alt="${title}">` : `<div style="height:220px;display:grid;place-items:center;color:#9aa3b2">No image</div>`}
+            <span class="tag">Featured</span>
           </div>
-        </div>`;
-      return card;
+          <div class="body">
+            <div class="title">${title}</div>
+            <div class="meta"><span>${brand}</span><strong>${m.price||''}</strong></div>
+            <div class="meta"><span>${metaLine}</span><span>${(m.type||'').toUpperCase()}</span></div>
+            ${desc ? `<p class="desc">${desc}</p>` : ``}
+            <div class="actions">
+              <a class="btn wish" href="wishlist.html#${m.slug||''}">♡ Wishlist</a>
+              <a class="btn inq" target="_blank" rel="noopener" href="${wa}">Inquiry Now</a>
+            </div>
+          </div>
+        </article>`;
     }
 
     async function loadFeatured(){
-      rowEl.innerHTML = '<div class="card">Loading…</div>';
-      const { data, error } = await sb.storage.from(BUCKET).list('featured', { limit: 200 });
-      if(error){ rowEl.innerHTML = '<div class="card">Failed to list</div>'; return; }
-
-      const folders = (data||[]).filter(d => d && !(/\./.test(d.name)));
-      if(!folders.length){ rowEl.innerHTML = '<div class="card">No items yet</div>'; return; }
-
-      rowEl.innerHTML = '';
-      for(const f of folders){
-        const meta = await fetchMeta(f.name) || { title: f.name };
-        const img = await fetchFirstImage(f.name);
-        rowEl.appendChild( vehicleCard(meta, img) );
+      featuredRow.innerHTML='<div class="muted">Loading…</div>';
+      const slugs = await listSlugs();
+      if(!slugs.length){ featuredRow.innerHTML='<div class="muted">No items yet</div>'; return; }
+      const entries=[];
+      for(const s of slugs){
+        const [meta,img]=await Promise.all([readMeta(s), firstImg(s)]);
+        if(meta) entries.push({meta:{...meta, slug:s}, img});
       }
+      // newest first if updatedAt exists
+      entries.sort((a,b)=> (b.meta.updatedAt||'').localeCompare(a.meta.updatedAt||''));
+      featuredRow.innerHTML = entries.map(x=>cardHTML(x.meta,x.img)).join('');
     }
-
     loadFeatured();
   </script>
 </body>
