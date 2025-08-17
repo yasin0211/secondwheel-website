@@ -1,329 +1,326 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Second Wheel – Trusted Vehicles, Smart Deals</title>
-<meta name="theme-color" content="#111827" />
+<meta name="theme-color" content="#0b0f17"/>
 <style>
   :root{
-    --bg:#0b0f17; --card:#121826; --muted:#9aa3b2; --text:#e5e7eb;
-    --brand:#f59e0b; --ok:#22c55e; --shadow:0 8px 28px rgba(0,0,0,.35);
+    --bg:#0b0f17; --panel:#0f1522; --card:#121826; --ink:#e5e7eb; --muted:#9aa3b2;
+    --line:rgba(255,255,255,.10); --brand:#f59e0b; --brand2:#f97316;
+    --ok:#22c55e; --err:#ef4444; --shadow:0 10px 30px rgba(0,0,0,.35);
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);
-       font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
   a{color:inherit;text-decoration:none}
   img{max-width:100%;display:block}
   .container{max-width:1160px;margin:0 auto;padding:16px}
-
-  /* Header / Brand */
-  header{position:sticky;top:0;z-index:30;background:rgba(11,15,23,.75);
-         backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
-  .head{display:flex;justify-content:space-between;align-items:center;gap:12px}
-  .brand{display:flex;gap:12px;align-items:center}
-  .brand img{width:clamp(42px,7vw,64px);height:clamp(42px,7vw,64px);border-radius:12px;object-fit:contain;background:#0e1522;box-shadow:var(--shadow)}
-  .brand h1{margin:0;font-weight:800;letter-spacing:.3px;font-size:clamp(18px,2.8vw,24px)}
-  .subtitle{margin:0;color:#cbd5e1;font-size:clamp(12px,2.2vw,14px)}
-  .toolbar{display:flex;gap:8px;align-items:center}
-  .seg{display:inline-flex;border:1px solid rgba(255,255,255,.12);border-radius:999px;overflow:hidden}
-  .seg button{border:0;background:transparent;padding:8px 10px;color:var(--text);cursor:pointer}
-  .seg button.active{background:rgba(255,255,255,.16)}
-  .iconbtn{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);
-           padding:8px 10px;border-radius:10px;cursor:pointer}
-
-  /* Quick actions row (under header, above featured) */
-  .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0 4px}
-  .vbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-        padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.1);
-        background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-        min-width:120px; font-weight:700}
-  .vbtn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
-
+  /* Header/Hero (look like your screenshot #2) */
+  header{position:sticky;top:0;z-index:50;background:rgba(11,15,23,.72);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:48px;height:48px;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);background:#09101c}
+  .brand h1{margin:0;font-size:18px;letter-spacing:.4px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+  .seg button{padding:8px 12px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+  .seg button.active{background:rgba(255,255,255,.14)}
+  .iconbtn{border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:12px;padding:8px 10px;cursor:pointer}
+  .hero-buttons{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px}
+  .cta{padding:14px;border-radius:16px;background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;text-align:center;font-weight:800;border:0}
+  .cta.ghost{background:rgba(255,255,255,.06);color:var(--ink);border:1px solid var(--line);font-weight:600}
   /* Sections */
-  .section-title{margin:18px 0 10px;font-size:20px}
-  .row{display:flex;gap:12px;overflow:auto;scroll-snap-type:x mandatory;padding:2px 2px 6px}
-  .row>*{scroll-snap-align:center}
-
-  /* Vehicle card */
-  .vehicle{min-width:300px;background:var(--card);border:1px solid rgba(255,255,255,.08);
-           border-radius:18px;box-shadow:var(--shadow)}
-  .media{position:relative}
-  .imgwrap{width:100%;height:clamp(200px,28vw,260px);overflow:hidden}
-  .imgwrap img{width:100%;height:100%;object-fit:cover;display:block}
-  .tag{position:absolute;top:10px;left:10px;background:var(--brand);color:#111;
-       padding:4px 8px;border-radius:999px;font-weight:700;font-size:12px}
+  h2{margin:0 0 10px}
+  .section{margin:18px 0}
+  /* Featured row */
+  .cards{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:720px){.cards{grid-template-columns:repeat(2,1fr)}}
+  @media(min-width:1020px){.cards{grid-template-columns:repeat(3,1fr)}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+  .media{position:relative;background:#0a111c}
+  .media img{width:100%;height:220px;object-fit:cover}
+  .tag{position:absolute;left:10px;top:10px;background:var(--brand);color:#111;font-weight:800;padding:4px 8px;border-radius:999px}
   .body{padding:12px}
-  .title{font-weight:800;font-size:16px;margin:0 0 2px}
-  .brandline{color:#cbd5e1;margin-bottom:4px}
-  .meta{display:flex;justify-content:space-between;color:#cbd5e1;font-weight:700;margin:6px 0 10px}
-  .desc{color:#d1d5db;white-space:pre-wrap}
-  .actions-inline{display:flex;gap:8px;margin-top:12px}
-  .btn-pill{padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.18);
-            background:rgba(255,255,255,.06)}
-  .btn-primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
-
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .title{font-weight:800;margin:4px 0}
+  .muted{color:var(--muted)}
+  .actions{display:flex;gap:10px;margin-top:10px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);border:0;color:#111;font-weight:800}
+  .btn.heart.active{border-color:transparent;background:rgba(34,197,94,.2);color:var(--ok)}
   /* Tools grid */
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  @media(min-width:720px){.grid{grid-template-columns:repeat(4,1fr)}}
-  .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px}
-
+  .toolgrid{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:720px){.toolgrid{grid-template-columns:repeat(2,1fr)}}
+  @media(min-width:1020px){.toolgrid{grid-template-columns:repeat(3,1fr)}}
+  .tool{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}
+  .tool h3{margin:2px 0 4px}
   /* Footer */
-  footer{border-top:1px solid rgba(255,255,255,.08);background:#0c121e;margin-top:26px}
+  footer{border-top:1px solid var(--line);background:#0c121e}
   footer .cols{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
   @media(min-width:720px){footer .cols{grid-template-columns:repeat(4,1fr)}}
-  footer a{display:block;padding:6px 0;color:#cbd5e1}
-
-  /* WhatsApp floating */
-  .whatsapp{position:fixed;right:16px;bottom:20px;z-index:40}
-  .wa{display:flex;align-items:center;gap:8px;background:#25D366;color:#111;
-      padding:12px 14px;border-radius:999px;font-weight:800;box-shadow:var(--shadow)}
-
+  footer a{display:block;color:#cbd5e1;padding:6px 0}
+  /* WhatsApp floater */
+  .wa{position:fixed;right:16px;bottom:18px;z-index:60}
+  .wa a{display:flex;align-items:center;gap:8px;background:#25D366;color:#111;padding:12px 16px;border-radius:999px;box-shadow:var(--shadow);font-weight:800}
   /* Toast */
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;
-         border:1px solid rgba(255,255,255,.08);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);
-         opacity:0;pointer-events:none;transition:opacity .3s}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
   .toast.show{opacity:1}
 </style>
 </head>
 <body>
-  <!-- HEADER -->
-  <header>
-    <div class="container head">
-      <div class="brand">
-        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel Logo">
-        <div>
-          <h1>SECOND WHEEL</h1>
-          <p class="subtitle">Trusted Vehicles, Smart Deals</p>
-        </div>
+<header>
+  <div class="container top">
+    <div class="brand">
+      <div class="logo">
+        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel logo" width="48" height="48" loading="eager">
       </div>
-      <div class="toolbar">
-        <div id="langSeg" class="seg" aria-label="Language">
-          <button data-lang="en" class="active">EN</button>
-          <button data-lang="hi">HI</button>
-          <button data-lang="mr">MR</button>
-        </div>
-        <button id="darkToggle" class="iconbtn" aria-label="Toggle dark">🌙</button>
+      <div>
+        <h1>SECOND WHEEL</h1>
+        <div class="muted" data-i18n="tagline">Trusted Vehicles, Smart Deals</div>
       </div>
     </div>
-
-    <!-- QUICK ACTION BUTTONS (under header) -->
-    <div class="container actions" aria-label="Quick actions">
-      <a class="vbtn primary" href="buy.html" data-i18n="nav.buy">Buy</a>
-      <a class="vbtn" href="sell.html" data-i18n="nav.sell">Sell</a>
-      <a class="vbtn" href="valuation.html" data-i18n="nav.valuation">Valuation</a>
-      <a class="vbtn" href="tools.html" data-i18n="nav.tools">Tools</a>
-    </div>
-  </header>
-
-  <!-- MAIN -->
-  <main class="container">
-    <!-- FEATURED -->
-    <h3 class="section-title" data-i18n="feat.title">Featured Vehicles</h3>
-    <div id="vehiclesRow" class="row" aria-live="polite"></div>
-
-    <!-- TOOLS -->
-    <h3 class="section-title" data-i18n="tools.title">Tools & Services</h3>
-    <div class="grid">
-      <a class="card" href="insurance.html">
-        <h4 data-i18n="tools.insurance">Insurance</h4>
-        <div class="muted" data-i18n="tools.insurance_sub">Buy / Renew</div>
-      </a>
-      <a class="card" href="tools.html#fastag">
-        <h4 data-i18n="tools.fastag">FASTag</h4>
-        <div class="muted" data-i18n="tools.fastag_sub">Recharge or Buy</div>
-      </a>
-      <a class="card" href="valuation.html">
-        <h4 data-i18n="tools.valuation">Valuation</h4>
-        <div class="muted" data-i18n="tools.valuation_sub">Instant estimate</div>
-      </a>
-      <a class="card" href="https://hsrpmhzone2.in/" target="_blank" rel="noopener">
-        <h4 data-i18n="tools.hsrp">HSRP Plate</h4>
-        <div class="muted" data-i18n="tools.hsrp_sub">Official portal</div>
-      </a>
-      <a class="card" href="https://mahatrafficechallan.gov.in/" target="_blank" rel="noopener">
-        <h4 data-i18n="tools.challan">Challan Payment</h4>
-        <div class="muted" data-i18n="tools.challan_sub">Maharashtra</div>
-      </a>
-    </div>
-  </main>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="container">
-      <div class="cols" style="padding:20px 0 8px">
-        <div>
-          <h3>Second Wheel</h3>
-          <p class="muted">Trusted Vehicles, Smart Deals</p>
-        </div>
-        <div>
-          <h4>Company</h4>
-          <a href="about.html">About Us</a>
-          <a href="contact.html">Contact Us</a>
-        </div>
-        <div>
-          <h4>Legal</h4>
-          <a href="terms.html">Terms & Conditions</a>
-          <a href="privacy.html">Privacy Policy</a>
-          <a href="disclaimer.html">Disclaimer</a>
-        </div>
-        <div>
-          <h4>Follow</h4>
-          <a href="#">Instagram</a>
-          <a href="#">Facebook</a>
-        </div>
+    <div class="row">
+      <div id="langSeg" class="seg" aria-label="Language">
+        <button data-lang="en" class="active">EN</button>
+        <button data-lang="hi">HI</button>
+        <button data-lang="mr">MR</button>
       </div>
-      <div class="muted" style="padding:8px 0 24px">© <span id="yr"></span> Second Wheel – All rights reserved.</div>
+      <button id="darkBtn" class="iconbtn" title="Toggle dark">🌙</button>
     </div>
-  </footer>
-
-  <!-- WhatsApp -->
-  <div class="whatsapp">
-    <a class="wa" href="https://wa.me/919822292955" target="_blank" rel="noopener">WhatsApp</a>
   </div>
+</header>
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- HERO buttons under the logo -->
+<section class="container" style="margin-top:8px">
+  <div class="hero-buttons">
+    <a class="cta" href="buy.html" data-i18n="btn.buy">Buy</a>
+    <a class="cta ghost" href="sell.html" data-i18n="btn.sell">Sell</a>
+    <a class="cta ghost" href="valuation.html" data-i18n="btn.valuation">Valuation</a>
+    <a class="cta ghost" href="tools.html" data-i18n="btn.tools">Tools</a>
+  </div>
+</section>
 
-  <script>
-  // ===== i18n strings =====
+<!-- FEATURED -->
+<main class="container">
+  <section class="section" aria-labelledby="featTitle">
+    <h2 id="featTitle" data-i18n="featured.title">Featured Vehicles</h2>
+    <div id="cards" class="cards" aria-live="polite"></div>
+  </section>
+
+  <!-- TOOLS & SERVICES -->
+  <section class="section" aria-labelledby="toolsTitle">
+    <h2 id="toolsTitle" data-i18n="tools.title">Tools & Services</h2>
+    <div class="toolgrid">
+      <a class="tool" href="insurance.html">
+        <h3 data-i18n="tools.ins">Insurance</h3><div class="muted" data-i18n="tools.ins.sub">Buy / Renew</div>
+      </a>
+      <a class="tool" href="tools.html#fastag">
+        <h3>FASTag</h3><div class="muted" data-i18n="tools.fastag.sub">Recharge or Buy</div>
+      </a>
+      <a class="tool" href="valuation.html">
+        <h3 data-i18n="btn.valuation">Valuation</h3><div class="muted" data-i18n="tools.val.sub">Instant estimate</div>
+      </a>
+      <a class="tool" href="https://hsrpmhzone2.in/" target="_blank" rel="noopener">
+        <h3>HSRP Plate</h3><div class="muted">Official portal</div>
+      </a>
+      <a class="tool" href="https://mahatrafficechallan.gov.in/" target="_blank" rel="noopener">
+        <h3>Challan Payment</h3><div class="muted">Maharashtra</div>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- WHATSAPP -->
+<div class="wa"><a href="https://wa.me/919822292955" target="_blank" rel="noopener">WhatsApp</a></div>
+<div id="toast" class="toast">Saved!</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="cols" style="padding:20px 0 8px">
+      <div>
+        <h3>Second Wheel</h3>
+        <p class="muted" data-i18n="tagline">Trusted Vehicles, Smart Deals</p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact Us</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="terms.html">Terms & Conditions</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="disclaimer.html">Disclaimer</a>
+      </div>
+      <div>
+        <h4>Follow</h4>
+        <a href="#">Instagram</a>
+        <a href="#">Facebook</a>
+      </div>
+    </div>
+    <div class="muted" style="padding:8px 0 22px">© <span id="yr"></span> Second Wheel – All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ---------------- CONFIG ----------------
+  const SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
+  const BUCKET = 'vehicals';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // --------------- i18n -------------------
   const I18N = {
-    en:{
-      'nav.buy':'Buy','nav.sell':'Sell','nav.valuation':'Valuation','nav.tools':'Tools',
-      'feat.title':'Featured Vehicles','tools.title':'Tools & Services',
-      'tools.insurance':'Insurance','tools.insurance_sub':'Buy / Renew',
-      'tools.fastag':'FASTag','tools.fastag_sub':'Recharge or Buy',
-      'tools.valuation':'Valuation','tools.valuation_sub':'Instant estimate',
-      'tools.hsrp':'HSRP Plate','tools.hsrp_sub':'Official portal',
-      'tools.challan':'Challan Payment','tools.challan_sub':'Maharashtra',
-      'ui.featured':'Featured','ui.wishlist.add':'♡ Wishlist','ui.wishlist.added':'♥ Wishlist','ui.enquire':'Enquire Now'
-    },
-    hi:{
-      'nav.buy':'खरीदें','nav.sell':'बेचें','nav.valuation':'वैल्यूएशन','nav.tools':'टूल्स',
-      'feat.title':'फ़ीचर्ड वाहन','tools.title':'टूल्स व सेवाएँ',
-      'tools.insurance':'इंश्योरेंस','tools.insurance_sub':'खरीदें / रिन्यू',
-      'tools.fastag':'फ़ास्टैग','tools.fastag_sub':'रीचार्ज या खरीदें',
-      'tools.valuation':'वैल्यूएशन','tools.valuation_sub':'तुरंत अनुमान',
-      'tools.hsrp':'HSRP प्लेट','tools.hsrp_sub':'ऑफिशियल पोर्टल',
-      'tools.challan':'चलान भुगतान','tools.challan_sub':'महाराष्ट्र',
-      'ui.featured':'फ़ीचर्ड','ui.wishlist.add':'♡ विशलिस्ट','ui.wishlist.added':'♥ विशलिस्ट','ui.enquire':'इन्क्वायर करें'
-    },
-    mr:{
-      'nav.buy':'खरेदी','nav.sell':'विक्री','nav.valuation':'मूल्यांकन','nav.tools':'साधने',
-      'feat.title':'फीचर्ड वाहने','tools.title':'टूल्स व सेवा',
-      'tools.insurance':'विमा','tools.insurance_sub':'खरेदी / नूतनीकरण',
-      'tools.fastag':'FASTag','tools.fastag_sub':'रिचार्ज/खरेदी',
-      'tools.valuation':'मूल्यांकन','tools.valuation_sub':'तात्काळ अंदाज',
-      'tools.hsrp':'HSRP प्लेट','tools.hsrp_sub':'अधिकृत पोर्टल',
-      'tools.challan':'चलन भरणा','tools.challan_sub':'महाराष्ट्र',
-      'ui.featured':'फीचर्ड','ui.wishlist.add':'♡ विशलिस्ट','ui.wishlist.added':'♥ विशलिस्ट','ui.enquire':'चौकशी करा'
-    }
+    en:{ 'tagline':'Trusted Vehicles, Smart Deals',
+         'btn.buy':'Buy','btn.sell':'Sell','btn.valuation':'Valuation','btn.tools':'Tools',
+         'featured.title':'Featured Vehicles',
+         'tools.title':'Tools & Services','tools.ins':'Insurance','tools.ins.sub':'Buy / Renew',
+         'tools.fastag.sub':'Recharge or Buy','tools.val.sub':'Instant estimate',
+         'card.featured':'Featured','card.km':'km','card.wh':'Wishlist','card.enq':'Enquire Now'
+       },
+    hi:{ 'tagline':'ट्रस्टेड व्हीकल्स, स्मार्ट डील्स',
+         'btn.buy':'खरीदें','btn.sell':'बेचें','btn.valuation':'वैल्यूएशन','btn.tools':'टूल्स',
+         'featured.title':'फ़ीचर्ड वाहन',
+         'tools.title':'टूल्स और सेवाएँ','tools.ins':'बीमा','tools.ins.sub':'खरीदें / रिन्यू',
+         'tools.fastag.sub':'रिचार्ज या खरीदें','tools.val.sub':'तुरंत अनुमान',
+         'card.featured':'फ़ीचर्ड','card.km':'किमी','card.wh':'विशलिस्ट','card.enq':'इन्क्वायरी'
+       },
+    mr:{ 'tagline':'विश्वसनीय व्हेइकल्स, स्मार्ट डील्स',
+         'btn.buy':'खरेदी','btn.sell':'विक्री','btn.valuation':'मूल्यांकन','btn.tools':'टूल्स',
+         'featured.title':'फीचर्ड वाहने',
+         'tools.title':'टूल्स आणि सेवा','tools.ins':'इन्शुरन्स','tools.ins.sub':'खरेदी / नूतनीकरण',
+         'tools.fastag.sub':'रिचार्ज किंवा खरेदी','tools.val.sub':'तत्काळ अंदाज',
+         'card.featured':'फीचर्ड','card.km':'कि.मी.','card.wh':'विशलिस्ट','card.enq':'इन्क्वायरी'
+       }
   };
-  const langSeg=document.getElementById('langSeg');
-  function t(k){ const l=localStorage.getItem('lang')||'en'; return (I18N[l]&&I18N[l][k])||(I18N.en[k]||k); }
-  function applyLang(l){
-    localStorage.setItem('lang',l);
+  const langSeg = document.getElementById('langSeg');
+  function setLang(l){
+    const dict = I18N[l] || I18N.en;
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const k = el.getAttribute('data-i18n');
+      if(dict[k]) el.textContent = dict[k];
+    });
     [...langSeg.querySelectorAll('button')].forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
-    document.querySelectorAll('[data-i18n]').forEach(el=>{ const v=t(el.dataset.i18n); if(v) el.textContent=v; });
-    toast('Language: '+l.toUpperCase());
+    localStorage.setItem('lang', l);
   }
-  langSeg.addEventListener('click',e=>{ if(e.target.tagName==='BUTTON') applyLang(e.target.dataset.lang); });
+  langSeg.addEventListener('click', e=>{
+    if(e.target.tagName==='BUTTON'){ setLang(e.target.dataset.lang); }
+  });
+  setLang(localStorage.getItem('lang')||'en');
 
-  // Dark toggle
-  const DKEY='secondwheel.dark', darkBtn=document.getElementById('darkToggle');
-  function applyDark(v){ document.documentElement.style.colorScheme=v?'dark':'light';
-    localStorage.setItem(DKEY,v?'1':'0'); darkBtn.textContent=v?'🌙':'☀️';}
-  darkBtn.addEventListener('click',()=>applyDark(!(localStorage.getItem(DKEY)==='1')));
-  applyDark(localStorage.getItem(DKEY)==='1');
-
-  // Footer year
-  document.getElementById('yr').textContent=new Date().getFullYear();
-
-  // Toast
-  function toast(msg){ let t=document.getElementById('toast'); if(!t){t=document.createElement('div');t.id='toast';t.className='toast';document.body.appendChild(t);}
-    t.textContent=msg;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),1500); }
-
-  // ===== Supabase: Load Featured =====
-  const SUPABASE_URL='https://wbjwvxckbfkutqqbgupq.supabase.co';
-  const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-  const BUCKET='vehicals';
-  const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-
-  const vehiclesRow=document.getElementById('vehiclesRow');
-
-  function pub(path){ const {data}=sb.storage.from(BUCKET).getPublicUrl(path); return data?.publicUrl || `${SUPABASE_URL}/storage/v1/object/public/${path}`; }
-  function wishKey(slug){ return 'wish:'+slug; }
-
-  async function listFolders(root){
-    const {data,error}=await sb.storage.from(BUCKET).list(root,{limit:1000});
-    if(error) return [];
-    return (data||[]).filter(x=>!x.name.includes('.')).map(x=>x.name);
+  // --------------- Dark mode --------------
+  const darkBtn = document.getElementById('darkBtn');
+  function applyDark(v){
+    document.documentElement.style.colorScheme = v?'dark':'light';
+    localStorage.setItem('dw.dark', v?'1':'0');
+    darkBtn.textContent = v?'🌙':'☀️';
   }
-  async function readMeta(path){
-    const {data,error}=await sb.storage.from(BUCKET).download(path);
+  darkBtn.addEventListener('click', ()=> applyDark(!(localStorage.getItem('dw.dark')==='1')));
+  applyDark(localStorage.getItem('dw.dark')==='1');
+
+  // --------------- Utilities --------------
+  const $ = sel => document.querySelector(sel);
+  const cards = $('#cards');
+  const toast = (t)=>{ const el=$('#toast'); el.textContent=t; el.classList.add('show'); clearTimeout(window.__t); window.__t=setTimeout(()=>el.classList.remove('show'),1500); };
+  $('#yr').textContent = new Date().getFullYear();
+
+  function publicUrl(path){
+    const { data } = sb.storage.from(BUCKET).getPublicUrl(path);
+    return data?.publicUrl || `${SUPABASE_URL}/storage/v1/object/public/${path}`;
+  }
+
+  // --------------- Featured loader --------
+  async function listFeaturedFolders(){
+    // list everything under "featured/"
+    const { data, error } = await sb.storage.from(BUCKET).list('featured', { limit: 200 });
+    if(error){ console.error(error); return []; }
+    return (data||[]).filter(x=>x && !x.name.includes('.'));
+  }
+  async function readMeta(vid){
+    const { data, error } = await sb.storage.from(BUCKET).download(`featured/${vid}/meta.json`);
     if(error) return null;
-    try{ return JSON.parse(await data.text()); }catch{ return null; }
+    try{ return JSON.parse(await data.text()); }catch(e){ return null; }
   }
-  async function listImages(dir){
-    const {data,error}=await sb.storage.from(BUCKET).list(dir,{limit:1000});
-    if(error) return [];
-    return (data||[]).filter(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name)).map(o=>pub(`${dir}/${o.name}`));
+  async function firstImage(vid){
+    const { data, error } = await sb.storage.from(BUCKET).list(`featured/${vid}`, { limit:100 });
+    if(error) return null;
+    const pic = (data||[]).find(o=>/\.(jpe?g|png|webp)$/i.test(o.name));
+    return pic ? publicUrl(`featured/${vid}/${pic.name}`) : null;
   }
 
-  async function loadFeatured(){
-    vehiclesRow.innerHTML='<div class="muted">Loading…</div>';
-    // folders directly under bucket (each is a vehicle):  vehicals/<slug>/{meta.json, images…}
-    const folders=await listFolders('');
-    const items=[];
+  function wishKey(vid){ return `sw.wish.${vid}`; }
+  function isWished(vid){ return localStorage.getItem(wishKey(vid))==='1'; }
+  function toggleWish(btn,vid){
+    const now = !isWished(vid);
+    localStorage.setItem(wishKey(vid), now?'1':'0');
+    btn.classList.toggle('active', now);
+    toast(now?'Added to wishlist':'Removed from wishlist');
+  }
+
+  function enquiryLink(meta){
+    const msg = encodeURIComponent(
+      `Hello, I’m interested in this vehicle:\n`+
+      `${meta?.title||meta?.model||'Vehicle'}\n`+
+      `Brand: ${meta?.brand||''}\n`+
+      `Year: ${meta?.year||''} | KM: ${meta?.km||''}\n`+
+      `Price: ${meta?.price||''}\n`+
+      `Type: ${meta?.type||''}`
+    );
+    return `https://wa.me/919822292955?text=${msg}`;
+  }
+
+  async function renderFeatured(){
+    cards.innerHTML = '<div class="muted">Loading…</div>';
+    const folders = await listFeaturedFolders();
+    if(!folders.length){ cards.innerHTML = '<div class="muted">No items yet</div>'; return; }
+
+    const items = [];
     for(const f of folders){
-      const meta=await readMeta(`${f}/meta.json`);
-      if(!meta) continue;
-      const imgs=await listImages(f);
-      items.push({slug:f, imgs, ...meta});
+      const vid = f.name;
+      const meta = await readMeta(vid) || { title: vid, brand:'', price:'', year:'', km:'', type:'car', description:'' };
+      const img = await firstImage(vid);
+      items.push({ vid, meta, img });
     }
-    if(!items.length){ vehiclesRow.innerHTML='<div class="muted">No items yet</div>'; return; }
-    vehiclesRow.innerHTML='';
-    items.sort((a,b)=> (b.updatedAt||'').localeCompare(a.updatedAt||''));
-    for(const it of items){
-      const card=document.createElement('article'); card.className='vehicle';
-      const img = it.imgs?.[0] || '';
-      const price = it.price || '';
-      const title = it.title || it.slug || '';
-      const yearKm = [it.year||'', it.km?`${it.km} km`:'' ].filter(Boolean).join(' • ');
-      const brand = (it.brand||'').toUpperCase();
-      const desc = it.description || '';
-      card.innerHTML = `
+
+    // newest first by updatedAt if present
+    items.sort((a,b)=> (b.meta.updatedAt||'').localeCompare(a.meta.updatedAt||''));
+
+    cards.innerHTML = '';
+    for(const {vid, meta, img} of items){
+      const c = document.createElement('article');
+      c.className = 'card';
+
+      c.innerHTML = `
         <div class="media">
-          <div class="imgwrap"><img src="${img}" alt="${title}" loading="lazy"></div>
-          <span class="tag">${t('ui.featured')}</span>
+          ${img? `<img loading="lazy" src="${img}" alt="${meta.title||'Vehicle'}">` : `<div style="height:220px;display:grid;place-items:center" class="muted">No image</div>`}
+          <span class="tag" data-i18n="card.featured">${I18N[localStorage.getItem('lang')||'en']['card.featured']}</span>
         </div>
         <div class="body">
-          <div class="meta"><span class="title">${title}</span><span>${price}</span></div>
-          <div class="brandline">${brand}</div>
-          <div class="brandline">${yearKm}</div>
-          <div class="desc">${desc}</div>
-          <div class="actions-inline">
-            <button class="btn-pill" data-wish="${it.slug}">${t('ui.wishlist.add')}</button>
-            <a class="btn-pill btn-primary" target="_blank"
-               href="https://wa.me/919822292955?text=${encodeURIComponent('Inquiry: '+title+' | Price: '+price)}">${t('ui.enquire')}</a>
+          <div class="row" style="justify-content:space-between">
+            <div>
+              <div class="title">${meta.title||''}</div>
+              <div class="muted" style="text-transform:uppercase;letter-spacing:.4px">${meta.brand||''}</div>
+              <div class="muted">${meta.year||''} • ${meta.km||''} ${I18N[localStorage.getItem('lang')||'en']['card.km']}</div>
+            </div>
+            <div style="font-weight:800">${meta.price||''}</div>
           </div>
-        </div>`;
-      const w=card.querySelector('[data-wish]');
-      if(localStorage.getItem(wishKey(it.slug))==='1'){ w.textContent=t('ui.wishlist.added'); }
-      w.addEventListener('click',()=>{
-        const key=wishKey(it.slug);
-        const cur=localStorage.getItem(key)==='1';
-        localStorage.setItem(key,cur?'0':'1');
-        w.textContent=t(cur?'ui.wishlist.add':'ui.wishlist.added');
-        toast(cur?'Removed from wishlist':'Added to wishlist');
-      });
-      vehiclesRow.appendChild(card);
+          <div style="margin-top:10px">${(meta.description||'').replace(/\n/g,'<br>')}</div>
+          <div class="actions">
+            <button class="btn heart ${isWished(vid)?'active':''}" aria-pressed="${isWished(vid)?'true':'false'}">❤️ <span data-i18n="card.wh">${I18N[localStorage.getItem('lang')||'en']['card.wh']}</span></button>
+            <a class="btn primary" href="${enquiryLink(meta)}" target="_blank" rel="noopener"><span data-i18n="card.enq">${I18N[localStorage.getItem('lang')||'en']['card.enq']}</span></a>
+          </div>
+        </div>
+      `;
+      const heart = c.querySelector('.heart');
+      heart.addEventListener('click', ()=> toggleWish(heart, vid));
+      cards.appendChild(c);
     }
   }
 
-  // init
-  applyLang(localStorage.getItem('lang')||'en');
-  loadFeatured();
-  </script>
+  renderFeatured();
+</script>
 </body>
 </html>
