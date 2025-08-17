@@ -4,271 +4,458 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Second Wheel — Admin</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
 <style>
-  :root{--bg:#0b0f17;--card:#121826;--ink:#e5e7eb;--muted:#9aa3b2;--brand:#f59e0b;--danger:#ef4444;--ok:#22c55e;--shadow:0 8px 28px rgba(0,0,0,.35)}
-  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 system-ui,Segoe UI,Roboto,Arial}
-  header{position:sticky;top:0;background:rgba(11,15,23,.7);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
-  .wrap{max-width:1200px;margin:0 auto;padding:14px}
-  h1{margin:0;font-size:18px}
-  .grid{display:grid;gap:14px}
-  @media(min-width:1000px){.grid-3{grid-template-columns:300px 1fr 380px}}
-  .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
-  label{display:block;color:var(--muted);margin:8px 0 4px}
-  input,select,textarea{width:100%;padding:10px 12px;background:#0f1522;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:var(--ink);outline:none}
+  :root{--bg:#0b0f17;--card:#121826;--muted:#9aa3b2;--ink:#e5e7eb;--line:rgba(255,255,255,.12);--brand:#f59e0b;--ok:#22c55e;--err:#ef4444;--shadow:0 8px 28px rgba(0,0,0,.35)}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
+  a{color:inherit;text-decoration:none}
+  header{position:sticky;top:0;z-index:20;background:rgba(11,15,23,.75);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav{max-width:1200px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;gap:10px;align-items:center}
+  .brand img{width:44px;height:44px;border-radius:10px;background:#fff}
+  .brand strong{letter-spacing:.4px}
+  .wrap{max-width:1200px;margin:0 auto;padding:16px;display:grid;gap:14px}
+  @media(min-width:1000px){.wrap{grid-template-columns:280px 1fr}}
+  .side{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:12px;position:sticky;top:74px;height:fit-content}
+  .side h3{margin:4px 0 10px}
+  .tabs{display:grid;gap:8px}
+  .tab{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.04);cursor:pointer;text-align:left}
+  .tab.active{background:linear-gradient(180deg, #f59e0b,#b45309);color:#111;border-color:transparent}
+  .main{display:grid;gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px}
+  .grid{display:grid;gap:10px}
+  @media(min-width:720px){.grid-2{grid-template-columns:1fr 1fr} .grid-3{grid-template-columns:1fr 1fr 1fr}}
+  label{display:block;color:var(--muted);margin:6px 0 4px}
+  input,select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0f1522;color:var(--ink);outline:none}
   textarea{min-height:110px;resize:vertical}
-  .row{display:flex;gap:10px;flex-wrap:wrap}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);cursor:pointer;background:transparent;color:var(--ink)}
-  .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);border-color:transparent;color:#111}
-  .btn.danger{background:linear-gradient(180deg,#ef4444,#991b1b);border-color:transparent;color:#fff}
-  .list{max-height:460px;overflow:auto;border:1px solid rgba(255,255,255,.08);border-radius:12px}
-  .item{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
+  .btn.danger{background:linear-gradient(180deg,#ef4444,#991b1b);color:#fff;border-color:transparent}
+  .help{color:var(--muted);font-size:12px}
+  .ok{color:var(--ok)} .err{color:var(--err)}
+  .list{max-height:480px;overflow:auto;border:1px solid var(--line);border-radius:12px}
+  .item{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);cursor:pointer}
   .item.active{background:rgba(255,255,255,.06)}
-  .thumbs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-  @media(min-width:700px){.thumbs{grid-template-columns:repeat(3,1fr)}}
-  .thumb{position:relative;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden}
-  .thumb img{width:100%;display:block}
-  .thumb .act{position:absolute;top:6px;right:6px;display:flex;gap:6px}
-  .muted{color:var(--muted)} .ok{color:var(--ok)} .err{color:#ff7070}
-  .bar{height:8px;width:0;background:#3b82f6;border-radius:8px}
-  .progress{height:8px;border-radius:8px;background:#0f1522;border:1px solid rgba(255,255,255,.12);overflow:hidden}
+  .thumbs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  @media(min-width:720px){.thumbs{grid-template-columns:repeat(4,1fr)}}
+  .thumb{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .thumb img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}
+  .thumb .action{position:absolute;top:6px;right:6px;display:flex;gap:6px}
+  .pill{padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12px}
+  .progress{height:8px;background:#0f1522;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+  .bar{height:100%;width:0;background:#3b82f6}
+  .muted{color:var(--muted)}
 </style>
 </head>
 <body>
-<header><div class="wrap"><h1>Second Wheel — Admin</h1></div></header>
-<main class="wrap grid grid-3">
-  <!-- Left: list -->
-  <section class="card">
-    <div class="row" style="justify-content:space-between;align-items:center">
-      <strong>Featured List</strong>
-      <button id="btnNew" class="btn">+ New</button>
+<header>
+  <div class="nav">
+    <div class="brand">
+      <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="logo">
+      <div><strong>Second Wheel — Admin</strong><div class="muted">Inventory & Featured Manager</div></div>
     </div>
-    <div id="list" class="list" style="margin-top:10px"></div>
-  </section>
+    <div class="muted">Bucket: <code>vehicals</code></div>
+  </div>
+</header>
 
-  <!-- Center: form -->
-  <section class="card">
-    <div class="row" style="justify-content:space-between;align-items:center">
-      <strong id="formTitle">Create new</strong>
-      <span class="muted">VID: <code id="vidShow">—</code></span>
+<main class="wrap">
+  <!-- LEFT: tabs -->
+  <aside class="side">
+    <h3>Sections</h3>
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-type="cars">🚗 Cars</button>
+      <button class="tab" data-type="bikes">🏍️ Bikes</button>
+      <button class="tab" data-type="scooters">🛵 Scooters</button>
+      <button class="tab" data-type="featured">⭐ Featured</button>
     </div>
-    <div class="row">
-      <div style="flex:1">
-        <label>Brand</label><input id="brand" placeholder="Hyundai">
-      </div>
-      <div style="flex:1">
-        <label>Title / Model</label><input id="title" placeholder="i10 Sportz 2008">
-      </div>
+    <div style="margin-top:10px" class="help">
+      <div>Car: max 20 images</div>
+      <div>Bike/Scooter: max 10 images</div>
     </div>
-    <div class="row">
-      <div style="flex:1"><label>Price</label><input id="price" placeholder="145000"></div>
-      <div style="width:120px"><label>Year</label><input id="year" type="number" min="1990" max="2099" placeholder="2008"></div>
-      <div style="width:140px"><label>KM</label><input id="km" placeholder="87000"></div>
-    </div>
-    <div class="row">
-      <div style="width:160px">
-        <label>Type</label>
-        <select id="vtype"><option value="car">car</option><option value="bike">bike</option><option value="scooter">scooter</option></select>
-      </div>
-      <div style="flex:1">
-        <label>Description</label>
-        <textarea id="desc" placeholder="all ok / single owner / ..."></textarea>
-      </div>
-    </div>
-    
-    <div class="row" style="margin-top:10px">
-      <button id="btnSave" class="btn primary">Save / Update</button>
-      <button id="btnDelete" class="btn danger">Delete Vehicle</button>
-    </div>
-    <div id="metaMsg" class="muted" style="margin-top:8px"></div>
-  </section>
+  </aside>
 
-  <!-- Right: gallery -->
-  <section class="card">
-    <strong>Gallery</strong>
-    <div class="row" style="margin-top:8px">
-      <input id="files" type="file" accept=".jpg,.jpeg,.png,.webp" multiple />
-      <button id="btnUpload" class="btn primary">Upload Images</button>
-    </div>
-    <div class="progress" style="margin:10px 0"><div id="bar" class="bar"></div></div>
-    <div id="upMsg" class="muted"></div>
-    <div id="thumbs" class="thumbs" style="margin-top:12px"></div>
+  <!-- RIGHT: main -->
+  <section class="main">
+    <!-- List -->
+    <section class="card">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h3 style="margin:0">Items</h3>
+        <div class="row">
+          <button class="btn" id="btnRefresh">Refresh</button>
+          <button class="btn danger" id="btnDeleteVehicle">Delete Vehicle</button>
+        </div>
+      </div>
+      <div id="list" class="list"></div>
+    </section>
+
+    <!-- Form -->
+    <section class="card">
+      <h3 id="formTitle" style="margin-top:0">Create / Edit</h3>
+      <div class="grid grid-3">
+        <div>
+          <label>Vehicle ID (auto)</label>
+          <input id="vid" placeholder="Auto generated" readonly>
+        </div>
+        <div>
+          <label>Slug (folder)</label>
+          <input id="slug" placeholder="swift-2018-vxi">
+        </div>
+        <div>
+          <label>Type</label>
+          <select id="vtype">
+            <option value="car">car</option>
+            <option value="bike">bike</option>
+            <option value="scooter">scooter</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div>
+          <label>Brand</label>
+          <input id="brand" placeholder="Maruti Suzuki">
+        </div>
+        <div>
+          <label>Title</label>
+          <input id="title" placeholder="Swift VXI 2018">
+        </div>
+        <div>
+          <label>Price</label>
+          <input id="price" placeholder="₹4.10L">
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div>
+          <label>Year</label>
+          <input id="year" type="number" min="1990" max="2099" placeholder="2018">
+        </div>
+        <div>
+          <label>KM</label>
+          <input id="km" placeholder="45,000">
+        </div>
+        <div>
+          <label>Fuel / Owner / Location</label>
+          <input id="extra" placeholder="Petrol • Single • Satara">
+        </div>
+      </div>
+
+      <div>
+        <label>Description (full)</label>
+        <textarea id="desc" placeholder="Full details — variant, owners, service history, condition, extras…"></textarea>
+      </div>
+
+      <div class="row" style="margin-top:10px;align-items:center">
+        <label style="display:flex;align-items:center;gap:8px">
+          <input type="checkbox" id="chkFeatured">
+          <span>Mark as Featured (meta)</span>
+        </label>
+        <button class="btn" id="btnPublishFeatured" title="Copy images to featured/<slug>">Publish images to Featured</button>
+        <span class="help">First save meta; then copy images.</span>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <button class="btn primary" id="btnSaveMeta">💾 Save / Update</button>
+        <span id="metaMsg" class="muted"></span>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="card">
+      <h3 style="margin-top:0">Gallery</h3>
+      <div class="row" style="align-items:center">
+        <input id="files" type="file" accept=".jpg,.jpeg,.png,.webp" multiple>
+        <button class="btn primary" id="btnUpload">⬆ Upload</button>
+        <span id="limitMsg" class="help"></span>
+      </div>
+      <div class="progress" style="margin-top:10px"><div id="bar" class="bar"></div></div>
+      <div id="upMsg" class="muted" style="margin-top:6px"></div>
+      <div id="thumbs" class="thumbs" style="margin-top:10px"></div>
+    </section>
   </section>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // ------- Supabase config (तुझंच प्रोजेक्ट) -------
-  const SUPABASE_URL = "https://wbjwvxckbfkutqqbgupq.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
-  const STORAGE_BUCKET = "vehicals";
+  // ---- Supabase Config ----
+  const SUPABASE_URL='https://wbjwvxckbfkutqqbgupq.supabase.co';
+  const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
+  const BUCKET='vehicals';
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // ------- Elements -------
-  const listEl=document.getElementById('list');
-  const btnNew=document.getElementById('btnNew');
-  const btnSave=document.getElementById('btnSave');
-  const btnDelete=document.getElementById('btnDelete');
-  const files=document.getElementById('files');
-  const btnUpload=document.getElementById('btnUpload');
-  const bar=document.getElementById('bar');
-  const upMsg=document.getElementById('upMsg');
-  const thumbs=document.getElementById('thumbs');
-  const metaMsg=document.getElementById('metaMsg');
-  const vidShow=document.getElementById('vidShow');
-  const formTitle=document.getElementById('formTitle');
+  // ---- Elements ----
+  const tabs = document.getElementById('tabs');
+  const listEl = document.getElementById('list');
+  const btnRefresh = document.getElementById('btnRefresh');
+  const btnDeleteVehicle = document.getElementById('btnDeleteVehicle');
 
-  const brand=document.getElementById('brand');
-  const title=document.getElementById('title');
-  const price=document.getElementById('price');
-  const year=document.getElementById('year');
-  const km=document.getElementById('km');
-  const vtype=document.getElementById('vtype');
-  const desc=document.getElementById('desc');
+  const vid = document.getElementById('vid');
+  const slug = document.getElementById('slug');
+  const vtype = document.getElementById('vtype');
+  const brand = document.getElementById('brand');
+  const title = document.getElementById('title');
+  const price = document.getElementById('price');
+  const year = document.getElementById('year');
+  const km = document.getElementById('km');
+  const extra = document.getElementById('extra');
+  const desc = document.getElementById('desc');
+  const chkFeatured = document.getElementById('chkFeatured');
+  const btnPublishFeatured = document.getElementById('btnPublishFeatured');
 
-  // ------- State -------
-  let currentVID = null;
+  const files = document.getElementById('files');
+  const btnUpload = document.getElementById('btnUpload');
+  const bar = document.getElementById('bar');
+  const upMsg = document.getElementById('upMsg');
+  const thumbs = document.getElementById('thumbs');
+  const limitMsg = document.getElementById('limitMsg');
 
-  function toast(el,msg,type){ el.textContent=msg; el.classList.remove('ok','err'); if(type==='ok')el.classList.add('ok'); if(type==='err')el.classList.add('err'); }
+  const metaMsg = document.getElementById('metaMsg');
+  const formTitle = document.getElementById('formTitle');
 
-  function newVID(){ return 'v'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6); }
+  // ---- State ----
+  let currentTab = 'cars'; // cars | bikes | scooters | featured
+  let currentSlug = '';    // filled when selecting item
 
-  function formData(){
+  // ---- Helpers ----
+  function msg(el, text, type='info'){
+    el.textContent = text;
+    el.classList.remove('ok','err');
+    if(type==='ok') el.classList.add('ok');
+    if(type==='err') el.classList.add('err');
+  }
+  function genVehicleId(){
+    const t = Date.now().toString(36);
+    const r = Math.random().toString(36).slice(2,6);
+    return `veh_${t}_${r}`;
+  }
+  async function folderExists(path){
+    const { data, error } = await sb.storage.from(BUCKET).list(path, { limit: 1 });
+    if(error) return false;
+    return Array.isArray(data) && data.length>0;
+  }
+  function publicUrl(path){
+    const { data } = sb.storage.from(BUCKET).getPublicUrl(path);
+    return data?.publicUrl || '';
+  }
+  function maxImagesFor(type){
+    return (type==='car') ? 20 : 10;
+  }
+  function inventoryRoot(){
+    return `inventory/${currentTab}`; // cars/bikes/scooters
+  }
+  function metaObject(){
     return {
-      vid: currentVID,
-      brand: brand.value.trim(),
-      title: title.value.trim(),
-      price: price.value.trim(),
+      id: (vid.value || '').trim() || genVehicleId(),
+      slug: (slug.value||'').trim(),
+      brand: (brand.value||'').trim(),
+      title: (title.value||'').trim(),
+      price: (price.value||'').trim(),
       year: Number(year.value||'0'),
-      km: km.value.trim(),
-      type: vtype.value,
-      description: desc.value.trim(),
+      km: (km.value||'').trim(),
+      fuel: (extra.value||'').split('•')[0]?.trim() || '',
+      owner: (extra.value||'').split('•')[1]?.trim() || '',
+      location: (extra.value||'').split('•')[2]?.trim() || '',
+      type: (vtype.value||'car'),
+      description: (desc.value||'').trim(),
+      featured: !!chkFeatured.checked,
       updatedAt: new Date().toISOString()
     };
   }
-
-  function fillForm(meta){
-    brand.value=meta.brand||''; title.value=meta.title||''; price.value=meta.price||''; 
-    year.value=meta.year||''; km.value=meta.km||''; vtype.value=meta.type||'car'; desc.value=meta.description||'';
-    formTitle.textContent = 'Edit: '+(meta.title||meta.vid||currentVID);
-    vidShow.textContent = currentVID||'-';
+  function fillForm(m){
+    vid.value = m.id || '';
+    slug.value = m.slug || '';
+    brand.value = m.brand || '';
+    title.value = m.title || (m.slug||'');
+    price.value = m.price || '';
+    year.value = m.year || '';
+    km.value = m.km || '';
+    vtype.value = m.type || 'car';
+    const joined = [m.fuel||'', m.owner||'', m.location||''].filter(Boolean).join(' • ');
+    extra.value = joined;
+    desc.value = m.description || '';
+    chkFeatured.checked = !!m.featured;
+    formTitle.textContent = 'Edit: ' + (m.slug||'');
+  }
+  function clearForm(){
+    vid.value=slug.value=brand.value=title.value=price.value=km.value=extra.value=desc.value='';
+    year.value=''; vtype.value='car'; chkFeatured.checked=false; formTitle.textContent='Create / Edit';
+    currentSlug=''; thumbs.innerHTML=''; bar.style.width='0%';
   }
 
-  async function loadList(){
-    listEl.innerHTML='<div class="item">Loading…</div>';
-    const {data,error}=await sb.storage.from(STORAGE_BUCKET).list('featured',{limit:500});
-    if(error){ listEl.innerHTML='<div class="item">List failed</div>'; return; }
-    const folders=(data||[]).filter(x=>x && !/\./.test(x.name)).map(x=>x.name);
-    if(!folders.length){ listEl.innerHTML='<div class="item">No vehicles yet</div>'; return; }
-    const out=[];
-    for(const vid of folders){
-      const meta=await readMeta(vid);
-      out.push({vid, ...(meta||{})});
+  // ---- Tabs ----
+  tabs.addEventListener('click', (e)=>{
+    if(e.target.classList.contains('tab')){
+      document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+      e.target.classList.add('active');
+      currentTab = e.target.dataset.type;
+      clearForm();
+      listItems();
+      // Featured टॅबला gallery limit text hide
+      limitMsg.textContent = (currentTab==='cars') ? 'Max 20 images' :
+                             (currentTab==='bikes'||currentTab==='scooters') ? 'Max 10 images' : '';
     }
-    out.sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));
+  });
+
+  // ---- List ----
+  async function listItems(){
+    listEl.innerHTML = '<div class="item">Loading…</div>';
+    if(currentTab==='featured'){
+      // featured list: folders under featured/
+      const { data, error } = await sb.storage.from(BUCKET).list('featured', { limit: 1000 });
+      if(error){ listEl.innerHTML='<div class="item err">List failed</div>'; return; }
+      const folders = (data||[]).filter(x=>!x.name.includes('.'));
+      if(!folders.length){ listEl.innerHTML='<div class="item">No featured yet</div>'; return; }
+      listEl.innerHTML='';
+      for(const f of folders){
+        const meta = await readMeta(`featured/${f.name}/meta.json`);
+        const it = { slug:f.name, ...(meta||{}) };
+        const row = document.createElement('div');
+        row.className='item';
+        row.innerHTML = `<strong>${it.title||it.slug}</strong> <span class="pill">featured</span>
+                         <div class="muted">${it.brand||''} • ${it.price||''}</div>`;
+        row.onclick = ()=>{ fillForm(it); currentSlug=it.slug; vtype.value = it.type||'car'; loadGalleryFeatured(it.slug); };
+        listEl.appendChild(row);
+      }
+      return;
+    }
+    // inventory list
+    const root = inventoryRoot();
+    const { data, error } = await sb.storage.from(BUCKET).list(root, { limit: 1000 });
+    if(error){ listEl.innerHTML='<div class="item err">List failed</div>'; return; }
+    const folders = (data||[]).filter(x=>!x.name.includes('.'));
+    if(!folders.length){ listEl.innerHTML='<div class="item">No items in '+currentTab+'</div>'; return; }
+    // compose rows
     listEl.innerHTML='';
-    out.forEach(it=>{
-      const d=document.createElement('div');
-      d.className='item';
-      d.innerHTML=`<strong>${it.title||it.vid}</strong><div class="muted">${it.brand||''} • ${it.price||''} <span style="float:right">${it.type||''}</span></div>`;
-      d.onclick=()=>select(it.vid);
-      listEl.appendChild(d);
-    });
+    for(const f of folders){
+      const meta = await readMeta(`${root}/${f.name}/meta.json`);
+      const it = { slug:f.name, ...(meta||{}) };
+      const row = document.createElement('div');
+      row.className='item';
+      row.innerHTML = `<strong>${it.title||it.slug}</strong> <span class="pill">${(currentTab).slice(0,-1)}</span>
+                       <div class="muted">${it.brand||''} • ${it.price||''}</div>`;
+      row.onclick = ()=>{ fillForm(it); currentSlug=it.slug; loadGalleryInventory(currentSlug); };
+      listEl.appendChild(row);
+    }
   }
 
-  async function readMeta(vid){
-    const {data,error}=await sb.storage.from(STORAGE_BUCKET).download(`featured/${vid}/meta.json`);
+  async function readMeta(path){
+    const { data, error } = await sb.storage.from(BUCKET).download(path);
     if(error) return null;
-    try{ return JSON.parse(await data.text()); }catch(_){ return null; }
+    try{ return JSON.parse(await data.text()); }catch(e){ return null; }
   }
 
-  async function select(vid){
-    currentVID = vid; vidShow.textContent=vid; formTitle.textContent='Edit: '+vid; toast(metaMsg,'',null);
-    const meta = await readMeta(vid) || {vid};
-    fillForm(meta);
-    await loadGallery(vid);
-    // mark selected in list
-    listEl.querySelectorAll('.item').forEach(x=>x.classList.remove('active'));
-    [...listEl.children].find(li=>li.textContent.includes(meta.title||vid))?.classList.add('active');
+  // ---- Save / Update Meta ----
+  btnSaveMeta.addEventListener('click', async ()=>{
+    if(!slug.value){ msg(metaMsg,'Please fill slug','err'); return; }
+    if(!vtype.value){ msg(metaMsg,'Select type','err'); return; }
+    // ensure ID
+    if(!vid.value) vid.value = genVehicleId();
+
+    // slug clash in inventory
+    let finalSlug = slug.value.trim();
+    const invPath = `${inventoryRoot()}/${finalSlug}`;
+    if(await folderExists(invPath)){
+      const suffix = vid.value.split('_').pop().slice(-4);
+      finalSlug = `${finalSlug}-${suffix}`;
+      slug.value = finalSlug;
+    }
+
+    const meta = metaObject();
+    meta.slug = finalSlug;
+
+    // Save in inventory
+    const invMetaPath = `${inventoryRoot()}/${finalSlug}/meta.json`;
+    const blob = new Blob([JSON.stringify(meta,null,2)],{type:'application/json'});
+    const { error } = await sb.storage.from(BUCKET).upload(invMetaPath, blob, { upsert:true });
+    if(error){ msg(metaMsg,'Save failed: '+error.message,'err'); return; }
+
+    // If featured checked → also save featured meta
+    if(chkFeatured.checked){
+      const featBlob = new Blob([JSON.stringify(meta,null,2)],{type:'application/json'});
+      await sb.storage.from(BUCKET).upload(`featured/${finalSlug}/meta.json`, featBlob, { upsert:true });
+    }
+
+    currentSlug = finalSlug;
+    msg(metaMsg,'Saved ✔','ok');
+    listItems();
+  });
+
+  // ---- Delete Vehicle (inventory + featured if exists) ----
+  btnDeleteVehicle.addEventListener('click', async ()=>{
+    if(!currentSlug){ msg(metaMsg,'Select a vehicle to delete','err'); return; }
+    if(!confirm('Delete vehicle "'+currentSlug+'"? This cannot be undone.')) return;
+
+    // gather paths (inventory)
+    const invBase = `${inventoryRoot()}/${currentSlug}`;
+    const { data:filesInv } = await sb.storage.from(BUCKET).list(invBase, { limit: 1000 });
+    const invPaths = (filesInv||[]).map(o=>`${invBase}/${o.name}`);
+
+    if(invPaths.length){
+      const { error:err1 } = await sb.storage.from(BUCKET).remove(invPaths);
+      if(err1){ msg(metaMsg,'Delete inventory failed: '+err1.message,'err'); return; }
+    }
+    // delete folder meta (in case)
+    await sb.storage.from(BUCKET).remove([`${invBase}/meta.json`]).catch(()=>{});
+
+    // featured (optional)
+    const featBase = `featured/${currentSlug}`;
+    const { data:filesFeat } = await sb.storage.from(BUCKET).list(featBase, { limit: 1000 });
+    const featPaths = (filesFeat||[]).map(o=>`${featBase}/${o.name}`);
+    if(featPaths.length){
+      await sb.storage.from(BUCKET).remove(featPaths);
+    }
+
+    msg(metaMsg,'Vehicle deleted ✔','ok');
+    clearForm();
+    listItems();
+  });
+
+  // ---- Gallery (Inventory) ----
+  async function loadGalleryInventory(sl){
+    thumbs.innerHTML = '<div class="muted">Loading…</div>';
+    const base = `${inventoryRoot()}/${sl}`;
+    const { data, error } = await sb.storage.from(BUCKET).list(base, { limit: 1000 });
+    if(error){ thumbs.innerHTML = '<div class="err">Failed to load</div>'; return; }
+    const imgs = (data||[]).filter(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name));
+    renderThumbs(imgs.map(o=>({ name:o.name, path:`${base}/${o.name}` })));
+    // show limit
+    const max = maxImagesFor(vtype.value);
+    limitMsg.textContent = `Max ${max} images`;
   }
 
-  async function loadGallery(vid){
-    thumbs.innerHTML='<div class="muted">Loading images…</div>';
-    const {data,error}=await sb.storage.from(STORAGE_BUCKET).list(`featured/${vid}`,{limit:1000});
-    if(error){ thumbs.innerHTML='<div class="err">Failed to list</div>'; return; }
-    const imgs=(data||[]).filter(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name));
-    if(!imgs.length){ thumbs.innerHTML='<div class="muted">No images</div>'; return; }
-    thumbs.innerHTML='';
-    for(const im of imgs){
-      const path=`featured/${vid}/${im.name}`;
-      const {data:pub}=sb.storage.from(STORAGE_BUCKET).getPublicUrl(path);
-      const url=pub?.publicUrl || '#';
-      const c=document.createElement('div');
-      c.className='thumb';
-      c.innerHTML=`<img src="${url}"><div class="act"><button class="btn danger" data-p="${path}">🗑</button><a class="btn" target="_blank" href="${url}">🔍</a></div>`;
-      c.querySelector('button').onclick=async(e)=>{
+  async function loadGalleryFeatured(sl){
+    thumbs.innerHTML = '<div class="muted">Loading…</div>';
+    const base = `featured/${sl}`;
+    const { data, error } = await sb.storage.from(BUCKET).list(base, { limit: 1000 });
+    if(error){ thumbs.innerHTML = '<div class="err">Failed to load</div>'; return; }
+    const imgs = (data||[]).filter(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name));
+    renderThumbs(imgs.map(o=>({ name:o.name, path:`${base}/${o.name}` })));
+    limitMsg.textContent = '';
+  }
+
+  function renderThumbs(items){
+    if(!items.length){ thumbs.innerHTML = '<div class="muted">No images</div>'; return; }
+    thumbs.innerHTML = '';
+    for(const it of items){
+      const d = document.createElement('div');
+      d.className='thumb';
+      d.innerHTML = `
+        <img src="${publicUrl(it.path)}" alt="${it.name}">
+        <div class="action">
+          <button class="btn danger" data-del="${it.path}" title="Delete">🗑️</button>
+          <a class="btn" href="${publicUrl(it.path)}" target="_blank" title="Open">🔍</a>
+        </div>`;
+      d.querySelector('[data-del]').addEventListener('click', async ()=>{
         if(!confirm('Delete this image?')) return;
-        const {error}=await sb.storage.from(STORAGE_BUCKET).remove([path]);
+        const { error } = await sb.storage.from(BUCKET).remove([it.path]);
         if(error){ alert('Delete failed: '+error.message); return; }
-        loadGallery(vid);
-      };
-      thumbs.appendChild(c);
+        // reload
+        currentTab==='featured' ? loadGalleryFeatured(currentSlug) : loadGalleryInventory(currentSlug);
+      });
+      thumbs.appendChild(d);
     }
   }
 
-  btnNew.onclick=()=>{
-    currentVID = newVID();
-    vidShow.textContent = currentVID;
-    brand.value=title.value=price.value=km.value=desc.value=''; year.value=''; vtype.value='car';
-    formTitle.textContent='Create new';
-    thumbs.innerHTML='<div class="muted">Upload images and Save</div>';
-  };
-
-  btnSave.onclick=async()=>{
-    if(!currentVID){ btnNew.click(); }
-    const meta=formData();
-    const blob=new Blob([JSON.stringify(meta,null,2)],{type:'application/json'});
-    const {error}=await sb.storage.from(STORAGE_BUCKET).upload(`featured/${currentVID}/meta.json`,blob,{upsert:true});
-    if(error){ toast(metaMsg,'Save failed: '+error.message,'err'); return; }
-    toast(metaMsg,'Saved ✔','ok');
-    loadList();
-  };
-
-  btnDelete.onclick=async()=>{
-    if(!currentVID){ toast(metaMsg,'Nothing to delete','err'); return; }
-    if(!confirm('Delete this vehicle and all its images?')) return;
-    const base=`featured/${currentVID}`;
-    const {data,error}=await sb.storage.from(STORAGE_BUCKET).list(base,{limit:1000});
-    if(error){ toast(metaMsg,'List failed: '+error.message,'err'); return; }
-    const paths=(data||[]).map(o=>`${base}/${o.name}`);
-    if(paths.length){
-      const {error:err2}=await sb.storage.from(STORAGE_BUCKET).remove(paths);
-      if(err2){ toast(metaMsg,'Delete failed: '+err2.message,'err'); return; }
-    }
-    toast(metaMsg,'Vehicle deleted ✔','ok');
-    currentVID=null; vidShow.textContent='—'; formTitle.textContent='Create new';
-    btnNew.click(); loadList();
-  };
-
-  btnUpload.onclick=async()=>{
-    if(!currentVID){ btnNew.click(); toast(upMsg,'New VID created, now choose files and click Upload','ok'); return; }
-    const fileList=[...(files.files||[])];
-    if(!fileList.length){ toast(upMsg,'Choose image files','err'); return; }
-    bar.style.width='0%'; toast(upMsg,'Uploading…');
-    let done=0;
-    for(const f of fileList){
-      const safe=f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
-      const path=`featured/${currentVID}/${Date.now()}-${safe}`;
-      const {error}=await sb.storage.from(STORAGE_BUCKET).upload(path,f,{upsert:false});
-      if(error){ toast(upMsg,'Upload failed: '+error.message,'err'); return; }
-      done++; bar.style.width= Math.round((done/fileList.length)*100)+'%';
-    }
-    toast(upMsg,`Uploaded ${done}/${fileList.length} ✔`,'ok');
-    loadGallery(currentVID);
-  };
-
-  // init
-  btnNew.click();  // start with a fresh VID
-  loadList();
-</script>
-</body>
-</html>
+  // ---- Upload (limit aware) ----
+  btnUpload.addEventListener('click', async ()=>{
