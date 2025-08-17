@@ -24,20 +24,15 @@
          backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
   .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px}
   .brand{display:flex;gap:12px;align-items:center}
-  .brand img{width:clamp(42px,7vw,64px);height:clamp(42px,7vw,64px);object-fit:contain;border-radius:12px;background:#fff}
+  /* logo — same sizing as index */
+  .brand img{width:clamp(44px,7vw,64px);height:clamp(44px,7vw,64px);object-fit:contain;border-radius:12px;background:#fff}
   .brand h1{margin:0;font-size:18px;letter-spacing:.3px}
   .toolbar{display:flex;gap:8px;align-items:center}
   .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
   .seg button{border:0;background:transparent;color:var(--ink);padding:8px 10px;cursor:pointer}
   .seg button.active{background:rgba(255,255,255,.16)}
   .iconbtn{border:1px solid var(--line);background:rgba(255,255,255,.06);padding:8px 10px;border-radius:10px;cursor:pointer}
-
-  /* Header actions (under header) */
-  .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px auto 6px}
-  .vbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-        padding:10px 14px;border-radius:12px;border:1px solid var(--line);
-        background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));min-width:120px;font-weight:700}
-  .vbtn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
+  .vbtn{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-weight:700}
 
   /* Tabs */
   .tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0 10px}
@@ -106,17 +101,11 @@
         <button id="darkToggle" class="iconbtn" aria-label="Dark">🌙</button>
       </div>
     </div>
-    <!-- Header quick actions (consistent with index) -->
-    <div class="wrap actions">
-      <a class="vbtn primary" href="buy.html" data-i18n="nav.buy">Buy</a>
-      <a class="vbtn" href="sell.html" data-i18n="nav.sell">Sell</a>
-      <a class="vbtn" href="valuation.html" data-i18n="nav.valuation">Valuation</a>
-      <a class="vbtn" href="tools.html" data-i18n="nav.tools">Tools</a>
-    </div>
+    <!-- NOTE: Actions bar (Buy/Sell/Valuation/Tools) removed as per request -->
   </header>
 
   <main class="wrap">
-    <!-- Tabs -->
+    <!-- Tabs (only Cars/Bikes/Scooters, as requested) -->
     <div class="tabs" role="tablist">
       <button class="tab active" data-type="cars" role="tab">Cars</button>
       <button class="tab" data-type="bikes" role="tab">Bikes</button>
@@ -148,7 +137,7 @@
 
     const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-    // ===== i18n (only key labels used on this page) =====
+    // ===== i18n (labels used on this page) =====
     const I18N = {
       en:{'btn.wishlist':'♡ Wishlist','btn.wishadded':'♥ Wishlist','btn.enquire':'Inquiry Now'},
       hi:{'btn.wishlist':'♡ विशलिस्ट','btn.wishadded':'♥ विशलिस्ट','btn.enquire':'इन्क्वायरी करें'},
