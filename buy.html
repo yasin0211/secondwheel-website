@@ -1,301 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Second Wheel — Buy Vehicles</title>
-<meta name="theme-color" content="#111827" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Second Wheel — Buy</title>
+<meta name="theme-color" content="#0b0f17"/>
 <style>
   :root{
-    --bg:#0b0f17; --card:#121826; --ink:#e5e7eb; --muted:#9aa3b2;
-    --line:rgba(255,255,255,.10); --brand:#f59e0b; --ok:#22c55e;
-    --shadow:0 8px 28px rgba(0,0,0,.35);
+    --bg:#0b0f17; --card:#121826; --text:#e5e7eb; --muted:#9aa3b2;
+    --brand:#f59e0b; --brand2:#22c55e; --line:rgba(255,255,255,.10);
+    --shadow:0 10px 28px rgba(0,0,0,.35);
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);
-       font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu}
   a{color:inherit;text-decoration:none}
   img{max-width:100%;display:block}
-  .wrap{max-width:1160px;margin:0 auto;padding:16px}
-  .muted{color:var(--muted)}
 
   /* Header */
-  header{position:sticky;top:0;z-index:30;background:rgba(11,15,23,.78);
-         backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-  .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px}
-  .brand{display:flex;gap:12px;align-items:center}
-  /* logo — same sizing as index */
-  .brand img{width:clamp(44px,7vw,64px);height:clamp(44px,7vw,64px);object-fit:contain;border-radius:12px;background:#fff}
-  .brand h1{margin:0;font-size:18px;letter-spacing:.3px}
-  .toolbar{display:flex;gap:8px;align-items:center}
-  .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
-  .seg button{border:0;background:transparent;color:var(--ink);padding:8px 10px;cursor:pointer}
-  .seg button.active{background:rgba(255,255,255,.16)}
-  .iconbtn{border:1px solid var(--line);background:rgba(255,255,255,.06);padding:8px 10px;border-radius:10px;cursor:pointer}
-  .vbtn{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-weight:700}
+  header{position:sticky;top:0;z-index:30;background:rgba(11,15,23,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .wrap{max-width:1180px;margin:0 auto;padding:12px 16px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img{width:56px;height:56px;border-radius:14px;box-shadow:var(--shadow)}
+  .brand h1{margin:0;font-size:16px;letter-spacing:.4px}
+  .seg{display:inline-flex;gap:8px;padding:6px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04)}
+  .seg button{border:0;background:transparent;padding:10px 14px;border-radius:999px;color:var(--text);cursor:pointer}
+  .seg button.active{background:var(--brand);color:#111;font-weight:800}
+  .util{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  .btn:active{transform:translateY(1px)}
+  .btn.round{border-radius:999px}
+  .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border:none}
 
-  /* Tabs */
-  .tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0 10px}
-  .tab{padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
-  .tab.active{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border-color:transparent}
+  /* Tabs row (Cars/Bikes/Scooters) */
+  .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .chip{padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  .chip.active{background:var(--brand);color:#111;font-weight:800;border-color:transparent}
 
-  /* Listing grid */
-  .grid{display:grid;gap:14px;grid-template-columns:1fr}
-  @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
-  @media(min-width:1040px){.grid{grid-template-columns:1fr 1fr 1fr}}
+  /* Filters */
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .input, .select{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0f1626;color:var(--text);outline:none}
+  .muted{color:var(--muted)}
 
-  /* Vehicle card */
+  /* Grid */
+  .grid{display:grid;grid-template-columns:repeat(1,1fr);gap:14px;margin-top:14px}
+  @media(min-width:680px){ .grid{grid-template-columns:repeat(2,1fr)} }
+  @media(min-width:1040px){ .grid{grid-template-columns:repeat(3,1fr)} }
+
+  /* Vehicle Card */
   .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
-  .gallery{position:relative}
-  .main-img{width:100%;height:clamp(220px,28vw,280px);object-fit:cover;background:#0f1522;cursor:zoom-in}
-  .thumbs{display:flex;gap:8px;overflow:auto;padding:8px;border-top:1px solid var(--line)}
-  .thumbs img{height:64px;width:96px;object-fit:cover;border-radius:8px;border:2px solid transparent;cursor:pointer}
-  .thumbs img.active{border-color:#f59e0b}
-  .body{padding:12px}
-  .title{margin:0 0 4px;font-size:16px;font-weight:800}
-  .meta{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0;color:#cbd5e1}
-  .pill{padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:12px}
-  .price{margin-left:auto;font-weight:800}
-  .desc{white-space:pre-wrap;line-height:1.5;color:#e5e7eb;margin-top:8px;background:rgba(255,255,255,.03);
-        border:1px solid var(--line);padding:10px;border-radius:10px}
-  .actions-row{display:flex;gap:8px;margin-top:10px}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);
-       background:rgba(255,255,255,.06);cursor:pointer}
-  .btn.primary{background:linear-gradient(180deg,#22c55e,#15803d);color:#fff;border-color:transparent}
-  .btn.wish.active{background:rgba(255,255,255,.12)}
+  .media{position:relative}
+  .media img.main{width:100%;height:260px;object-fit:cover}
+  @media(min-width:720px){ .media img.main{height:220px} }
 
-  /* Lightbox / Zoom */
-  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:60}
+  .thumbbar{display:flex;gap:6px;padding:8px;overflow:auto;background:#0f1626;border-top:1px solid var(--line)}
+  .thumb{width:64px;height:48px;border-radius:8px;object-fit:cover;border:2px solid transparent;cursor:pointer;flex:0 0 auto}
+  .thumb.active{border-color:#f59e0b}
+
+  .badge{position:absolute;top:10px;left:10px;background:var(--brand);color:#111;font-weight:800;font-size:12px;padding:4px 8px;border-radius:999px}
+  .body{padding:12px}
+  .title{font-weight:800;margin:0 0 6px}
+  .meta{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:#cbd5e1}
+  .desc{margin-top:8px;color:#d1d5db;max-height:9.6em;overflow:auto;border-top:1px solid var(--line);padding-top:8px;white-space:pre-wrap}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .wish{background:rgba(255,255,255,.06);border:1px solid var(--line)}
+  .wish.active{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.45)}
+
+  /* Lightbox */
+  .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.88);z-index:60}
   .lightbox.show{display:flex}
-  .lb-img{max-width:92vw;max-height:86vh;object-fit:contain}
-  .navbtn{position:absolute;top:50%;transform:translateY(-50%);font-size:28px;background:rgba(255,255,255,.12);
-          border:1px solid var(--line);border-radius:50%;width:44px;height:44px;display:grid;place-items:center;cursor:pointer}
-  .navbtn.prev{left:14px}.navbtn.next{right:14px}
-  .closebtn{position:absolute;top:14px;right:14px;font-size:24px;background:rgba(255,255,255,.12);
-            border:1px solid var(--line);border-radius:50%;width:40px;height:40px;display:grid;place-items:center;cursor:pointer}
+  .lb-img{max-width:92vw;max-height:86vh;border-radius:14px;box-shadow:var(--shadow)}
+  .navBtn{position:absolute;top:50%;transform:translateY(-50%);padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.45);cursor:pointer}
+  .navBtn.l{left:16px} .navBtn.r{right:16px}
+  .navBtn:active{transform:translateY(-50%) scale(.98)}
+  .closeBtn{position:absolute;top:16px;right:16px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.45);cursor:pointer}
 
   /* Toast */
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;border:1px solid var(--line);
-         padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .3s;z-index:70}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
   .toast.show{opacity:1}
 </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <div class="nav wrap">
+<header>
+  <div class="wrap">
+    <div class="row">
       <div class="brand">
-        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Logo">
-        <div>
-          <h1>SECOND WHEEL</h1>
-          <div class="muted">Trusted Vehicles, Smart Deals</div>
-        </div>
+        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel logo"/>
+        <h1>SECOND WHEEL</h1>
       </div>
-      <div class="toolbar">
-        <div id="langSeg" class="seg" aria-label="Language">
+      <div class="util">
+        <div class="seg" id="langSeg">
           <button data-lang="en" class="active">EN</button>
           <button data-lang="hi">HI</button>
           <button data-lang="mr">MR</button>
         </div>
-        <a class="vbtn" href="index.html">Home</a>
-        <button id="darkToggle" class="iconbtn" aria-label="Dark">🌙</button>
+        <button class="btn round" id="darkToggle" aria-label="Toggle dark">🌙</button>
       </div>
     </div>
-    <!-- NOTE: Actions bar (Buy/Sell/Valuation/Tools) removed as per request -->
-  </header>
 
-  <main class="wrap">
-    <!-- Tabs (only Cars/Bikes/Scooters, as requested) -->
-    <div class="tabs" role="tablist">
-      <button class="tab active" data-type="cars" role="tab">Cars</button>
-      <button class="tab" data-type="bikes" role="tab">Bikes</button>
-      <button class="tab" data-type="scooters" role="tab">Scooters</button>
+    <!-- Tabs -->
+    <div class="tabs" id="tabs">
+      <button class="chip active" data-type="car" data-i18n="tabs.cars">🚗 Cars</button>
+      <button class="chip" data-type="bike" data-i18n="tabs.bikes">🏍️ Bikes</button>
+      <button class="chip" data-type="scooter" data-i18n="tabs.scooters">🛵 Scooters</button>
     </div>
 
-    <!-- Listing -->
-    <div id="list" class="grid" aria-live="polite"></div>
-  </main>
-
-  <!-- Lightbox -->
-  <div id="lightbox" class="lightbox" aria-hidden="true">
-    <img id="lbImg" class="lb-img" alt="zoom">
-    <button class="navbtn prev" id="lbPrev" aria-label="Prev">‹</button>
-    <button class="navbtn next" id="lbNext" aria-label="Next">›</button>
-    <button class="closebtn" id="lbClose" aria-label="Close">✕</button>
+    <!-- Filters -->
+    <div class="filters">
+      <input id="q" class="input" placeholder="Search (Title / Brand)"/>
+      <select id="brandFilter" class="select"><option value="">All Brands</option></select>
+      <span class="muted" id="count">—</span>
+    </div>
   </div>
+</header>
 
-  <div id="toast" class="toast">Saved</div>
+<main class="wrap">
+  <div id="grid" class="grid" aria-live="polite"></div>
+</main>
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    // ===== Config =====
-    const SUPABASE_URL='https://wbjwvxckbfkutqqbgupq.supabase.co';
-    const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-    const BUCKET='vehicals';
-    const INVENTORY_ROOT='inventory'; // cars/bikes/scooters under this
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true">
+  <img id="lbImg" class="lb-img" alt=""/>
+  <button class="navBtn l" id="lbPrev">⟨</button>
+  <button class="navBtn r" id="lbNext">⟩</button>
+  <button class="closeBtn" id="lbClose">✕</button>
+</div>
 
-    const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+<div id="toast" class="toast">Saved!</div>
 
-    // ===== i18n (labels used on this page) =====
-    const I18N = {
-      en:{'btn.wishlist':'♡ Wishlist','btn.wishadded':'♥ Wishlist','btn.enquire':'Inquiry Now'},
-      hi:{'btn.wishlist':'♡ विशलिस्ट','btn.wishadded':'♥ विशलिस्ट','btn.enquire':'इन्क्वायरी करें'},
-      mr:{'btn.wishlist':'♡ विशलिस्ट','btn.wishadded':'♥ विशलिस्ट','btn.enquire':'इनक्वायरी करा'}
-    };
-    function lang(){return localStorage.getItem('lang')||'en'}
-    function t(k){return (I18N[lang()]&&I18N[lang()][k])||(I18N.en[k]||k)}
-    const langSeg = document.getElementById('langSeg');
-    langSeg.addEventListener('click',e=>{
-      if(e.target.tagName==='BUTTON'){ localStorage.setItem('lang', e.target.dataset.lang);
-        [...langSeg.querySelectorAll('button')].forEach(b=>b.classList.toggle('active', b===e.target));
-        render(currentType); showToast('Language: '+e.target.dataset.lang.toUpperCase());
-      }
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* -------------------- i18n -------------------- */
+const I18N = {
+  en:{ 'tabs.cars':'Cars','tabs.bikes':'Bikes','tabs.scooters':'Scooters','btn.wishlist':'Wishlist','btn.enquire':'Enquire Now' },
+  hi:{ 'tabs.cars':'कारें','tabs.bikes':'बाइक्स','tabs.scooters':'स्कूटर','btn.wishlist':'विशलिस्ट','btn.enquire':'एन्क्वायर नाउ' },
+  mr:{ 'tabs.cars':'कार्स','tabs.bikes':'बाईक्स','tabs.scooters':'स्कूटर्स','btn.wishlist':'विशलिस्ट','btn.enquire':'इन्क्वायरी' },
+};
+const langSeg=document.getElementById('langSeg');
+function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(window.__t); window.__t=setTimeout(()=>el.classList.remove('show'),1500); }
+function applyLang(l){
+  localStorage.setItem('lang', l);
+  [...langSeg.querySelectorAll('button')].forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(I18N[l] && I18N[l][k]) el.textContent = I18N[l][k];
+  });
+  toast('Language: '+l.toUpperCase());
+}
+langSeg.addEventListener('click', e=>{ if(e.target.tagName==='BUTTON') applyLang(e.target.dataset.lang);});
+applyLang(localStorage.getItem('lang') || 'en');
+
+/* -------------------- Dark mode -------------------- */
+const DARK_KEY='secondwheel.dark';
+const darkBtn=document.getElementById('darkToggle');
+function applyDark(v){ document.documentElement.style.colorScheme = v?'dark':'light'; localStorage.setItem(DARK_KEY, v?'1':'0'); darkBtn.textContent = v?'🌙':'☀️'; }
+darkBtn.addEventListener('click', ()=>applyDark(!(localStorage.getItem(DARK_KEY)==='1')));
+applyDark(localStorage.getItem(DARK_KEY)==='1');
+
+/* -------------------- Supabase -------------------- */
+const SUPABASE_URL='https://wbjwvxckbfkutqqbgupq.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
+const BUCKET='vehicals';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const grid = document.getElementById('grid');
+const brandFilter = document.getElementById('brandFilter');
+const q = document.getElementById('q');
+const count = document.getElementById('count');
+
+/* -------------------- State -------------------- */
+let ACTIVE = 'car';                // car | bike | scooter
+let DATA = [];                     // [{vid, meta, imgs:[url], coverIndex}]
+let WISHLIST = new Set(JSON.parse(localStorage.getItem('wishlist')||'[]'));
+
+/* -------------------- Helpers -------------------- */
+function pubUrl(path){ const { data } = sb.storage.from(BUCKET).getPublicUrl(path); return data?.publicUrl; }
+function isImg(n){ return /\.(jpe?g|png|webp)$/i.test(n); }
+function limitFor(type){ return type==='car' ? 20 : 10; }
+function money(n){ if(!n) return '₹—'; try{ return '₹'+Number(n).toLocaleString('en-IN'); }catch(e){ return '₹'+n; } }
+function wishToggle(vid){ if(WISHLIST.has(vid)){ WISHLIST.delete(vid); } else { WISHLIST.add(vid); } localStorage.setItem('wishlist', JSON.stringify([...WISHLIST])); render(); toast('Wishlist updated'); }
+function waLink(meta){ const msg = encodeURIComponent(`Hi Second Wheel,%0AI want to enquire about:%0A${meta.title} (${meta.brand})%0AType: ${meta.type}%0APrice: ${money(meta.price)}%0AYear: ${meta.year} • KM: ${meta.km}%0AID: ${meta.vid}`); return `https://wa.me/919822292955?text=${msg}`; }
+
+/* -------------------- Lightbox -------------------- */
+const lb = document.getElementById('lightbox'), lbImg=document.getElementById('lbImg'), lbPrev=document.getElementById('lbPrev'), lbNext=document.getElementById('lbNext'), lbClose=document.getElementById('lbClose');
+let LB_LIST=[], LB_IDX=0;
+function openLB(list, idx){ LB_LIST=list; LB_IDX=idx; lbImg.src=list[idx]; lb.classList.add('show'); }
+function closeLB(){ lb.classList.remove('show'); LB_LIST=[]; }
+function stepLB(d){ if(!LB_LIST.length) return; LB_IDX=(LB_IDX+d+LB_LIST.length)%LB_LIST.length; lbImg.src=LB_LIST[LB_IDX]; }
+lbClose.onclick=closeLB; lbPrev.onclick=()=>stepLB(-1); lbNext.onclick=()=>stepLB(1);
+lb.addEventListener('click', e=>{ if(e.target===lb) closeLB(); });
+lb.addEventListener('touchstart', onTouchStart, {passive:true});
+lb.addEventListener('touchend', onTouchEnd, {passive:true});
+let x0=null; function onTouchStart(e){ x0=e.changedTouches[0].clientX; }
+function onTouchEnd(e){ const x1=e.changedTouches[0].clientX; if(x0===null) return; const dx=x1-x0; if(Math.abs(dx)>40) stepLB(dx>0?-1:1); x0=null; }
+
+/* -------------------- Loaders -------------------- */
+async function list(prefix){
+  const { data, error } = await sb.storage.from(BUCKET).list(prefix, { limit: 200 });
+  if(error){ console.error('list error', error); return []; }
+  return data || [];
+}
+async function allImgUrls(prefix, max){
+  const arr = await list(prefix);
+  const imgs = arr.filter(f=>isImg(f.name)).sort((a,b)=>a.name.localeCompare(b.name)).slice(0,max);
+  return imgs.map(f=>pubUrl(`${prefix}/${f.name}`));
+}
+async function fetchMeta(prefix){
+  const { data } = sb.storage.from(BUCKET).getPublicUrl(`${prefix}/meta.json`);
+  try{ const res = await fetch(data.publicUrl, { cache:'no-store' }); if(res.ok) return await res.json(); }catch(e){}
+  return null;
+}
+
+async function loadType(type){
+  ACTIVE = type;
+  grid.innerHTML = '<div class="muted" style="padding:16px">Loading…</div>';
+  const roots = await list(type);
+  const folders = roots.filter(x=>x && x.name && !(/\./.test(x.name))); // only VIDs
+  const out=[]; const brands = new Set(); const lim = limitFor(type);
+  for(const f of folders){
+    const vid = f.name; const base = `${type}/${vid}`;
+    const meta = await fetchMeta(base);
+    if(!meta) continue;
+    const imgs = await allImgUrls(base, lim);
+    if(!imgs.length) continue;
+    meta.vid = vid; // ensure id present
+    out.push({ vid, meta, imgs, coverIndex:0 });
+    if(meta.brand) brands.add(String(meta.brand).toUpperCase());
+  }
+  DATA = out.sort((a,b)=> (b.meta.updatedAt||'').localeCompare(a.meta.updatedAt||''));
+  fillBrands([...brands].sort());
+  render();
+}
+
+function fillBrands(list){
+  const curr = brandFilter.value;
+  brandFilter.innerHTML = '<option value="">All Brands</option>'+list.map(b=>`<option value="${b}">${b}</option>`).join('');
+  if(curr) brandFilter.value = curr;
+}
+
+/* -------------------- Render -------------------- */
+function render(){
+  const term = (q.value||'').toLowerCase().trim();
+  const bf = (brandFilter.value||'').trim();
+  const view = DATA.filter(it=>{
+    const hitQ = !term || ((it.meta.title||'').toLowerCase().includes(term) || (it.meta.brand||'').toLowerCase().includes(term));
+    const hitB = !bf || ((String(it.meta.brand||'').toUpperCase())===bf);
+    return hitQ && hitB;
+  });
+
+  count.textContent = `${view.length} ${ACTIVE.toUpperCase()} found`;
+  grid.innerHTML = '';
+  if(view.length===0){ grid.innerHTML = '<div class="muted" style="padding:16px">No results</div>'; return; }
+
+  for(const it of view){
+    const meta = it.meta;
+    const cover = it.imgs[it.coverIndex||0];
+
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    // MEDIA (main + thumbs)
+    const media = document.createElement('div');
+    media.className = 'media';
+
+    const main = document.createElement('img');
+    main.className = 'main';
+    main.src = cover; main.alt = meta.title||'';
+    main.onclick = ()=> openLB(it.imgs, it.coverIndex||0);
+    media.appendChild(main);
+
+    const badge=document.createElement('div'); badge.className='badge'; badge.textContent = (meta.type||ACTIVE).toUpperCase();
+    media.appendChild(badge);
+
+    const thumbbar=document.createElement('div'); thumbbar.className='thumbbar';
+    it.imgs.forEach((u,idx)=>{
+      const t=document.createElement('img'); t.className='thumb'+(idx===it.coverIndex?' active':''); t.src=u; t.alt='thumb';
+      t.onclick=(e)=>{ e.stopPropagation(); it.coverIndex=idx; main.src=u; [...thumbbar.children].forEach(c=>c.classList.remove('active')); t.classList.add('active'); };
+      thumbbar.appendChild(t);
     });
+    media.appendChild(thumbbar);
 
-    // Dark
-    const DKEY='sw.dark', darkBtn=document.getElementById('darkToggle');
-    function applyDark(v){ document.documentElement.style.colorScheme=v?'dark':'light';
-      localStorage.setItem(DKEY,v?'1':'0'); darkBtn.textContent=v?'🌙':'☀️';}
-    darkBtn.addEventListener('click',()=>applyDark(!(localStorage.getItem(DKEY)==='1')));
-    applyDark(localStorage.getItem(DKEY)==='1');
+    // BODY
+    const body=document.createElement('div'); body.className='body';
+    const h=document.createElement('h3'); h.className='title'; h.textContent = meta.title || '-';
+    const metaRow=document.createElement('div'); metaRow.className='meta';
+    metaRow.innerHTML = `
+      <span><b>${(meta.brand||'').toUpperCase()}</b></span>
+      <span>${meta.year||'—'}</span>
+      <span>${(meta.km? (Number(meta.km).toLocaleString('en-IN')+' km') : '—')}</span>
+      <span>${money(meta.price)}</span>
+      <span>ID: ${meta.vid||it.vid}</span>
+    `;
 
-    // Toast
-    function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
-      clearTimeout(window.__to);window.__to=setTimeout(()=>t.classList.remove('show'),1400)}
+    const desc=document.createElement('div'); desc.className='desc';
+    desc.textContent = meta.description || '';
 
-    // Supabase helpers
-    const purl = (path)=> sb.storage.from(BUCKET).getPublicUrl(path).data?.publicUrl || '';
-    async function listFolders(prefix){
-      const {data,error}=await sb.storage.from(BUCKET).list(prefix,{limit:1000});
-      if(error) return [];
-      return (data||[]).filter(x=>x && !x.name.includes('.')).map(x=>x.name);
-    }
-    async function readMeta(path){
-      const {data,error}=await sb.storage.from(BUCKET).download(path);
-      if(error) return null;
-      try{ return JSON.parse(await data.text()); }catch{ return null; }
-    }
-    async function listImages(dir){
-      const {data,error}=await sb.storage.from(BUCKET).list(dir,{limit:1000});
-      if(error) return [];
-      return (data||[]).filter(o=>/\.(jpg|jpeg|png|webp)$/i.test(o.name)).map(o=>`${dir}/${o.name}`);
-    }
+    const actions=document.createElement('div'); actions.className='actions';
+    const wbtn=document.createElement('button'); wbtn.className='btn wish'+(WISHLIST.has(meta.vid||it.vid)?' active':''); wbtn.innerHTML='♥ <span data-i18n="btn.wishlist">Wishlist</span>';
+    wbtn.onclick=()=>wishToggle(meta.vid||it.vid);
+    const ebtn=document.createElement('a'); ebtn.className='btn primary'; ebtn.innerHTML='💬 <span data-i18n="btn.enquire">Enquire Now</span>';
+    ebtn.href = waLink(meta); ebtn.target='_blank'; ebtn.rel='noopener';
 
-    // Build card
-    function wishKey(slug){ return `sw.wish.${slug}`; }
-    function cardHTML(v){
-      const wLabel = localStorage.getItem(wishKey(v.slug))==='1' ? t('btn.wishadded') : t('btn.wishlist');
-      const waLink = `https://wa.me/919822292955?text=${encodeURIComponent(
-        `Inquiry: ${v.title||v.slug} | Price: ${v.price||''} | Type: ${v.type||''}`
-      )}`;
-      const brandLine = [v.brand?.toUpperCase()||'', v.fuel||''].filter(Boolean).join(' • ');
-      const metaLine = [v.year||'', v.km?`${v.km} km`:'' , v.location||''].filter(Boolean).join(' • ');
-      return `
-        <article class="card">
-          <div class="gallery" data-slug="${v.slug}">
-            <img class="main-img" src="${v.images[0]||''}" alt="${v.title||''}">
-            <div class="thumbs">
-              ${v.images.map((u,i)=>`<img src="${u}" data-idx="${i}" class="${i===0?'active':''}" alt="thumb ${i+1}">`).join('')}
-            </div>
-          </div>
-          <div class="body">
-            <div class="meta"><span class="pill">${(v.type||'').toUpperCase()}</span><span class="price">${v.price||''}</span></div>
-            <h4 class="title">${v.title||v.slug||''}</h4>
-            <div class="meta">${brandLine}</div>
-            <div class="meta">${metaLine}</div>
-            <div class="desc">${v.description||''}</div>
-            <div class="actions-row">
-              <button class="btn wish" data-wish="${v.slug}">${wLabel}</button>
-              <a class="btn primary" target="_blank" rel="noopener" href="${waLink}">${t('btn.enquire')}</a>
-            </div>
-          </div>
-        </article>`;
-    }
+    actions.appendChild(wbtn); actions.appendChild(ebtn);
 
-    // Lightbox
-    const lb = document.getElementById('lightbox'), lbImg = document.getElementById('lbImg');
-    let lbList=[], lbIdx=0;
-    function openLB(list, idx=0){ lbList=list; lbIdx=idx; lbImg.src=lbList[lbIdx]||''; lb.classList.add('show'); lb.setAttribute('aria-hidden','false'); }
-    function closeLB(){ lb.classList.remove('show'); lb.setAttribute('aria-hidden','true'); }
-    function nextLB(){ if(!lbList.length) return; lbIdx=(lbIdx+1)%lbList.length; lbImg.src=lbList[lbIdx]; }
-    function prevLB(){ if(!lbList.length) return; lbIdx=(lbIdx-1+lbList.length)%lbList.length; lbImg.src=lbList[lbIdx]; }
-    document.getElementById('lbClose').onclick=closeLB;
-    document.getElementById('lbNext').onclick=nextLB;
-    document.getElementById('lbPrev').onclick=prevLB;
-    lb.addEventListener('click',e=>{ if(e.target===lb) closeLB(); });
-    window.addEventListener('keydown',e=>{ if(lb.classList.contains('show')){ if(e.key==='Escape') closeLB(); if(e.key==='ArrowRight') nextLB(); if(e.key==='ArrowLeft') prevLB(); } });
+    body.appendChild(h); body.appendChild(metaRow); body.appendChild(desc); body.appendChild(actions);
 
-    // Render
-    const list = document.getElementById('list');
-    let currentType='cars';
-    async function render(type=currentType){
-      currentType=type;
-      document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active', b.dataset.type===type));
-      list.innerHTML = '<div class="muted" style="grid-column:1/-1">Loading…</div>';
+    card.appendChild(media); card.appendChild(body);
+    grid.appendChild(card);
+  }
+}
 
-      const root = `${INVENTORY_ROOT}/${type}`;
-      const folders = await listFolders(root);
-      if(!folders.length){ list.innerHTML = '<div class="muted" style="grid-column:1/-1">No items yet</div>'; return; }
+/* -------------------- Events -------------------- */
+document.getElementById('tabs').addEventListener('click', e=>{
+  if(e.target.classList.contains('chip')){
+    [...document.querySelectorAll('.chip')].forEach(b=>b.classList.remove('active'));
+    e.target.classList.add('active');
+    loadType(e.target.dataset.type);
+  }
+});
+q.addEventListener('input', render);
+brandFilter.addEventListener('change', render);
 
-      const items=[];
-      for(const slug of folders){
-        const meta = await readMeta(`${root}/${slug}/meta.json`);
-        if(!meta) continue;
-        let imgs = await listImages(`${root}/${slug}`);
-        // enforce limits
-        const max = (type==='cars') ? 20 : 10;
-        imgs = imgs.filter(p=>/\.(jpg|jpeg|png|webp)$/i.test(p)).slice(0, max).map(p=>purl(p));
-        items.push({slug, images:imgs, type:type.slice(0,-1), ...meta});
-      }
-      // newest first
-      items.sort((a,b)=> (b.updatedAt||'').localeCompare(a.updatedAt||''));
-
-      list.innerHTML='';
-      for(const v of items){
-        const holder = document.createElement('div');
-        holder.innerHTML = cardHTML(v);
-        const card = holder.firstElementChild;
-
-        // thumbs click
-        const g = card.querySelector('.gallery');
-        const main = g.querySelector('.main-img');
-        const thumbs = g.querySelectorAll('.thumbs img');
-        thumbs.forEach(ti=>{
-          ti.addEventListener('click',()=>{
-            thumbs.forEach(x=>x.classList.remove('active'));
-            ti.classList.add('active');
-            main.src = v.images[Number(ti.dataset.idx)] || main.src;
-          });
-        });
-
-        // main click => lightbox
-        main.addEventListener('click',()=>{
-          const activeIdx = Math.max(0, [...thumbs].findIndex(x=>x.classList.contains('active')));
-          openLB(v.images, activeIdx);
-        });
-
-        // wishlist
-        const wbtn = card.querySelector('[data-wish]');
-        if(localStorage.getItem(wishKey(v.slug))==='1'){ wbtn.classList.add('active'); wbtn.textContent = t('btn.wishadded'); }
-        wbtn.addEventListener('click',()=>{
-          const key=wishKey(v.slug);
-          const cur = localStorage.getItem(key)==='1';
-          localStorage.setItem(key, cur?'0':'1');
-          wbtn.classList.toggle('active', !cur);
-          wbtn.textContent = t(cur ? 'btn.wishlist' : 'btn.wishadded');
-          showToast(cur ? 'Removed from wishlist' : 'Added to wishlist');
-        });
-
-        list.appendChild(card);
-      }
-    }
-
-    // Tab clicks
-    document.querySelectorAll('.tab').forEach(b=> b.addEventListener('click', ()=>render(b.dataset.type)));
-
-    // Init
-    render('cars'); // default
-  </script>
+/* -------------------- Init -------------------- */
+loadType(ACTIVE);
+</script>
 </body>
 </html>
