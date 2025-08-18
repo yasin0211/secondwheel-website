@@ -2,74 +2,59 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Second Wheel — Sell</title>
 <meta name="theme-color" content="#0b0f17"/>
 <style>
   :root{
     --bg:#0b0f17; --card:#121826; --text:#e5e7eb; --muted:#9aa3b2;
-    --brand:#f59e0b; --brand2:#22c55e; --line:rgba(255,255,255,.12);
-    --shadow:0 12px 30px rgba(0,0,0,.35); --accent:#3b82f6;
+    --line:rgba(255,255,255,.1); --brand:#f59e0b; --ok:#22c55e; --bad:#ef4444;
+    --shadow:0 10px 28px rgba(0,0,0,.35);
   }
-  :root[data-theme="light"]{
-    --bg:#f7f8fb; --card:#ffffff; --text:#0b0f17; --muted:#5b667a; --line:rgba(0,0,0,.12);
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu}
-  a{color:inherit;text-decoration:none}
-  .wrap{max-width:1120px;margin:0 auto;padding:14px 16px}
-  .hidden{display:none!important}
-  .muted{color:var(--muted)}
-  .ok{color:#22c55e} .err{color:#f87171}
-
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);
+    font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
+  img{max-width:100%;display:block}
+  .wrap{max-width:980px;margin:0 auto;padding:14px 16px}
   /* Header (no navbar) */
-  header{position:sticky;top:0;z-index:50;background:rgba(11,15,23,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  header{position:sticky;top:0;z-index:30;background:rgba(11,15,23,.78);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .brand{display:flex;align-items:center;gap:12px}
   .brand img{width:56px;height:56px;border-radius:14px;box-shadow:var(--shadow)}
   .brand h1{margin:0;font-size:16px;letter-spacing:.4px}
-  .seg{display:inline-flex;gap:8px;padding:6px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.06)}
-  .seg button{border:0;background:transparent;padding:10px 14px;border-radius:999px;color:var(--text);cursor:pointer}
+  .seg{display:inline-flex;gap:8px;padding:6px;border:1px solid var(--line);
+    border-radius:999px;background:rgba(255,255,255,.04)}
+  .seg button{border:0;background:transparent;padding:10px 14px;border-radius:999px;
+    color:var(--text);cursor:pointer}
   .seg button.active{background:var(--brand);color:#111;font-weight:800}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:12px 16px;border-radius:12px;border:1px solid var(--line);
+    background:rgba(255,255,255,.06);cursor:pointer}
   .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border:none}
-  .btn.success{background:linear-gradient(180deg,#22c55e,#15803d);color:#111;border:none}
   .btn:active{transform:translateY(1px)}
-
-  /* Hero */
-  .hero{border-bottom:1px solid var(--line);padding:22px 0;background:
-    radial-gradient(80% 60% at 15% 0%, rgba(245,158,11,.18), transparent 60%),
-    radial-gradient(80% 60% at 85% 0%, rgba(34,197,94,.14), transparent 60%)}
-  .hero h2{margin:0 0 8px;font-size:28px}
-  .usp{display:flex;gap:10px;flex-wrap:wrap}
-  .tag{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line);font-weight:700}
-
-  /* Layout */
-  .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
-  @media (max-width:980px){ .grid{grid-template-columns:1fr} }
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px}
-  h3{margin:0 0 10px}
+  /* Card + Form */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    box-shadow:var(--shadow);padding:14px;margin-top:12px}
+  h2{margin:0 0 8px;font-size:18px}
   label{display:block;margin:10px 0 6px;color:var(--muted);font-weight:700}
-  input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0f1626;color:var(--text);outline:none}
-  :root[data-theme="light"] input,:root[data-theme="light"] select,:root[data-theme="light"] textarea{background:#f2f4f8;color:#111}
-  input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+  input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);
+    background:#0f1626;color:var(--text);outline:none}
+  input:focus,select:focus,textarea:focus{border-color:#3b82f6}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  @media (max-width:640px){ .row2{grid-template-columns:1fr} }
+  @media (max-width:640px){.row2{grid-template-columns:1fr}}
   .chips{display:flex;gap:8px;flex-wrap:wrap}
-  .chip{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  .chip{padding:8px 12px;border-radius:999px;border:1px solid var(--line);
+    background:rgba(255,255,255,.06);cursor:pointer}
   .chip.active{background:var(--brand);color:#111;font-weight:800;border-color:transparent}
-
-  /* Offer panel */
-  .offerHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .range{font-size:26px;font-weight:900}
-
-  /* Sticky */
-  .sticky{position:sticky;bottom:0;z-index:20;background:rgba(11,15,23,.85);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px;border-radius:12px;margin-top:12px}
-  .ctaRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
-
-  /* Toast */
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
+  .muted{color:var(--muted)}
+  .note{margin-top:8px;padding:10px;border-radius:10px;border:1px dashed var(--line);color:#d1d5db}
+  .ok{color:var(--ok)} .bad{color:var(--bad)}
+  .hidden{display:none !important}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;
+    color:#e5e7eb;border:1px solid var(--line);padding:10px 14px;border-radius:10px;
+    box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
   .toast.show{opacity:1}
+  .price{font-size:24px;font-weight:900}
 </style>
 </head>
 <body>
@@ -77,225 +62,228 @@
   <div class="wrap">
     <div class="row">
       <div class="brand">
-        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel logo"/>
+        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel"/>
         <h1>SECOND WHEEL</h1>
       </div>
-      <div class="row" style="gap:8px">
-        <div class="seg" id="langSeg">
-          <button data-lang="en" class="active">EN</button>
-          <button data-lang="hi">HI</button>
-          <button data-lang="mr">MR</button>
-        </div>
-        <button class="btn" id="darkToggle" aria-label="Toggle dark">🌙</button>
+      <div class="seg" id="langSeg">
+        <button data-lang="en" class="active">EN</button>
+        <button data-lang="hi">HI</button>
+        <button data-lang="mr">MR</button>
       </div>
+      <button class="btn" id="darkToggle" aria-label="Toggle dark">🌙</button>
     </div>
   </div>
 </header>
 
-<section class="hero">
-  <div class="wrap">
-    <h2>Sell Your Vehicle — Get Best Offer (Instant)</h2>
-    <div class="usp">
-      <span class="tag">🧑‍🔧 Doorstep Inspection</span>
-      <span class="tag">⚡ Same-day Payment</span>
-      <span class="tag">✅ Paperwork Support</span>
-      <span class="tag">📍 Satara Priority</span>
-    </div>
-  </div>
-</section>
-
 <main class="wrap">
-  <div class="grid">
-    <!-- LEFT: FORM (All fields compulsory) -->
-    <section class="card">
-      <h3>Step 1 — Fill all details (Compulsory)</h3>
+  <!-- Step 1: Details (all required) -->
+  <section class="card" id="step1">
+    <h2>Tell us about your vehicle</h2>
+    <div class="row2">
+      <div>
+        <label>Type *</label>
+        <select id="type" required>
+          <option value="">Select</option>
+          <option value="car">Car</option>
+          <option value="bike">Bike</option>
+          <option value="scooter">Scooter</option>
+        </select>
+      </div>
+      <div>
+        <label>City *</label>
+        <input id="city" placeholder="Satara" required/>
+      </div>
+    </div>
+    <div class="row2">
+      <div>
+        <label>Brand *</label>
+        <input id="brand" placeholder="Maruti / Hyundai…" required/>
+      </div>
+      <div>
+        <label>Model *</label>
+        <input id="model" placeholder="Swift / i10…" required/>
+      </div>
+    </div>
+    <div class="row2">
+      <div>
+        <label>Year *</label>
+        <input id="year" type="number" inputmode="numeric" placeholder="2016" required/>
+      </div>
+      <div>
+        <label>KM Driven *</label>
+        <input id="km" type="number" inputmode="numeric" placeholder="72000" required/>
+      </div>
+    </div>
 
-      <div class="row2">
-        <div><label>Name *</label><input id="name" required autocomplete="name"></div>
-        <div><label>Mobile (10-digit) *</label><input id="phone" required inputmode="numeric" maxlength="10" placeholder="98XXXXXXXX"></div>
-      </div>
+    <label>Fuel *</label>
+    <div class="chips" id="fuelChips" aria-label="Fuel">
+      <span class="chip" data-val="petrol">Petrol</span>
+      <span class="chip" data-val="diesel">Diesel</span>
+      <span class="chip" data-val="cng">CNG</span>
+      <span class="chip" data-val="electric">Electric</span>
+    </div>
 
-      <div class="row2">
-        <div><label>City *</label><input id="city" required placeholder="Satara"></div>
-        <div>
-          <label>Type *</label>
-          <select id="type" required>
-            <option value="">Select…</option>
-            <option value="car">Car</option>
-            <option value="bike">Bike</option>
-            <option value="scooter">Scooter</option>
-          </select>
-        </div>
+    <div class="row2" style="margin-top:8px">
+      <div>
+        <label>Registration No. *</label>
+        <input id="reg" placeholder="MH 11 AB 1234" required/>
       </div>
+      <div>
+        <label>Owner No. *</label>
+        <input id="owner" type="number" inputmode="numeric" placeholder="1" required/>
+      </div>
+    </div>
 
-      <div class="row2">
-        <div><label>Brand *</label><input id="brand" required placeholder="Maruti, Hyundai…"></div>
-        <div><label>Model *</label><input id="model" required placeholder="Swift, i10…"></div>
+    <div class="row2" style="margin-top:8px">
+      <div>
+        <label>Your Name *</label>
+        <input id="name" placeholder="Full name" required/>
       </div>
+      <div>
+        <label>Mobile *</label>
+        <input id="phone" placeholder="10-digit mobile" maxlength="10" inputmode="numeric" required/>
+      </div>
+    </div>
 
-      <div class="row2">
-        <div><label>Year *</label><input id="year" required type="number" inputmode="numeric" placeholder="2017"></div>
-        <div><label>KM Driven *</label><input id="km" required type="number" inputmode="numeric" placeholder="72000"></div>
-      </div>
+    <div class="note">
+      Price दाखवण्याआधी तुमचा डेटा सुरक्षितपणे save होईल.
+    </div>
 
-      <label>Fuel *</label>
-      <div class="chips" id="fuelChips">
-        <span class="chip" data-val="petrol">Petrol</span>
-        <span class="chip" data-val="diesel">Diesel</span>
-        <span class="chip" data-val="cng">CNG</span>
-        <span class="chip" data-val="electric">Electric</span>
-      </div>
+    <div style="margin-top:12px;display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn primary" id="getOffer">Get Best Offer</button>
+    </div>
+    <div id="saveErr" class="bad hidden" style="margin-top:10px"></div>
+  </section>
 
-      <div class="row2" style="margin-top:8px">
-        <div><label>Registration No. *</label><input id="reg" required placeholder="MH 11 AB 1234"></div>
-        <div><label>Owner No. *</label><input id="owner" required type="number" min="1" max="6" placeholder="1"></div>
-      </div>
+  <!-- Step 2: Offer (shown only after save) -->
+  <section class="card hidden" id="step2">
+    <h2>Estimated Offer</h2>
+    <div class="price" id="priceText">₹ —</div>
+    <div class="note">
+      ही किंमत <b>Estimate</b> आहे. <b>Doorstep inspection</b> नंतर अंतिम किंमत फिक्स होईल.
+    </div>
 
-      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn primary" id="proceed">Get Best Offer</button>
-        <span class="muted" id="saveHint">Price दिसण्याआधी तुमचा डेटा सुरक्षितपणे save होईल.</span>
-      </div>
-      <div id="saveMsg" class="muted" style="margin-top:8px"></div>
-    </section>
-
-    <!-- RIGHT: OFFER (hidden until saved) -->
-    <aside class="card" id="offerPanel" aria-live="polite">
-      <div class="offerHead">
-        <h3>Estimated Price (Not Final)</h3>
-        <span class="tag">📈 Live</span>
-      </div>
-      <div class="range" id="offerRange">—</div>
-      <div class="muted" id="offerNote">
-        This is an indicative estimate. <b>Final price will be fixed after Doorstep Inspection.</b>
-      </div>
-
-      <div class="sticky" style="margin-top:16px">
-        <div class="ctaRow">
-          <a id="waBtn" class="btn success" target="_blank" rel="noopener">💬 WhatsApp</a>
-          <button id="bookBtn" class="btn primary">Doorstep Inspection</button>
-        </div>
-      </div>
-    </aside>
-  </div>
+    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn" id="whatsApp" target="_blank" rel="noopener">Chat on WhatsApp</a>
+      <button class="btn" id="bookInsp">Book Doorstep Inspection</button>
+    </div>
+  </section>
 </main>
 
 <div id="toast" class="toast">Saved!</div>
 
 <script>
-/* ---------- Language + Theme ---------- */
+/* ------------ Language + Theme ------------- */
+const I18N = {
+  en:{}, hi:{}, mr:{}
+};
 const KEY_LANG='secondwheel.lang', KEY_THEME='secondwheel.theme';
-const langSeg=document.getElementById('langSeg'); const darkBtn=document.getElementById('darkToggle');
-function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(window.__t); window.__t=setTimeout(()=>el.classList.remove('show'),1400); }
-function applyLang(l){ localStorage.setItem(KEY_LANG,l); langSeg.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b.dataset.lang===l)); }
-function setTheme(t){ document.documentElement.setAttribute('data-theme',t); localStorage.setItem(KEY_THEME,t); darkBtn.textContent=(t==='dark')?'🌙':'☀️'; }
-document.addEventListener('DOMContentLoaded',()=>{ applyLang(localStorage.getItem(KEY_LANG)||'en'); setTheme(localStorage.getItem(KEY_THEME)||'dark');
-  langSeg.addEventListener('click',e=>{ const b=e.target.closest('button[data-lang]'); if(b) applyLang(b.dataset.lang); });
-  darkBtn.addEventListener('click',()=>{ const next=(localStorage.getItem(KEY_THEME)||'dark')==='dark'?'light':'dark'; setTheme(next); });
+const langSeg=document.getElementById('langSeg'), darkBtn=document.getElementById('darkToggle');
+function applyLang(l){ localStorage.setItem(KEY_LANG,l);
+  langSeg.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
+}
+function setTheme(x){ document.documentElement.setAttribute('data-theme',x);
+  localStorage.setItem(KEY_THEME,x); darkBtn.textContent=(x==='dark')?'🌙':'☀️';}
+function toast(m){ const el=document.getElementById('toast'); el.textContent=m; el.classList.add('show');
+  clearTimeout(window.__t); window.__t=setTimeout(()=>el.classList.remove('show'),1500); }
+document.addEventListener('DOMContentLoaded',()=>{
+  applyLang(localStorage.getItem(KEY_LANG)||'en');
+  setTheme(localStorage.getItem(KEY_THEME)||'dark');
+  langSeg.addEventListener('click',e=>{ const b=e.target.closest('button[data-lang]');
+    if(b){ applyLang(b.dataset.lang); toast('Language: '+b.dataset.lang.toUpperCase()); }});
+  darkBtn.addEventListener('click',()=>{ const next=(localStorage.getItem(KEY_THEME)||'dark')==='dark'?'light':'dark'; setTheme(next);});
 });
 
-/* ---------- Config ---------- */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWAagtCw4FFyXOt8CqNE2yDSoEEacgBYKsTd8jYsTgmZxg60ndqH5BehSVUTR5zMQ_nA/exec";
+/* ------------ CONFIG: Google Apps Script endpoint ------------- */
+/* तुझा /exec URL इथे दिलाय */
+const GS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxWAagtCw4FFyXOt8CqNE2yDSoEEacgBYKsTd8jYsTgmZxg60ndqH5BehSVUTR5zMQ_nA/exec";
 
-/* ---------- Helpers ---------- */
-const $ = id => document.getElementById(id);
-function validPhone(v){ return /^\d{10}$/.test((v||'').trim()); }
+/* ------------ Form refs + state ------------- */
+const step1=document.getElementById('step1'), step2=document.getElementById('step2');
+const typeEl=type, cityEl=city, brandEl=brand, modelEl=model, yearEl=year, kmEl=km, regEl=reg, ownerEl=owner;
+const nameEl=name, phoneEl=phone, fuelChips=document.getElementById('fuelChips');
+const getOfferBtn=document.getElementById('getOffer'), saveErr=document.getElementById('saveErr');
+const priceText=document.getElementById('priceText'), waBtn=document.getElementById('whatsApp');
+
+let FUEL=null, VID=makeVID();
 function makeVID(){ const r=Math.random().toString(36).slice(2,6), ts=Date.now().toString(36).slice(-4); return `${ts}-${r}`; }
-function money(n){ try{return '₹'+Number(n).toLocaleString('en-IN')}catch{return '₹'+n} }
 
-/* ---------- Valuation ---------- */
-function calcBase(type, brandStr, yearNum, fuel, kmNum){
-  const now=new Date().getFullYear(); const age=Math.max(0, now-(Number(yearNum)||now));
-  let base=(type==='car')?480000:(type==='bike'?40000:32000);
-  const B=(brandStr||'').toUpperCase();
-  if(type==='car' && ['MARUTI','HYUNDAI','HONDA','TOYOTA'].some(b=>B.includes(b))) base*=1.10;
-  if(type==='bike' && ['HERO','BAJAJ','ROYAL ENFIELD'].some(b=>B.includes(b))) base*=1.10;
-  if(type==='scooter' && ['HONDA','HERO','TVS'].some(b=>B.includes(b))) base*=1.08;
-  if(type==='car'){ if(fuel==='diesel') base*=1.08; if(fuel==='cng') base*=1.05; if(fuel==='electric') base*=1.12; }
-  base*=Math.max(0.35,(1-age*0.055));
-  const kmx=Number(kmNum)||0; const over=Math.max(0, kmx-(type==='car'?45000:18000));
-  const blocks=Math.floor(over/(type==='car'?9000:4500)); base*=(1-blocks*0.018);
-  return Math.max(18000, Math.round(base));
-}
-function estimateRange(t,b,y,f,k){ const base=calcBase(t,b,y,f,k); return { min:Math.round(base*0.97), max:Math.round(base*1.06), base }; }
-
-/* ---------- Form state ---------- */
-let FUEL = null;
-$('fuelChips').addEventListener('click', e=>{
+fuelChips.addEventListener('click',e=>{
   const c=e.target.closest('.chip'); if(!c) return;
-  [...$('fuelChips').children].forEach(x=>x.classList.remove('active'));
+  [...fuelChips.children].forEach(x=>x.classList.remove('active'));
   c.classList.add('active'); FUEL=c.dataset.val;
 });
 
-/* ---------- Required fields ---------- */
-const requiredIds = ['name','phone','city','type','brand','model','year','km','reg','owner'];
-function validateAll(){
-  for(const id of requiredIds){
-    const el=$(id); if(!el.value || !el.value.trim()){ el.focus(); return 'Please fill '+id.toUpperCase(); }
-  }
-  if(!FUEL) return 'Please select FUEL';
-  if(!validPhone($('phone').value)) return 'Enter valid 10-digit Mobile';
-  return '';
+/* ------------ Validation ------------- */
+function requiredFilled(){
+  const all = [typeEl,cityEl,brandEl,modelEl,yearEl,kmEl,regEl,ownerEl,nameEl,phoneEl];
+  let ok = all.every(el=> (el.value||'').trim().length>0);
+  if(!FUEL) ok=false;
+  return ok;
 }
 
-/* ---------- Save then show price ---------- */
-$('offerPanel').classList.add('hidden'); // hide initially
-$('proceed').addEventListener('click', async ()=>{
-  const err = validateAll();
-  if(err){ alert(err); return; }
+/* ------------ Valuation ------------- */
+function calcBase(tp, brandStr, yearNum, fuel, kmNum){
+  const now=new Date().getFullYear(); const age=Math.max(0, now-(Number(yearNum)||now));
+  let base=(tp==='car')?450000:(tp==='bike'?35000:30000);
+  const B=(brandStr||'').toUpperCase();
+  if(tp==='car' && ['MARUTI','HYUNDAI','HONDA','TOYOTA'].some(b=>B.includes(b))) base*=1.08;
+  if(tp==='bike' && ['HERO','BAJAJ','ROYAL ENFIELD'].some(b=>B.includes(b))) base*=1.10;
+  if(tp==='scooter' && ['HERO','TVS','HONDA'].some(b=>B.includes(b))) base*=1.08;
+  if(tp==='car'){ if(fuel==='diesel') base*=1.08; if(fuel==='cng') base*=1.05; if(fuel==='electric') base*=1.12; }
+  base*=Math.max(0.35,(1-age*0.06));
+  const kmx=Number(kmNum)||0; const over=Math.max(0, kmx-(tp==='car'?50000:20000));
+  const blocks=Math.floor(over/(tp==='car'?10000:5000)); base*=(1-blocks*0.02);
+  return Math.max(15000, Math.round(base));
+}
+function estimateRange(tp, brandStr, yearNum, fuel, kmNum){
+  const base=calcBase(tp,brandStr,yearNum,fuel,kmNum);
+  return { min: Math.round(base*0.96), max: Math.round(base*1.05) };
+}
 
-  const vid = makeVID();
-  const payload = {
-    vid,
-    name:$('name').value.trim(),
-    phone:$('phone').value.trim(),
-    city:$('city').value.trim(),
-    type:$('type').value,
-    brand:$('brand').value.trim(),
-    model:$('model').value.trim(),
-    year:$('year').value.trim(),
-    fuel:FUEL,
-    km:$('km').value.trim(),
-    reg:$('reg').value.trim(),
-    owner:$('owner').value.trim(),
-    rcStatus:'ok', insuranceStatus:'ok', greenTax:'ok',
-    notes:'Lead via Sell Page (pre-offer save)', source:'sell-page'
+/* ------------ Save + then show offer ------------- */
+getOfferBtn.addEventListener('click', async ()=>{
+  saveErr.classList.add('hidden'); saveErr.textContent='';
+  if(!requiredFilled()){ toast('Please fill all required fields'); return; }
+  const payload={
+    vid:VID, source:'sell-web',
+    name:nameEl.value.trim(), phone:phoneEl.value.trim(), city:cityEl.value.trim(),
+    type:typeEl.value, brand:brandEl.value.trim(), model:modelEl.value.trim(),
+    year:yearEl.value.trim(), fuel:FUEL, km:kmEl.value.trim(),
+    reg:regEl.value.trim(), owner:ownerEl.value.trim()
   };
 
-  // Save first
-  $('saveMsg').textContent='Saving…';
-  $('proceed').disabled = true;
+  // Save to Google Sheets
   try{
-    const res = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
-    const out = await res.json().catch(()=>({}));
-    if(!out || !out.ok) throw new Error(out && out.error ? out.error : 'Save failed');
-
-    $('saveMsg').innerHTML = '<span class="ok">Saved ✓</span> (ID: '+(out.id||vid)+')';
-    toast('Saved');
-
-    // Now compute & show price
-    const rng = estimateRange(payload.type, payload.brand, payload.year, payload.fuel, payload.km);
-    $('offerRange').textContent = money(rng.min)+' – '+money(rng.max);
-    $('offerPanel').classList.remove('hidden');
-
-    const msg = `Sell Enquiry (Estimate not final)
-${payload.brand} ${payload.model} ${payload.year} • ${payload.fuel.toUpperCase()}
-KM: ${payload.km} • City: ${payload.city}
-Estimate: ${$('offerRange').textContent}
-Mobile: ${payload.phone}
-ID: ${out.id||vid}
-Note: Final price after Doorstep Inspection.`;
-    $('waBtn').href = 'https://wa.me/919822292955?text='+encodeURIComponent(msg);
-
-  }catch(e){
-    $('saveMsg').innerHTML = '<span class="err">Save error:</span> '+e.message;
-    $('offerPanel').classList.add('hidden'); // don’t reveal price
+    const res = await fetch(GS_ENDPOINT, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    if(!res.ok){ throw new Error('Endpoint error: '+res.status); }
+    const out = await res.json();
+    if(!out.ok){ throw new Error(out.error||'Save failed'); }
+  }catch(err){
+    saveErr.textContent = 'Save error: '+err.message;
+    saveErr.classList.remove('hidden');
+    return;
   }
-  $('proceed').disabled = false;
-});
 
-/* ---------- Doorstep Inspection CTA ---------- */
-$('bookBtn').addEventListener('click', ()=>{
-  alert('Thanks! Our team will call you to schedule a doorstep inspection.\n(You can also ping on WhatsApp.)');
+  // Compute & show price AFTER save
+  const rng = estimateRange(typeEl.value, brandEl.value, yearEl.value, FUEL, kmEl.value);
+  priceText.textContent = '₹ '+rng.min.toLocaleString('en-IN')+' – ₹ '+rng.max.toLocaleString('en-IN');
+
+  const msg = `Sell Enquiry
+${brandEl.value} ${modelEl.value} ${yearEl.value} • ${FUEL?.toUpperCase()}
+KM: ${kmEl.value} • City: ${cityEl.value}
+Est Range: ₹${rng.min.toLocaleString('en-IN')}–₹${rng.max.toLocaleString('en-IN')}
+Owner:${ownerEl.value} • Reg:${regEl.value}
+ID: ${VID}`;
+  waBtn.href='https://wa.me/919822292955?text='+encodeURIComponent(msg);
+
+  step2.classList.remove('hidden');
+  step2.scrollIntoView({behavior:'smooth',block:'start'});
+  toast('Saved ✓');
 });
 </script>
 </body>
