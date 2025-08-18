@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -10,7 +10,6 @@
     --bg:#0b0f17; --card:#121826; --muted:#9aa3b2; --text:#e5e7eb;
     --brand:#f59e0b; --brand-2:#22c55e; --shadow:0 8px 28px rgba(0,0,0,.35);
   }
-  /* Light theme overrides */
   :root[data-theme="light"]{
     --bg:#f7f8fb; --card:#ffffff; --text:#0b0f17; --muted:#5b667a;
     --brand:#f59e0b; --brand-2:#16a34a;
@@ -29,21 +28,15 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
-  @media (min-width: 720px) {
-    #vehiclesRow { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  }
-  @media (min-width: 1024px) {
-    #vehiclesRow { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  }
+  @media (min-width: 720px) { #vehiclesRow { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 1024px) { #vehiclesRow { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
-  .vehicle { border-radius: 12px; padding: 8px; background: var(--card); border:1px solid rgba(255,255,255,.06); box-shadow: var(--shadow); }
+  .vehicle { border-radius: 12px; padding: 8px; background: var(--card);
+             border:1px solid rgba(255,255,255,.06); box-shadow: var(--shadow); }
   .vehicle .media { position:relative }
-  .vehicle .media img {
-    width: 100%; height: 150px;   /* लहान उंची */
-    object-fit: cover; border-radius: 10px;
-  }
-  .vehicle .tag{position:absolute;top:8px;left:8px;background:var(--brand);color:#111;padding:3px 8px;border-radius:999px;font-weight:700;font-size:12px}
-
+  .vehicle .media img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; }
+  .vehicle .tag{position:absolute;top:8px;left:8px;background:var(--brand);color:#111;
+                padding:3px 8px;border-radius:999px;font-weight:700;font-size:12px}
   .vehicle .body { padding: 8px; }
   .vehicle .title { font-size: 14px; font-weight: bold; }
   .vehicle .meta { font-size: 11px; color: gray; display:flex; justify-content:space-between }
@@ -60,7 +53,8 @@
   .brand h1{font-size:16px;margin:0;font-weight:800;letter-spacing:.3px}
   .top-links{display:flex;gap:10px;flex-wrap:wrap}
   .pill{padding:10px 14px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.04)}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));cursor:pointer}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;
+       border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));cursor:pointer}
   .btn:active{transform:translateY(1px)}
   .btn-primary{background:linear-gradient(180deg, #f59e0b, #b45309);color:#111}
   .toolbar{display:flex;gap:8px;align-items:center}
@@ -78,7 +72,7 @@
   .toggle button{padding:10px 14px;border-radius:999px;border:none;background:transparent;color:var(--text);cursor:pointer}
   .toggle button.active{background:var(--brand);color:#111;font-weight:700}
 
-  /* Grids */
+  /* Grids for “tools” */
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
   @media(min-width:720px){.grid{grid-template-columns:repeat(4,1fr)}}
   .card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:14px;box-shadow:var(--shadow);transition:transform .15s ease}
@@ -96,10 +90,8 @@
   @media(min-width:720px){footer .cols{grid-template-columns:repeat(4,1fr)}}
   footer a{display:block;padding:6px 0;color:#cbd5e1}
 
-  /* Float WhatsApp */
   .whatsapp{position:fixed;right:16px;bottom:16px;z-index:60}
   .whatsapp a{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:#25D366;color:#111;font-weight:700;box-shadow:var(--shadow)}
-
   .hidden{display:none !important}
 </style>
 </head>
@@ -120,7 +112,6 @@
         <button class="btn" id="darkToggle" aria-label="Toggle dark">🌙</button>
       </div>
     </div>
-    <!-- Header nav: Contact removed as requested -->
     <nav class="container top-links" aria-label="Primary">
       <a class="pill" href="index.html"  data-i18n="nav.home">Home</a>
       <a class="pill" href="buy.html"    data-i18n="nav.buy">Buy</a>
@@ -142,21 +133,15 @@
       </div>
       <div id="panelBuy"  role="tabpanel" aria-labelledby="tabBuy"  style="margin-top:14px">
         <div class="grid">
-          <a class="card" href="buy.html#cars">
-            <div class="toolcard"><span class="toolicon">🚗</span><div><h3 data-i18n="hero.buycar">Buy Car</h3><div class="muted">Explore verified listings</div></div></div>
-          </a>
-          <a class="card" href="buy.html#bikes">
-            <div class="toolcard"><span class="toolicon">🏍️</span><div><h3 data-i18n="hero.buybike">Buy Bike</h3><div class="muted">Curated options</div></div></div>
-          </a>
-          <a class="card" href="buy.html#scooters">
-            <div class="toolcard"><span class="toolicon">🛵</span><div><h3>Buy Scooter</h3><div class="muted">Popular picks</div></div></div>
-          </a>
+          <a class="card" href="buy.html#cars"><h3 data-i18n="hero.buycar">Buy Car</h3><div class="muted">Explore verified listings</div></a>
+          <a class="card" href="buy.html#bikes"><h3 data-i18n="hero.buybike">Buy Bike</h3><div class="muted">Curated options</div></a>
+          <a class="card" href="buy.html#scooters"><h3>Buy Scooter</h3><div class="muted">Popular picks</div></a>
         </div>
       </div>
       <div id="panelSell" role="tabpanel" aria-labelledby="tabSell" class="hidden" style="margin-top:14px">
         <div class="grid">
-          <a class="card" href="sell.html#car"><div class="toolcard"><span class="toolicon">🚘</span><div><h3 data-i18n="hero.sellcar">Sell Car</h3><div class="muted">Doorstep inspection</div></div></div></a>
-          <a class="card" href="sell.html#bike"><div class="toolcard"><span class="toolicon">🏍️</span><div><h3 data-i18n="hero.sellbike">Sell Bike</h3><div class="muted">Quick approval</div></div></div></a>
+          <a class="card" href="sell.html#car"><h3 data-i18n="hero.sellcar">Sell Car</h3><div class="muted">Doorstep inspection</div></a>
+          <a class="card" href="sell.html#bike"><h3 data-i18n="hero.sellbike">Sell Bike</h3><div class="muted">Quick approval</div></a>
         </div>
       </div>
     </div>
@@ -174,58 +159,18 @@
       </div>
       <div id="vehiclesRow" aria-live="polite"><div class="muted">Loading…</div></div>
     </section>
-
-    <!-- TOOLS -->
-    <section aria-labelledby="toolsHeading" style="margin:28px 0">
-      <h3 id="toolsHeading" data-i18n="tools.title">Tools & Services</h3>
-      <div class="grid">
-        <a class="card" href="insurance.html">
-          <div class="toolcard"><span class="toolicon">🛡️</span><div><h3>Insurance</h3><div class="muted">Buy / Renew</div></div></div>
-        </a>
-        <a class="card" href="tools.html#fastag">
-          <div class="toolcard"><span class="toolicon">🏷️</span><div><h3>FASTag</h3><div class="muted">Recharge or Buy</div></div></div>
-        </a>
-        <a class="card" href="valuation.html">
-          <div class="toolcard"><span class="toolicon">📈</span><div><h3>Valuation</h3><div class="muted">Instant estimate</div></div></div>
-        </a>
-        <a class="card" href="https://hsrpmhzone2.in/" target="_blank" rel="noopener">
-          <div class="toolcard"><span class="toolicon">🔖</span><div><h3>HSRP Plate</h3><div class="muted">Official portal</div></div></div>
-        </a>
-        <a class="card" href="https://mahatrafficechallan.gov.in/" target="_blank" rel="noopener">
-          <div class="toolcard"><span class="toolicon">🧾</span><div><h3>Challan Payment</h3><div class="muted">Maharashtra</div></div></div>
-        </a>
-      </div>
-    </section>
   </main>
 
-  <!-- WhatsApp floating -->
   <div class="whatsapp"><a href="https://wa.me/919822292955" target="_blank" rel="noopener">WhatsApp</a></div>
   <div id="toast" class="toast" role="status" aria-live="polite">Saved!</div>
 
-  <!-- FOOTER (links only; no navbar) -->
   <footer>
     <div class="container">
       <div class="cols" style="padding:20px 0 8px">
-        <div>
-          <h3>Second Wheel</h3>
-          <p class="muted">Trusted Vehicles, Smart Deals</p>
-        </div>
-        <div>
-          <h4>Company</h4>
-          <a href="about.html">About Us</a>
-          <a href="contact.html">Contact Us</a>
-        </div>
-        <div>
-          <h4>Legal</h4>
-          <a href="terms.html">Terms & Conditions</a>
-          <a href="privacy.html">Privacy Policy</a>
-          <a href="disclaimer.html">Disclaimer</a>
-        </div>
-        <div>
-          <h4>Follow</h4>
-          <a href="#">Instagram</a>
-          <a href="#">Facebook</a>
-        </div>
+        <div><h3>Second Wheel</h3><p class="muted">Trusted Vehicles, Smart Deals</p></div>
+        <div><h4>Company</h4><a href="about.html">About Us</a><a href="contact.html">Contact Us</a></div>
+        <div><h4>Legal</h4><a href="terms.html">Terms & Conditions</a><a href="privacy.html">Privacy Policy</a><a href="disclaimer.html">Disclaimer</a></div>
+        <div><h4>Follow</h4><a href="#">Instagram</a><a href="#">Facebook</a></div>
       </div>
       <div class="muted" style="padding:8px 0 24px">© <span id="yr"></span> Second Wheel – All rights reserved.</div>
     </div>
@@ -234,71 +179,54 @@
   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Language + Theme bootstrap (FIRST) -->
+  <!-- Language + Theme bootstrap -->
   <script>
   const I18N = {
     en:{'nav.home':'Home','nav.buy':'Buy','nav.sell':'Sell','nav.valuation':'Valuation','nav.tools':'Tools',
         'hero.title':'Trusted Vehicles, Smart Deals','hero.subtitle':'Buy & Sell pre-owned Cars and Bikes with complete peace of mind.',
         'hero.buy':'Buy','hero.sell':'Sell','hero.buycar':'Buy Car','hero.buybike':'Buy Bike','hero.sellcar':'Sell Car','hero.sellbike':'Sell Bike',
-        'feat.title':'Featured Vehicles','feat.filter':'Brand','tools.title':'Tools & Services'},
+        'feat.title':'Featured Vehicles','feat.filter':'Brand'},
     hi:{'nav.home':'होम','nav.buy':'खरीदें','nav.sell':'बेचें','nav.valuation':'वैल्यूएशन','nav.tools':'टूल्स',
         'hero.title':'ट्रस्टेड व्हीकल्स, स्मार्ट डील्स','hero.subtitle':'पुरानी कार/बाइक निश्चिंत होकर खरीदें और बेचें।',
         'hero.buy':'खरीदें','hero.sell':'बेचें','hero.buycar':'कार खरीदें','hero.buybike':'बाइक खरीदें','hero.sellcar':'कार बेचें','hero.sellbike':'बाइक बेचें',
-        'feat.title':'फ़ीचर्ड वाहन','feat.filter':'ब्रांड','tools.title':'टूल्स और सेवाएँ'},
+        'feat.title':'फ़ीचर्ड वाहन','feat.filter':'ब्रांड'},
     mr:{'nav.home':'मुखपृष्ठ','nav.buy':'खरेदी','nav.sell':'विक्री','nav.valuation':'मूल्यांकन','nav.tools':'साधने',
         'hero.title':'विश्वसनीय व्हेइकल्स, स्मार्ट डील्स','hero.subtitle':'जुन्या कार/बाईक निर्धास्तपणे खरेदी-विक्री करा.',
         'hero.buy':'खरेदी','hero.sell':'विक्री','hero.buycar':'कार खरेदी','hero.buybike':'बाईक खरेदी','hero.sellcar':'कार विक्री','hero.sellbike':'बाईक विक्री',
-        'feat.title':'फीचर्ड वाहने','feat.filter':'ब्रँड','tools.title':'टूल्स आणि सेवा'}
+        'feat.title':'फीचर्ड वाहने','feat.filter':'ब्रँड'}
   };
-
   const KEY_LANG='secondwheel.lang', KEY_THEME='secondwheel.theme';
   const langSeg=document.getElementById('langSeg');
   const darkBtn=document.getElementById('darkToggle');
+  const toastEl=document.getElementById('toast');
 
+  function toast(msg){ toastEl.textContent=msg; toastEl.classList.add('show'); clearTimeout(window.__t); window.__t=setTimeout(()=>toastEl.classList.remove('show'),1400); }
   function applyLang(l){
     document.querySelectorAll('[data-i18n]').forEach(el=>{
       const k=el.getAttribute('data-i18n');
       if(I18N[l] && I18N[l][k]) el.textContent=I18N[l][k];
     });
     localStorage.setItem(KEY_LANG,l);
-    if(langSeg){
-      langSeg.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
-    }
+    langSeg?.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
   }
   function setTheme(t){
     document.documentElement.setAttribute('data-theme',t);
     localStorage.setItem(KEY_THEME,t);
     if(darkBtn) darkBtn.textContent=(t==='dark')?'🌙':'☀️';
   }
-  function toast(msg){
-    const t=document.getElementById('toast'); if(!t) return;
-    t.textContent=msg; t.classList.add('show'); clearTimeout(window.__t);
-    window.__t=setTimeout(()=>t.classList.remove('show'),1400);
-  }
-
   document.addEventListener('DOMContentLoaded',()=>{
-    try{
-      const y=document.getElementById('yr'); if(y) y.textContent=new Date().getFullYear();
-      applyLang(localStorage.getItem(KEY_LANG)||'en');
-      setTheme(localStorage.getItem(KEY_THEME)||'dark');
-
-      if(langSeg){
-        langSeg.addEventListener('click',e=>{
-          const btn=e.target.closest('button[data-lang]');
-          if(btn) { applyLang(btn.dataset.lang); toast('Language: '+btn.dataset.lang.toUpperCase()); }
-        });
-      }
-      if(darkBtn){
-        darkBtn.addEventListener('click',()=>{
-          const next=(localStorage.getItem(KEY_THEME)||'dark')==='dark'?'light':'dark';
-          setTheme(next);
-        });
-      }
-    }catch(err){ console.error('Init error:',err); }
+    document.getElementById('yr').textContent=new Date().getFullYear();
+    applyLang(localStorage.getItem(KEY_LANG)||'en');
+    setTheme(localStorage.getItem(KEY_THEME)||'dark');
+    langSeg.addEventListener('click',e=>{
+      const btn=e.target.closest('button[data-lang]'); if(!btn) return;
+      applyLang(btn.dataset.lang); toast('Language: '+btn.dataset.lang.toUpperCase());
+    });
+    darkBtn.addEventListener('click',()=>{ const next=(localStorage.getItem(KEY_THEME)||'dark')==='dark'?'light':'dark'; setTheme(next); });
   });
   </script>
 
-  <!-- Featured from Supabase (robust folder + image loader) -->
+  <!-- Featured from Supabase (robust loader with extensionless support) -->
   <script>
   (function(){
     const SUPABASE_URL='https://wbjwvxckbfkutqqbgupq.supabase.co';
@@ -307,7 +235,6 @@
 
     const row = document.getElementById('vehiclesRow');
     const brandFilter = document.getElementById('brandFilter');
-    const IMG_EXT = /\.(jpe?g|png|webp|avif)$/i;
 
     function card(v){
       const el=document.createElement('article');
@@ -323,57 +250,52 @@
           <div class="muted" style="margin:6px 0 4px">${v.year||''} • ${v.km||''} km</div>
           <p class="muted" style="margin:6px 0">${v.desc||''}</p>
           <div class="actions">
-            <button class="btn wish">♡ Wishlist</button>
+            <a class="btn" href="#" onclick="event.preventDefault()">♡ Wishlist</a>
             <a class="btn btn-primary" href="https://wa.me/919822292955?text=${encodeURIComponent('Interested: '+v.title)}">Enquire Now</a>
           </div>
         </div>`;
       return el;
     }
-
     function publicUrl(client, path){
       const { data } = client.storage.from(BUCKET).getPublicUrl(path);
       return data?.publicUrl || `${SUPABASE_URL}/storage/v1/object/public/${path}`;
     }
-
     async function list(client, prefix){
       const { data } = await client.storage.from(BUCKET).list(prefix, { limit: 200 });
       return data || [];
     }
-
+    // Accept ANY non-json file (works even if filename has no extension)
     async function firstImageUrl(client, prefix){
       const listArr = await list(client, prefix);
-      const first = listArr.find(x => IMG_EXT.test(x.name));
+      const first = listArr
+        .filter(x => !/\.json$/i.test(x.name))
+        .sort((a,b)=> a.name.localeCompare(b.name))[0];
       return first ? publicUrl(client, `${prefix}/${first.name}`) : '';
     }
 
     async function run(){
       const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-      // 1) list subfolders under featured/
       const roots = await list(client, 'featured');
 
       const items = [];
       for(const f of (roots||[])){
         const folderName = f.name;
-        if(!folderName || /\./.test(folderName)) continue; // skip files
+        if(!folderName || /\./.test(folderName)) continue;
         const base = `featured/${folderName}`;
 
-        // 2) read meta.json (skip if not found)
         let metaJson = {};
         try{
           const dl = await client.storage.from(BUCKET).download(`${base}/meta.json`);
-          if(dl.data){
-            try{ metaJson = JSON.parse(await dl.data.text()); }catch{}
-          }
+          if(dl.data){ try{ metaJson = JSON.parse(await dl.data.text()); }catch{} }
         }catch(_){}
 
-        // 3) image priority: featured/<VID> -> <type>/<VID> -> logo.png
         let img = await firstImageUrl(client, base);
         if(!img && metaJson.type){
           const alt = `${metaJson.type}/${folderName}`;
           img = await firstImageUrl(client, alt);
         }
-        if(!img) img = publicUrl(client, 'vehicals/logo.png'); // fallback to your logo in same bucket
+        // corrected fallback (no extra 'vehicals/' prefix inside getPublicUrl)
+        if(!img) img = publicUrl(client, 'logo.png');
 
         items.push({
           title: metaJson.title || folderName,
@@ -386,7 +308,6 @@
         });
       }
 
-      // 4) brand filter + render
       const brands = [...new Set(items.map(i=>i.brand).filter(Boolean))];
       brandFilter.innerHTML = '<option value="">All</option>' + brands.map(b=>`<option>${b}</option>`).join('');
       brandFilter.onchange = ()=>render(brandFilter.value);
@@ -404,12 +325,11 @@
       try{ await run(); }
       catch(e){
         console.warn('Featured fetch failed, showing placeholder.', e);
-        row.innerHTML='';
-        row.appendChild(card({
-          title:'Sample Vehicle', brand:'—', price:'', year:'', km:'',
-          desc:'Upload images & meta.json to vehicals/featured/<VID>/', 
-          image:'https://images.unsplash.com/photo-1511918984145-48de785d4c4f?auto=format&fit=crop&w=900&q=60'
-        }));
+        const fallback = document.createElement('div');
+        fallback.className='muted';
+        fallback.style.padding='8px';
+        fallback.textContent='No featured vehicles found.';
+        row.innerHTML=''; row.appendChild(fallback);
       }
     });
   })();
