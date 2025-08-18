@@ -1,401 +1,391 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <title>Sell Vehicle - Second Wheel</title>
-  <style>
-    body { font-family: Arial, sans-serif; background-color: #f2f2f2; padding: 40px; }
-    h2 { text-align: center; color: #333; }
-    form {
-      max-width: 700px;
-      margin: 0 auto;
-      background: white;
-      padding: 25px;
-      border-radius: 10px;
-    }
-    label { display: block; margin-top: 15px; font-weight: bold; }
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px;
-      width: 100%;
-      background-color: #e25a00;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover { background-color: #c24700; }
-    .tabs {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .tabs button {
-      padding: 8px 16px;
-      margin: 0 5px;
-      border: none;
-      background: #ddd;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .tabs button.active {
-      background: #e25a00;
-      color: white;
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Second Wheel — Instant Valuation</title>
+<meta name="theme-color" content="#0b0f17"/>
+<style>
+  :root{
+    --bg:#0b0f17; --card:#121826; --text:#e5e7eb; --muted:#9aa3b2;
+    --line:rgba(255,255,255,.12); --accent:#f59e0b; --accent2:#22c55e;
+    --shadow:0 12px 32px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"]{ --bg:#f7f8fb; --card:#fff; --text:#0b0f17; --muted:#5b667a; --line:rgba(0,0,0,.12) }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
+  header{position:sticky;top:0;z-index:20;background:rgba(11,15,23,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .flex{display:flex;align-items:center;gap:10px}
+  .space{justify-content:space-between}
+  .brand img{width:44px;height:44px;border-radius:12px;box-shadow:var(--shadow)}
+  .brand h1{margin:0;font-size:16px;letter-spacing:.35px}
+  .seg{display:inline-flex;gap:6px;padding:6px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.06)}
+  .seg button{border:0;background:transparent;padding:8px 12px;border-radius:999px;color:var(--text);cursor:pointer}
+  .seg button.active{background:var(--accent);color:#111;font-weight:800}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border:none}
+  .btn:disabled{opacity:.55;cursor:not-allowed}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+  .card.pad{padding:16px}
+  .title{margin:0 0 8px;font-weight:900}
+  .muted{color:var(--muted)}
+  .row{display:grid;grid-template-columns:1fr;gap:10px}
+  @media(min-width:720px){ .row{grid-template-columns:repeat(2,1fr)} }
+  label{font-weight:700;margin:6px 2px;display:block}
+  input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0f1626;color:var(--text);outline:none}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  .chip.active{background:var(--accent);color:#111;border-color:transparent;font-weight:800}
+  .actions{display:flex;gap:10px;flex-wrap:wrap}
+  .divider{height:1px;background:var(--line);margin:12px 0}
+
+  /* Steps */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 14px}
+  .step{padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.04);font-weight:700;text-align:center}
+  .step.active{background:var(--accent);color:#111;border-color:transparent}
+  .progress{height:6px;background:#1f2937;border-radius:999px;overflow:hidden;margin-top:6px}
+  .bar{height:100%;background:linear-gradient(90deg,var(--accent),#ef4444);width:0%}
+
+  /* Result */
+  .gauge{position:relative;height:10px;background:#111827;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+  .gauge > div{height:100%}
+  .g1{background:#ef4444;width:33%} .g2{background:#f59e0b;width:34%} .g3{background:#22c55e;width:33%}
+  .range{display:flex;justify-content:space-between;margin:6px 2px 0}
+  .big{font-size:28px;font-weight:900}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-weight:700}
+</style>
 </head>
 <body>
+<header>
+  <div class="wrap flex space">
+    <div class="brand flex">
+      <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel">
+      <h1>SECOND WHEEL</h1>
+    </div>
+    <div class="flex" style="gap:8px">
+      <div class="seg" id="langSeg">
+        <button data-lang="en" class="active">EN</button>
+        <button data-lang="hi">HI</button>
+        <button data-lang="mr">MR</button>
+      </div>
+      <button id="themeBtn" class="btn">🌙</button>
+    </div>
+  </div>
+</header>
 
-<h2>Sell Your Vehicle</h2>
-<p style="text-align:center;">Upload vehicle details below:</p>
-
-<form>
-  <div class="tabs">
-    <button type="button" id="carTab" class="active">Car</button>
-    <button type="button" id="bikeTab">Bike</button>
+<main class="wrap" id="app">
+  <!-- Progress -->
+  <div class="card pad">
+    <h2 class="title">Instant Valuation</h2>
+    <div class="steps">
+      <div class="step active" id="s1h">1. Vehicle</div>
+      <div class="step" id="s2h">2. Details</div>
+      <div class="step" id="s3h">3. Condition</div>
+      <div class="step" id="s4h">4. Result</div>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
   </div>
 
-  <label for="brandSelect">Select Brand:</label>
-  <select id="brandSelect" name="brand" required>
-    <option value="">-- Select Brand --</option>
-  </select>
+  <!-- STEP 1 -->
+  <section class="card pad" id="s1">
+    <h3 class="title">Select your vehicle</h3>
+    <div class="chips" id="typeChips">
+      <button class="chip active" data-vtype="car">🚗 Car</button>
+      <button class="chip" data-vtype="bike">🏍️ Bike</button>
+      <button class="chip" data-vtype="scooter">🛵 Scooter</button>
+    </div>
+    <div class="divider"></div>
+    <div class="row">
+      <div>
+        <label>Brand</label>
+        <input id="brand" placeholder="Maruti Suzuki / Hyundai / Honda…"/>
+      </div>
+      <div>
+        <label>Model / Variant</label>
+        <input id="model" placeholder="Swift VDi / i10 Sportz / Splendor…"/>
+      </div>
+      <div>
+        <label>City</label>
+        <input id="city" placeholder="Satara"/>
+      </div>
+      <div>
+        <label>Approx New Price (optional)</label>
+        <input id="newPrice" type="number" min="10000" step="1000" placeholder="Ex-showroom"/>
+      </div>
+    </div>
+    <div class="actions" style="margin-top:12px">
+      <button class="btn primary" id="next1">Continue</button>
+    </div>
+  </section>
 
-  <label for="modelSelect">Select Model:</label>
-  <select id="modelSelect" name="model" required>
-    <option value="">-- Select Model --</option>
-  </select>
+  <!-- STEP 2 -->
+  <section class="card pad" id="s2" hidden>
+    <h3 class="title">Basic details</h3>
+    <div class="row">
+      <div>
+        <label>Manufacturing Year</label>
+        <input id="year" type="number" min="1995" max="2099" placeholder="2018"/>
+      </div>
+      <div>
+        <label>Fuel</label>
+        <select id="fuel"><option>Petrol</option><option>Diesel</option><option>CNG</option><option>Electric</option></select>
+      </div>
+      <div>
+        <label>KMs Driven</label>
+        <input id="km" type="number" min="0" step="500" placeholder="60000"/>
+      </div>
+      <div id="transBox">
+        <label>Transmission</label>
+        <select id="trans"><option>Manual</option><option>Automatic</option></select>
+      </div>
+      <div>
+        <label>Owners</label>
+        <select id="owners"><option>1st</option><option>2nd</option><option>3rd</option><option>4th+</option></select>
+      </div>
+      <div>
+        <label>Registration No.</label>
+        <input id="reg" placeholder="MH12 AB 1234"/>
+      </div>
+    </div>
+    <div class="actions" style="margin-top:12px">
+      <button class="btn" id="back2">Back</button>
+      <button class="btn primary" id="next2">Continue</button>
+    </div>
+  </section>
 
-  <label>Year:</label>
-  <input type="number" name="year" required>
+  <!-- STEP 3 -->
+  <section class="card pad" id="s3" hidden>
+    <h3 class="title">Condition & Compliance</h3>
+    <div class="row">
+      <div>
+        <label>Overall Condition</label>
+        <select id="cond"><option>OK</option><option>Good</option><option>Excellent</option><option>Poor</option></select>
+      </div>
+      <div>
+        <label>Color</label>
+        <select id="color"><option>White</option><option>Silver</option><option>Grey</option><option>Black</option><option>Blue</option><option>Red</option><option>Other</option></select>
+      </div>
+      <div>
+        <label>RC Status</label>
+        <select id="rc"><option>Valid</option><option>Expired</option><option>Renewal Applied</option></select>
+      </div>
+      <div>
+        <label>Insurance</label>
+        <select id="ins"><option>Valid</option><option>Expired</option><option>Renewal Applied</option></select>
+      </div>
+      <div>
+        <label>Green Tax</label>
+        <select id="gt"><option>Paid</option><option>Not Paid</option></select>
+      </div>
+      <div>
+        <label>Fancy/Trending Number</label>
+        <select id="fancy"><option>No</option><option>Yes</option></select>
+      </div>
+    </div>
+    <div class="actions" style="margin-top:12px">
+      <button class="btn" id="back3">Back</button>
+      <button class="btn primary" id="calc">Get Valuation</button>
+    </div>
+  </section>
 
-  <label>Kilometers Driven:</label>
-  <input type="number" name="km" required>
+  <!-- STEP 4 -->
+  <section class="card pad" id="s4" hidden>
+    <h3 class="title">Your Estimated Price</h3>
 
-  <label>Upload RC Book:</label>
-  <input type="file" name="rc">
+    <div class="flex" style="gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <span class="pill" id="typeTag">CAR</span>
+      <span class="pill" id="brandTag">—</span>
+      <span class="pill" id="yearTag">—</span>
+      <span class="pill" id="kmTag">—</span>
+    </div>
 
-  <label>Upload Vehicle Images:</label>
-  <input type="file" name="images" multiple>
+    <div class="gauge"><div class="g1"></div><div class="g2"></div><div class="g3"></div></div>
+    <div class="range">
+      <div class="muted">Conservative</div>
+      <div class="muted">Average</div>
+      <div class="muted">Excellent</div>
+    </div>
 
-  <label>Accident History:</label>
-  <input type="checkbox" name="accident"> Yes
+    <div class="flex space" style="margin-top:12px;align-items:flex-end">
+      <div>
+        <div class="muted">Estimated Range</div>
+        <div class="big"><span id="min">₹—</span> — <span id="max">₹—</span></div>
+      </div>
+      <div>
+        <div class="muted">Most Likely</div>
+        <div class="big" id="mid">₹—</div>
+      </div>
+    </div>
 
-  <label>Modifications:</label>
-  <input type="checkbox" name="mod"> Yes
+    <div class="divider"></div>
+    <div class="actions">
+      <a id="wa" class="btn primary" target="_blank" rel="noopener">💬 Get Final Quote on WhatsApp</a>
+      <a id="call" class="btn" href="tel:+919822292955">📞 Call Now</a>
+      <button id="insp" class="btn">🚗 Book Doorstep Inspection</button>
+      <button id="again" class="btn" style="margin-left:auto">↺ Recalculate</button>
+    </div>
 
-  <label>Expected Price (Optional):</label>
-  <input type="number" name="price">
-
-  <button type="submit">Submit Details</button>
-</form>
+    <p class="muted" style="margin-top:10px">
+      *Final price depends on physical inspection, RC/Insurance status and market demand.
+    </p>
+  </section>
+</main>
 
 <script>
-const vehicleData = {
-  "cars": {
-    "Popular": {
-      "Maruti Suzuki": [
-        "Alto",
-        "Baleno",
-        "Swift",
-        "Dzire",
-        "Ertiga"
-      ],
-      "Hyundai": [
-        "i10",
-        "i20",
-        "Creta",
-        "Verna",
-        "Venue"
-      ],
-      "Tata": [
-        "Nexon",
-        "Tiago",
-        "Harrier",
-        "Punch",
-        "Altroz"
-      ],
-      "Mahindra": [
-        "Scorpio",
-        "Bolero",
-        "XUV300",
-        "Thar",
-        "XUV700"
-      ],
-      "Toyota": [
-        "Innova",
-        "Fortuner",
-        "Glanza",
-        "Urban Cruiser"
-      ],
-      "Honda": [
-        "City",
-        "Amaze",
-        "Jazz",
-        "WR-V"
-      ]
-    },
-    "All": {
-      "Ambassador": [
-        "Classic",
-        "Nova"
-      ],
-      "Ashok Leyland": [
-        "Stile"
-      ],
-      "Aston Martin": [
-        "DB11",
-        "Vantage"
-      ],
-      "Audi": [
-        "A4",
-        "Q3",
-        "Q5",
-        "A6"
-      ],
-      "BYD": [
-        "Atto 3",
-        "e6"
-      ],
-      "BMW": [
-        "X1",
-        "X3",
-        "5 Series",
-        "3 Series"
-      ],
-      "Chevrolet": [
-        "Beat",
-        "Cruze",
-        "Spark",
-        "Enjoy"
-      ],
-      "Citroen": [
-        "C3",
-        "C5 Aircross"
-      ],
-      "Datsun": [
-        "Go",
-        "Redi-Go"
-      ],
-      "Fiat": [
-        "Punto",
-        "Linea"
-      ],
-      "Ford": [
-        "EcoSport",
-        "Figo",
-        "Endeavour"
-      ],
-      "Hindustan Motors": [
-        "Ambassador"
-      ],
-      "Isuzu": [
-        "MU-X",
-        "D-Max"
-      ],
-      "Jeep": [
-        "Compass",
-        "Meridian"
-      ],
-      "Kia": [
-        "Seltos",
-        "Sonet",
-        "Carens"
-      ],
-      "Lexus": [
-        "RX",
-        "NX"
-      ],
-      "MG": [
-        "Hector",
-        "ZS EV"
-      ],
-      "Mercedes-Benz": [
-        "C-Class",
-        "E-Class"
-      ],
-      "Mitsubishi": [
-        "Pajero",
-        "Outlander"
-      ],
-      "Nissan": [
-        "Magnite",
-        "Kicks"
-      ],
-      "Renault": [
-        "Kwid",
-        "Duster",
-        "Triber"
-      ],
-      "Skoda": [
-        "Rapid",
-        "Kushaq",
-        "Slavia"
-      ],
-      "Volkswagen": [
-        "Polo",
-        "Vento",
-        "Taigun"
-      ],
-      "Volvo": [
-        "XC40",
-        "XC60"
-      ]
-    }
-  },
-  "bikes": {
-    "Popular": {
-      "Hero": [
-        "Splendor",
-        "HF Deluxe",
-        "Glamour",
-        "Xtreme"
-      ],
-      "Honda": [
-        "Activa",
-        "Shine",
-        "Hornet",
-        "Unicorn"
-      ],
-      "TVS": [
-        "Apache",
-        "Jupiter",
-        "Ntorq",
-        "XL100"
-      ],
-      "Bajaj": [
-        "Pulsar",
-        "Platina",
-        "Avenger",
-        "CT100"
-      ],
-      "Yamaha": [
-        "FZ",
-        "R15",
-        "Ray ZR",
-        "MT-15"
-      ],
-      "Royal Enfield": [
-        "Classic 350",
-        "Bullet",
-        "Meteor",
-        "Hunter"
-      ]
-    },
-    "All": {
-      "Aprilia": [
-        "SR 160",
-        "Storm 125"
-      ],
-      "Benelli": [
-        "TRK 502",
-        "Imperiale 400"
-      ],
-      "BMW Motorrad": [
-        "G310R",
-        "G310GS"
-      ],
-      "Ducati": [
-        "Monster",
-        "Panigale"
-      ],
-      "Harley-Davidson": [
-        "Street 750",
-        "Iron 883"
-      ],
-      "Husqvarna": [
-        "Vitpilen 250",
-        "Svartpilen 250"
-      ],
-      "Jawa": [
-        "Jawa",
-        "Forty Two",
-        "Perak"
-      ],
-      "KTM": [
-        "Duke 200",
-        "RC 390",
-        "Adventure 250"
-      ],
-      "Mahindra": [
-        "Gusto",
-        "Mojo"
-      ],
-      "Suzuki": [
-        "Access",
-        "Burgman",
-        "Gixxer"
-      ],
-      "Triumph": [
-        "Speed Triple",
-        "Street Twin"
-      ],
-      "Ultraviolette": [
-        "F77"
-      ],
-      "Yezdi": [
-        "Roadster",
-        "Scrambler"
-      ]
-    }
-  }
-};
-let currentCategory = 'cars';
+/* ---------- Theme ---------- */
+const THEME_KEY='secondwheel.theme';
+const themeBtn=document.getElementById('themeBtn');
+function setTheme(t){ document.documentElement.setAttribute('data-theme',t); localStorage.setItem(THEME_KEY,t); themeBtn.textContent=t==='dark'?'🌙':'☀️'; }
+themeBtn.onclick=()=> setTheme((localStorage.getItem(THEME_KEY)||'dark')==='dark'?'light':'dark');
+setTheme(localStorage.getItem(THEME_KEY)||'dark');
 
-const brandSelect = document.getElementById('brandSelect');
-const modelSelect = document.getElementById('modelSelect');
-const carTab = document.getElementById('carTab');
-const bikeTab = document.getElementById('bikeTab');
+/* ---------- Simple language toggle (UI only) ---------- */
+document.getElementById('langSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  [...e.currentTarget.children].forEach(x=>x.classList.remove('active')); b.classList.add('active');
+});
 
-function populateBrands(category) {
-  brandSelect.innerHTML = '<option value="">-- Select Brand --</option>';
-  const brands = { ...vehicleData[category]["Popular"], ...vehicleData[category]["All"] };
-  Object.keys(brands).sort().forEach(brand => {
-    let opt = document.createElement('option');
-    opt.value = brand;
-    opt.textContent = brand;
-    brandSelect.appendChild(opt);
-  });
-  modelSelect.innerHTML = '<option value="">-- Select Model --</option>';
+/* ---------- Steps ---------- */
+const S=[document.getElementById('s1'),document.getElementById('s2'),document.getElementById('s3'),document.getElementById('s4')];
+const H=[document.getElementById('s1h'),document.getElementById('s2h'),document.getElementById('s3h'),document.getElementById('s4h')];
+const bar=document.getElementById('bar');
+function go(i){
+  S.forEach((el,idx)=> el.hidden = idx!==i);
+  H.forEach((el,idx)=> el.classList.toggle('active', idx<=i));
+  bar.style.width = ((i)/3*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-brandSelect.addEventListener('change', () => {
-  const selectedBrand = brandSelect.value;
-  modelSelect.innerHTML = '<option value="">-- Select Model --</option>';
-  if (selectedBrand && vehicleData[currentCategory]) {
-    const allModels = { ...vehicleData[currentCategory]["Popular"], ...vehicleData[currentCategory]["All"] };
-    const models = allModels[selectedBrand] || [];
-    models.forEach(model => {
-      let opt = document.createElement('option');
-      opt.value = model;
-      opt.textContent = model;
-      modelSelect.appendChild(opt);
-    });
+/* ---------- Inputs/State ---------- */
+let TYPE='car';
+document.getElementById('typeChips').addEventListener('click',e=>{
+  const b=e.target.closest('.chip'); if(!b) return;
+  [...e.currentTarget.children].forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  TYPE=b.dataset.vtype;
+  document.getElementById('transBox').style.display = (TYPE==='car')?'block':'none';
+});
+
+const $ = id => document.getElementById(id);
+const inputs = {
+  brand:$('brand'), model:$('model'), city:$('city'), newPrice:$('newPrice'),
+  year:$('year'), fuel:$('fuel'), km:$('km'), trans:$('trans'),
+  owners:$('owners'), reg:$('reg'),
+  cond:$('cond'), color:$('color'), rc:$('rc'), ins:$('ins'), gt:$('gt'), fancy:$('fancy')
+};
+
+/* ---------- Navigation ---------- */
+$('next1').onclick=()=>{
+  if(!inputs.brand.value || !inputs.model.value){ alert('Please enter Brand & Model'); return; }
+  go(1);
+};
+$('back2').onclick=()=>go(0);
+$('next2').onclick=()=>{
+  if(!inputs.year.value || !inputs.km.value){ alert('Please enter Year & KM'); return; }
+  // 15+ years soft prompt
+  const age = new Date().getFullYear()-Number(inputs.year.value||0);
+  if(age>=15) alert('Vehicle is 15+ years old. Please ensure RC & Insurance renewal for best price.');
+  go(2);
+};
+$('back3').onclick=()=>go(1);
+
+/* ---------- Valuation Logic ---------- */
+function strongBrand(type,brand){
+  brand=String(brand||'').toUpperCase();
+  if(type==='car') return ['MARUTI SUZUKI','HYUNDAI','HONDA','TOYOTA','TATA','KIA','MAHINDRA'].includes(brand);
+  if(type==='bike') return ['HERO','HONDA','BAJAJ','ROYAL ENFIELD','TVS','SUZUKI'].includes(brand);
+  return ['HONDA','HERO','TVS','SUZUKI','YAMAHA'].includes(brand);
+}
+function ownersVal(s){ return s.startsWith('1')?1:s.startsWith('2')?2:s.startsWith('3')?3:4; }
+function colorAdj(c){
+  c=String(c||'').toUpperCase();
+  if(['WHITE','SILVER','GREY','GRAY'].includes(c)) return 1.02;
+  if(['BLACK','BLUE','RED'].includes(c)) return 1.00;
+  return 0.98;
+}
+function depFactor(type,years){
+  years=Math.max(0,years);
+  if(type==='car')   return Math.max(0.10, Math.pow(1-0.18, years));
+  if(type==='bike')  return Math.max(0.07, Math.pow(1-0.22, years));
+  return Math.max(0.07, Math.pow(1-0.20, years));
+}
+function baseGuess(type,brand){
+  const base = type==='car'?600000:(type==='bike'?70000:60000);
+  return strongBrand(type,brand)? base*1.08: base;
+}
+function rupee(n){ try{return '₹'+Number(n).toLocaleString('en-IN');}catch{return '₹'+n} }
+
+function compute(){
+  const year=Number(inputs.year.value||0);
+  const age=Math.max(0,new Date().getFullYear()-year);
+  const km=Number(inputs.km.value||0);
+  const own=ownersVal(inputs.owners.value);
+  const fuel=inputs.fuel.value, brand=inputs.brand.value, color=inputs.color.value;
+
+  let newP = Number(inputs.newPrice.value||0) || baseGuess(TYPE,brand);
+  let p = newP * depFactor(TYPE, age);
+
+  if(TYPE==='car'){
+    if(km>60000) p -= (km-60000)*0.75;
+    else if(km<30000) p *= 1.04;
+    if(inputs.trans.value==='Automatic') p*=1.03;
+  }else{
+    if(km>40000) p -= (km-40000)*0.30;
+    else if(km<15000) p *= 1.05;
   }
-});
 
-carTab.addEventListener('click', () => {
-  currentCategory = 'cars';
-  carTab.classList.add('active');
-  bikeTab.classList.remove('active');
-  populateBrands(currentCategory);
-});
+  p *= (own===1?1:own===2?0.93:own===3?0.85:0.75);
+  if(fuel==='Diesel')   p *= strongBrand(TYPE,brand)?1.06:1.03;
+  if(fuel==='CNG')      p *= 1.04;
+  if(fuel==='Electric') p *= 1.08;
 
-bikeTab.addEventListener('click', () => {
-  currentCategory = 'bikes';
-  bikeTab.classList.add('active');
-  carTab.classList.remove('active');
-  populateBrands(currentCategory);
-});
+  p *= colorAdj(color);
+  if(inputs.fancy.value==='Yes') p *= 1.015;
 
-populateBrands(currentCategory);
+  if(inputs.rc.value==='Expired') p*=0.40;
+  if(inputs.ins.value==='Expired') p*=0.97;
+  if(inputs.gt.value==='Not Paid') p*=0.98;
+
+  p = Math.max(5000, Math.round(p/1000)*1000);
+
+  // Range (Cars24-style): -7% / +7% around mid
+  const min = Math.max(5000, Math.round(p*0.93/1000)*1000);
+  const max = Math.max(min+1000, Math.round(p*1.07/1000)*1000);
+  return {min,max,mid:p};
+}
+
+/* ---------- Calculate & Show ---------- */
+$('calc').onclick=()=>{
+  const {min,max,mid}=compute();
+
+  // tags
+  $('typeTag').textContent = TYPE.toUpperCase();
+  $('brandTag').textContent = (inputs.brand.value||'').toUpperCase();
+  $('yearTag').textContent  = inputs.year.value||'—';
+  $('kmTag').textContent    = (Number(inputs.km.value||0)).toLocaleString('en-IN')+' km';
+
+  $('min').textContent = rupee(min);
+  $('max').textContent = rupee(max);
+  $('mid').textContent = rupee(mid);
+
+  // WhatsApp
+  const msg = encodeURIComponent(
+    `Valuation Request:%0A${inputs.brand.value} ${inputs.model.value} (${TYPE.toUpperCase()})%0A`+
+    `Year ${inputs.year.value} • ${inputs.km.value} KM • ${inputs.owners.value} Owner(s)%0A`+
+    `Fuel: ${inputs.fuel.value} • Reg: ${inputs.reg.value}%0A`+
+    `Estimated Range: ${rupee(min)} – ${rupee(max)}%0AMost Likely: ${rupee(mid)}%0A`+
+    `City: ${inputs.city.value}`
+  );
+  $('wa').href = `https://wa.me/919822292955?text=${msg}`;
+
+  go(3);
+};
+
+$('again').onclick=()=>go(2);
+$('insp').onclick=()=>alert('Doorstep inspection booked. Our team will contact you shortly.');
 </script>
-
 </body>
 </html>
