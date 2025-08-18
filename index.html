@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -22,59 +22,34 @@
   a{color:inherit;text-decoration:none}
   img{max-width:100%;display:block}
   .container{max-width:1160px;margin:0 auto;padding:16px}
-/* --- Featured Vehicle Card Compact --- */
-#vehiclesRow {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-@media (min-width: 720px) {
+
+  /* --- Featured Vehicle Card Compact --- */
   #vehiclesRow {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
-}
-@media (min-width: 1024px) {
-  #vehiclesRow {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  @media (min-width: 720px) {
+    #vehiclesRow { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
-}
+  @media (min-width: 1024px) {
+    #vehiclesRow { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
 
-.vehicle {
-  border-radius: 12px;
-  padding: 8px;
-}
+  .vehicle { border-radius: 12px; padding: 8px; background: var(--card); border:1px solid rgba(255,255,255,.06); box-shadow: var(--shadow); }
+  .vehicle .media { position:relative }
+  .vehicle .media img {
+    width: 100%; height: 150px;   /* लहान उंची */
+    object-fit: cover; border-radius: 10px;
+  }
+  .vehicle .tag{position:absolute;top:8px;left:8px;background:var(--brand);color:#111;padding:3px 8px;border-radius:999px;font-weight:700;font-size:12px}
 
-.vehicle .media img {
-  width: 100%;
-  height: 150px;   /* लहान उंची */
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.vehicle .body {
-  padding: 8px;
-}
-
-.vehicle .title {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.vehicle .meta {
-  font-size: 11px;
-  color: gray;
-}
-
-.vehicle .desc {
-  font-size: 12px;
-  margin-top: 4px;
-}
-
-.vehicle .actions .btn {
-  padding: 6px 10px;
-  font-size: 12px;
-  border-radius: 8px;
-}
+  .vehicle .body { padding: 8px; }
+  .vehicle .title { font-size: 14px; font-weight: bold; }
+  .vehicle .meta { font-size: 11px; color: gray; display:flex; justify-content:space-between }
+  .vehicle .desc { font-size: 12px; margin-top: 4px; }
+  .vehicle .actions { display:flex; gap:8px; margin-top:8px }
+  .vehicle .actions .btn { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
 
   /* Header */
   header{position:sticky;top:0;z-index:50;background:rgba(11,15,23,.72);
@@ -110,21 +85,6 @@
   .card:hover{transform:translateY(-2px)}
   .card h3{margin:10px 0 4px;font-size:15px}
   .muted{color:var(--muted)}
-
-  /* Featured row */
-  .row{display:flex;gap:12px;overflow:auto;scroll-snap-type:x mandatory;padding-bottom:2px}
-  .vehicle{min-width:292px;background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:18px;box-shadow:var(--shadow);scroll-snap-align:center}
-  .vehicle .media{position:relative}
-  .vehicle .tag{position:absolute;top:10px;left:10px;background:var(--brand);color:#111;padding:4px 8px;border-radius:999px;font-weight:700;font-size:12px}
-  .vehicle .body{padding:12px}
-  .vehicle .title{font-weight:700}
-  .vehicle .meta{display:flex;justify-content:space-between;color:#cbd5e1;font-size:12px}
-  .vehicle .actions{display:flex;gap:8px;margin-top:10px}
-  .wish{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04)}
-
-  /* Tools icons */
-  .toolcard{display:flex;gap:10px;align-items:center}
-  .toolicon{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.06);display:grid;place-items:center}
 
   /* Toast */
   .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;border:1px solid rgba(255,255,255,.08);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .3s}
@@ -212,7 +172,7 @@
           <select id="brandFilter" class="btn" style="min-width:160px"></select>
         </div>
       </div>
-      <div id="vehiclesRow" class="row" aria-live="polite"></div>
+      <div id="vehiclesRow" aria-live="polite"><div class="muted">Loading…</div></div>
     </section>
 
     <!-- TOOLS -->
@@ -318,9 +278,7 @@
 
   document.addEventListener('DOMContentLoaded',()=>{
     try{
-      // init year
       const y=document.getElementById('yr'); if(y) y.textContent=new Date().getFullYear();
-      // init language + theme
       applyLang(localStorage.getItem(KEY_LANG)||'en');
       setTheme(localStorage.getItem(KEY_THEME)||'dark');
 
@@ -340,16 +298,18 @@
   });
   </script>
 
-  <!-- Featured from Supabase (safe try/catch) -->
+  <!-- Featured from Supabase (robust folder + image loader) -->
   <script>
   (function(){
     const SUPABASE_URL='https://wbjwvxckbfkutqqbgupq.supabase.co';
     const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
     const BUCKET='vehicals';
-    const row = document.getElementById('vehiclesRow');
-    const brandFilter=document.getElementById('brandFilter');
 
-    function vehicleCard(v){
+    const row = document.getElementById('vehiclesRow');
+    const brandFilter = document.getElementById('brandFilter');
+    const IMG_EXT = /\.(jpe?g|png|webp|avif)$/i;
+
+    function card(v){
       const el=document.createElement('article');
       el.className='vehicle';
       el.innerHTML=`
@@ -359,7 +319,7 @@
         </div>
         <div class="body">
           <div class="title">${v.title}</div>
-          <div class="meta"><span>${v.brand}</span><span>${v.price||''}</span></div>
+          <div class="meta"><span>${v.brand||''}</span><span>${v.price||''}</span></div>
           <div class="muted" style="margin:6px 0 4px">${v.year||''} • ${v.km||''} km</div>
           <p class="muted" style="margin:6px 0">${v.desc||''}</p>
           <div class="actions">
@@ -370,59 +330,88 @@
       return el;
     }
 
+    function publicUrl(client, path){
+      const { data } = client.storage.from(BUCKET).getPublicUrl(path);
+      return data?.publicUrl || `${SUPABASE_URL}/storage/v1/object/public/${path}`;
+    }
+
+    async function list(client, prefix){
+      const { data } = await client.storage.from(BUCKET).list(prefix, { limit: 200 });
+      return data || [];
+    }
+
+    async function firstImageUrl(client, prefix){
+      const listArr = await list(client, prefix);
+      const first = listArr.find(x => IMG_EXT.test(x.name));
+      return first ? publicUrl(client, `${prefix}/${first.name}`) : '';
+    }
+
     async function run(){
-      try{
-        const client = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-        // list featured folders (prefix "featured/")
-        const { data:folders, error } = await client.storage.from(BUCKET).list('featured', {limit:100});
-        if(error) throw error;
+      const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const items=[];
-        for(const f of (folders||[])){
-          if(f.id || f.name){ // folder or file name
-            const folder='featured/'+(f.name||'');
-            // read meta.json if present
-            let info={title:f.name, brand:'', price:'', year:'', km:'', desc:''};
-            const { data:meta } = await client.storage.from(BUCKET).download(folder+'/meta.json');
-            if(meta){
-              try{ info = JSON.parse(await meta.text()); }catch{}
-            }
-            // get first image
-            const { data:imgs } = await client.storage.from(BUCKET).list(folder, {limit:1, search:'jpg'});
-            let imgPath = imgs && imgs[0] ? folder + '/' + imgs[0].name : null;
-            if(!imgPath){ imgPath = 'logo.png'; }
-            const { data:urlObj } = client.storage.from(BUCKET).getPublicUrl(imgPath);
-            items.push({
-              title:info.title||f.name, brand:info.brand||'', price:info.price||'',
-              year:info.year||'', km:info.km||'', desc:info.desc||'',
-              image:urlObj?.publicUrl || (SUPABASE_URL+'/storage/v1/object/public/'+imgPath)
-            });
+      // 1) list subfolders under featured/
+      const roots = await list(client, 'featured');
+
+      const items = [];
+      for(const f of (roots||[])){
+        const folderName = f.name;
+        if(!folderName || /\./.test(folderName)) continue; // skip files
+        const base = `featured/${folderName}`;
+
+        // 2) read meta.json (skip if not found)
+        let metaJson = {};
+        try{
+          const dl = await client.storage.from(BUCKET).download(`${base}/meta.json`);
+          if(dl.data){
+            try{ metaJson = JSON.parse(await dl.data.text()); }catch{}
           }
-        }
+        }catch(_){}
 
-        // brands for filter
-        const brands=[...new Set(items.map(x=>x.brand).filter(Boolean))];
-        brandFilter.innerHTML = '<option value="">All</option>' + brands.map(b=>`<option>${b}</option>`).join('');
-        brandFilter.onchange = ()=>render(brandFilter.value);
-
-        function render(brand){
-          row.innerHTML='';
-          items.filter(x=>!brand || x.brand===brand).forEach(x=>row.appendChild(vehicleCard(x)));
-          if(!row.children.length){ row.innerHTML='<div class="muted">No items yet</div>'; }
+        // 3) image priority: featured/<VID> -> <type>/<VID> -> logo.png
+        let img = await firstImageUrl(client, base);
+        if(!img && metaJson.type){
+          const alt = `${metaJson.type}/${folderName}`;
+          img = await firstImageUrl(client, alt);
         }
-        render('');
-      }catch(e){
-        console.warn('Featured fetch failed, showing placeholder:', e);
-        // graceful fallback
+        if(!img) img = publicUrl(client, 'vehicals/logo.png'); // fallback to your logo in same bucket
+
+        items.push({
+          title: metaJson.title || folderName,
+          brand: metaJson.brand || '',
+          price: metaJson.price ? `₹${metaJson.price}` : '',
+          year:  metaJson.year  || '',
+          km:    metaJson.km    || '',
+          desc:  metaJson.description || '',
+          image: img
+        });
+      }
+
+      // 4) brand filter + render
+      const brands = [...new Set(items.map(i=>i.brand).filter(Boolean))];
+      brandFilter.innerHTML = '<option value="">All</option>' + brands.map(b=>`<option>${b}</option>`).join('');
+      brandFilter.onchange = ()=>render(brandFilter.value);
+
+      function render(br){
         row.innerHTML='';
-        row.appendChild(vehicleCard({
-          title:'Maruti Suzuki Swift', brand:'Maruti Suzuki', price:'₹3.25L',
-          year:'2018', km:'45,000', desc:'Single-owner, excellent mileage.',
+        const view = items.filter(i=>!br || i.brand===br);
+        view.forEach(v=>row.appendChild(card(v)));
+        if(!row.children.length) row.innerHTML = '<div class="muted">No items yet</div>';
+      }
+      render('');
+    }
+
+    document.addEventListener('DOMContentLoaded', async ()=>{
+      try{ await run(); }
+      catch(e){
+        console.warn('Featured fetch failed, showing placeholder.', e);
+        row.innerHTML='';
+        row.appendChild(card({
+          title:'Sample Vehicle', brand:'—', price:'', year:'', km:'',
+          desc:'Upload images & meta.json to vehicals/featured/<VID>/', 
           image:'https://images.unsplash.com/photo-1511918984145-48de785d4c4f?auto=format&fit=crop&w=900&q=60'
         }));
       }
-    }
-    document.addEventListener('DOMContentLoaded', run);
+    });
   })();
   </script>
 </body>
