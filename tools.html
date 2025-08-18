@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Second Wheel — Tools</title>
+<meta name="theme-color" content="#0b0f17" />
+<style>
+  :root{
+    --bg:#0b0f17; --card:#121826; --text:#e5e7eb; --muted:#9aa3b2;
+    --line:rgba(255,255,255,.10); --accent:#f59e0b; --accent-2:#22c55e;
+    --shadow:0 10px 28px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f8fb; --card:#ffffff; --text:#0b0f17; --muted:#5b667a;
+    --line:rgba(0,0,0,.10);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu}
+  a{color:inherit;text-decoration:none}
+
+  /* Header */
+  header{position:sticky;top:0;z-index:40;background:rgba(11,15,23,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .wrap{max-width:1160px;margin:0 auto;padding:10px 14px}
+  .flex{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand img{width:44px;height:44px;border-radius:12px;box-shadow:var(--shadow)}
+  .brand h1{margin:0;font-size:16px;letter-spacing:.4px}
+  .seg{display:inline-flex;gap:6px;padding:6px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.06)}
+  .seg button{border:0;background:transparent;padding:8px 12px;border-radius:999px;color:var(--text);cursor:pointer}
+  .seg button.active{background:var(--accent);color:#111;font-weight:800}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  .btn:active{transform:translateY(1px)}
+
+  /* Page title */
+  .heroTitle{font-size:26px;font-weight:900;margin:14px 0 8px}
+
+  /* Tools grid */
+  .grid{display:grid;grid-template-columns:repeat(1,1fr);gap:12px}
+  @media(min-width:680px){ .grid{grid-template-columns:repeat(2,1fr)} }
+  @media(min-width:1024px){ .grid{grid-template-columns:repeat(3,1fr)} }
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px;display:flex;gap:12px;align-items:center}
+  .icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.06);font-size:20px}
+  .title{margin:0 0 2px;font-weight:800}
+  .muted{color:var(--muted)}
+</style>
+</head>
+<body>
+
+  <!-- Header (logo + language + dark) -->
+  <header>
+    <div class="wrap">
+      <div class="flex">
+        <div class="brand">
+          <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel">
+          <h1>SECOND WHEEL</h1>
+        </div>
+        <div class="flex" style="gap:8px">
+          <div class="seg" id="langSeg">
+            <button data-lang="en" class="active">EN</button>
+            <button data-lang="hi">HI</button>
+            <button data-lang="mr">MR</button>
+          </div>
+          <button id="darkToggle" class="btn" aria-label="Toggle theme">🌙</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h2 class="heroTitle">Tools</h2>
+
+    <!-- Tools only (no other nav) -->
+    <section class="grid" aria-label="Tools & Services">
+      <a class="card" href="https://hsrpmhzone2.in/" target="_blank" rel="noopener">
+        <div class="icon">🔖</div>
+        <div>
+          <h3 class="title">HSRP Booking</h3>
+          <div class="muted">Official portal for HSRP plates</div>
+        </div>
+      </a>
+
+      <a class="card" href="https://mahatrafficechallan.gov.in/" target="_blank" rel="noopener">
+        <div class="icon">🧾</div>
+        <div>
+          <h3 class="title">eChallan Payment</h3>
+          <div class="muted">Pay traffic challans (Maharashtra)</div>
+        </div>
+      </a>
+
+      <a class="card" href="insurance.html">
+        <div class="icon">🛡️</div>
+        <div>
+          <h3 class="title">Insurance</h3>
+          <div class="muted">Buy / Renew vehicle insurance</div>
+        </div>
+      </a>
+
+      <a class="card" href="https://www.nhai.gov.in/fastag" target="_blank" rel="noopener">
+        <div class="icon">🏷️</div>
+        <div>
+          <h3 class="title">FASTag</h3>
+          <div class="muted">Buy / Recharge FASTag</div>
+        </div>
+      </a>
+
+      <a class="card" href="https://parivahan.gov.in/parivahan/" target="_blank" rel="noopener">
+        <div class="icon">🪪</div>
+        <div>
+          <h3 class="title">Driving Licence</h3>
+          <div class="muted">Apply / Services — Parivahan</div>
+        </div>
+      </a>
+
+      <a class="card" href="https://vahan.parivahan.gov.in/vahanservice/vahan/ui/statevalidation/homepage.xhtml" target="_blank" rel="noopener">
+        <div class="icon">🚗</div>
+        <div>
+          <h3 class="title">VAHAN Services</h3>
+          <div class="muted">RC, tax, ownership, etc.</div>
+        </div>
+      </a>
+
+      <a class="card" href="emi.html">
+        <div class="icon">📊</div>
+        <div>
+          <h3 class="title">EMI Calculator</h3>
+          <div class="muted">Estimate monthly EMI quickly</div>
+        </div>
+      </a>
+    </section>
+  </main>
+
+  <script>
+    // Theme
+    const KEY_THEME='secondwheel.theme';
+    function setTheme(t){ document.documentElement.setAttribute('data-theme',t); localStorage.setItem(KEY_THEME,t); document.getElementById('darkToggle').textContent = t==='dark'?'🌙':'☀️'; }
+    document.getElementById('darkToggle').onclick=()=> setTheme((localStorage.getItem(KEY_THEME)||'dark')==='dark'?'light':'dark');
+    setTheme(localStorage.getItem(KEY_THEME)||'dark');
+
+    // Language (UI active state only)
+    const KEY_LANG='secondwheel.lang';
+    const langSeg=document.getElementById('langSeg');
+    function markLang(l){ [...langSeg.querySelectorAll('button')].forEach(b=>b.classList.toggle('active', b.dataset.lang===l)); localStorage.setItem(KEY_LANG,l); }
+    langSeg.addEventListener('click',e=>{ const b=e.target.closest('button[data-lang]'); if(b) markLang(b.dataset.lang); });
+    markLang(localStorage.getItem(KEY_LANG)||'en');
+  </script>
+</body>
+</html>
