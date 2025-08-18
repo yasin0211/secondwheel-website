@@ -1,391 +1,302 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Second Wheel — Instant Valuation</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Second Wheel — Sell</title>
 <meta name="theme-color" content="#0b0f17"/>
 <style>
   :root{
     --bg:#0b0f17; --card:#121826; --text:#e5e7eb; --muted:#9aa3b2;
-    --line:rgba(255,255,255,.12); --accent:#f59e0b; --accent2:#22c55e;
-    --shadow:0 12px 32px rgba(0,0,0,.35);
+    --brand:#f59e0b; --brand2:#22c55e; --line:rgba(255,255,255,.12);
+    --shadow:0 12px 30px rgba(0,0,0,.35); --accent:#3b82f6;
   }
-  :root[data-theme="light"]{ --bg:#f7f8fb; --card:#fff; --text:#0b0f17; --muted:#5b667a; --line:rgba(0,0,0,.12) }
+  :root[data-theme="light"]{
+    --bg:#f7f8fb; --card:#ffffff; --text:#0b0f17; --muted:#5b667a; --line:rgba(0,0,0,.12);
+  }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu}
   a{color:inherit;text-decoration:none}
-  .wrap{max-width:980px;margin:0 auto;padding:16px}
-  header{position:sticky;top:0;z-index:20;background:rgba(11,15,23,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  .flex{display:flex;align-items:center;gap:10px}
-  .space{justify-content:space-between}
-  .brand img{width:44px;height:44px;border-radius:12px;box-shadow:var(--shadow)}
-  .brand h1{margin:0;font-size:16px;letter-spacing:.35px}
-  .seg{display:inline-flex;gap:6px;padding:6px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.06)}
-  .seg button{border:0;background:transparent;padding:8px 12px;border-radius:999px;color:var(--text);cursor:pointer}
-  .seg button.active{background:var(--accent);color:#111;font-weight:800}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
-  .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border:none}
-  .btn:disabled{opacity:.55;cursor:not-allowed}
-
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
-  .card.pad{padding:16px}
-  .title{margin:0 0 8px;font-weight:900}
+  .wrap{max-width:1120px;margin:0 auto;padding:14px 16px}
+  .hidden{display:none!important}
   .muted{color:var(--muted)}
-  .row{display:grid;grid-template-columns:1fr;gap:10px}
-  @media(min-width:720px){ .row{grid-template-columns:repeat(2,1fr)} }
-  label{font-weight:700;margin:6px 2px;display:block}
-  input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0f1626;color:var(--text);outline:none}
-  .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
-  .chip.active{background:var(--accent);color:#111;border-color:transparent;font-weight:800}
-  .actions{display:flex;gap:10px;flex-wrap:wrap}
-  .divider{height:1px;background:var(--line);margin:12px 0}
+  .ok{color:#22c55e} .err{color:#f87171}
 
-  /* Steps */
-  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 14px}
-  .step{padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.04);font-weight:700;text-align:center}
-  .step.active{background:var(--accent);color:#111;border-color:transparent}
-  .progress{height:6px;background:#1f2937;border-radius:999px;overflow:hidden;margin-top:6px}
-  .bar{height:100%;background:linear-gradient(90deg,var(--accent),#ef4444);width:0%}
+  /* Header (no navbar) */
+  header{position:sticky;top:0;z-index:50;background:rgba(11,15,23,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img{width:56px;height:56px;border-radius:14px;box-shadow:var(--shadow)}
+  .brand h1{margin:0;font-size:16px;letter-spacing:.4px}
+  .seg{display:inline-flex;gap:8px;padding:6px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.06)}
+  .seg button{border:0;background:transparent;padding:10px 14px;border-radius:999px;color:var(--text);cursor:pointer}
+  .seg button.active{background:var(--brand);color:#111;font-weight:800}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border:none}
+  .btn.success{background:linear-gradient(180deg,#22c55e,#15803d);color:#111;border:none}
+  .btn:active{transform:translateY(1px)}
 
-  /* Result */
-  .gauge{position:relative;height:10px;background:#111827;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
-  .gauge > div{height:100%}
-  .g1{background:#ef4444;width:33%} .g2{background:#f59e0b;width:34%} .g3{background:#22c55e;width:33%}
-  .range{display:flex;justify-content:space-between;margin:6px 2px 0}
-  .big{font-size:28px;font-weight:900}
-  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-weight:700}
+  /* Hero */
+  .hero{border-bottom:1px solid var(--line);padding:22px 0;background:
+    radial-gradient(80% 60% at 15% 0%, rgba(245,158,11,.18), transparent 60%),
+    radial-gradient(80% 60% at 85% 0%, rgba(34,197,94,.14), transparent 60%)}
+  .hero h2{margin:0 0 8px;font-size:28px}
+  .usp{display:flex;gap:10px;flex-wrap:wrap}
+  .tag{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line);font-weight:700}
+
+  /* Layout */
+  .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+  @media (max-width:980px){ .grid{grid-template-columns:1fr} }
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px}
+  h3{margin:0 0 10px}
+  label{display:block;margin:10px 0 6px;color:var(--muted);font-weight:700}
+  input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0f1626;color:var(--text);outline:none}
+  :root[data-theme="light"] input,:root[data-theme="light"] select,:root[data-theme="light"] textarea{background:#f2f4f8;color:#111}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:640px){ .row2{grid-template-columns:1fr} }
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  .chip.active{background:var(--brand);color:#111;font-weight:800;border-color:transparent}
+
+  /* Offer panel */
+  .offerHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .range{font-size:26px;font-weight:900}
+
+  /* Sticky */
+  .sticky{position:sticky;bottom:0;z-index:20;background:rgba(11,15,23,.85);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px;border-radius:12px;margin-top:12px}
+  .ctaRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+
+  /* Toast */
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
+  .toast.show{opacity:1}
 </style>
 </head>
 <body>
 <header>
-  <div class="wrap flex space">
-    <div class="brand flex">
-      <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel">
-      <h1>SECOND WHEEL</h1>
-    </div>
-    <div class="flex" style="gap:8px">
-      <div class="seg" id="langSeg">
-        <button data-lang="en" class="active">EN</button>
-        <button data-lang="hi">HI</button>
-        <button data-lang="mr">MR</button>
+  <div class="wrap">
+    <div class="row">
+      <div class="brand">
+        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel logo"/>
+        <h1>SECOND WHEEL</h1>
       </div>
-      <button id="themeBtn" class="btn">🌙</button>
+      <div class="row" style="gap:8px">
+        <div class="seg" id="langSeg">
+          <button data-lang="en" class="active">EN</button>
+          <button data-lang="hi">HI</button>
+          <button data-lang="mr">MR</button>
+        </div>
+        <button class="btn" id="darkToggle" aria-label="Toggle dark">🌙</button>
+      </div>
     </div>
   </div>
 </header>
 
-<main class="wrap" id="app">
-  <!-- Progress -->
-  <div class="card pad">
-    <h2 class="title">Instant Valuation</h2>
-    <div class="steps">
-      <div class="step active" id="s1h">1. Vehicle</div>
-      <div class="step" id="s2h">2. Details</div>
-      <div class="step" id="s3h">3. Condition</div>
-      <div class="step" id="s4h">4. Result</div>
+<section class="hero">
+  <div class="wrap">
+    <h2>Sell Your Vehicle — Get Best Offer (Instant)</h2>
+    <div class="usp">
+      <span class="tag">🧑‍🔧 Doorstep Inspection</span>
+      <span class="tag">⚡ Same-day Payment</span>
+      <span class="tag">✅ Paperwork Support</span>
+      <span class="tag">📍 Satara Priority</span>
     </div>
-    <div class="progress"><div class="bar" id="bar"></div></div>
   </div>
+</section>
 
-  <!-- STEP 1 -->
-  <section class="card pad" id="s1">
-    <h3 class="title">Select your vehicle</h3>
-    <div class="chips" id="typeChips">
-      <button class="chip active" data-vtype="car">🚗 Car</button>
-      <button class="chip" data-vtype="bike">🏍️ Bike</button>
-      <button class="chip" data-vtype="scooter">🛵 Scooter</button>
-    </div>
-    <div class="divider"></div>
-    <div class="row">
-      <div>
-        <label>Brand</label>
-        <input id="brand" placeholder="Maruti Suzuki / Hyundai / Honda…"/>
-      </div>
-      <div>
-        <label>Model / Variant</label>
-        <input id="model" placeholder="Swift VDi / i10 Sportz / Splendor…"/>
-      </div>
-      <div>
-        <label>City</label>
-        <input id="city" placeholder="Satara"/>
-      </div>
-      <div>
-        <label>Approx New Price (optional)</label>
-        <input id="newPrice" type="number" min="10000" step="1000" placeholder="Ex-showroom"/>
-      </div>
-    </div>
-    <div class="actions" style="margin-top:12px">
-      <button class="btn primary" id="next1">Continue</button>
-    </div>
-  </section>
+<main class="wrap">
+  <div class="grid">
+    <!-- LEFT: FORM (All fields compulsory) -->
+    <section class="card">
+      <h3>Step 1 — Fill all details (Compulsory)</h3>
 
-  <!-- STEP 2 -->
-  <section class="card pad" id="s2" hidden>
-    <h3 class="title">Basic details</h3>
-    <div class="row">
-      <div>
-        <label>Manufacturing Year</label>
-        <input id="year" type="number" min="1995" max="2099" placeholder="2018"/>
+      <div class="row2">
+        <div><label>Name *</label><input id="name" required autocomplete="name"></div>
+        <div><label>Mobile (10-digit) *</label><input id="phone" required inputmode="numeric" maxlength="10" placeholder="98XXXXXXXX"></div>
       </div>
-      <div>
-        <label>Fuel</label>
-        <select id="fuel"><option>Petrol</option><option>Diesel</option><option>CNG</option><option>Electric</option></select>
-      </div>
-      <div>
-        <label>KMs Driven</label>
-        <input id="km" type="number" min="0" step="500" placeholder="60000"/>
-      </div>
-      <div id="transBox">
-        <label>Transmission</label>
-        <select id="trans"><option>Manual</option><option>Automatic</option></select>
-      </div>
-      <div>
-        <label>Owners</label>
-        <select id="owners"><option>1st</option><option>2nd</option><option>3rd</option><option>4th+</option></select>
-      </div>
-      <div>
-        <label>Registration No.</label>
-        <input id="reg" placeholder="MH12 AB 1234"/>
-      </div>
-    </div>
-    <div class="actions" style="margin-top:12px">
-      <button class="btn" id="back2">Back</button>
-      <button class="btn primary" id="next2">Continue</button>
-    </div>
-  </section>
 
-  <!-- STEP 3 -->
-  <section class="card pad" id="s3" hidden>
-    <h3 class="title">Condition & Compliance</h3>
-    <div class="row">
-      <div>
-        <label>Overall Condition</label>
-        <select id="cond"><option>OK</option><option>Good</option><option>Excellent</option><option>Poor</option></select>
+      <div class="row2">
+        <div><label>City *</label><input id="city" required placeholder="Satara"></div>
+        <div>
+          <label>Type *</label>
+          <select id="type" required>
+            <option value="">Select…</option>
+            <option value="car">Car</option>
+            <option value="bike">Bike</option>
+            <option value="scooter">Scooter</option>
+          </select>
+        </div>
       </div>
-      <div>
-        <label>Color</label>
-        <select id="color"><option>White</option><option>Silver</option><option>Grey</option><option>Black</option><option>Blue</option><option>Red</option><option>Other</option></select>
-      </div>
-      <div>
-        <label>RC Status</label>
-        <select id="rc"><option>Valid</option><option>Expired</option><option>Renewal Applied</option></select>
-      </div>
-      <div>
-        <label>Insurance</label>
-        <select id="ins"><option>Valid</option><option>Expired</option><option>Renewal Applied</option></select>
-      </div>
-      <div>
-        <label>Green Tax</label>
-        <select id="gt"><option>Paid</option><option>Not Paid</option></select>
-      </div>
-      <div>
-        <label>Fancy/Trending Number</label>
-        <select id="fancy"><option>No</option><option>Yes</option></select>
-      </div>
-    </div>
-    <div class="actions" style="margin-top:12px">
-      <button class="btn" id="back3">Back</button>
-      <button class="btn primary" id="calc">Get Valuation</button>
-    </div>
-  </section>
 
-  <!-- STEP 4 -->
-  <section class="card pad" id="s4" hidden>
-    <h3 class="title">Your Estimated Price</h3>
-
-    <div class="flex" style="gap:10px;flex-wrap:wrap;margin-bottom:10px">
-      <span class="pill" id="typeTag">CAR</span>
-      <span class="pill" id="brandTag">—</span>
-      <span class="pill" id="yearTag">—</span>
-      <span class="pill" id="kmTag">—</span>
-    </div>
-
-    <div class="gauge"><div class="g1"></div><div class="g2"></div><div class="g3"></div></div>
-    <div class="range">
-      <div class="muted">Conservative</div>
-      <div class="muted">Average</div>
-      <div class="muted">Excellent</div>
-    </div>
-
-    <div class="flex space" style="margin-top:12px;align-items:flex-end">
-      <div>
-        <div class="muted">Estimated Range</div>
-        <div class="big"><span id="min">₹—</span> — <span id="max">₹—</span></div>
+      <div class="row2">
+        <div><label>Brand *</label><input id="brand" required placeholder="Maruti, Hyundai…"></div>
+        <div><label>Model *</label><input id="model" required placeholder="Swift, i10…"></div>
       </div>
-      <div>
-        <div class="muted">Most Likely</div>
-        <div class="big" id="mid">₹—</div>
+
+      <div class="row2">
+        <div><label>Year *</label><input id="year" required type="number" inputmode="numeric" placeholder="2017"></div>
+        <div><label>KM Driven *</label><input id="km" required type="number" inputmode="numeric" placeholder="72000"></div>
       </div>
-    </div>
 
-    <div class="divider"></div>
-    <div class="actions">
-      <a id="wa" class="btn primary" target="_blank" rel="noopener">💬 Get Final Quote on WhatsApp</a>
-      <a id="call" class="btn" href="tel:+919822292955">📞 Call Now</a>
-      <button id="insp" class="btn">🚗 Book Doorstep Inspection</button>
-      <button id="again" class="btn" style="margin-left:auto">↺ Recalculate</button>
-    </div>
+      <label>Fuel *</label>
+      <div class="chips" id="fuelChips">
+        <span class="chip" data-val="petrol">Petrol</span>
+        <span class="chip" data-val="diesel">Diesel</span>
+        <span class="chip" data-val="cng">CNG</span>
+        <span class="chip" data-val="electric">Electric</span>
+      </div>
 
-    <p class="muted" style="margin-top:10px">
-      *Final price depends on physical inspection, RC/Insurance status and market demand.
-    </p>
-  </section>
+      <div class="row2" style="margin-top:8px">
+        <div><label>Registration No. *</label><input id="reg" required placeholder="MH 11 AB 1234"></div>
+        <div><label>Owner No. *</label><input id="owner" required type="number" min="1" max="6" placeholder="1"></div>
+      </div>
+
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn primary" id="proceed">Get Best Offer</button>
+        <span class="muted" id="saveHint">Price दिसण्याआधी तुमचा डेटा सुरक्षितपणे save होईल.</span>
+      </div>
+      <div id="saveMsg" class="muted" style="margin-top:8px"></div>
+    </section>
+
+    <!-- RIGHT: OFFER (hidden until saved) -->
+    <aside class="card" id="offerPanel" aria-live="polite">
+      <div class="offerHead">
+        <h3>Estimated Price (Not Final)</h3>
+        <span class="tag">📈 Live</span>
+      </div>
+      <div class="range" id="offerRange">—</div>
+      <div class="muted" id="offerNote">
+        This is an indicative estimate. <b>Final price will be fixed after Doorstep Inspection.</b>
+      </div>
+
+      <div class="sticky" style="margin-top:16px">
+        <div class="ctaRow">
+          <a id="waBtn" class="btn success" target="_blank" rel="noopener">💬 WhatsApp</a>
+          <button id="bookBtn" class="btn primary">Doorstep Inspection</button>
+        </div>
+      </div>
+    </aside>
+  </div>
 </main>
 
+<div id="toast" class="toast">Saved!</div>
+
 <script>
-/* ---------- Theme ---------- */
-const THEME_KEY='secondwheel.theme';
-const themeBtn=document.getElementById('themeBtn');
-function setTheme(t){ document.documentElement.setAttribute('data-theme',t); localStorage.setItem(THEME_KEY,t); themeBtn.textContent=t==='dark'?'🌙':'☀️'; }
-themeBtn.onclick=()=> setTheme((localStorage.getItem(THEME_KEY)||'dark')==='dark'?'light':'dark');
-setTheme(localStorage.getItem(THEME_KEY)||'dark');
-
-/* ---------- Simple language toggle (UI only) ---------- */
-document.getElementById('langSeg').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b) return;
-  [...e.currentTarget.children].forEach(x=>x.classList.remove('active')); b.classList.add('active');
+/* ---------- Language + Theme ---------- */
+const KEY_LANG='secondwheel.lang', KEY_THEME='secondwheel.theme';
+const langSeg=document.getElementById('langSeg'); const darkBtn=document.getElementById('darkToggle');
+function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(window.__t); window.__t=setTimeout(()=>el.classList.remove('show'),1400); }
+function applyLang(l){ localStorage.setItem(KEY_LANG,l); langSeg.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b.dataset.lang===l)); }
+function setTheme(t){ document.documentElement.setAttribute('data-theme',t); localStorage.setItem(KEY_THEME,t); darkBtn.textContent=(t==='dark')?'🌙':'☀️'; }
+document.addEventListener('DOMContentLoaded',()=>{ applyLang(localStorage.getItem(KEY_LANG)||'en'); setTheme(localStorage.getItem(KEY_THEME)||'dark');
+  langSeg.addEventListener('click',e=>{ const b=e.target.closest('button[data-lang]'); if(b) applyLang(b.dataset.lang); });
+  darkBtn.addEventListener('click',()=>{ const next=(localStorage.getItem(KEY_THEME)||'dark')==='dark'?'light':'dark'; setTheme(next); });
 });
 
-/* ---------- Steps ---------- */
-const S=[document.getElementById('s1'),document.getElementById('s2'),document.getElementById('s3'),document.getElementById('s4')];
-const H=[document.getElementById('s1h'),document.getElementById('s2h'),document.getElementById('s3h'),document.getElementById('s4h')];
-const bar=document.getElementById('bar');
-function go(i){
-  S.forEach((el,idx)=> el.hidden = idx!==i);
-  H.forEach((el,idx)=> el.classList.toggle('active', idx<=i));
-  bar.style.width = ((i)/3*100)+'%';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+/* ---------- Config ---------- */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWAagtCw4FFyXOt8CqNE2yDSoEEacgBYKsTd8jYsTgmZxg60ndqH5BehSVUTR5zMQ_nA/exec";
 
-/* ---------- Inputs/State ---------- */
-let TYPE='car';
-document.getElementById('typeChips').addEventListener('click',e=>{
-  const b=e.target.closest('.chip'); if(!b) return;
-  [...e.currentTarget.children].forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');
-  TYPE=b.dataset.vtype;
-  document.getElementById('transBox').style.display = (TYPE==='car')?'block':'none';
-});
-
+/* ---------- Helpers ---------- */
 const $ = id => document.getElementById(id);
-const inputs = {
-  brand:$('brand'), model:$('model'), city:$('city'), newPrice:$('newPrice'),
-  year:$('year'), fuel:$('fuel'), km:$('km'), trans:$('trans'),
-  owners:$('owners'), reg:$('reg'),
-  cond:$('cond'), color:$('color'), rc:$('rc'), ins:$('ins'), gt:$('gt'), fancy:$('fancy')
-};
+function validPhone(v){ return /^\d{10}$/.test((v||'').trim()); }
+function makeVID(){ const r=Math.random().toString(36).slice(2,6), ts=Date.now().toString(36).slice(-4); return `${ts}-${r}`; }
+function money(n){ try{return '₹'+Number(n).toLocaleString('en-IN')}catch{return '₹'+n} }
 
-/* ---------- Navigation ---------- */
-$('next1').onclick=()=>{
-  if(!inputs.brand.value || !inputs.model.value){ alert('Please enter Brand & Model'); return; }
-  go(1);
-};
-$('back2').onclick=()=>go(0);
-$('next2').onclick=()=>{
-  if(!inputs.year.value || !inputs.km.value){ alert('Please enter Year & KM'); return; }
-  // 15+ years soft prompt
-  const age = new Date().getFullYear()-Number(inputs.year.value||0);
-  if(age>=15) alert('Vehicle is 15+ years old. Please ensure RC & Insurance renewal for best price.');
-  go(2);
-};
-$('back3').onclick=()=>go(1);
-
-/* ---------- Valuation Logic ---------- */
-function strongBrand(type,brand){
-  brand=String(brand||'').toUpperCase();
-  if(type==='car') return ['MARUTI SUZUKI','HYUNDAI','HONDA','TOYOTA','TATA','KIA','MAHINDRA'].includes(brand);
-  if(type==='bike') return ['HERO','HONDA','BAJAJ','ROYAL ENFIELD','TVS','SUZUKI'].includes(brand);
-  return ['HONDA','HERO','TVS','SUZUKI','YAMAHA'].includes(brand);
+/* ---------- Valuation ---------- */
+function calcBase(type, brandStr, yearNum, fuel, kmNum){
+  const now=new Date().getFullYear(); const age=Math.max(0, now-(Number(yearNum)||now));
+  let base=(type==='car')?480000:(type==='bike'?40000:32000);
+  const B=(brandStr||'').toUpperCase();
+  if(type==='car' && ['MARUTI','HYUNDAI','HONDA','TOYOTA'].some(b=>B.includes(b))) base*=1.10;
+  if(type==='bike' && ['HERO','BAJAJ','ROYAL ENFIELD'].some(b=>B.includes(b))) base*=1.10;
+  if(type==='scooter' && ['HONDA','HERO','TVS'].some(b=>B.includes(b))) base*=1.08;
+  if(type==='car'){ if(fuel==='diesel') base*=1.08; if(fuel==='cng') base*=1.05; if(fuel==='electric') base*=1.12; }
+  base*=Math.max(0.35,(1-age*0.055));
+  const kmx=Number(kmNum)||0; const over=Math.max(0, kmx-(type==='car'?45000:18000));
+  const blocks=Math.floor(over/(type==='car'?9000:4500)); base*=(1-blocks*0.018);
+  return Math.max(18000, Math.round(base));
 }
-function ownersVal(s){ return s.startsWith('1')?1:s.startsWith('2')?2:s.startsWith('3')?3:4; }
-function colorAdj(c){
-  c=String(c||'').toUpperCase();
-  if(['WHITE','SILVER','GREY','GRAY'].includes(c)) return 1.02;
-  if(['BLACK','BLUE','RED'].includes(c)) return 1.00;
-  return 0.98;
-}
-function depFactor(type,years){
-  years=Math.max(0,years);
-  if(type==='car')   return Math.max(0.10, Math.pow(1-0.18, years));
-  if(type==='bike')  return Math.max(0.07, Math.pow(1-0.22, years));
-  return Math.max(0.07, Math.pow(1-0.20, years));
-}
-function baseGuess(type,brand){
-  const base = type==='car'?600000:(type==='bike'?70000:60000);
-  return strongBrand(type,brand)? base*1.08: base;
-}
-function rupee(n){ try{return '₹'+Number(n).toLocaleString('en-IN');}catch{return '₹'+n} }
+function estimateRange(t,b,y,f,k){ const base=calcBase(t,b,y,f,k); return { min:Math.round(base*0.97), max:Math.round(base*1.06), base }; }
 
-function compute(){
-  const year=Number(inputs.year.value||0);
-  const age=Math.max(0,new Date().getFullYear()-year);
-  const km=Number(inputs.km.value||0);
-  const own=ownersVal(inputs.owners.value);
-  const fuel=inputs.fuel.value, brand=inputs.brand.value, color=inputs.color.value;
+/* ---------- Form state ---------- */
+let FUEL = null;
+$('fuelChips').addEventListener('click', e=>{
+  const c=e.target.closest('.chip'); if(!c) return;
+  [...$('fuelChips').children].forEach(x=>x.classList.remove('active'));
+  c.classList.add('active'); FUEL=c.dataset.val;
+});
 
-  let newP = Number(inputs.newPrice.value||0) || baseGuess(TYPE,brand);
-  let p = newP * depFactor(TYPE, age);
-
-  if(TYPE==='car'){
-    if(km>60000) p -= (km-60000)*0.75;
-    else if(km<30000) p *= 1.04;
-    if(inputs.trans.value==='Automatic') p*=1.03;
-  }else{
-    if(km>40000) p -= (km-40000)*0.30;
-    else if(km<15000) p *= 1.05;
+/* ---------- Required fields ---------- */
+const requiredIds = ['name','phone','city','type','brand','model','year','km','reg','owner'];
+function validateAll(){
+  for(const id of requiredIds){
+    const el=$(id); if(!el.value || !el.value.trim()){ el.focus(); return 'Please fill '+id.toUpperCase(); }
   }
-
-  p *= (own===1?1:own===2?0.93:own===3?0.85:0.75);
-  if(fuel==='Diesel')   p *= strongBrand(TYPE,brand)?1.06:1.03;
-  if(fuel==='CNG')      p *= 1.04;
-  if(fuel==='Electric') p *= 1.08;
-
-  p *= colorAdj(color);
-  if(inputs.fancy.value==='Yes') p *= 1.015;
-
-  if(inputs.rc.value==='Expired') p*=0.40;
-  if(inputs.ins.value==='Expired') p*=0.97;
-  if(inputs.gt.value==='Not Paid') p*=0.98;
-
-  p = Math.max(5000, Math.round(p/1000)*1000);
-
-  // Range (Cars24-style): -7% / +7% around mid
-  const min = Math.max(5000, Math.round(p*0.93/1000)*1000);
-  const max = Math.max(min+1000, Math.round(p*1.07/1000)*1000);
-  return {min,max,mid:p};
+  if(!FUEL) return 'Please select FUEL';
+  if(!validPhone($('phone').value)) return 'Enter valid 10-digit Mobile';
+  return '';
 }
 
-/* ---------- Calculate & Show ---------- */
-$('calc').onclick=()=>{
-  const {min,max,mid}=compute();
+/* ---------- Save then show price ---------- */
+$('offerPanel').classList.add('hidden'); // hide initially
+$('proceed').addEventListener('click', async ()=>{
+  const err = validateAll();
+  if(err){ alert(err); return; }
 
-  // tags
-  $('typeTag').textContent = TYPE.toUpperCase();
-  $('brandTag').textContent = (inputs.brand.value||'').toUpperCase();
-  $('yearTag').textContent  = inputs.year.value||'—';
-  $('kmTag').textContent    = (Number(inputs.km.value||0)).toLocaleString('en-IN')+' km';
+  const vid = makeVID();
+  const payload = {
+    vid,
+    name:$('name').value.trim(),
+    phone:$('phone').value.trim(),
+    city:$('city').value.trim(),
+    type:$('type').value,
+    brand:$('brand').value.trim(),
+    model:$('model').value.trim(),
+    year:$('year').value.trim(),
+    fuel:FUEL,
+    km:$('km').value.trim(),
+    reg:$('reg').value.trim(),
+    owner:$('owner').value.trim(),
+    rcStatus:'ok', insuranceStatus:'ok', greenTax:'ok',
+    notes:'Lead via Sell Page (pre-offer save)', source:'sell-page'
+  };
 
-  $('min').textContent = rupee(min);
-  $('max').textContent = rupee(max);
-  $('mid').textContent = rupee(mid);
+  // Save first
+  $('saveMsg').textContent='Saving…';
+  $('proceed').disabled = true;
+  try{
+    const res = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    const out = await res.json().catch(()=>({}));
+    if(!out || !out.ok) throw new Error(out && out.error ? out.error : 'Save failed');
 
-  // WhatsApp
-  const msg = encodeURIComponent(
-    `Valuation Request:%0A${inputs.brand.value} ${inputs.model.value} (${TYPE.toUpperCase()})%0A`+
-    `Year ${inputs.year.value} • ${inputs.km.value} KM • ${inputs.owners.value} Owner(s)%0A`+
-    `Fuel: ${inputs.fuel.value} • Reg: ${inputs.reg.value}%0A`+
-    `Estimated Range: ${rupee(min)} – ${rupee(max)}%0AMost Likely: ${rupee(mid)}%0A`+
-    `City: ${inputs.city.value}`
-  );
-  $('wa').href = `https://wa.me/919822292955?text=${msg}`;
+    $('saveMsg').innerHTML = '<span class="ok">Saved ✓</span> (ID: '+(out.id||vid)+')';
+    toast('Saved');
 
-  go(3);
-};
+    // Now compute & show price
+    const rng = estimateRange(payload.type, payload.brand, payload.year, payload.fuel, payload.km);
+    $('offerRange').textContent = money(rng.min)+' – '+money(rng.max);
+    $('offerPanel').classList.remove('hidden');
 
-$('again').onclick=()=>go(2);
-$('insp').onclick=()=>alert('Doorstep inspection booked. Our team will contact you shortly.');
+    const msg = `Sell Enquiry (Estimate not final)
+${payload.brand} ${payload.model} ${payload.year} • ${payload.fuel.toUpperCase()}
+KM: ${payload.km} • City: ${payload.city}
+Estimate: ${$('offerRange').textContent}
+Mobile: ${payload.phone}
+ID: ${out.id||vid}
+Note: Final price after Doorstep Inspection.`;
+    $('waBtn').href = 'https://wa.me/919822292955?text='+encodeURIComponent(msg);
+
+  }catch(e){
+    $('saveMsg').innerHTML = '<span class="err">Save error:</span> '+e.message;
+    $('offerPanel').classList.add('hidden'); // don’t reveal price
+  }
+  $('proceed').disabled = false;
+});
+
+/* ---------- Doorstep Inspection CTA ---------- */
+$('bookBtn').addEventListener('click', ()=>{
+  alert('Thanks! Our team will call you to schedule a doorstep inspection.\n(You can also ping on WhatsApp.)');
+});
 </script>
 </body>
 </html>
