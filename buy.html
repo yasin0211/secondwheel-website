@@ -174,10 +174,10 @@ let DATA = [];                     // [{vid, meta, imgs:[url], coverIndex}]
 let WISHLIST = new Set(JSON.parse(localStorage.getItem('wishlist')||'[]'));
 
 /* -------------------- Helpers -------------------- */
-function pubUrl(path){ const { data } = sb.storage.from(BUCKET).getPublicUrl(path); return data?.publicUrl; }
-function isImg(n){ return /\.(jpe?g|png|webp)$/i.test(n); }
+function pubUrl(path){ const { data } = sb.storage.from(BUCKET).getPublicUrl(path); return data?.publicUrl || ''; }
+function isImg(n){ return /\.(jpe?g|png|webp|avif)$/i.test(n); }
 function limitFor(type){ return type==='car' ? 20 : 10; }
-function money(n){ if(!n) return '₹—'; try{ return '₹'+Number(n).toLocaleString('en-IN'); }catch(e){ return '₹'+n; } }
+function money(n){ if(!n && n!==0) return '₹—'; try{ return '₹'+Number(n).toLocaleString('en-IN'); }catch(e){ return '₹'+n; } }
 function wishToggle(vid){ if(WISHLIST.has(vid)){ WISHLIST.delete(vid); } else { WISHLIST.add(vid); } localStorage.setItem('wishlist', JSON.stringify([...WISHLIST])); render(); toast('Wishlist updated'); }
 function waLink(meta){ const msg = encodeURIComponent(`Hi Second Wheel,%0AI want to enquire about:%0A${meta.title} (${meta.brand})%0AType: ${meta.type}%0APrice: ${money(meta.price)}%0AYear: ${meta.year} • KM: ${meta.km}%0AID: ${meta.vid}`); return `https://wa.me/919822292955?text=${msg}`; }
 
@@ -196,18 +196,24 @@ function onTouchEnd(e){ const x1=e.changedTouches[0].clientX; if(x0===null) retu
 
 /* -------------------- Loaders -------------------- */
 async function list(prefix){
-  const { data, error } = await sb.storage.from(BUCKET).list(prefix, { limit: 200 });
-  if(error){ console.error('list error', error); return []; }
-  return data || [];
+  try{
+    const { data, error } = await sb.storage.from(BUCKET).list(prefix, { limit: 200 });
+    if(error){ console.error('list error', prefix, error); return []; }
+    return data || [];
+  }catch(e){ console.error('list exception', prefix, e); return []; }
 }
 async function allImgUrls(prefix, max){
   const arr = await list(prefix);
   const imgs = arr.filter(f=>isImg(f.name)).sort((a,b)=>a.name.localeCompare(b.name)).slice(0,max);
-  return imgs.map(f=>pubUrl(`${prefix}/${f.name}`));
+  return imgs.map(f=>pubUrl(`${prefix}/${f.name}`)).filter(Boolean);
 }
 async function fetchMeta(prefix){
-  const { data } = sb.storage.from(BUCKET).getPublicUrl(`${prefix}/meta.json`);
-  try{ const res = await fetch(data.publicUrl, { cache:'no-store' }); if(res.ok) return await res.json(); }catch(e){}
+  try{
+    const { data } = sb.storage.from(BUCKET).getPublicUrl(`${prefix}/meta.json`);
+    if(!data || !data.publicUrl) return null;
+    const res = await fetch(data.publicUrl, { cache:'no-store' });
+    if(res.ok) return await res.json();
+  }catch(e){ console.warn('meta fetch failed', prefix, e); }
   return null;
 }
 
@@ -222,12 +228,18 @@ async function loadType(type){
     const meta = await fetchMeta(base);
     if(!meta) continue;
     const imgs = await allImgUrls(base, lim);
-    if(!imgs.length) continue;
-    meta.vid = vid; // ensure id present
+    if(!imgs.length){
+      // fallback: show logo so card still appears (optional)
+      const logo = pubUrl('vehicals/logo.png');
+      if(logo) imgs.push(logo); else continue;
+    }
+    meta.vid = meta.vid || vid;
+    meta.type = meta.type || type;
     out.push({ vid, meta, imgs, coverIndex:0 });
     if(meta.brand) brands.add(String(meta.brand).toUpperCase());
   }
   DATA = out.sort((a,b)=> (b.meta.updatedAt||'').localeCompare(a.meta.updatedAt||''));
+
   fillBrands([...brands].sort());
   render();
 }
@@ -308,15 +320,22 @@ function render(){
     card.appendChild(media); card.appendChild(body);
     grid.appendChild(card);
   }
+
+  // IMPORTANT: freshly-added nodes मध्ये असलेल्या data-i18n साठी language पुन्हा लावा
+  const currLang = localStorage.getItem('lang') || 'en';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(I18N[currLang] && I18N[currLang][k]) el.textContent = I18N[currLang][k];
+  });
 }
 
 /* -------------------- Events -------------------- */
 document.getElementById('tabs').addEventListener('click', e=>{
-  if(e.target.classList.contains('chip')){
-    [...document.querySelectorAll('.chip')].forEach(b=>b.classList.remove('active'));
-    e.target.classList.add('active');
-    loadType(e.target.dataset.type);
-  }
+  const btn = e.target.closest('.chip');
+  if(!btn) return;
+  [...document.querySelectorAll('.chip')].forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  loadType(btn.dataset.type);
 });
 q.addEventListener('input', render);
 brandFilter.addEventListener('change', render);
