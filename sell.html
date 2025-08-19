@@ -211,7 +211,7 @@
 
 /* HELPERS / STATE */
 /* <<< REPLACE THIS WITH YOUR LATEST DEPLOYED WEB APP URL IF YOU REDEPLOY >>> */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyVxSDejNe1eMCRdh0uF5gN9P_qiPZHEPVfKyLFX9LTCIILH9F8-2ZYj61Xa55VPZwa6Q/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxiMtQmNYvX4acyPSPslH8G1JZYSHlLDyNMb1IQkEnvhdZuOZ7ZZ2hYvfhKsucSpsd7xQ/exec';
 const VID = (()=> Math.random().toString(36).slice(2,6)+'-'+Date.now().toString(36).slice(-4))();
 const $ = id => document.getElementById(id);
 const toast = m => { const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(window.__t); window.__t=setTimeout(()=>t.classList.remove('show'),1400); };
