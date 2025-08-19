@@ -6,22 +6,15 @@
 <title>Second Wheel — Sell & Valuation</title>
 <meta name="theme-color" content="#0b0f17"/>
 <style>
-  :root{
-    --bg:#0b0f17; --card:#121826; --text:#e5e7eb; --muted:#9aa3b2;
-    --line:rgba(255,255,255,.12); --accent:#f59e0b; --ok:#22c55e; --warn:#ef4444;
-    --shadow:0 12px 32px rgba(0,0,0,.35);
-  }
-  :root[data-theme="light"]{ --bg:#f7f8fb; --card:#fff; --text:#0b0f17; --muted:#5b667a; --line:rgba(0,0,0,.12) }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu}
+  :root{ --bg:#0b0f17; --card:#121826; --text:#e5e7eb; --muted:#9aa3b2; --line:rgba(255,255,255,.12);
+         --accent:#f59e0b; --ok:#22c55e; --shadow:0 12px 32px rgba(0,0,0,.35); }
+  :root[data-theme="light"]{ --bg:#f7f8fb; --card:#fff; --text:#0b0f17; --muted:#5b667a; --line:rgba(0,0,0,.12); }
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
   a{color:inherit;text-decoration:none}
-  img{max-width:100%;display:block}
   .wrap{max-width:980px;margin:0 auto;padding:16px}
   header{position:sticky;top:0;z-index:20;background:rgba(11,15,23,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  .flex{display:flex;align-items:center;gap:10px}
-  .space{justify-content:space-between}
-  .brand img{width:44px;height:44px;border-radius:12px;box-shadow:var(--shadow)}
-  .brand h1{margin:0;font-size:16px;letter-spacing:.35px}
+  .flex{display:flex;align-items:center;gap:10px}.space{justify-content:space-between}
+  .brand img{width:44px;height:44px;border-radius:12px;box-shadow:var(--shadow)} .brand h1{margin:0;font-size:16px;letter-spacing:.3px}
   .seg{display:inline-flex;gap:6px;padding:6px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.06)}
   .seg button{border:0;background:transparent;padding:8px 12px;border-radius:999px;color:var(--text);cursor:pointer}
   .seg button.active{background:var(--accent);color:#111;font-weight:800}
@@ -29,7 +22,6 @@
   .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border:none}
   .btn.ok{background:linear-gradient(180deg,#22c55e,#15803d);color:#111;border:none}
   .btn:disabled{opacity:.55;cursor:not-allowed}
-
   .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
   .pad{padding:16px}
   .title{margin:0 0 8px;font-weight:900}
@@ -37,31 +29,21 @@
   .row{display:grid;grid-template-columns:1fr;gap:10px}
   @media(min-width:720px){ .row{grid-template-columns:repeat(2,1fr)} }
   label{font-weight:700;margin:6px 2px;display:block}
-  input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0f1626;color:var(--text);outline:none}
-  :root[data-theme="light"] input,:root[data-theme="light"] select{background:#f3f4f6;color:#111}
-  .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  input,select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0f1626;color:var(--text);outline:none}
+  :root[data-theme="light"] input,:root[data-theme="light"] select,:root[data-theme="light"] textarea{background:#f2f4f8;color:#111}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}.chip{padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
   .chip.active{background:var(--accent);color:#111;border-color:transparent;font-weight:800}
-  .actions{display:flex;gap:10px;flex-wrap:wrap}
-  .divider{height:1px;background:var(--line);margin:12px 0}
-
-  /* Steps */
   .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0 14px}
   .step{padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.04);font-weight:700;text-align:center}
   .step.active{background:var(--accent);color:#111;border-color:transparent}
   .progress{height:6px;background:#1f2937;border-radius:999px;overflow:hidden;margin-top:6px}
   .bar{height:100%;background:linear-gradient(90deg,var(--accent),#ef4444);width:0%}
-
-  /* Result */
-  .gauge{position:relative;height:10px;background:#111827;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
-  .gauge > div{height:100%}
-  .g1{background:#ef4444;width:33%} .g2{background:#f59e0b;width:34%} .g3{background:#22c55e;width:33%}
+  .gauge{position:relative;height:10px;background:#111827;border-radius:999px;overflow:hidden;border:1px solid var(--line);margin-top:6px}
+  .g1{height:100%;background:#ef4444;width:33%}.g2{height:100%;background:#f59e0b;width:34%}.g3{height:100%;background:#22c55e;width:33%}
   .range{display:flex;justify-content:space-between;margin:6px 2px 0}
   .big{font-size:28px;font-weight:900}
-
   .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-weight:700}
-
-  /* Toast */
+  footer{margin:24px 0 12px;color:var(--muted)} footer .links{display:flex;gap:14px;flex-wrap:wrap}
   .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
   .toast.show{opacity:1}
 </style>
@@ -74,320 +56,300 @@
       <h1>SECOND WHEEL</h1>
     </div>
     <div class="flex" style="gap:8px">
-      <div class="seg" id="langSeg">
-        <button data-lang="en" class="active">EN</button>
-        <button data-lang="hi">HI</button>
-        <button data-lang="mr">MR</button>
-      </div>
-      <button id="themeBtn" class="btn">🌙</button>
+      <div class="seg" id="langSeg"><button data-lang="en" class="active">EN</button><button data-lang="hi">HI</button><button data-lang="mr">MR</button></div>
+      <button id="themeBtn" class="btn" aria-label="Toggle theme">🌙</button>
     </div>
   </div>
 </header>
 
 <main class="wrap" id="app">
-  <!-- Progress -->
   <div class="card pad">
-    <h2 class="title" data-i18n="title">Instant Valuation</h2>
+    <h2 class="title" data-i="title">Instant Valuation</h2>
     <div class="steps">
-      <div class="step active" id="s1h" data-i18n="s1h">1. Customer</div>
-      <div class="step" id="s2h" data-i18n="s2h">2. Vehicle</div>
-      <div class="step" id="s3h" data-i18n="s3h">3. Specs</div>
-      <div class="step" id="s4h" data-i18n="s4h">4. Condition</div>
-      <div class="step" id="s5h" data-i18n="s5h">5. Result</div>
+      <div class="step active" id="h1" data-i="s1h">1. Customer</div>
+      <div class="step" id="h2" data-i="s2h">2. Vehicle</div>
+      <div class="step" id="h3" data-i="s3h">3. Specs</div>
+      <div class="step" id="h4" data-i="s4h">4. Condition</div>
+      <div class="step" id="h5" data-i="s5h">5. Result</div>
     </div>
     <div class="progress"><div class="bar" id="bar"></div></div>
   </div>
 
-  <!-- STEP 1: CUSTOMER -->
+  <!-- STEP 1: Customer -->
   <section class="card pad" id="s1">
-    <h3 class="title" data-i18n="s1.title">Customer Details</h3>
+    <h3 class="title" data-i="s1.title">Customer Details</h3>
     <div class="row">
-      <div>
-        <label data-i18n="s1.name">Name</label>
-        <input id="custName" placeholder="Your name"/>
-      </div>
-      <div>
-        <label data-i18n="s1.phone">Mobile Number</label>
-        <input id="custPhone" placeholder="10-digit" maxlength="10" inputmode="numeric"/>
-      </div>
-      <div>
-        <label data-i18n="s1.city">City</label>
-        <input id="city" placeholder="Satara"/>
-      </div>
-      <div>
-        <label data-i18n="s1.notes">Notes (optional)</label>
-        <input id="notes" placeholder="Any info…"/>
-      </div>
+      <div><label data-i="s1.name">Name</label><input id="name" placeholder="Your name"/></div>
+      <div><label data-i="s1.phone">Mobile Number</label><input id="phone" inputmode="numeric" maxlength="10" placeholder="10-digit"/></div>
+      <div><label data-i="s1.city">City</label><input id="city" placeholder="Satara"/></div>
+      <div><label data-i="s1.notes">Notes (optional)</label><input id="notes" placeholder="Any info…"/></div>
     </div>
-    <div class="actions" style="margin-top:12px">
-      <button class="btn primary" id="next1" data-i18n="next">Continue</button>
+    <div class="flex" style="gap:10px;margin-top:12px">
+      <button class="btn primary" id="next1" data-i="next">Continue</button>
     </div>
   </section>
 
-  <!-- STEP 2: VEHICLE BASICS -->
+  <!-- STEP 2: Vehicle basics -->
   <section class="card pad" id="s2" hidden>
-    <h3 class="title" data-i18n="s2.title">Vehicle Basics</h3>
-    <div class="chips" id="typeChips">
-      <button class="chip active" data-vtype="car">🚗 Car</button>
-      <button class="chip" data-vtype="bike">🏍️ Bike</button>
-      <button class="chip" data-vtype="scooter">🛵 Scooter</button>
-      <button class="chip" data-vtype="ev_car">⚡ EV Car</button>
-      <button class="chip" data-vtype="ev_2w">⚡ EV 2W</button>
-    </div>
-    <div class="divider"></div>
+    <h3 class="title" data-i="s2.title">Vehicle Basics</h3>
     <div class="row">
+      <div><label data-i="s2.brand">Brand</label><input id="brand" placeholder="Maruti / Hyundai / Honda…"/></div>
+      <div><label data-i="s2.model">Model</label><input id="model" placeholder="Swift / i10 / City…"/></div>
       <div>
-        <label data-i18n="s2.brand">Brand</label>
-        <input id="brand" placeholder="Maruti / Hyundai / Honda…"/>
-      </div>
-      <div>
-        <label data-i18n="s2.model">Model</label>
-        <input id="model" placeholder="Swift / i10 / City / Splendor…"/>
-      </div>
-      <div>
-        <label data-i18n="s2.reg">Registration No.</label>
-        <input id="reg" placeholder="MH12 AB 1234"/>
-      </div>
-      <div>
-        <label data-i18n="s2.seats">Seats (auto)</label>
-        <input id="seats" placeholder="Auto" readonly/>
-      </div>
-      <div>
-        <label data-i18n="s2.body">Body Type (auto)</label>
-        <input id="bodyType" placeholder="Auto" readonly/>
-      </div>
-    </div>
-    <div class="actions" style="margin-top:12px">
-      <button class="btn" id="back2" data-i18n="back">Back</button>
-      <button class="btn primary" id="next2" data-i18n="next">Continue</button>
-    </div>
-  </section>
-
-  <!-- STEP 3: SPECS -->
-  <section class="card pad" id="s3" hidden>
-    <h3 class="title" data-i18n="s3.title">Specifications</h3>
-    <div class="row">
-      <div>
-        <label data-i18n="s3.year">Manufacturing Year</label>
-        <input id="year" type="number" min="1995" max="2099" placeholder="2018"/>
-      </div>
-      <div>
-        <label data-i18n="s3.km">KMs Driven</label>
-        <input id="km" type="number" min="0" step="500" placeholder="60000"/>
-      </div>
-
-      <div>
-        <label data-i18n="s3.fuel">Fuel</label>
-        <select id="fuel">
-          <option value="Petrol">Petrol</option>
-          <option value="Diesel">Diesel</option>
-          <option value="CNG_CF">CNG (Company-fitted)</option>
-          <option value="CNG_AF">CNG (Aftermarket)</option>
-          <option value="LPG_CF">LPG (Company-fitted)</option>
-          <option value="LPG_AF">LPG (Aftermarket)</option>
-          <option value="Electric">Electric</option>
+        <label data-i="s2.body">Body Type</label>
+        <select id="body">
+          <option>Sedan</option><option>Hatchback</option><option>Micro</option><option>SUV</option>
+          <option>Bike</option><option>Scooter</option><option>EV Car</option><option>EV Bike</option><option>EV Scooter</option>
         </select>
       </div>
-      <div id="transBox">
-        <label data-i18n="s3.trans">Transmission</label>
-        <select id="trans"><option>Manual</option><option>Automatic</option></select>
-      </div>
-
       <div>
-        <label data-i18n="s3.owners">Owners</label>
-        <select id="owners"><option>1st</option><option>2nd</option><option>3rd</option><option>4th+</option></select>
+        <label data-i="s2.seats">Seating</label>
+        <select id="seats"><option>4/5</option><option>6</option><option>7</option></select>
       </div>
-      <div>
-        <label data-i18n="s3.color">Color</label>
-        <select id="color"><option>White</option><option>Silver</option><option>Grey</option><option>Black</option><option>Blue</option><option>Red</option><option>Other</option></select>
-      </div>
+      <div><label>Registration No.</label><input id="reg" placeholder="MH12 AB 1234"/></div>
     </div>
-
-    <!-- Always visible -->
-    <div class="row">
-      <div>
-        <label data-i18n="s3.ins">Insurance</label>
-        <select id="ins"><option>Valid</option><option>Expired</option><option>Renewal Applied</option></select>
-      </div>
-      <div>
-        <label data-i18n="s3.puc">PUC</label>
-        <select id="puc"><option>Valid</option><option>Expired</option></select>
-      </div>
-    </div>
-
-    <!-- 15+ ONLY -->
-    <div class="row hidden" id="ageOnly">
-      <div>
-        <label data-i18n="s3.rc">RC / Fitness</label>
-        <select id="rc"><option>Valid</option><option>Expired</option><option>Renewal Applied</option></select>
-      </div>
-      <div>
-        <label data-i18n="s3.gt">Green Tax</label>
-        <select id="gt"><option>Paid</option><option>Not Paid</option></select>
-      </div>
-    </div>
-
-    <div class="actions" style="margin-top:12px">
-      <button class="btn" id="back3" data-i18n="back">Back</button>
-      <button class="btn primary" id="next3" data-i18n="next">Continue</button>
+    <div class="flex" style="gap:10px;margin-top:12px">
+      <button class="btn" id="back2" data-i="back">Back</button>
+      <button class="btn primary" id="next2" data-i="next">Continue</button>
     </div>
   </section>
 
-  <!-- STEP 4: CONDITION -->
+  <!-- STEP 3: Specs -->
+  <section class="card pad" id="s3" hidden>
+    <h3 class="title" data-i="s3.title">Specs</h3>
+    <div class="row">
+      <div><label>Year</label><input id="year" type="number" min="2000" max="2025" placeholder="2018"/></div>
+      <div><label>Fuel</label><select id="fuel"><option>Petrol</option><option>Diesel</option><option>CNG (Company)</option><option>CNG (Aftermarket)</option><option>LPG (Company)</option><option>LPG (Aftermarket)</option><option>Electric</option></select></div>
+      <div><label>KM</label><input id="km" type="number" min="0" step="500" placeholder="60000"/></div>
+      <div id="transWrap"><label>Transmission</label><select id="trans"><option>Manual</option><option>Automatic</option></select></div>
+      <div><label>Owners</label><select id="owners"><option>1st</option><option>2nd</option><option>3rd</option><option>4th+</option></select></div>
+      <div><label>Color</label><select id="color"><option>White</option><option>Silver</option><option>Grey</option><option>Black</option><option>Blue</option><option>Red</option><option>Other</option></select></div>
+    </div>
+    <div class="flex" style="gap:10px;margin-top:12px">
+      <button class="btn" id="back3" data-i="back">Back</button>
+      <button class="btn primary" id="next3" data-i="next">Continue</button>
+    </div>
+  </section>
+
+  <!-- STEP 4: Condition -->
   <section class="card pad" id="s4" hidden>
-    <h3 class="title" data-i18n="s4.title">Condition & Base</h3>
+    <h3 class="title" data-i="s4.title">Condition & Compliance</h3>
     <div class="row">
-      <div>
-        <label data-i18n="s4.cond">Overall Condition</label>
-        <select id="cond"><option>OK</option><option>Good</option><option>Excellent</option><option>Poor</option></select>
-      </div>
-      <div>
-        <label data-i18n="s4.newprice">Approx New Price (optional)</label>
-        <input id="newPrice" type="number" min="10000" step="1000" placeholder="Ex-showroom"/>
-      </div>
+      <div><label>RC</label><select id="rc"><option>Valid</option><option>Expired</option><option>Renewal Applied</option></select></div>
+      <div><label>Insurance</label><select id="ins"><option>Valid</option><option>Expired</option><option>Renewal Applied</option></select></div>
+      <div><label>PUC / Green Tax</label><select id="puc"><option>Valid / Paid</option><option>Expired / Due</option></select></div>
+      <div><label>Inspection Date</label><input type="date" id="datePick"></div>
+      <div><label>Time Slot</label><select id="timePick"><option>10am – 1pm</option><option>2pm – 6pm</option></select></div>
     </div>
-    <div class="actions" style="margin-top:12px">
-      <button class="btn" id="back4" data-i18n="back">Back</button>
-      <button class="btn primary" id="calc" data-i18n="calc">Get Valuation</button>
+    <div class="flex" style="gap:10px;margin-top:12px">
+      <button class="btn" id="back4" data-i="back">Back</button>
+      <button class="btn primary" id="calc" data-i="calc">Get Valuation</button>
     </div>
   </section>
 
-  <!-- STEP 5: RESULT -->
+  <!-- STEP 5: Result -->
   <section class="card pad" id="s5" hidden>
-    <h3 class="title" data-i18n="s5.title">Your Estimated Price</h3>
-
+    <h3 class="title">Your Estimated Price</h3>
     <div class="flex" style="gap:10px;flex-wrap:wrap;margin-bottom:10px">
-      <span class="pill" id="typeTag">—</span>
-      <span class="pill" id="brandTag">—</span>
-      <span class="pill" id="yearTag">—</span>
-      <span class="pill" id="kmTag">—</span>
-      <span class="pill" id="seatTag">—</span>
-      <span class="pill" id="bodyTag">—</span>
+      <span class="pill" id="tagBody">—</span>
+      <span class="pill" id="tagBrand">—</span>
+      <span class="pill" id="tagYear">—</span>
+      <span class="pill" id="tagKm">—</span>
     </div>
-
     <div class="gauge"><div class="g1"></div><div class="g2"></div><div class="g3"></div></div>
-    <div class="range">
-      <div class="muted" data-i18n="res.low">Conservative</div>
-      <div class="muted" data-i18n="res.avg">Average</div>
-      <div class="muted" data-i18n="res.high">Excellent</div>
-    </div>
-
+    <div class="range"><div class="muted">Conservative</div><div class="muted">Average</div><div class="muted">Excellent</div></div>
     <div class="flex space" style="margin-top:12px;align-items:flex-end">
-      <div>
-        <div class="muted" data-i18n="res.range">Estimated Range</div>
-        <div class="big"><span id="min">₹—</span> — <span id="max">₹—</span></div>
-      </div>
-      <div>
-        <div class="muted" data-i18n="res.mid">Most Likely</div>
-        <div class="big" id="mid">₹—</div>
-      </div>
+      <div><div class="muted">Estimated Range</div><div class="big"><span id="min">₹—</span> — <span id="max">₹—</span></div></div>
+      <div><div class="muted">Most Likely</div><div class="big" id="mid">₹—</div></div>
     </div>
-
-    <div class="divider"></div>
-    <div class="row">
-      <div>
-        <label data-i18n="res.date">Pick Inspection Date</label>
-        <input type="date" id="datePick">
-      </div>
-      <div>
-        <label data-i18n="res.time">Time Slot</label>
-        <select id="timePick"><option value="10-1">10am – 1pm</option><option value="2-6">2pm – 6pm</option></select>
-      </div>
-    </div>
-
-    <div class="actions" style="margin-top:12px">
-      <a id="wa" class="btn primary" target="_blank" rel="noopener">💬 WhatsApp</a>
+    <div class="flex" style="gap:10px;margin-top:12px;flex-wrap:wrap">
+      <a id="wa" class="btn primary" target="_blank" rel="noopener">💬 WhatsApp Final Quote</a>
       <a id="call" class="btn" href="tel:+919822292955">📞 Call Now</a>
-      <button id="saveLead" class="btn ok" data-i18n="res.book">🚗 Book Doorstep Inspection</button>
-      <button id="again" class="btn" style="margin-left:auto" data-i18n="res.again">↺ Recalculate</button>
+      <button id="saveLead" class="btn ok">🚗 Book Doorstep Inspection</button>
+      <button id="again" class="btn" style="margin-left:auto">↺ Recalculate</button>
     </div>
-
-    <p class="muted" style="margin-top:10px" data-i18n="res.note">
-      *Final price depends on physical inspection, RC/Insurance status and market demand.
-    </p>
+    <p class="muted" style="margin-top:10px">*Final price depends on physical inspection and compliance documents.</p>
   </section>
 </main>
+
+<footer class="wrap">
+  <div class="links">
+    <a href="/about.html">About Us</a><a href="/contact.html">Contact</a><a href="/wishlist.html">Wishlist</a>
+    <a href="/disclaimer.html">Disclaimer</a><a href="/terms.html">Terms & Conditions</a><a href="/privacy.html">Privacy</a>
+  </div>
+  <div style="margin-top:6px">© 2025 Second Wheel</div>
+</footer>
 
 <div id="toast" class="toast">Saved!</div>
 
 <script>
-/* ---------- CONFIG ---------- */
-const GAS_URL = 'PASTE_YOUR_WEB_APP_URL_HERE';  'https://script.google.com/macros/s/AKfycbxtUUG42G136Xsg5d8FCzcBdasOZUfZHzNSaPoBlvIEZzjrTfiFPvKGDaCX7OZMM81oTw/exec';const THEME_KEY='secondwheel.theme';
-const VID = (()=> Math.random().toString(36).slice(2,6)+'-'+Date.now().toString(36).slice(-4))();
+/* ------------ CONFIG ------------ */
+const GAS_URL='https://script.google.com/macros/s/AKfycbxtUUG42G136Xsg5d8FCzcBdasOZUfZHzNSaPoBlvIEZzjrTfiFPvKGDaCX7OZMM81oTw/exec';
+const THEME_KEY='secondwheel.theme';
+const VID = (()=>Math.random().toString(36).slice(2,6)+'-'+Date.now().toString(36).slice(-4))();
 
-/* ---------- THEME ---------- */
+/* ------------ THEME ------------ */
 const themeBtn=document.getElementById('themeBtn');
 function setTheme(t){ document.documentElement.setAttribute('data-theme',t); localStorage.setItem(THEME_KEY,t); themeBtn.textContent=t==='dark'?'🌙':'☀️'; }
 themeBtn.onclick=()=> setTheme((localStorage.getItem(THEME_KEY)||'dark')==='dark'?'light':'dark');
 setTheme(localStorage.getItem(THEME_KEY)||'dark');
 
-/* ---------- I18N (short labels) ---------- */
+/* ------------ I18N (short labels) ------------ */
 const I18N={
-  en:{title:'Instant Valuation', next:'Continue', back:'Back', calc:'Get Valuation',
+  en:{title:'Instant Valuation',next:'Continue',back:'Back',calc:'Get Valuation',
       s1h:'1. Customer',s2h:'2. Vehicle',s3h:'3. Specs',s4h:'4. Condition',s5h:'5. Result',
       's1.title':'Customer Details','s1.name':'Name','s1.phone':'Mobile Number','s1.city':'City','s1.notes':'Notes (optional)',
-      's2.title':'Vehicle Basics','s2.brand':'Brand','s2.model':'Model','s2.reg':'Registration No.','s2.seats':'Seats (auto)','s2.body':'Body Type (auto)',
-      's3.title':'Specifications','s3.year':'Manufacturing Year','s3.km':'KMs Driven','s3.fuel':'Fuel','s3.trans':'Transmission','s3.owners':'Owners','s3.color':'Color','s3.ins':'Insurance','s3.puc':'PUC','s3.rc':'RC / Fitness','s3.gt':'Green Tax',
-      's4.title':'Condition & Base','s4.cond':'Overall Condition','s4.newprice':'Approx New Price (optional)',
-      's5.title':'Your Estimated Price','res.low':'Conservative','res.avg':'Average','res.high':'Excellent',
-      'res.range':'Estimated Range','res.mid':'Most Likely','res.date':'Pick Inspection Date','res.time':'Time Slot','res.book':'Book Doorstep Inspection','res.again':'Recalculate','res.note':'*Final price depends on physical inspection, RC/Insurance status and market demand.'},
-  hi:{title:'इंस्टेंट वैल्यूएशन', next:'आगे बढ़ें', back:'वापस', calc:'वैल्यूएशन पाएं',
-      s1h:'1. ग्राहक',s2h:'2. वाहन',s3h:'3. विवरण',s4h:'4. कंडीशन',s5h:'5. परिणाम',
-      's1.title':'ग्राहक विवरण','s1.name':'नाम','s1.phone':'मोबाइल नंबर','s1.city':'शहर','s1.notes':'नोट्स (वैकल्पिक)',
-      's2.title':'वाहन बेसिक्स','s2.brand':'ब्रांड','s2.model':'मॉडल','s2.reg':'रजिस्ट्रेशन नंबर','s2.seats':'सीट्स (ऑटो)','s2.body':'बॉडी टाइप (ऑटो)',
-      's3.title':'स्पेसिफिकेशन्स','s3.year':'निर्माण वर्ष','s3.km':'किमी चली','s3.fuel':'फ्यूल','s3.trans':'ट्रांसमिशन','s3.owners':'ओनर्स','s3.color':'रंग','s3.ins':'इंश्योरेंस','s3.puc':'PUC','s3.rc':'RC/फिटनेस','s3.gt':'ग्रीन टैक्स',
-      's4.title':'कंडीशन व बेस','s4.cond':'ओवरऑल कंडीशन','s4.newprice':'नई कीमत (वैकल्पिक)',
-      's5.title':'अनुमानित कीमत','res.low':'कम','res.avg':'औसत','res.high':'उत्कृष्ट',
-      'res.range':'अनुमानित रेंज','res.mid':'सबसे संभावित','res.date':'इंस्पेक्शन तारीख','res.time':'समय','res.book':'डोरस्टेप इंस्पेक्शन बुक करें','res.again':'पुन: गणना','res.note':'*अंतिम कीमत फिजिकल इंस्पेक्शन, RC/इंश्योरेंस स्टेटस और मांग पर निर्भर है।'},
-  mr:{title:'इन्स्टंट व्हॅल्युएशन', next:'पुढे', back:'मागे', calc:'व्हॅल्युएशन घ्या',
-      s1h:'1. ग्राहक',s2h:'2. वाहन',s3h:'3. तपशील',s4h:'4. कंडीशन',s5h:'5. निकाल',
-      's1.title':'ग्राहक माहिती','s1.name':'नाव','s1.phone':'मोबाईल','s1.city':'शहर','s1.notes':'नोट्स (ऑप्शनल)',
-      's2.title':'वाहन बेसिक्स','s2.brand':'ब्रँड','s2.model':'मॉडेल','s2.reg':'नोंदणी क्र.','s2.seats':'सीट्स (ऑटो)','s2.body':'बॉडी टाइप (ऑटो)',
-      's3.title':'स्पेसिफिकेशन्स','s3.year':'निर्मिती वर्ष','s3.km':'किमी चाललेली','s3.fuel':'इंधन','s3.trans':'गिअरबॉक्स','s3.owners':'मालक','s3.color':'रंग','s3.ins':'इन्शुरन्स','s3.puc':'PUC','s3.rc':'RC/फिटनेस','s3.gt':'ग्रीन टॅक्स',
-      's4.title':'कंडीशन व बेस','s4.cond':'एकूण कंडीशन','s4.newprice':'नवीन किंमत (ऑप्शनल)',
-      's5.title':'तुमची अंदाजे किंमत','res.low':'कमी','res.avg':'साधारण','res.high':'उत्कृष्ट',
-      'res.range':'अंदाजे रेंज','res.mid':'बहुधा','res.date':'इन्स्पेक्शन तारीख','res.time':'वेळ','res.book':'डोअरस्टेप इन्स्पेक्शन बुक करा','res.again':'पुन्हा कॅल्क्युलेट','res.note':'*फायनल किंमत फिजिकल इन्स्पेक्शन, RC/इन्शुरन्स स्टेटस व मागणीवर अवलंबून आहे.'}
+      's2.title':'Vehicle Basics','s2.brand':'Brand','s2.model':'Model','s2.body':'Body Type','s2.seats':'Seating'},
+  hi:{title:'तुरंत मूल्यांकन',next:'आगे बढ़ें',back:'वापस',calc:'अनुमान देखें',
+      s1h:'1. ग्राहक',s2h:'2. वाहन',s3h:'3. विवरण',s4h:'4. स्थिति',s5h:'5. परिणाम',
+      's1.title':'ग्राहक विवरण','s1.name':'नाम','s1.phone':'मोबाइल','s1.city':'शहर','s1.notes':'नोट्स',
+      's2.title':'वाहन मूल','s2.brand':'ब्रांड','s2.model':'मॉडल','s2.body':'बॉडी टाइप','s2.seats':'सीटिंग'},
+  mr:{title:'इन्स्टंट व्हॅल्युएशन',next:'पुढे',back:'मागे',calc:'व्हॅल्यु बघा',
+      s1h:'1. ग्राहक',s2h:'2. वाहन',s3h:'3. तपशील',s4h:'4. कंडिशन',s5h:'5. निकाल',
+      's1.title':'ग्राहक माहिती','s1.name':'नाव','s1.phone':'मोबाईल','s1.city':'शहर','s1.notes':'नोट्स',
+      's2.title':'वाहन बेसिक्स','s2.brand':'ब्रँड','s2.model':'मॉडेल','s2.body':'बॉडी टाइप','s2.seats':'सीटिंग'}
 };
-function t(k){ const l=localStorage.getItem('sw.lang')||'en'; return (I18N[l]&&I18N[l][k])||I18N.en[k]||k; }
-function applyLang(l){
-  localStorage.setItem('sw.lang', l);
-  document.querySelectorAll('[data-i18n]').forEach(el=>{ const k=el.getAttribute('data-i18n'); el.textContent=t(k); });
-  document.querySelectorAll('#langSeg button').forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
+function setLang(lang){
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const key=el.getAttribute('data-i'); if(I18N[lang] && I18N[lang][key]) el.textContent=I18N[lang][key];
+  });
 }
-applyLang(localStorage.getItem('sw.lang')||'en');
 document.getElementById('langSeg').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b) return; applyLang(b.dataset.lang);
+  const b=e.target.closest('button'); if(!b) return;
+  [...e.currentTarget.children].forEach(x=>x.classList.remove('active')); b.classList.add('active'); setLang(b.dataset.lang);
 });
+setLang('en');
 
-/* ---------- Helpers ---------- */
+/* ------------ Helpers ------------ */
 const $ = id => document.getElementById(id);
-const toast=m=>{const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),1400);};
-function go(i){
-  const S=[ 's1','s2','s3','s4','s5' ];
-  const H=[ 's1h','s2h','s3h','s4h','s5h' ];
-  S.forEach((id,idx)=> $(id).hidden = idx!==i);
-  H.forEach((id,idx)=> $(id).classList.toggle('active', idx<=i));
-  $('bar').style.width = (i/4*100)+'%';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function ownersVal(s){ return s.startsWith('1')?1:s.startsWith('2')?2:s.startsWith('3')?3:4; }
-function rupee(n){ try{return '₹'+Number(n).toLocaleString('en-IN');}catch{return '₹'+n} }
-function nowYear(){ return (new Date()).getFullYear(); }
+const toast=m=>{const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),1400);};
+const sections=[ $('s1'),$('s2'),$('s3'),$('s4'),$('s5') ];
+const headers=[ $('h1'),$('h2'),$('h3'),$('h4'),$('h5') ];
+const bar=$('bar');
+function go(idx){ sections.forEach((s,i)=>s.hidden=i!==idx); headers.forEach((h,i)=>h.classList.toggle('active',i<=idx)); bar.style.width=(idx/4*100)+'%'; window.scrollTo({top:0,behavior:'smooth'}); }
 
-/* ---------- Catalog (auto-learn) ---------- */
-let CATALOG=[];
-async function loadCatalog(){
-  try{
-    const res = await fetch(GAS_URL+'?action=catalog_get');
-    const j = await res.json().catch(()=>null);
-    if(j && j.ok && Array.isArray(j.items)) CATALOG = j.items;
-  }catch(e){ /* silent */ }
+/* ------------ Body type auto-detect (simple) ------------ */
+const BODY_HINTS={
+  sedan:['DZIRE','CITY','VERNA','CIAZ','RAPID','SLAVIA','AURA'], 
+  hatch:['SWIFT','I10','I20','ALTO','WAGON','BALENO','TIAGO'],
+  micro:['KWID','S-PRESSO','REDIGO'],
+  suv:['ERTIGA','XUV','ALCAZAR','HECTOR','CRETA','BREZZA','VENUE','NEXON','SCORPIO','SAFARI','HARRIER'],
+};
+function guessBody(brand,model){
+  const M=(brand+' '+model).toUpperCase();
+  for(const [type,arr] of Object.entries(BODY_HINTS)){ if(arr.some(k=>M.includes(k))) return type; }
+  return 'hatch';
 }
-function strongBrand(type,brand){
-  brand=String(brand||'').toUpperCase();
-  if(type==='car'||type==='ev_car') return ['MARUTI','HYUNDAI','HONDA','TOYOTA','TATA','KIA','MAHINDRA'].some(b=>brand.includes(b));
-  if(type==='bike'||type==='ev_2w') return ['HERO','HONDA','BAJAJ','ROYAL ENFIELD','TVS','SUZUKI','YAMAHA'].some(b=>brand.includes(b));
-  return ['HONDA','HERO','TVS','SUZUKI','YAMAHA'].some(b=>brand.includes(b));
+
+/* ------------ Base price tables (2000–2025) ------------ */
+const BASE={  // baseline “new price x residual factor”
+  sedan:   {newP:800000,  dep:year=>Math.max(0.12,Math.pow(1-0.16, year))},
+  hatch:   {newP:600000,  dep:year=>Math.max(0.15,Math.pow(1-0.18, year))},
+  micro:   {newP:450000,  dep:year=>Math.max(0.18,Math.pow(1-0.20, year))},
+  suv:     {newP:1000000, dep:year=>Math.max(0.10,Math.pow(1-0.15, year))},
+  bike:    {newP:80000,   dep:year=>Math.max(0.07,Math.pow(1-0.22, year))},
+  scooter: {newP:65000,   dep:year=>Math.max(0.07,Math.pow(1-0.20, year))},
+  evcar:   {newP:1400000, dep:year=>Math.max(0.20,Math.pow(1-0.25, year))},
+  evbike:  {newP:110000,  dep:year=>Math.max(0.25,Math.pow(1-0.28, year))},
+  evscoot: {newP:90000,   dep:year=>Math.max(0.25,Math.pow(1-0.28, year))}
+};
+function bodyKey(sel,ev){
+  if(ev==='EV Car') return 'evcar';
+  if(ev==='EV Bike') return 'evbike';
+  if(ev==='EV Scooter') return 'evscoot';
+  const m=sel.toLowerCase(); return m.includes('sedan')?'sedan':m.includes('micro')?'micro':m.includes('suv')?'suv':m.includes('bike')?'bike':m.includes('scooter')?'scooter':'hatch';
 }
-function keywordBody(brand,model){
-  const s=(brand+' '+model).toLowerCase();
+
+/* ------------ Fuel weights ------------ */
+function fuelFactor(f){
+  if(f==='Diesel') return 1.06;               // Diesel > Petrol
+  if(f.startsWith('Petrol')) return 1.00;
+  if(f==='CNG (Company)') return 0.98;        // stable but resale slightly tighter
+  if(f==='CNG (Aftermarket)') return 0.92;
+  if(f==='LPG (Company)') return 0.94;
+  if(f==='LPG (Aftermarket)') return 0.88;
+  if(f==='Electric') return 0.90;             // faster tech depreciation
+  return 1;
+}
+function colorAdj(c){ c=String(c||'').toUpperCase(); if(['WHITE','SILVER','GREY','GRAY'].includes(c)) return 1.02; if(['BLACK','BLUE','RED'].includes(c)) return 1.00; return 0.98; }
+function ownersPenalty(s){ return s.startsWith('1')?1:s.startsWith('2')?0.93:s.startsWith('3')?0.85:0.75; }
+function rupee(n){ try{return '₹'+Number(n).toLocaleString('en-IN');}catch{return '₹'+n} }
+
+/* ------------ Compute valuation ------------ */
+function compute(){
+  const brand=$('brand').value||'', model=$('model').value||'';
+  let body=$('body').value; if(!body) body='Hatchback';
+  // auto body from model if user hasn’t changed
+  if(body==='Hatchback' && brand+model) body = {sedan:'Sedan',hatch:'Hatchback',micro:'Micro',suv:'SUV'}[guessBody(brand,model)] || body;
+
+  // 7-seater bump (SUV)
+  const seats=$('seats').value;
+  const key = bodyKey(body, body.startsWith('EV')?body:'');
+  const base=BASE[key]||BASE.hatch;
+
+  const year=Number($('year').value||new Date().getFullYear());
+  const age=Math.max(0,new Date().getFullYear()-year);
+  let p = base.newP * base.dep(age);
+
+  // seating bump for SUVs
+  if(key==='suv' && seats==='7') p*=1.06;
+
+  // km effect
+  const km=Number($('km').value||0);
+  if(['suv','sedan','hatch','micro','evcar'].includes(key)){
+    if(km>60000) p -= (km-60000)*0.75; else if(km<30000) p*=1.04;
+  }else{
+    if(km>40000) p -= (km-40000)*0.30; else if(km<15000) p*=1.05;
+  }
+
+  // transmission (cars)
+  if(['suv','sedan','hatch','micro','evcar'].includes(key)){
+    if($('trans').value==='Automatic') p*=1.03;
+  }
+
+  // owners, fuel, color
+  p*=ownersPenalty($('owners').value);
+  p*=fuelFactor($('fuel').value);
+  p*=colorAdj($('color').value);
+
+  // compliance
+  if($('rc').value==='Expired') p*=0.40;
+  if($('ins').value==='Expired') p*=0.97;
+  if($('puc').value==='Expired / Due') p*=0.98;
+
+  p = Math.max(5000, Math.round(p/1000)*1000);
+  const min=Math.max(5000, Math.round(p*0.93/1000)*1000);
+  const max=Math.max(min+1000, Math.round(p*1.07/1000)*1000);
+
+  return {min,max,mid:p, body, key};
+}
+
+/* ------------ Wire navigation ------------ */
+$('next1').onclick=()=>{
+  if(!$('name').value.trim() || !/^\d{10}$/.test(($('phone').value||'').trim()) || !$('city').value.trim()){
+    toast('Please complete customer details.'); return;
+  }
+  go(1);
+};
+$('back2').onclick=()=>go(0);
+$('next2').onclick=()=>{
+  if(!$('brand').value.trim() || !$('model').value.trim()){ toast('Enter brand & model.'); return; }
+  // show/hide transmission for cars
+  const bkey=bodyKey($('body').value, $('body').value);
+  $('transWrap').style.display = ['suv','sedan','hatch','micro','evcar'].includes(bkey)?'block':'none';
+  go(2);
+};
+$('back3').onclick=()=>go(1);
+$('next3').onclick=()=>{
+  if(!$('year').value || !$('km').value){ toast('Enter year & KMs.'); return; }
+  go(3);
+};
+$('back4').onclick=()=>go(2);
+
+$('calc').onclick=()=>{
+  const r=compute();
+  $('tagBody').textContent = $('body').value + ' • ' + $('seats').value + ' seats';
+  $('tagBrand').textContent = ($('brand').value+' '+$('model').value).trim() || '—';
+  $('tagYear').textContent  = $('year').value || '—';
+  $('tagKm').textContent    = (Number($('km').value||0)).toLocaleString('en-IN')+' km';
+  $('min').textContent=rupee(r.min); $('max').textContent=rupee(r.max); $('mid').textContent=rup
