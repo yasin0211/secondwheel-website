@@ -11,8 +11,11 @@
   :root[data-theme="light"]{ --bg:#f7f8fb; --card:#ffffff; --text:#0b0f17; --muted:#5b667a; --line:rgba(0,0,0,.12); }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu}
-  a{color:inherit;text-decoration:none} img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
   .wrap{max-width:920px;margin:0 auto;padding:14px 16px}
+
+  /* Header */
   header{position:sticky;top:0;z-index:20;background:rgba(11,15,23,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
   .hrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0}
   .brand{display:flex;align-items:center;gap:10px}
@@ -22,12 +25,16 @@
   .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border:none}
   .btn.ok{background:linear-gradient(180deg,#22c55e,#15803d);color:#111;border:none}
   .btn:active{transform:translateY(1px)}
+
+  /* Steps */
   .steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}
   .step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow)}
   .dot{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid var(--line);font-weight:800}
   .step.active .dot{background:var(--brand);color:#111;border-color:transparent}
   .step.done .dot{background:var(--ok);color:#111;border-color:transparent}
   .step small{color:var(--muted);display:block;margin-top:2px}
+
+  /* Cards */
   .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px;margin-top:12px}
   h2{margin:0 0 8px;font-size:18px}
   label{display:block;margin:10px 0 6px;color:var(--muted);font-weight:700}
@@ -43,6 +50,8 @@
   .hidden{display:none !important}
   .note{color:var(--muted);font-size:12px}
   .price{font-size:24px;font-weight:900}
+
+  /* Toast */
   .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
   .toast.show{opacity:1}
 </style>
@@ -59,6 +68,7 @@
 </header>
 
 <main class="wrap">
+  <!-- Step indicator -->
   <div class="steps">
     <div class="step active" id="s1step"><div class="dot">1</div><div><b>Vehicle Details</b><small>RC / Insurance / PUC</small></div></div>
     <div class="step" id="s2step"><div class="dot">2</div><div><b>Customer Details</b><small>Verify phone</small></div></div>
@@ -84,27 +94,41 @@
       <div>
         <label>Fuel</label>
         <select id="fuel" required>
-          <option value="">Select</option><option value="petrol">Petrol</option><option value="diesel">Diesel</option><option value="cng">CNG</option><option value="electric">Electric</option>
+          <option value="">Select</option>
+          <option value="petrol">Petrol</option>
+          <option value="diesel">Diesel</option>
+          <option value="cng">CNG</option>
+          <option value="electric">Electric</option>
         </select>
       </div>
       <div>
         <label>Type</label>
         <select id="type" required>
-          <option value="car">Car</option><option value="bike">Bike</option><option value="scooter">Scooter</option>
+          <option value="car">Car</option>
+          <option value="bike">Bike</option>
+          <option value="scooter">Scooter</option>
         </select>
       </div>
       <div><label>Year</label><input id="year" type="number" inputmode="numeric" placeholder="2016" required></div>
     </div>
 
-    <!-- 15+ YEARS ONLY -->
+    <!-- RC & Green Tax: only for 15+ years -->
     <div class="grid2 hidden" id="ageOnlyRow1">
       <div>
         <label>RC / Fitness</label>
-        <div class="chips" id="rcChips"><span class="chip" data-val="ok">OK</span><span class="chip" data-val="pending">Pending</span><span class="chip" data-val="expired">Expired</span></div>
+        <div class="chips" id="rcChips">
+          <span class="chip" data-val="ok">OK</span>
+          <span class="chip" data-val="pending">Pending</span>
+          <span class="chip" data-val="expired">Expired</span>
+        </div>
       </div>
       <div>
         <label>Green Tax</label>
-        <div class="chips" id="taxChips"><span class="chip" data-val="paid">Paid</span><span class="chip" data-val="due">Due</span><span class="chip" data-val="na">Don’t know</span></div>
+        <div class="chips" id="taxChips">
+          <span class="chip" data-val="paid">Paid</span>
+          <span class="chip" data-val="due">Due</span>
+          <span class="chip" data-val="na">Don’t know</span>
+        </div>
       </div>
     </div>
 
@@ -112,15 +136,23 @@
     <div class="grid2">
       <div>
         <label>Insurance</label>
-        <div class="chips" id="insChips"><span class="chip" data-val="ok">Valid</span><span class="chip" data-val="expired">Expired</span></div>
+        <div class="chips" id="insChips">
+          <span class="chip" data-val="ok">Valid</span>
+          <span class="chip" data-val="expired">Expired</span>
+        </div>
       </div>
       <div>
         <label>PUC</label>
-        <div class="chips" id="pucChips"><span class="chip" data-val="ok">Valid</span><span class="chip" data-val="expired">Expired</span></div>
+        <div class="chips" id="pucChips">
+          <span class="chip" data-val="ok">Valid</span>
+          <span class="chip" data-val="expired">Expired</span>
+        </div>
       </div>
     </div>
 
-    <div class="actions"><button id="go2" class="btn primary">Continue</button></div>
+    <div class="actions">
+      <button id="go2" class="btn primary">Continue</button>
+    </div>
   </section>
 
   <!-- STEP 2 -->
@@ -132,7 +164,10 @@
       <div><label>City</label><input id="city" placeholder="Satara" required></div>
       <div><label>Notes (optional)</label><input id="notes" placeholder="Any info…"></div>
     </div>
-    <div class="actions"><button id="back1" class="btn">Back</button><button id="go3" class="btn primary">Get Instrument Valuation</button></div>
+    <div class="actions">
+      <button id="back1" class="btn">Back</button>
+      <button id="go3" class="btn primary">Get Instrument Valuation</button>
+    </div>
   </section>
 
   <!-- STEP 3 -->
@@ -140,10 +175,21 @@
     <h2>Instant Valuation</h2>
     <div class="price" id="valPrice">₹ —</div>
     <p class="note">* हे Instant estimate आहे — Final price Doorstep Inspection नंतर निश्चित होईल.</p>
+
     <div class="grid2">
-      <div><label>Pick Inspection Date</label><input type="date" id="datePick"></div>
-      <div><label>Time Slot</label><select id="timePick"><option value="10-1">10am – 1pm</option><option value="2-6">2pm – 6pm</option></select></div>
+      <div>
+        <label>Pick Inspection Date</label>
+        <input type="date" id="datePick">
+      </div>
+      <div>
+        <label>Time Slot</label>
+        <select id="timePick">
+          <option value="10-1">10am – 1pm</option>
+          <option value="2-6">2pm – 6pm</option>
+        </select>
+      </div>
     </div>
+
     <div class="actions">
       <a id="waBtn" class="btn" target="_blank" rel="noopener">WhatsApp</a>
       <button id="saveLead" class="btn ok">Book Doorstep Inspection</button>
@@ -155,65 +201,46 @@
 
 <script>
 /* THEME */
-(function () {
-  const KEY = 'sw.theme';
-  const b = document.getElementById('themeBtn');
-  function setT(t) {
-    document.documentElement.setAttribute('data-theme', t);
-    localStorage.setItem(KEY, t);
-    b.textContent = (t === 'dark') ? '🌙' : '☀️';
-  }
-  setT(localStorage.getItem(KEY) || 'dark');
-  b.addEventListener('click', () =>
-    setT((localStorage.getItem(KEY) || 'dark') === 'dark' ? 'light' : 'dark')
-  );
+(function(){
+  const KEY='sw.theme';
+  const b=document.getElementById('themeBtn');
+  function setT(t){ document.documentElement.setAttribute('data-theme',t); localStorage.setItem(KEY,t); b.textContent=(t==='dark')?'🌙':'☀️'; }
+  setT(localStorage.getItem(KEY)||'dark');
+  b.addEventListener('click',()=> setT((localStorage.getItem(KEY)||'dark')==='dark'?'light':'dark'));
 })();
 
 /* HELPERS / STATE */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzrL5nbmS1AYFyrlr0nE7MLKDVNlfGTzSYSAmGopqFBdb-UliMs0WcgpMpaIldzyc7_/exec';
-const VID = (() => Math.random().toString(36).slice(2, 6) + '-' + Date.now().toString(36).slice(-4))();
+/* <<< REPLACE THIS WITH YOUR LATEST DEPLOYED WEB APP URL IF YOU REDEPLOY >>> */
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyVxSDejNe1eMCRdh0uF5gN9P_qiPZHEPVfKyLFX9LTCIILH9F8-2ZYj61Xa55VPZwa6Q/exec';
+const VID = (()=> Math.random().toString(36).slice(2,6)+'-'+Date.now().toString(36).slice(-4))();
 const $ = id => document.getElementById(id);
-const toast = m => {
-  const t = $('toast');
-  t.textContent = m;
-  t.classList.add('show');
-  clearTimeout(window.__t);
-  window.__t = setTimeout(() => t.classList.remove('show'), 1400);
-};
-function req(el) { return el && el.value && el.value.toString().trim().length > 0; }
-function bindChips(id) {
-  const g = $(id);
-  if (!g) return;
-  g.addEventListener('click', e => {
-    const c = e.target.closest('.chip');
-    if (!c) return;
-    g.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+const toast = m => { const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(window.__t); window.__t=setTimeout(()=>t.classList.remove('show'),1400); };
+
+function req(el){ return el && el.value && el.value.toString().trim().length>0; }
+function bindChips(id){
+  const g=$(id); if(!g) return;
+  g.addEventListener('click',e=>{
+    const c=e.target.closest('.chip'); if(!c) return;
+    g.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
     c.classList.add('active');
   });
 }
-['rcChips', 'insChips', 'pucChips', 'taxChips'].forEach(bindChips);
-function getChip(id) {
-  const g = $(id);
-  if (!g) return null;
-  let v = null;
-  g.querySelectorAll('.chip').forEach(ch => { if (ch.classList.contains('active')) v = ch.dataset.val; });
-  return v;
-}
+['rcChips','insChips','pucChips','taxChips'].forEach(bindChips);
+function getChip(id){ const g=$(id); if(!g) return null; let v=null; g.querySelectorAll('.chip').forEach(ch=>{ if(ch.classList.contains('active')) v=ch.dataset.val; }); return v; }
 
 /* 15+ YEARS: show/hide RC & Green Tax */
-function needsAgeFields() {
-  const y = Number($('year').value || 0);
-  if (!y) return false;
-  const now = (new Date()).getFullYear();
+function needsAgeFields(){
+  const y=Number($('year').value||0); if(!y) return false;
+  const now=(new Date()).getFullYear();
   return (now - y) >= 15;
 }
-function toggleAgeFields() {
+function toggleAgeFields(){
   const show = needsAgeFields();
   $('ageOnlyRow1').classList.toggle('hidden', !show);
-  if (!show) {
-    ['rcChips', 'taxChips'].forEach(id => {
-      const g = $(id); if (!g) return;
-      g.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+  if(!show){
+    ['rcChips','taxChips'].forEach(id=>{
+      const g=$(id); if(!g) return;
+      g.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
     });
   }
 }
@@ -221,170 +248,130 @@ $('year').addEventListener('input', toggleAgeFields);
 document.addEventListener('DOMContentLoaded', toggleAgeFields);
 
 /* STEP NAV */
-const s1 = $('s1'), s2 = $('s2'), s3 = $('s3'),
-      s1s = $('s1step'), s2s = $('s2step'), s3s = $('s3step');
-function setStep(n) {
-  [s1, s2, s3].forEach((sec, i) => sec.classList.toggle('hidden', i !== n - 1));
-  [s1s, s2s, s3s].forEach((st, i) => {
-    st.classList.toggle('active', i === n - 1);
-    st.classList.toggle('done', i < n - 1);
-  });
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+const s1=$('s1'), s2=$('s2'), s3=$('s3'), s1s=$('s1step'), s2s=$('s2step'), s3s=$('s3step');
+function setStep(n){
+  [s1,s2,s3].forEach((sec,i)=> sec.classList.toggle('hidden', i!==n-1));
+  [s1s,s2s,s3s].forEach((st,i)=>{ st.classList.toggle('active', i===n-1); st.classList.toggle('done', i<n-1); });
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 /* VALIDATION */
-function validateStep1() {
-  const basic = req($('vehNumber')) && req($('make')) && req($('model')) &&
-                req($('variant')) && req($('color')) && req($('km')) &&
-                req($('owner')) && req($('fuel')) && req($('type')) && req($('year'));
-  if (!basic) { toast('Please complete all Vehicle Details.'); return false; }
-  if (needsAgeFields()) {
-    if (!getChip('rcChips') || !getChip('taxChips')) {
-      toast('Select RC/Fitness & Green Tax status.'); return false;
-    }
+function validateStep1(){
+  const basic = req($('vehNumber'))&&req($('make'))&&req($('model'))&&req($('variant'))&&req($('color'))&&req($('km'))&&req($('owner'))&&req($('fuel'))&&req($('type'))&&req($('year'));
+  if(!basic){ toast('Please complete all Vehicle Details.'); return false; }
+  if(needsAgeFields()){
+    if(!getChip('rcChips') || !getChip('taxChips')){ toast('Select RC/Fitness & Green Tax status.'); return false; }
   }
-  if (!getChip('insChips') || !getChip('pucChips')) {
-    toast('Select Insurance & PUC.'); return false;
-  }
+  if(!getChip('insChips') || !getChip('pucChips')){ toast('Select Insurance & PUC.'); return false; }
   return true;
 }
-function validateStep2() {
-  const ph = $('custPhone').value.trim();
-  const ok = req($('custName')) && /^\d{10}$/.test(ph) && req($('city'));
-  if (!ok) toast('Please complete Customer Details correctly.');
+function validateStep2(){
+  const ph=$('custPhone').value.trim();
+  const ok=req($('custName')) && /^\d{10}$/.test(ph) && req($('city'));
+  if(!ok) toast('Please complete Customer Details correctly.');
   return ok;
 }
 
 /* VALUATION */
-function calcBase(type, year, fuel, km, makeBrand) {
-  const now = (new Date()).getFullYear();
-  const age = Math.max(0, now - (Number(year) || now));
-  let base = (type === 'car') ? 450000 : (type === 'bike' ? 35000 : 30000);
-  const B = (makeBrand || '').toUpperCase();
-  if (type === 'car' && ['MARUTI', 'HYUNDAI', 'HONDA', 'TOYOTA'].some(x => B.includes(x))) base *= 1.08;
-  if (type === 'bike' && ['HERO', 'BAJAJ', 'ROYAL ENFIELD'].some(x => B.includes(x))) base *= 1.10;
-  if (type === 'scooter' && ['HONDA', 'HERO', 'TVS'].some(x => B.includes(x))) base *= 1.08;
-  if (type === 'car') { if (fuel === 'diesel') base *= 1.08; if (fuel === 'cng') base *= 1.05; if (fuel === 'electric') base *= 1.12; }
-  base *= Math.max(0.35, (1 - age * 0.06));
-  const kmx = Number(km) || 0;
-  const over = Math.max(0, kmx - (type === 'car' ? 50000 : 20000));
-  const blocks = Math.floor(over / (type === 'car' ? 10000 : 5000));
-  base *= (1 - blocks * 0.02);
-  return Math.max(15000, Math.round(base));
+function calcBase(type,year,fuel,km,makeBrand){
+  const now=(new Date()).getFullYear(); const age=Math.max(0,now-(Number(year)||now));
+  let base=(type==='car')?450000:(type==='bike'?35000:30000);
+  const B=(makeBrand||'').toUpperCase();
+  if(type==='car'&&['MARUTI','HYUNDAI','HONDA','TOYOTA'].some(x=>B.includes(x))) base*=1.08;
+  if(type==='bike'&&['HERO','BAJAJ','ROYAL ENFIELD'].some(x=>B.includes(x))) base*=1.10;
+  if(type==='scooter'&&['HONDA','HERO','TVS'].some(x=>B.includes(x))) base*=1.08;
+  if(type==='car'){ if(fuel==='diesel') base*=1.08; if(fuel==='cng') base*=1.05; if(fuel==='electric') base*=1.12; }
+  base*=Math.max(0.35,(1-age*0.06));
+  const kmx=Number(km)||0; const over=Math.max(0,kmx-(type==='car'?50000:20000)); const blocks=Math.floor(over/(type==='car'?10000:5000));
+  base*=(1-blocks*0.02);
+  return Math.max(15000,Math.round(base));
 }
-function docAdjust(base) {
-  let adj = 0;
-  const y = Number($('year').value) || new Date().getFullYear();
-  const now = (new Date()).getFullYear();
-  if ((now - y) >= 15) {
-    if (getChip('rcChips') !== 'ok') adj -= 0.10;
-    if (getChip('taxChips') === 'due') adj -= 0.03;
-  }
-  if (getChip('insChips') === 'expired') adj -= 0.05;
-  const min = Math.round(base * (1 + adj - 0.04));
-  const max = Math.round(base * (1 + adj + 0.05));
-  return { min: Math.max(10000, min), max: Math.max(12000, max) };
+function docAdjust(base){
+  let adj=0; const y=Number($('year').value)||new Date().getFullYear(); const now=(new Date()).getFullYear();
+  if((now-y)>=15){ if(getChip('rcChips')!=='ok') adj-=0.10; if(getChip('taxChips')==='due') adj-=0.03; }
+  if(getChip('insChips')==='expired') adj-=0.05;
+  const min=Math.round(base*(1+adj-0.04)), max=Math.round(base*(1+adj+0.05));
+  return {min:Math.max(10000,min), max:Math.max(12000,max)};
 }
-function makeWaMessage(min, max) {
-  const parts = [];
+function makeWaMessage(min,max){
+  const parts=[];
   parts.push(`Lead ID: ${VID}`);
-  parts.push(`Vehicle: ${$('vehNumber').value} | ${$('make').value} ${$('model').value} ${$('variant').value} (${$('year').value})`);
+  parts.push(`Vehicle: ${$('vehNumber').value} | ${$('make').value} ${$('model').value} ${$('variant').value} (${ $('year').value })`);
   parts.push(`Fuel: ${$('fuel').value.toUpperCase()} | KM: ${$('km').value} | Owner: ${$('owner').value} | Color: ${$('color').value}`);
-  if (needsAgeFields()) {
-    if (getChip('rcChips')) parts.push(`RC/Fitness: ${getChip('rcChips')}`);
-    if (getChip('taxChips')) parts.push(`GreenTax: ${getChip('taxChips')}`);
+  if(needsAgeFields()){
+    if(getChip('rcChips')) parts.push(`RC/Fitness: ${getChip('rcChips')}`);
+    if(getChip('taxChips')) parts.push(`GreenTax: ${getChip('taxChips')}`);
   }
   parts.push(`Insurance: ${getChip('insChips') || '-'}, PUC: ${getChip('pucChips') || '-'}`);
   parts.push(`Estimate: ₹${min.toLocaleString('en-IN')}–₹${max.toLocaleString('en-IN')}`);
-  parts.push(`Customer: ${$('custName').value}, ${$('custPhone').value} (${$('city').value})`);
+  parts.push(`Customer: ${$('custName').value}, ${$('custPhone').value} (${ $('city').value })`);
   return parts.join(' | ');
 }
-function updateValuation() {
-  const base = calcBase($('type').value, $('year').value, $('fuel').value, $('km').value, $('make').value);
-  const r = docAdjust(base);
-  $('valPrice').textContent = '₹ ' + r.min.toLocaleString('en-IN') + ' – ₹ ' + r.max.toLocaleString('en-IN');
-  $('waBtn').href = 'https://wa.me/919822292955?text=' + encodeURIComponent(makeWaMessage(r.min, r.max));
+function updateValuation(){
+  const base=calcBase($('type').value,$('year').value,$('fuel').value,$('km').value,$('make').value);
+  const r=docAdjust(base);
+  $('valPrice').textContent='₹ '+r.min.toLocaleString('en-IN')+' – ₹ '+r.max.toLocaleString('en-IN');
+  $('waBtn').href='https://wa.me/919822292955?text='+encodeURIComponent(makeWaMessage(r.min,r.max));
 }
 
-/* SAVE to Sheets */
-async function saveLead() {
-  const payload = {
-    vid: VID,
-    name: $('custName').value.trim(),
-    phone: $('custPhone').value.trim(),
-    city: $('city').value.trim(),
-    type: $('type').value,
-    brand: $('make').value.trim(),
-    model: $('model').value.trim(),
-    year: $('year').value.trim(),
-    fuel: $('fuel').value,
-    km: $('km').value.trim(),
-    reg: $('vehNumber').value.trim(),
-    color: $('color').value.trim(),
-    owner: $('owner').value,
-    rcStatus: needsAgeFields() ? (getChip('rcChips') || '') : '',
-    insuranceStatus: getChip('insChips') || '',
-    greenTax: needsAgeFields() ? (getChip('taxChips') || '') : '',
-    puc: getChip('pucChips') || '',
-    notes: $('notes').value.trim(),
-    source: 'sell-form',
-    slotDate: $('datePick').value || '',
-    slotTime: $('timePick').value || ''
+/* SAVE to Google Sheets (Apps Script) — no preflight, using form-encoded body */
+async function saveLead(){
+  const payload={
+    vid:VID, name:$('custName').value.trim(), phone:$('custPhone').value.trim(), city:$('city').value.trim(),
+    type:$('type').value, brand:$('make').value.trim(), model:$('model').value.trim(), year:$('year').value.trim(),
+    fuel:$('fuel').value, km:$('km').value.trim(), reg:$('vehNumber').value.trim(), color:$('color').value.trim(), owner:$('owner').value,
+    rcStatus: needsAgeFields()? (getChip('rcChips')||'') : '', insuranceStatus:getChip('insChips')||'',
+    greenTax: needsAgeFields()? (getChip('taxChips')||'') : '', puc:getChip('pucChips')||'',
+    notes:$('notes').value.trim(), source:'sell-form',
+    slotDate:$('datePick').value||'', slotTime:$('timePick').value||''
   };
-  try {
+  try{
     const res = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      method:'POST',
+      body: new URLSearchParams({ payload: JSON.stringify(payload) })
     });
-    const j = await res.json().catch(() => ({ ok: false }));
-    if (j && j.ok) { toast('Saved ✓'); return true; }
+    const j = await res.json().catch(()=>({ok:false}));
+    if(j && j.ok){ toast('Saved ✓'); return true; }
     toast('Save failed'); return false;
-  } catch (e) {
-    console.error(e);
-    toast('Save failed');
-    return false;
-  }
+  }catch(e){ console.error(e); toast('Save failed'); return false; }
 }
 
-/* WIRES */
-$('go2').addEventListener('click', () => { if (!validateStep1()) return; setStep(2); });
-$('back1').addEventListener('click', () => setStep(1));
-$('go3').addEventListener('click', () => {
-  if (!validateStep2()) return;
-  updateValuation(); setStep(3);
+/* Wires */
+$('go2').addEventListener('click',()=>{ if(!validateStep1()) return; setStep(2); });
+$('back1').addEventListener('click',()=> setStep(1));
+$('go3').addEventListener('click',()=>{
+  if(!validateStep2()) return;
+  updateValuation();
+  setStep(3);
   s1s.classList.add('done'); s2s.classList.add('done');
 });
-$('saveLead').addEventListener('click', async () => {
+$('saveLead').addEventListener('click', async ()=>{
   const ok = await saveLead();
-  if (ok) toast('Inspection slot saved');
+  if(ok) toast('Inspection slot saved');
 });
-['change', 'input'].forEach(ev =>
-  ['km', 'year', 'fuel', 'type', 'make', 'vehNumber', 'model', 'variant', 'owner', 'color']
-    .forEach(id => $(id).addEventListener(ev, () => {
-      if (!s3.classList.contains('hidden')) updateValuation();
-    }))
-);
+['change','input'].forEach(ev=>{
+  ['km','year','fuel','type','make','vehNumber','model','variant','owner','color'].forEach(id=>{
+    $(id).addEventListener(ev, ()=>{ if(!s3.classList.contains('hidden')) updateValuation(); });
+  });
+});
 </script>
-  <!-- Common Footer Start -->
-<footer style="background:#111; color:#fff; padding:20px 10px; text-align:center; font-size:14px; margin-top:40px;">
-  <p>&copy; 2025 Second Wheel - The Car Bazaar</p>
-  <nav style="margin:10px 0;">
-    <a href="index.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Home</a> |
-    <a href="buy.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Buy</a> |
-    <a href="sell.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Sell</a> |
-    <a href="valuation.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Valuation</a> |
-    <a href="tools.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Tools</a> |
-    <a href="contact.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Contact</a> |
-    <a href="about.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">About Us</a> |
-    <a href="wishlist.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Wishlist</a> |
-    <a href="disclaimer.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Disclaimer</a>
-  </nav>
-  <div style="margin-top:10px;">
-    <a href="https://facebook.com" target="_blank" style="margin:0 8px; color:#fff;">Facebook</a>
-    <a href="https://instagram.com" target="_blank" style="margin:0 8px; color:#fff;">Instagram</a>
+  <!-- ===== Footer Start ===== -->
+<footer style="background:#111; color:#ddd; padding:25px 15px; text-align:center; margin-top:40px;">
+  <div style="max-width:1000px; margin:auto; display:flex; flex-wrap:wrap; justify-content:center; gap:20px;">
+
+    <a href="about.html" style="color:#f1c40f; text-decoration:none;">About Us</a>
+    <a href="contact.html" style="color:#f1c40f; text-decoration:none;">Contact</a>
+    <a href="wishlist.html" style="color:#f1c40f; text-decoration:none;">Wishlist</a>
+    <a href="disclaimer.html" style="color:#f1c40f; text-decoration:none;">Disclaimer</a>
+    <a href="terms.html" style="color:#f1c40f; text-decoration:none;">Terms & Conditions</a>
+    <a href="privacy.html" style="color:#f1c40f; text-decoration:none;">Privacy Policy</a>
+
+  </div>
+
+  <div style="margin-top:15px; font-size:14px;">
+    © 2025 <b>Second Wheel - The Car Bazaar</b> | Trusted Vehicles, Smart Deals
   </div>
 </footer>
-<!-- Common Footer End -->
+<!-- ===== Footer End ===== -->
 </body>
 </html>
