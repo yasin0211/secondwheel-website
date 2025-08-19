@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Second Wheel — Instant Valuation</title>
+<title>Second Wheel — Sell & Instant Valuation</title>
 <meta name="theme-color" content="#0b0f17"/>
 <style>
   :root{
@@ -26,6 +26,7 @@
   .seg button.active{background:var(--accent);color:#111;font-weight:800}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
   .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border:none}
+  .btn.ok{background:linear-gradient(180deg,#22c55e,#15803d);color:#111;border:none}
   .btn:disabled{opacity:.55;cursor:not-allowed}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
@@ -43,7 +44,7 @@
   .divider{height:1px;background:var(--line);margin:12px 0}
 
   /* Steps */
-  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 14px}
+  .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0 14px}
   .step{padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.04);font-weight:700;text-align:center}
   .step.active{background:var(--accent);color:#111;border-color:transparent}
   .progress{height:6px;background:#1f2937;border-radius:999px;overflow:hidden;margin-top:6px}
@@ -56,6 +57,7 @@
   .range{display:flex;justify-content:space-between;margin:6px 2px 0}
   .big{font-size:28px;font-weight:900}
   .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-weight:700}
+  .note{font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -79,18 +81,45 @@
 <main class="wrap" id="app">
   <!-- Progress -->
   <div class="card pad">
-    <h2 class="title">Instant Valuation</h2>
+    <h2 class="title">Sell & Instant Valuation</h2>
     <div class="steps">
-      <div class="step active" id="s1h">1. Vehicle</div>
-      <div class="step" id="s2h">2. Details</div>
-      <div class="step" id="s3h">3. Condition</div>
-      <div class="step" id="s4h">4. Result</div>
+      <div class="step active" id="s1h">1. Customer</div>
+      <div class="step" id="s2h">2. Vehicle</div>
+      <div class="step" id="s3h">3. Details</div>
+      <div class="step" id="s4h">4. Condition</div>
+      <div class="step" id="s5h">5. Result</div>
     </div>
     <div class="progress"><div class="bar" id="bar"></div></div>
   </div>
 
-  <!-- STEP 1 -->
+  <!-- STEP 1: Customer -->
   <section class="card pad" id="s1">
+    <h3 class="title">Customer Details</h3>
+    <div class="row">
+      <div>
+        <label>Full Name</label>
+        <input id="custName" placeholder="Your name"/>
+      </div>
+      <div>
+        <label>Mobile Number</label>
+        <input id="custPhone" placeholder="10-digit mobile" maxlength="10" inputmode="numeric"/>
+      </div>
+      <div>
+        <label>City</label>
+        <input id="city" placeholder="Satara"/>
+      </div>
+      <div>
+        <label>Notes (optional)</label>
+        <input id="notes" placeholder="Any info…"/>
+      </div>
+    </div>
+    <div class="actions" style="margin-top:12px">
+      <button class="btn primary" id="next1">Continue</button>
+    </div>
+  </section>
+
+  <!-- STEP 2: Vehicle -->
+  <section class="card pad" id="s2" hidden>
     <h3 class="title">Select your vehicle</h3>
     <div class="chips" id="typeChips">
       <button class="chip active" data-vtype="car">🚗 Car</button>
@@ -108,8 +137,8 @@
         <input id="model" placeholder="Swift VDi / i10 Sportz / Splendor…"/>
       </div>
       <div>
-        <label>City</label>
-        <input id="city" placeholder="Satara"/>
+        <label>Vehicle Number (optional)</label>
+        <input id="reg" placeholder="MH12 AB 1234"/>
       </div>
       <div>
         <label>Approx New Price (optional)</label>
@@ -117,12 +146,13 @@
       </div>
     </div>
     <div class="actions" style="margin-top:12px">
-      <button class="btn primary" id="next1">Continue</button>
+      <button class="btn" id="back2">Back</button>
+      <button class="btn primary" id="next2">Continue</button>
     </div>
   </section>
 
-  <!-- STEP 2 -->
-  <section class="card pad" id="s2" hidden>
+  <!-- STEP 3: Basic details -->
+  <section class="card pad" id="s3" hidden>
     <h3 class="title">Basic details</h3>
     <div class="row">
       <div>
@@ -131,7 +161,15 @@
       </div>
       <div>
         <label>Fuel</label>
-        <select id="fuel"><option>Petrol</option><option>Diesel</option><option>CNG</option><option>Electric</option></select>
+        <select id="fuel">
+          <option>Petrol</option>
+          <option>Diesel</option>
+          <option>CNG (Company Fitted)</option>
+          <option>CNG (After Market)</option>
+          <option>LPG (Company Fitted)</option>
+          <option>LPG (After Market)</option>
+          <option>Electric</option>
+        </select>
       </div>
       <div>
         <label>KMs Driven</label>
@@ -146,27 +184,23 @@
         <select id="owners"><option>1st</option><option>2nd</option><option>3rd</option><option>4th+</option></select>
       </div>
       <div>
-        <label>Registration No.</label>
-        <input id="reg" placeholder="MH12 AB 1234"/>
+        <label>Color</label>
+        <select id="color"><option>White</option><option>Silver</option><option>Grey</option><option>Black</option><option>Blue</option><option>Red</option><option>Other</option></select>
       </div>
     </div>
     <div class="actions" style="margin-top:12px">
-      <button class="btn" id="back2">Back</button>
-      <button class="btn primary" id="next2">Continue</button>
+      <button class="btn" id="back3">Back</button>
+      <button class="btn primary" id="next3">Continue</button>
     </div>
   </section>
 
-  <!-- STEP 3 -->
-  <section class="card pad" id="s3" hidden>
+  <!-- STEP 4: Condition & Compliance -->
+  <section class="card pad" id="s4" hidden>
     <h3 class="title">Condition & Compliance</h3>
     <div class="row">
       <div>
         <label>Overall Condition</label>
         <select id="cond"><option>OK</option><option>Good</option><option>Excellent</option><option>Poor</option></select>
-      </div>
-      <div>
-        <label>Color</label>
-        <select id="color"><option>White</option><option>Silver</option><option>Grey</option><option>Black</option><option>Blue</option><option>Red</option><option>Other</option></select>
       </div>
       <div>
         <label>RC Status</label>
@@ -184,15 +218,28 @@
         <label>Fancy/Trending Number</label>
         <select id="fancy"><option>No</option><option>Yes</option></select>
       </div>
+      <div>
+        <label>Request Callback?</label>
+        <select id="callback"><option>No</option><option>Yes</option></select>
+      </div>
+      <div>
+        <label>Preferred Call-back Time</label>
+        <select id="cbTime">
+          <option>Anytime</option>
+          <option>10 AM – 1 PM</option>
+          <option>2 PM – 6 PM</option>
+          <option>After 6 PM</option>
+        </select>
+      </div>
     </div>
     <div class="actions" style="margin-top:12px">
-      <button class="btn" id="back3">Back</button>
+      <button class="btn" id="back4">Back</button>
       <button class="btn primary" id="calc">Get Valuation</button>
     </div>
   </section>
 
-  <!-- STEP 4 -->
-  <section class="card pad" id="s4" hidden>
+  <!-- STEP 5: Result -->
+  <section class="card pad" id="s5" hidden>
     <h3 class="title">Your Estimated Price</h3>
 
     <div class="flex" style="gap:10px;flex-wrap:wrap;margin-bottom:10px">
@@ -220,17 +267,18 @@
       </div>
     </div>
 
+    <p class="note" style="margin-top:10px">
+      * हा Instant estimate आहे — Final price Doorstep Inspection नंतर निश्चित होईल.
+    </p>
+
     <div class="divider"></div>
     <div class="actions">
       <a id="wa" class="btn primary" target="_blank" rel="noopener">💬 Get Final Quote on WhatsApp</a>
       <a id="call" class="btn" href="tel:+919822292955">📞 Call Now</a>
-      <button id="insp" class="btn">🚗 Book Doorstep Inspection</button>
+      <button id="insp" class="btn ok">🚗 Book Doorstep Inspection</button>
+      <button id="save" class="btn">💾 Save to Sheet</button>
       <button id="again" class="btn" style="margin-left:auto">↺ Recalculate</button>
     </div>
-
-    <p class="muted" style="margin-top:10px">
-      *Final price depends on physical inspection, RC/Insurance status and market demand.
-    </p>
   </section>
 </main>
 
@@ -249,56 +297,63 @@ document.getElementById('langSeg').addEventListener('click',e=>{
 });
 
 /* ---------- Steps ---------- */
-const S=[document.getElementById('s1'),document.getElementById('s2'),document.getElementById('s3'),document.getElementById('s4')];
-const H=[document.getElementById('s1h'),document.getElementById('s2h'),document.getElementById('s3h'),document.getElementById('s4h')];
+const S=[document.getElementById('s1'),document.getElementById('s2'),document.getElementById('s3'),document.getElementById('s4'),document.getElementById('s5')];
+const H=[document.getElementById('s1h'),document.getElementById('s2h'),document.getElementById('s3h'),document.getElementById('s4h'),document.getElementById('s5h')];
 const bar=document.getElementById('bar');
 function go(i){
   S.forEach((el,idx)=> el.hidden = idx!==i);
   H.forEach((el,idx)=> el.classList.toggle('active', idx<=i));
-  bar.style.width = ((i)/3*100)+'%';
+  bar.style.width = ((i)/4*100)+'%';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 /* ---------- Inputs/State ---------- */
 let TYPE='car';
+const $ = id => document.getElementById(id);
+const inputs = {
+  // step1
+  custName:$('custName'), custPhone:$('custPhone'), city:$('city'), notes:$('notes'),
+  // step2
+  brand:$('brand'), model:$('model'), reg:$('reg'), newPrice:$('newPrice'),
+  // step3
+  year:$('year'), fuel:$('fuel'), km:$('km'), trans:$('trans'), owners:$('owners'), color:$('color'),
+  // step4
+  cond:$('cond'), rc:$('rc'), ins:$('ins'), gt:$('gt'), fancy:$('fancy'), callback:$('callback'), cbTime:$('cbTime')
+};
+const VID = (()=> Math.random().toString(36).slice(2,6)+'-'+Date.now().toString(36).slice(-4))();
+
+/* ---------- Vehicle type chips ---------- */
 document.getElementById('typeChips').addEventListener('click',e=>{
   const b=e.target.closest('.chip'); if(!b) return;
   [...e.currentTarget.children].forEach(x=>x.classList.remove('active'));
   b.classList.add('active');
   TYPE=b.dataset.vtype;
-  document.getElementById('transBox').style.display = (TYPE==='car')?'block':'none';
+  $('transBox').style.display = (TYPE==='car')?'block':'none';
 });
 
-const $ = id => document.getElementById(id);
-const inputs = {
-  brand:$('brand'), model:$('model'), city:$('city'), newPrice:$('newPrice'),
-  year:$('year'), fuel:$('fuel'), km:$('km'), trans:$('trans'),
-  owners:$('owners'), reg:$('reg'),
-  cond:$('cond'), color:$('color'), rc:$('rc'), ins:$('ins'), gt:$('gt'), fancy:$('fancy')
-};
-
-/* ---------- Navigation ---------- */
+/* ---------- Validation ---------- */
+function req(v){ return v && String(v).trim().length>0; }
 $('next1').onclick=()=>{
-  if(!inputs.brand.value || !inputs.model.value){ alert('Please enter Brand & Model'); return; }
+  if(!req(inputs.custName.value) || !/^\d{10}$/.test(inputs.custPhone.value||'') || !req(inputs.city.value)){
+    alert('Please enter Name, 10-digit Mobile and City.'); return;
+  }
   go(1);
 };
 $('back2').onclick=()=>go(0);
 $('next2').onclick=()=>{
-  if(!inputs.year.value || !inputs.km.value){ alert('Please enter Year & KM'); return; }
-  // 15+ years soft prompt
-  const age = new Date().getFullYear()-Number(inputs.year.value||0);
-  if(age>=15) alert('Vehicle is 15+ years old. Please ensure RC & Insurance renewal for best price.');
+  if(!req(inputs.brand.value) || !req(inputs.model.value)){ alert('Please enter Brand & Model.'); return; }
   go(2);
 };
 $('back3').onclick=()=>go(1);
+$('next3').onclick=()=>{
+  if(!req(inputs.year.value) || !req(inputs.km.value)){ alert('Please enter Year & KM.'); return; }
+  const age = new Date().getFullYear() - Number(inputs.year.value||0);
+  if(age>=15) alert('Vehicle is 15+ years old. Please ensure RC/Insurance renewal for best price.');
+  go(3);
+};
+$('back4').onclick=()=>go(2);
 
 /* ---------- Valuation Logic ---------- */
-function strongBrand(type,brand){
-  brand=String(brand||'').toUpperCase();
-  if(type==='car') return ['MARUTI SUZUKI','HYUNDAI','HONDA','TOYOTA','TATA','KIA','MAHINDRA'].includes(brand);
-  if(type==='bike') return ['HERO','HONDA','BAJAJ','ROYAL ENFIELD','TVS','SUZUKI'].includes(brand);
-  return ['HONDA','HERO','TVS','SUZUKI','YAMAHA'].includes(brand);
-}
 function ownersVal(s){ return s.startsWith('1')?1:s.startsWith('2')?2:s.startsWith('3')?3:4; }
 function colorAdj(c){
   c=String(c||'').toUpperCase();
@@ -312,9 +367,26 @@ function depFactor(type,years){
   if(type==='bike')  return Math.max(0.07, Math.pow(1-0.22, years));
   return Math.max(0.07, Math.pow(1-0.20, years));
 }
+function strongBrand(type,brand){
+  brand=String(brand||'').toUpperCase();
+  if(type==='car') return ['MARUTI','MARUTI SUZUKI','HYUNDAI','HONDA','TOYOTA','TATA','KIA','MAHINDRA'].includes(brand);
+  if(type==='bike') return ['HERO','HONDA','BAJAJ','ROYAL ENFIELD','TVS','SUZUKI'].includes(brand);
+  return ['HONDA','HERO','TVS','SUZUKI','YAMAHA'].includes(brand);
+}
 function baseGuess(type,brand){
   const base = type==='car'?600000:(type==='bike'?70000:60000);
   return strongBrand(type,brand)? base*1.08: base;
+}
+function fuelFactor(f){
+  const F=String(f||'').toUpperCase();
+  if(F==='DIESEL') return 1.15;
+  if(F==='PETROL') return 1.00;
+  if(F.startsWith('CNG (COMPANY')) return 0.95;
+  if(F.startsWith('CNG (AFTER')) return 0.85;
+  if(F.startsWith('LPG (COMPANY')) return 0.85;
+  if(F.startsWith('LPG (AFTER')) return 0.75;
+  if(F==='ELECTRIC') return 1.08;
+  return 1.00;
 }
 function rupee(n){ try{return '₹'+Number(n).toLocaleString('en-IN');}catch{return '₹'+n} }
 
@@ -323,7 +395,7 @@ function compute(){
   const age=Math.max(0,new Date().getFullYear()-year);
   const km=Number(inputs.km.value||0);
   const own=ownersVal(inputs.owners.value);
-  const fuel=inputs.fuel.value, brand=inputs.brand.value, color=inputs.color.value;
+  const brand=inputs.brand.value, color=inputs.color.value;
 
   let newP = Number(inputs.newPrice.value||0) || baseGuess(TYPE,brand);
   let p = newP * depFactor(TYPE, age);
@@ -338,9 +410,9 @@ function compute(){
   }
 
   p *= (own===1?1:own===2?0.93:own===3?0.85:0.75);
-  if(fuel==='Diesel')   p *= strongBrand(TYPE,brand)?1.06:1.03;
-  if(fuel==='CNG')      p *= 1.04;
-  if(fuel==='Electric') p *= 1.08;
+
+  // Fuel priority factors (as discussed)
+  p *= fuelFactor(inputs.fuel.value);
 
   p *= colorAdj(color);
   if(inputs.fancy.value==='Yes') p *= 1.015;
@@ -351,7 +423,7 @@ function compute(){
 
   p = Math.max(5000, Math.round(p/1000)*1000);
 
-  // Range (Cars24-style): -7% / +7% around mid
+  // Range: -7% / +7% around mid
   const min = Math.max(5000, Math.round(p*0.93/1000)*1000);
   const max = Math.max(min+1000, Math.round(p*1.07/1000)*1000);
   return {min,max,mid:p};
@@ -371,21 +443,55 @@ $('calc').onclick=()=>{
   $('max').textContent = rupee(max);
   $('mid').textContent = rupee(mid);
 
-  // WhatsApp
+  // WhatsApp message (clean one-line summary)
   const msg = encodeURIComponent(
-    `Valuation Request:%0A${inputs.brand.value} ${inputs.model.value} (${TYPE.toUpperCase()})%0A`+
-    `Year ${inputs.year.value} • ${inputs.km.value} KM • ${inputs.owners.value} Owner(s)%0A`+
-    `Fuel: ${inputs.fuel.value} • Reg: ${inputs.reg.value}%0A`+
-    `Estimated Range: ${rupee(min)} – ${rupee(max)}%0AMost Likely: ${rupee(mid)}%0A`+
-    `City: ${inputs.city.value}`
+    `Valuation: ${inputs.brand.value} ${inputs.model.value} (${TYPE.toUpperCase()} ${inputs.year.value}) • ${inputs.km.value} KM • ${inputs.owners.value} Owner(s) • Fuel ${inputs.fuel.value} • Reg ${inputs.reg.value || '-'} • Range ${rupee(min)}–${rupee(max)} (Mid ${rupee(mid)}) • Customer ${inputs.custName.value}, ${inputs.custPhone.value} (${inputs.city.value})`
   );
   $('wa').href = `https://wa.me/919822292955?text=${msg}`;
 
-  go(3);
+  go(4);
 };
 
-$('again').onclick=()=>go(2);
-$('insp').onclick=()=>alert('Doorstep inspection booked. Our team will contact you shortly.');
-</script>
-</body>
-</html>
+$('again').onclick=()=>go(3);
+$('insp').onclick=()=>alert('Doorstep inspection request saved. Our team will contact you shortly.');
+
+/* ---------- SAVE TO GOOGLE SHEETS ---------- */
+/* Replace this with YOUR deployed Apps Script Web App URL */
+const GAS_URL = 'https://YOUR-APPS-SCRIPT-WEB-APP-URL/exec';
+
+async function saveToSheet(reason='valuation'){
+  const {min,max,mid}=compute();
+  const payload = {
+    vid: VID,
+    reason,
+    createdAt: new Date().toISOString(),
+
+    // customer (step1)
+    name: inputs.custName.value.trim(),
+    phone: inputs.custPhone.value.trim(),
+    city: inputs.city.value.trim(),
+    notes: inputs.notes.value.trim(),
+
+    // vehicle (step2)
+    type: TYPE,
+    brand: inputs.brand.value.trim(),
+    model: inputs.model.value.trim(),
+    reg: inputs.reg.value.trim(),
+    newPrice: inputs.newPrice.value ? Number(inputs.newPrice.value) : '',
+
+    // details (step3)
+    year: inputs.year.value,
+    fuel: inputs.fuel.value,
+    km: inputs.km.value,
+    trans: inputs.trans.value,
+    owners: inputs.owners.value,
+    color: inputs.color.value,
+
+    // condition (step4)
+    cond: inputs.cond.value,
+    rcStatus: inputs.rc.value,
+    insuranceStatus: inputs.ins.value,
+    greenTax: inputs.gt.value,
+    fancy: inputs.fancy.value,
+    callback: inputs.callback.value,
+    cbTime: inputs.cbT
