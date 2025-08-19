@@ -155,33 +155,65 @@
 
 <script>
 /* THEME */
-(function(){const KEY='sw.theme';const b=document.getElementById('themeBtn');
-function setT(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem(KEY,t);b.textContent=(t==='dark')?'🌙':'☀️';}
-setT(localStorage.getItem(KEY)||'dark'); b.addEventListener('click',()=>setT((localStorage.getItem(KEY)||'dark')==='dark'?'light':'dark'));})();
+(function () {
+  const KEY = 'sw.theme';
+  const b = document.getElementById('themeBtn');
+  function setT(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem(KEY, t);
+    b.textContent = (t === 'dark') ? '🌙' : '☀️';
+  }
+  setT(localStorage.getItem(KEY) || 'dark');
+  b.addEventListener('click', () =>
+    setT((localStorage.getItem(KEY) || 'dark') === 'dark' ? 'light' : 'dark')
+  );
+})();
 
 /* HELPERS / STATE */
-const GAS_URL='https://script.google.com/macros/s/AKfycby6c6rTaG54gMdGIab6lgbo0sXG3eYZlqsg8LRHsEoa-kLvpYG-PPMAsLcg_iPZSAHclQ/exec";
-const VID=(()=>Math.random().toString(36).slice(2,6)+'-'+Date.now().toString(36).slice(-4))();
-const $=id=>document.getElementById(id);
-const toast=m=>{const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),1400);};
-function req(el){return el && el.value && el.value.toString().trim().length>0;}
-function bindChips(id){const g=$(id);if(!g)return;g.addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;g.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');});}
-['rcChips','insChips','pucChips','taxChips'].forEach(bindChips);
-function getChip(id){const g=$(id); if(!g) return null; let v=null; g.querySelectorAll('.chip').forEach(ch=>{if(ch.classList.contains('active')) v=ch.dataset.val;}); return v;}
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyc6cTaG54gMdGIab6Igb0oXsG3evZIgsg8LRHsEoa-kLvpYG-PPMASLcg_iPZSAHcIQ/exec';
+const VID = (() => Math.random().toString(36).slice(2, 6) + '-' + Date.now().toString(36).slice(-4))();
+const $ = id => document.getElementById(id);
+const toast = m => {
+  const t = $('toast');
+  t.textContent = m;
+  t.classList.add('show');
+  clearTimeout(window.__t);
+  window.__t = setTimeout(() => t.classList.remove('show'), 1400);
+};
+function req(el) { return el && el.value && el.value.toString().trim().length > 0; }
+function bindChips(id) {
+  const g = $(id);
+  if (!g) return;
+  g.addEventListener('click', e => {
+    const c = e.target.closest('.chip');
+    if (!c) return;
+    g.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+  });
+}
+['rcChips', 'insChips', 'pucChips', 'taxChips'].forEach(bindChips);
+function getChip(id) {
+  const g = $(id);
+  if (!g) return null;
+  let v = null;
+  g.querySelectorAll('.chip').forEach(ch => { if (ch.classList.contains('active')) v = ch.dataset.val; });
+  return v;
+}
 
 /* 15+ YEARS: show/hide RC & Green Tax */
-function needsAgeFields(){
-  const y=Number($('year').value||0); if(!y) return false;
-  const now=(new Date()).getFullYear();
+function needsAgeFields() {
+  const y = Number($('year').value || 0);
+  if (!y) return false;
+  const now = (new Date()).getFullYear();
   return (now - y) >= 15;
 }
-function toggleAgeFields(){
+function toggleAgeFields() {
   const show = needsAgeFields();
   $('ageOnlyRow1').classList.toggle('hidden', !show);
-  // जर लपले तर निवडलेली values क्लियर करा
-  if(!show){
-    ['rcChips','taxChips'].forEach(id=>{
-      const g=$(id); if(!g) return; g.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+  if (!show) {
+    ['rcChips', 'taxChips'].forEach(id => {
+      const g = $(id); if (!g) return;
+      g.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
     });
   }
 }
@@ -189,90 +221,150 @@ $('year').addEventListener('input', toggleAgeFields);
 document.addEventListener('DOMContentLoaded', toggleAgeFields);
 
 /* STEP NAV */
-const s1=$('s1'), s2=$('s2'), s3=$('s3'), s1s=$('s1step'), s2s=$('s2step'), s3s=$('s3step');
-function setStep(n){[s1,s2,s3].forEach((sec,i)=>sec.classList.toggle('hidden',i!==n-1));[s1s,s2s,s3s].forEach((st,i)=>{st.classList.toggle('active',i===n-1);st.classList.toggle('done',i<n-1);});window.scrollTo({top:0,behavior:'smooth'});}
+const s1 = $('s1'), s2 = $('s2'), s3 = $('s3'),
+      s1s = $('s1step'), s2s = $('s2step'), s3s = $('s3step');
+function setStep(n) {
+  [s1, s2, s3].forEach((sec, i) => sec.classList.toggle('hidden', i !== n - 1));
+  [s1s, s2s, s3s].forEach((st, i) => {
+    st.classList.toggle('active', i === n - 1);
+    st.classList.toggle('done', i < n - 1);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 /* VALIDATION */
-function validateStep1(){
-  const basic = req($('vehNumber'))&&req($('make'))&&req($('model'))&&req($('variant'))&&req($('color'))&&req($('km'))&&req($('owner'))&&req($('fuel'))&&req($('type'))&&req($('year'));
-  if(!basic){ toast('Please complete all Vehicle Details.'); return false; }
-  if(needsAgeFields()){
-    if(!getChip('rcChips') || !getChip('taxChips')){ toast('Select RC/Fitness & Green Tax status.'); return false; }
+function validateStep1() {
+  const basic = req($('vehNumber')) && req($('make')) && req($('model')) &&
+                req($('variant')) && req($('color')) && req($('km')) &&
+                req($('owner')) && req($('fuel')) && req($('type')) && req($('year'));
+  if (!basic) { toast('Please complete all Vehicle Details.'); return false; }
+  if (needsAgeFields()) {
+    if (!getChip('rcChips') || !getChip('taxChips')) {
+      toast('Select RC/Fitness & Green Tax status.'); return false;
+    }
   }
-  if(!getChip('insChips') || !getChip('pucChips')){ toast('Select Insurance & PUC.'); return false; }
+  if (!getChip('insChips') || !getChip('pucChips')) {
+    toast('Select Insurance & PUC.'); return false;
+  }
   return true;
 }
-function validateStep2(){
-  const ph=$('custPhone').value.trim();
-  const ok=req($('custName')) && /^\d{10}$/.test(ph) && req($('city'));
-  if(!ok) toast('Please complete Customer Details correctly.');
+function validateStep2() {
+  const ph = $('custPhone').value.trim();
+  const ok = req($('custName')) && /^\d{10}$/.test(ph) && req($('city'));
+  if (!ok) toast('Please complete Customer Details correctly.');
   return ok;
 }
 
 /* VALUATION */
-function calcBase(type,year,fuel,km,makeBrand){
-  const now=(new Date()).getFullYear(); const age=Math.max(0,now-(Number(year)||now));
-  let base=(type==='car')?450000:(type==='bike'?35000:30000);
-  const B=(makeBrand||'').toUpperCase();
-  if(type==='car'&&['MARUTI','HYUNDAI','HONDA','TOYOTA'].some(x=>B.includes(x))) base*=1.08;
-  if(type==='bike'&&['HERO','BAJAJ','ROYAL ENFIELD'].some(x=>B.includes(x))) base*=1.10;
-  if(type==='scooter'&&['HONDA','HERO','TVS'].some(x=>B.includes(x))) base*=1.08;
-  if(type==='car'){ if(fuel==='diesel') base*=1.08; if(fuel==='cng') base*=1.05; if(fuel==='electric') base*=1.12; }
-  base*=Math.max(0.35,(1-age*0.06));
-  const kmx=Number(km)||0; const over=Math.max(0,kmx-(type==='car'?50000:20000)); const blocks=Math.floor(over/(type==='car'?10000:5000)); base*=(1-blocks*0.02);
-  return Math.max(15000,Math.round(base));
+function calcBase(type, year, fuel, km, makeBrand) {
+  const now = (new Date()).getFullYear();
+  const age = Math.max(0, now - (Number(year) || now));
+  let base = (type === 'car') ? 450000 : (type === 'bike' ? 35000 : 30000);
+  const B = (makeBrand || '').toUpperCase();
+  if (type === 'car' && ['MARUTI', 'HYUNDAI', 'HONDA', 'TOYOTA'].some(x => B.includes(x))) base *= 1.08;
+  if (type === 'bike' && ['HERO', 'BAJAJ', 'ROYAL ENFIELD'].some(x => B.includes(x))) base *= 1.10;
+  if (type === 'scooter' && ['HONDA', 'HERO', 'TVS'].some(x => B.includes(x))) base *= 1.08;
+  if (type === 'car') { if (fuel === 'diesel') base *= 1.08; if (fuel === 'cng') base *= 1.05; if (fuel === 'electric') base *= 1.12; }
+  base *= Math.max(0.35, (1 - age * 0.06));
+  const kmx = Number(km) || 0;
+  const over = Math.max(0, kmx - (type === 'car' ? 50000 : 20000));
+  const blocks = Math.floor(over / (type === 'car' ? 10000 : 5000));
+  base *= (1 - blocks * 0.02);
+  return Math.max(15000, Math.round(base));
 }
-function docAdjust(base){
-  let adj=0; const y=Number($('year').value)||new Date().getFullYear(); const now=(new Date()).getFullYear();
-  if((now-y)>=15){ if(getChip('rcChips')!=='ok') adj-=0.10; if(getChip('taxChips')==='due') adj-=0.03; }
-  if(getChip('insChips')==='expired') adj-=0.05;
-  const min=Math.round(base*(1+adj-0.04)), max=Math.round(base*(1+adj+0.05));
-  return {min:Math.max(10000,min), max:Math.max(12000,max)};
+function docAdjust(base) {
+  let adj = 0;
+  const y = Number($('year').value) || new Date().getFullYear();
+  const now = (new Date()).getFullYear();
+  if ((now - y) >= 15) {
+    if (getChip('rcChips') !== 'ok') adj -= 0.10;
+    if (getChip('taxChips') === 'due') adj -= 0.03;
+  }
+  if (getChip('insChips') === 'expired') adj -= 0.05;
+  const min = Math.round(base * (1 + adj - 0.04));
+  const max = Math.round(base * (1 + adj + 0.05));
+  return { min: Math.max(10000, min), max: Math.max(12000, max) };
 }
-function makeWaMessage(min,max){
-  const parts=[];
+function makeWaMessage(min, max) {
+  const parts = [];
   parts.push(`Lead ID: ${VID}`);
-  parts.push(`Vehicle: ${$('vehNumber').value} | ${$('make').value} ${$('model').value} ${$('variant').value} (${ $('year').value })`);
+  parts.push(`Vehicle: ${$('vehNumber').value} | ${$('make').value} ${$('model').value} ${$('variant').value} (${$('year').value})`);
   parts.push(`Fuel: ${$('fuel').value.toUpperCase()} | KM: ${$('km').value} | Owner: ${$('owner').value} | Color: ${$('color').value}`);
-  if(needsAgeFields()){
-    if(getChip('rcChips')) parts.push(`RC/Fitness: ${getChip('rcChips')}`);
-    if(getChip('taxChips')) parts.push(`GreenTax: ${getChip('taxChips')}`);
+  if (needsAgeFields()) {
+    if (getChip('rcChips')) parts.push(`RC/Fitness: ${getChip('rcChips')}`);
+    if (getChip('taxChips')) parts.push(`GreenTax: ${getChip('taxChips')}`);
   }
   parts.push(`Insurance: ${getChip('insChips') || '-'}, PUC: ${getChip('pucChips') || '-'}`);
   parts.push(`Estimate: ₹${min.toLocaleString('en-IN')}–₹${max.toLocaleString('en-IN')}`);
-  parts.push(`Customer: ${$('custName').value}, ${$('custPhone').value} (${ $('city').value })`);
+  parts.push(`Customer: ${$('custName').value}, ${$('custPhone').value} (${$('city').value})`);
   return parts.join(' | ');
 }
-function updateValuation(){
-  const base=calcBase($('type').value,$('year').value,$('fuel').value,$('km').value,$('make').value);
-  const r=docAdjust(base);
-  $('valPrice').textContent='₹ '+r.min.toLocaleString('en-IN')+' – ₹ '+r.max.toLocaleString('en-IN');
-  $('waBtn').href='https://wa.me/919822292955?text='+encodeURIComponent(makeWaMessage(r.min,r.max));
+function updateValuation() {
+  const base = calcBase($('type').value, $('year').value, $('fuel').value, $('km').value, $('make').value);
+  const r = docAdjust(base);
+  $('valPrice').textContent = '₹ ' + r.min.toLocaleString('en-IN') + ' – ₹ ' + r.max.toLocaleString('en-IN');
+  $('waBtn').href = 'https://wa.me/919822292955?text=' + encodeURIComponent(makeWaMessage(r.min, r.max));
 }
 
 /* SAVE to Sheets */
-async function saveLead(){
-  const payload={
-    vid:VID,name:$('custName').value.trim(),phone:$('custPhone').value.trim(),city:$('city').value.trim(),
-    type:$('type').value,brand:$('make').value.trim(),model:$('model').value.trim(),year:$('year').value.trim(),
-    fuel:$('fuel').value,km:$('km').value.trim(),reg:$('vehNumber').value.trim(),color:$('color').value.trim(),owner:$('owner').value,
-    rcStatus: needsAgeFields()? (getChip('rcChips')||'') : '', insuranceStatus:getChip('insChips')||'', greenTax: needsAgeFields()? (getChip('taxChips')||'') : '',
-    puc:getChip('pucChips')||'', notes:$('notes').value.trim(), source:'sell-form',
-    slotDate:$('datePick').value||'', slotTime:$('timePick').value||''
+async function saveLead() {
+  const payload = {
+    vid: VID,
+    name: $('custName').value.trim(),
+    phone: $('custPhone').value.trim(),
+    city: $('city').value.trim(),
+    type: $('type').value,
+    brand: $('make').value.trim(),
+    model: $('model').value.trim(),
+    year: $('year').value.trim(),
+    fuel: $('fuel').value,
+    km: $('km').value.trim(),
+    reg: $('vehNumber').value.trim(),
+    color: $('color').value.trim(),
+    owner: $('owner').value,
+    rcStatus: needsAgeFields() ? (getChip('rcChips') || '') : '',
+    insuranceStatus: getChip('insChips') || '',
+    greenTax: needsAgeFields() ? (getChip('taxChips') || '') : '',
+    puc: getChip('pucChips') || '',
+    notes: $('notes').value.trim(),
+    source: 'sell-form',
+    slotDate: $('datePick').value || '',
+    slotTime: $('timePick').value || ''
   };
-  try{
-    const res=await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    const j=await res.json().catch(()=>({ok:false}));
-    if(j&&j.ok){ toast('Saved ✓'); return true; } toast('Save failed'); return false;
-  }catch(e){ console.error(e); toast('Save failed'); return false; }
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const j = await res.json().catch(() => ({ ok: false }));
+    if (j && j.ok) { toast('Saved ✓'); return true; }
+    toast('Save failed'); return false;
+  } catch (e) {
+    console.error(e);
+    toast('Save failed');
+    return false;
+  }
 }
 
 /* WIRES */
-$('go2').addEventListener('click',()=>{ if(!validateStep1()) return; setStep(2); });
-$('back1').addEventListener('click',()=>setStep(1));
-$('go3').addEventListener('click',()=>{ if(!validateStep2()) return; updateValuation(); setStep(3); s1s.classList.add('done'); s2s.classList.add('done'); });
-$('saveLead').addEventListener('click',async()=>{const ok=await saveLead(); if(ok) toast('Inspection slot saved');});
-['change','input'].forEach(ev=>['km','year','fuel','type','make','vehNumber','model','variant','owner','color'].forEach(id=>$(id).addEventListener(ev,()=>{if(!s3.classList.contains('hidden')) updateValuation();})));
+$('go2').addEventListener('click', () => { if (!validateStep1()) return; setStep(2); });
+$('back1').addEventListener('click', () => setStep(1));
+$('go3').addEventListener('click', () => {
+  if (!validateStep2()) return;
+  updateValuation(); setStep(3);
+  s1s.classList.add('done'); s2s.classList.add('done');
+});
+$('saveLead').addEventListener('click', async () => {
+  const ok = await saveLead();
+  if (ok) toast('Inspection slot saved');
+});
+['change', 'input'].forEach(ev =>
+  ['km', 'year', 'fuel', 'type', 'make', 'vehNumber', 'model', 'variant', 'owner', 'color']
+    .forEach(id => $(id).addEventListener(ev, () => {
+      if (!s3.classList.contains('hidden')) updateValuation();
+    }))
+);
 </script>
   <!-- Common Footer Start -->
 <footer style="background:#111; color:#fff; padding:20px 10px; text-align:center; font-size:14px; margin-top:40px;">
