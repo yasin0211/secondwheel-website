@@ -160,7 +160,7 @@ function setT(t){document.documentElement.setAttribute('data-theme',t);localStor
 setT(localStorage.getItem(KEY)||'dark'); b.addEventListener('click',()=>setT((localStorage.getItem(KEY)||'dark')==='dark'?'light':'dark'));})();
 
 /* HELPERS / STATE */
-const GAS_URL='https://script.google.com/macros/s/AKfycbwp9ZGzL-UeYGjaNgjpUzLi3H7Id_xLZcWrFV4D1F48n8T5YnZQv0XN4WP0zC285EATtQ/exec';
+const GAS_URL='https://script.google.com/macros/s/AKfycby6c6rTaG54gMdGIab6lgbo0sXG3eYZlqsg8LRHsEoa-kLvpYG-PPMAsLcg_iPZSAHclQ/exec";
 const VID=(()=>Math.random().toString(36).slice(2,6)+'-'+Date.now().toString(36).slice(-4))();
 const $=id=>document.getElementById(id);
 const toast=m=>{const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),1400);};
@@ -274,5 +274,25 @@ $('go3').addEventListener('click',()=>{ if(!validateStep2()) return; updateValua
 $('saveLead').addEventListener('click',async()=>{const ok=await saveLead(); if(ok) toast('Inspection slot saved');});
 ['change','input'].forEach(ev=>['km','year','fuel','type','make','vehNumber','model','variant','owner','color'].forEach(id=>$(id).addEventListener(ev,()=>{if(!s3.classList.contains('hidden')) updateValuation();})));
 </script>
+  <!-- Common Footer Start -->
+<footer style="background:#111; color:#fff; padding:20px 10px; text-align:center; font-size:14px; margin-top:40px;">
+  <p>&copy; 2025 Second Wheel - The Car Bazaar</p>
+  <nav style="margin:10px 0;">
+    <a href="index.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Home</a> |
+    <a href="buy.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Buy</a> |
+    <a href="sell.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Sell</a> |
+    <a href="valuation.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Valuation</a> |
+    <a href="tools.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Tools</a> |
+    <a href="contact.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Contact</a> |
+    <a href="about.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">About Us</a> |
+    <a href="wishlist.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Wishlist</a> |
+    <a href="disclaimer.html" style="color:#ffcc00; margin:0 10px; text-decoration:none;">Disclaimer</a>
+  </nav>
+  <div style="margin-top:10px;">
+    <a href="https://facebook.com" target="_blank" style="margin:0 8px; color:#fff;">Facebook</a>
+    <a href="https://instagram.com" target="_blank" style="margin:0 8px; color:#fff;">Instagram</a>
+  </div>
+</footer>
+<!-- Common Footer End -->
 </body>
 </html>
