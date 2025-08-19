@@ -160,7 +160,7 @@ function setT(t){document.documentElement.setAttribute('data-theme',t);localStor
 setT(localStorage.getItem(KEY)||'dark'); b.addEventListener('click',()=>setT((localStorage.getItem(KEY)||'dark')==='dark'?'light':'dark'));})();
 
 /* HELPERS / STATE */
-const GAS_URL='https://script.google.com/macros/s/AKfycbxWAagtCw4FFyXOt8CqNE2yDSoEEacgBYKsTd8jYsTgmZxg60ndqH5BehSVUTR5zMQ_nA/exec';
+const GAS_URL='https://https://script.google.com/macros/s/AKfycbxN_y-ys8QiH4zOTlfmoVgeFGofM7hHPDYfEyobF7bFCz2XG3lYt9nPaaK_5Cwee1PTaQ/exec
 const VID=(()=>Math.random().toString(36).slice(2,6)+'-'+Date.now().toString(36).slice(-4))();
 const $=id=>document.getElementById(id);
 const toast=m=>{const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),1400);};
