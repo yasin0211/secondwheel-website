@@ -164,19 +164,120 @@
   <div class="whatsapp"><a href="https://wa.me/919822292955" target="_blank" rel="noopener">WhatsApp</a></div>
   <div id="toast" class="toast" role="status" aria-live="polite">Saved!</div>
 
-  <footer>
-    <div class="container">
-      <div class="cols" style="padding:20px 0 8px">
-        <div><h3>Second Wheel</h3><p class="muted">Trusted Vehicles, Smart Deals</p></div>
-        <div><h4>Company</h4><a href="about.html">About Us</a><a href="contact.html">Contact Us</a></div>
-        <div><h4>Legal</h4><a href="terms.html">Terms & Conditions</a><a href="privacy.html">Privacy Policy</a><a href="disclaimer.html">Disclaimer</a></div>
-        <div><h4>Follow</h4><a href="#">Instagram</a><a href="#">Facebook</a></div>
-      </div>
-      <div class="muted" style="padding:8px 0 24px">© <span id="yr"></span> Second Wheel – All rights reserved.</div>
-    </div>
-  </footer>
+    <footer>
+<footer class="sw-footer">
+  <style>
+    .sw-footer {
+      background:#0e1116;
+      color:#c9d1d9;
+      border-top:1px solid #222;
+      margin-top:40px;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Noto Sans',sans-serif;
+    }
+    .sw-footer .wrap {
+      max-width:1100px;
+      margin:auto;
+      padding:28px 16px;
+    }
+    .sw-footer h3 {
+      margin:0 0 6px;
+      font-size:20px;
+      letter-spacing:.4px;
+    }
+    .sw-footer p.muted {
+      margin:0 0 16px;
+      color:#9aa4ad;
+      font-size:13px;
+    }
+    .sw-grid {
+      display:grid;
+      grid-template-columns:1.2fr 1fr 1fr 1.2fr;
+      gap:20px;
+    }
+    .sw-col h4 {
+      margin:0 0 10px;
+      font-size:14px;
+      color:#aab2bd;
+      text-transform:uppercase;
+      letter-spacing:.6px;
+    }
+    .sw-col a {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin:6px 0;
+      color:#d6dde4;
+      text-decoration:none;
+      font-size:14px;
+    }
+    .sw-col a:hover {
+      color:#fff;
+      text-decoration:underline;
+    }
+    .sw-col img {
+      width:16px;
+      height:16px;
+    }
+    .sw-bottom {
+      border-top:1px solid #222;
+      margin-top:18px;
+      padding:10px 0;
+      color:#9aa4ad;
+      font-size:12px;
+      text-align:center;
+    }
+    @media (max-width:900px){.sw-grid{grid-template-columns:1fr 1fr}}
+    @media (max-width:560px){.sw-grid{grid-template-columns:1fr}}
+  </style>
 
-  <!-- Supabase JS -->
+  <div class="wrap">
+    <div class="sw-grid">
+      <!-- Brand -->
+      <div class="sw-col">
+        <h3>SECOND WHEEL</h3>
+        <p class="muted">Trusted Vehicles, Smart Deals</p>
+      </div>
+
+      <!-- Company -->
+      <div class="sw-col">
+        <h4>Company</h4>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact Us</a>
+      </div>
+
+      <!-- Legal -->
+      <div class="sw-col">
+        <h4>Legal</h4>
+        <a href="terms.html">Terms &amp; Conditions</a>
+        <a href="privacy.html">Privacy Policy</a>
+      </div>
+
+      <!-- Follow -->
+      <div class="sw-col">
+        <h4>Follow Us</h4>
+        <a href="https://www.instagram.com/secondwheel.in?igsh=b3V0c3l4dnhoa2pt" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram"> Instagram
+        </a>
+        <a href="https://www.facebook.com/secondwheelin/" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook"> Facebook Page
+        </a>
+        <a href="https://www.facebook.com/groups/secondwheelin/" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" alt="Facebook Group"> Facebook Group
+        </a>
+      </div>
+    </div>
+
+    <div class="sw-bottom">
+      <span id="yr"></span> © Second Wheel — All rights reserved.
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+  </script>
+</footer>
+</footer>
+   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- Language + Theme bootstrap -->
@@ -225,7 +326,6 @@
     darkBtn.addEventListener('click',()=>{ const next=(localStorage.getItem(KEY_THEME)||'dark')==='dark'?'light':'dark'; setTheme(next); });
   });
   </script>
-
   <!-- Featured from Supabase (robust loader with extensionless support) -->
   <script>
   (function(){
