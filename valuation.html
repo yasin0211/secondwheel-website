@@ -310,7 +310,92 @@ function compute(){
   const reg=($('reg').value||'').toUpperCase().replace(/\s+/g,'');
   const rto = reg.slice(0,4);
   const rtoDed = PRIORITY_RTOS.includes(rto)? 0 : Math.round(base*0.10);
+// Fitness (auto if 15+)
+let fitState = $('fit').value, fitCost = 0, fine = 0;
+if (age >= 15) {
+  // Fitness नाही असल्यास charges + fine
+  if (fitState === 'Not Available') {
+    fitCost = fitnessCost(key, fuel);
+    fine = fitnessFine($('fitExpiry').value);
+  }
+} else {
+  // <15 yrs: fitness लागत नाही
+  fitState = 'Not Required (age < 15)';
+  $('fitExpiry').value = '';
+}
 
-  // Fitness (auto if 15+)
-  let fitState = $('fit').value, fitCost=0, fine=0;
-  if(age>=15){
+// Insurance deduction (month-wise / base if expired)
+const insStatus = $('ins').value;
+const insTill   = $('insTill').value;
+const insDed    = insDeductionAmt(key, fuel, insStatus, insTill);
+
+// Condition % (base वर)
+const condSel = $('cond').value;
+const condPct = condSel === 'Good' ? 0.02
+               : condSel === 'Average' ? 0.05
+               : condSel === 'Poor' ? 0.10 : 0;
+const condDed = Math.round(base * condPct);
+
+// RC / PUC लहान नजेस
+if ($('rc').value === 'Expired') base *= 0.95;
+if ($('puc').value === 'Expired / Due') base *= 0.985;
+
+// Final compute
+const afterRto = base - rtoDed;
+let final = afterRto - fitCost - fine - insDed - condDed;
+final = Math.max(final, (key === 'bike' || key === 'scooter') ? 5000 : 25000);
+
+const mid = Math.round(final / 1000) * 1000;
+const min = Math.max(5000, Math.round(mid * 0.93 / 1000) * 1000);
+const max = Math.max(min + 1000, Math.round(mid * 1.07 / 1000) * 1000);
+
+// breakdown text (Result मध्ये दाखवायला)
+const breakdown = [
+  `Base (computed): ₹${rs(Math.round(base))}`,
+  `RTO ${PRIORITY_RTOS.includes(rto) ? '(Priority ✓)' : '(Non-priority −10%)'}: −₹${rs(rtoDed)}`,
+  `Fitness Charges: −₹${rs(fitCost)}`,
+  `Fine (₹500/mo): −₹${rs(fine)}`,
+  `Insurance (month-wise): −₹${rs(insDed)}`,
+  `Condition (${condSel}): −₹${rs(condDed)}`
+].join('\n');
+
+return { min, max, mid, body, key, rto, insStatus, insTill, fitState, breakdown };
+} // <-- compute() इथे बंद
+  <script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const toast=(m)=>{const t=$('toast'); if(t){ t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1500);}};
+
+  $('calc')?.addEventListener('click', ()=>{
+    // मिनिमम validations
+    const y=+($('year')?.value||0);
+    if(!y || y<2001 || y>2030){ toast('Enter year 2001–2030'); return; }
+    if($('ins')?.value==='Valid' && !$('insTill')?.value){ toast('Select insurance month'); return; }
+    const age = new Date().getFullYear() - y;
+    if(age>=15 && $('fit')?.value==='Not Available' && !$('fitExpiry')?.value){ toast('Enter fitness expiry'); return; }
+
+    const r = typeof compute==='function' ? compute() : null;
+    if(!r){ toast('Compute failed'); return; }
+
+    // Result UI fill
+    $('min') && ( $('min').textContent = '₹'+(+r.min).toLocaleString('en-IN') );
+    $('max') && ( $('max').textContent = '₹'+(+r.max).toLocaleString('en-IN') );
+    $('mid') && ( $('mid').textContent = '₹'+(+r.mid).toLocaleString('en-IN') );
+    $('breakdown') && ( $('breakdown').textContent = r.breakdown );
+    $('tagRTO') && ( $('tagRTO').textContent = r.rto ? ('RTO '+r.rto) : 'RTO —' );
+    $('tagIns') && ( $('tagIns').textContent = 'Insurance: '+r.insStatus + (r.insTill?(' till '+r.insTill):'') );
+    $('tagFit') && ( $('tagFit').textContent = 'Fitness: '+r.fitState );
+
+    typeof go==='function' && go(4);
+  });
+
+  // Safe nav bindings (असतील तर)
+  $('again')?.addEventListener('click', ()=> typeof go==='function' && go(0));
+  $('next1')?.addEventListener('click', ()=> typeof go==='function' && go(1));
+  $('back2')?.addEventListener('click', ()=> typeof go==='function' && go(0));
+  $('next2')?.addEventListener('click', ()=> typeof go==='function' && go(2));
+  $('back3')?.addEventListener('click', ()=> typeof go==='function' && go(1));
+  $('next3')?.addEventListener('click', ()=> typeof go==='function' && go(3));
+  $('back4')?.addEventListener('click', ()=> typeof go==='function' && go(2));
+})();
+</script>
