@@ -322,17 +322,80 @@ function compute(){
   const min=Math.max(5000,Math.round(mid*0.93/1000)*1000);
   const max=Math.max(min+1000,Math.round(mid*1.07/1000)*1000);
 
-  const breakdown=[
+ const breakdown = [
     `Base (computed): ₹${rs(Math.round(base))}`,
-    `RTO ${PRIORITY_RTOS.includes(rto)?'(Priority ✓)':'(Non-priority −10%)'}: −₹${rs(rtoDed)}`,
+    `RTO ${PRIORITY_RTOS.includes(rto) ? '(Priority ✓)' : '(Non-priority −10%)'}: −₹${rs(rtoDed)}`,
     `Fitness Charges: −₹${rs(fitCost)}`,
     `Fine (₹500/mo): −₹${rs(fine)}`,
     `Insurance (month-wise): −₹${rs(insDed)}`,
     `Condition (${condSel}): −₹${rs(condDed)}`
   ].join('\n');
 
-return { min, max, mid, body, key, rto, insStatus, insTill, fitState, breakdown }
+  return { min, max, mid, body, key, rto, insStatus, insTill, fitState, breakdown }
 }
+</script>
+
+<!-- ===== Bindings + Validations (separate script) ===== -->
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const toast = m => { const t = $('toast'); if(!t) return; t.textContent = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1500); };
+
+  // ---- Step gating ----
+  $('next1')?.addEventListener('click', ()=>{
+    const ok = $('name')?.value && /^\d{10}$/.test(($('phone')?.value||'').trim()) && $('city')?.value;
+    if(!ok){ toast('Please fill Name, 10-digit Mobile & City'); return; }
+    go && go(1);
+  });
+  $('back2')?.addEventListener('click', ()=> go && go(0));
+  $('next2')?.addEventListener('click', ()=>{
+    if(!$('brand')?.value || !$('model')?.value){ toast('Enter brand & model'); return; }
+    // cars साठी transmission दिसू दे
+    const body = ($('body')?.value||'').toLowerCase();
+    const bkey = body.includes('suv')||body.includes('sedan')||body.includes('hatch')||body.includes('micro')||body.includes('ev car');
+    $('transWrap').style.display = bkey ? 'block' : 'none';
+    go && go(2);
+  });
+  $('back3')?.addEventListener('click', ()=> go && go(1));
+  $('next3')?.addEventListener('click', ()=>{
+    if(!$('year')?.value || !$('km')?.value){ toast('Enter year & KMs'); return; }
+    go && go(3);
+  });
+  $('back4')?.addEventListener('click', ()=> go && go(2));
+  $('again')?.addEventListener('click', ()=> go && go(0));
+
+  // ---- Calculate ----
+  $('calc')?.addEventListener('click', ()=>{
+    const y = +($('year')?.value||0);
+    if(!y || y<2001 || y>2030){ toast('Enter year 2001–2030'); return; }
+
+    if($('ins')?.value==='Valid' && !$('insTill')?.value){ toast('Select insurance month'); return; }
+    const age = new Date().getFullYear() - y;
+    if(age>=15 && $('fit')?.value==='Not Available' && !$('fitExpiry')?.value){
+      toast('Enter fitness expiry'); return;
+    }
+
+    const r = (typeof compute==='function') ? compute() : null;
+    if(!r){ toast('Compute failed'); return; }
+
+    const fmt = n => '₹' + Number(n).toLocaleString('en-IN');
+    $('min')  && ( $('min').textContent = fmt(r.min) );
+    $('max')  && ( $('max').textContent = fmt(r.max) );
+    $('mid')  && ( $('mid').textContent = fmt(r.mid) );
+    $('breakdown') && ( $('breakdown').textContent = r.breakdown );
+
+    $('tagBody') && ( $('tagBody').textContent = ($('body')?.value||'') + ' • ' + ($('seats')?.value||'') + ' seats' );
+    $('tagBrand')&& ( $('tagBrand').textContent = ( ($('brand')?.value||'') + ' ' + ($('model')?.value||'') ).trim() );
+    $('tagYear') && ( $('tagYear').textContent = $('year')?.value||'—' );
+    $('tagKm')   && ( $('tagKm').textContent   = (Number($('km')?.value||0)).toLocaleString('en-IN') + ' km' );
+    $('tagRTO')  && ( $('tagRTO').textContent  = r.rto ? ('RTO ' + r.rto) : 'RTO —' );
+    $('tagIns')  && ( $('tagIns').textContent  = 'Insurance: ' + r.insStatus + (r.insTill?(' till '+r.insTill):'') );
+    $('tagFit')  && ( $('tagFit').textContent  = 'Fitness: ' + r.fitState );
+    $('tagCond') && ( $('tagCond').textContent = 'Condition: ' + ($('cond')?.value||'') );
+
+    go && go(4);
+  });
+})();
 </script>
 
 <!-- ========= Bindings + Validations (separate script) ========= -->
