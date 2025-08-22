@@ -135,20 +135,71 @@
     </div>
   </section>
 
-  <!-- STEP 4 -->
-  <section class="card pad" id="s4" hidden>
-    <h3 class="title" data-i="s4.title">Condition & Compliance</h3>
-    <div class="row">
-      <div><label>RC</label><select id="rc"><option>Valid</option><option>Expired</option><option>Renewal Applied</option></select></div>
-      <div><label>Insurance</label><select id="ins"><option>Valid</option><option>Expired</option><option>Renewal Applied</option></select></div>
-      <div><label>Insurance Valid Till (MM/YYYY)</label><input type="month" id="insTill" placeholder="YYYY-MM"/></div>
-      <div><label>PUC / Green Tax</label><select id="puc"><option>Valid / Paid</option><option>Expired / Due</option></select></div>
-      <div><label>Fitness Certificate</label><select id="fit"><option>Not Required (age &lt; 15)</option><option>Available</option><option>Not Available</option></select></div>
-      <div><label>Fitness Expiry (MM/YYYY)</label><input type="month" id="fitExpiry" placeholder="YYYY-MM"/></div>
-      <div><label>Overall Condition</label><select id="cond"><option>Excellent</option><option>Good</option><option>Average</option><option>Poor</option></select></div>
-      <div><label>Inspection Date</label><input type="date" id="datePick"></div>
-      <div><label>Time Slot</label><select id="timePick"><option>10am – 1pm</option><option>2pm – 6pm</option></select></div>
+<!-- STEP 4 -->
+<section class="card pad" id="s4" hidden>
+  <h3 class="title" data_i="s4.title">Condition & Compliance</h3>
+  <div class="row">
+    <div><label>RC</label>
+      <select id="rc">
+        <option>Valid</option>
+        <option>Expired</option>
+      </select>
     </div>
+
+    <div><label>Insurance</label>
+      <select id="ins">
+        <option>Valid</option>
+        <option>Expired</option>
+      </select>
+    </div>
+
+    <!-- बदललेले: date picker -->
+    <div><label>Insurance Valid Till (DD/MM/YYYY)</label>
+      <input type="date" id="insTill" placeholder="DD/MM/YYYY"/>
+    </div>
+
+    <div><label>PUC / Green Tax</label>
+      <select id="puc">
+        <option>Valid / Paid</option>
+        <option>Expired</option>
+      </select>
+    </div>
+
+    <div><label>Fitness Certificate</label>
+      <select id="fit">
+        <option>Not Required (age &lt; 15)</option>
+        <option>Available</option>
+        <option>Not Available</option>
+      </select>
+    </div>
+
+    <!-- बदललेले: date picker -->
+    <div><label>Fitness Expiry (DD/MM/YYYY)</label>
+      <input type="date" id="fitExpiry" placeholder="DD/MM/YYYY"/>
+    </div>
+
+    <div><label>Overall Condition</label>
+      <select id="cond">
+        <option>Excellent</option>
+        <option>Good</option>
+        <option>Average</option>
+        <option>Poor</option>
+      </select>
+    </div>
+
+    <div><label>Inspection Date</label>
+      <input type="date" id="datePick"/>
+    </div>
+
+    <div><label>Time Slot</label>
+      <select id="timePick">
+        <option>10am - 1pm</option>
+        <option>3pm - 4pm</option>
+        <option>5pm - 7pm</option>
+      </select>
+    </div>
+  </div>
+</section>
     <div class="flex" style="gap:10px;margin-top:12px">
       <button class="btn" id="back4" data-i="back">Back</button>
       <button class="btn primary" id="calc" data-i="calc">Get Valuation</button>
@@ -335,7 +386,49 @@ function compute(){
 }
 </script>
 
-<!-- ===== Bindings + Validations (separate script) ===== -->
+<!-- 15-years auto-fitness patch -->
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const yearEl = $('year');
+  const fitEl  = $('fit');
+  const fitExp = $('fitExpiry');
+  const fitExpRow = fitExp ? fitExp.closest('div') : null;
+
+  function getAge(){
+    const y = parseInt(yearEl?.value || 0, 10);
+    const nowY = new Date().getFullYear();
+    return (y && y >= 1900 && y <= nowY + 1) ? (nowY - y) : 0;
+  }
+
+  function syncFitness(){
+    if(!yearEl || !fitEl) return;
+    const age = getAge();
+    if(age >= 15){
+      fitEl.disabled = false;
+      if(fitEl.value === 'Not Required (age < 15)' || !fitEl.value){
+        fitEl.value = 'Not Available';
+      }
+      if(fitExp){
+        fitExp.disabled = false;
+        if(fitExpRow) fitExpRow.style.display = 'block';
+      }
+    }else{
+      fitEl.value = 'Not Required (age < 15)';
+      fitEl.disabled = true;
+      if(fitExp){
+        fitExp.value = '';
+        fitExp.disabled = true;
+        if(fitExpRow) fitExpRow.style.display = 'none';
+      }
+    }
+  }
+
+  yearEl?.addEventListener('input',  syncFitness);
+  yearEl?.addEventListener('change', syncFitness);
+  syncFitness();
+})();
+</script>
 <script>
 (function(){
   const $ = id => document.getElementById(id);
