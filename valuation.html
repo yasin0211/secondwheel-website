@@ -118,12 +118,19 @@
   <section class="card pad" id="s3" hidden>
     <h3 class="title" data-i="s3.title">Specs</h3>
     <div class="row">
-      <div><label>Year</label><input id="year" type="number" min="2000" max="2025" placeholder="2018"/></div>
-      <div><label>Fuel</label><select id="fuel"><option>Petrol</option><option>Diesel</option><option>CNG (Company)</option><option>CNG (Aftermarket)</option><option>LPG (Company)</option><option>LPG (Aftermarket)</option><option>Electric</option></select></div>
+      <div><label>Year</label><input id="year" type="number" min="2001" max="2030" placeholder="2018"/></div>
+      <div><label>Fuel</label><select id="fuel">
+        <option>Petrol</option><option>Diesel</option>
+        <option>CNG (Company)</option><option>CNG (Aftermarket)</option>
+        <option>LPG (Company)</option><option>LPG (Aftermarket)</option>
+        <option>Electric</option></select>
+      </div>
       <div><label>KM</label><input id="km" type="number" min="0" step="500" placeholder="60000"/></div>
       <div id="transWrap"><label>Transmission</label><select id="trans"><option>Manual</option><option>Automatic</option></select></div>
       <div><label>Owners</label><select id="owners"><option>1st</option><option>2nd</option><option>3rd</option><option>4th+</option></select></div>
       <div><label>Color</label><select id="color"><option>White</option><option>Silver</option><option>Grey</option><option>Black</option><option>Blue</option><option>Red</option><option>Other</option></select></div>
+      <!-- New Price (optional) — checklist मध्ये आहे -->
+      <div><label>New Price (optional)</label><input id="newPrice" type="number" min="0" placeholder="Ex-Showroom / On-Road"/></div>
     </div>
     <div class="flex" style="gap:10px;margin-top:12px">
       <button class="btn" id="back3" data-i="back">Back</button>
@@ -131,13 +138,19 @@
     </div>
   </section>
 
-  <!-- STEP 4: Condition -->
+  <!-- STEP 4: Condition + Compliance (Checklist पूर्ण) -->
   <section class="card pad" id="s4" hidden>
     <h3 class="title" data-i="s4.title">Condition & Compliance</h3>
     <div class="row">
       <div><label>RC</label><select id="rc"><option>Valid</option><option>Expired</option><option>Renewal Applied</option></select></div>
       <div><label>Insurance</label><select id="ins"><option>Valid</option><option>Expired</option><option>Renewal Applied</option></select></div>
+      <div><label>Insurance Valid Till (MM/YYYY)</label><input type="month" id="insTill" placeholder="YYYY-MM"/></div>
       <div><label>PUC / Green Tax</label><select id="puc"><option>Valid / Paid</option><option>Expired / Due</option></select></div>
+      <!-- Fitness (15+ yrs auto) -->
+      <div><label>Fitness Certificate</label><select id="fit"><option>Not Required (age &lt; 15)</option><option>Available</option><option>Not Available</option></select></div>
+      <div><label>Fitness Expiry (MM/YYYY)</label><input type="month" id="fitExpiry" placeholder="YYYY-MM"/></div>
+      <div><label>Overall Condition</label><select id="cond"><option>Excellent</option><option>Good</option><option>Average</option><option>Poor</option></select></div>
+      <!-- Doorstep -->
       <div><label>Inspection Date</label><input type="date" id="datePick"></div>
       <div><label>Time Slot</label><select id="timePick"><option>10am – 1pm</option><option>2pm – 6pm</option></select></div>
     </div>
@@ -155,6 +168,10 @@
       <span class="pill" id="tagBrand">—</span>
       <span class="pill" id="tagYear">—</span>
       <span class="pill" id="tagKm">—</span>
+      <span class="pill" id="tagRTO">—</span>
+      <span class="pill" id="tagIns">—</span>
+      <span class="pill" id="tagFit">—</span>
+      <span class="pill" id="tagCond">—</span>
     </div>
     <div class="gauge"><div class="g1"></div><div class="g2"></div><div class="g3"></div></div>
     <div class="range"><div class="muted">Conservative</div><div class="muted">Average</div><div class="muted">Excellent</div></div>
@@ -162,6 +179,7 @@
       <div><div class="muted">Estimated Range</div><div class="big"><span id="min">₹—</span> — <span id="max">₹—</span></div></div>
       <div><div class="muted">Most Likely</div><div class="big" id="mid">₹—</div></div>
     </div>
+    <div id="breakdown" class="muted" style="margin-top:10px;white-space:pre-line"></div>
     <div class="flex" style="gap:10px;margin-top:12px;flex-wrap:wrap">
       <a id="wa" class="btn primary" target="_blank" rel="noopener">💬 WhatsApp Final Quote</a>
       <a id="call" class="btn" href="tel:+919822292955">📞 Call Now</a>
@@ -184,7 +202,7 @@
 
 <script>
 /* ------------ CONFIG ------------ */
-const GAS_URL='https://script.google.com/macros/s/AKfycbxtUUG42G136Xsg5d8FCzcBdasOZUfZHzNSaPoBlvIEZzjrTfiFPvKGDaCX7OZMM81oTw/exec';
+const GAS_URL='PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL'; // इथे तुझा Apps Script Web App URL लाव
 const THEME_KEY='secondwheel.theme';
 const VID = (()=>Math.random().toString(36).slice(2,6)+'-'+Date.now().toString(36).slice(-4))();
 
@@ -199,15 +217,7 @@ const I18N={
   en:{title:'Instant Valuation',next:'Continue',back:'Back',calc:'Get Valuation',
       s1h:'1. Customer',s2h:'2. Vehicle',s3h:'3. Specs',s4h:'4. Condition',s5h:'5. Result',
       's1.title':'Customer Details','s1.name':'Name','s1.phone':'Mobile Number','s1.city':'City','s1.notes':'Notes (optional)',
-      's2.title':'Vehicle Basics','s2.brand':'Brand','s2.model':'Model','s2.body':'Body Type','s2.seats':'Seating'},
-  hi:{title:'तुरंत मूल्यांकन',next:'आगे बढ़ें',back:'वापस',calc:'अनुमान देखें',
-      s1h:'1. ग्राहक',s2h:'2. वाहन',s3h:'3. विवरण',s4h:'4. स्थिति',s5h:'5. परिणाम',
-      's1.title':'ग्राहक विवरण','s1.name':'नाम','s1.phone':'मोबाइल','s1.city':'शहर','s1.notes':'नोट्स',
-      's2.title':'वाहन मूल','s2.brand':'ब्रांड','s2.model':'मॉडल','s2.body':'बॉडी टाइप','s2.seats':'सीटिंग'},
-  mr:{title:'इन्स्टंट व्हॅल्युएशन',next:'पुढे',back:'मागे',calc:'व्हॅल्यु बघा',
-      s1h:'1. ग्राहक',s2h:'2. वाहन',s3h:'3. तपशील',s4h:'4. कंडिशन',s5h:'5. निकाल',
-      's1.title':'ग्राहक माहिती','s1.name':'नाव','s1.phone':'मोबाईल','s1.city':'शहर','s1.notes':'नोट्स',
-      's2.title':'वाहन बेसिक्स','s2.brand':'ब्रँड','s2.model':'मॉडेल','s2.body':'बॉडी टाइप','s2.seats':'सीटिंग'}
+      's2.title':'Vehicle Basics','s2.brand':'Brand','s2.model':'Model','s2.body':'Body Type','s2.seats':'Seating'}
 };
 function setLang(lang){
   document.querySelectorAll('[data-i]').forEach(el=>{
@@ -228,128 +238,79 @@ const headers=[ $('h1'),$('h2'),$('h3'),$('h4'),$('h5') ];
 const bar=$('bar');
 function go(idx){ sections.forEach((s,i)=>s.hidden=i!==idx); headers.forEach((h,i)=>h.classList.toggle('active',i<=idx)); bar.style.width=(idx/4*100)+'%'; window.scrollTo({top:0,behavior:'smooth'}); }
 
-/* ------------ Body type auto-detect (simple) ------------ */
-const BODY_HINTS={
-  sedan:['DZIRE','CITY','VERNA','CIAZ','RAPID','SLAVIA','AURA'], 
-  hatch:['SWIFT','I10','I20','ALTO','WAGON','BALENO','TIAGO'],
-  micro:['KWID','S-PRESSO','REDIGO'],
-  suv:['ERTIGA','XUV','ALCAZAR','HECTOR','CRETA','BREZZA','VENUE','NEXON','SCORPIO','SAFARI','HARRIER'],
-};
-function guessBody(brand,model){
-  const M=(brand+' '+model).toUpperCase();
-  for(const [type,arr] of Object.entries(BODY_HINTS)){ if(arr.some(k=>M.includes(k))) return type; }
-  return 'hatch';
-}
+/* ------------ Body type detect (kept same) ------------ */
+const BODY_HINTS={sedan:['DZIRE','CITY','VERNA','CIAZ','RAPID','SLAVIA','AURA'], hatch:['SWIFT','I10','I20','ALTO','WAGON','BALENO','TIAGO'],
+  micro:['KWID','S-PRESSO','REDIGO'], suv:['ERTIGA','XUV','ALCAZAR','HECTOR','CRETA','BREZZA','VENUE','NEXON','SCORPIO','SAFARI','HARRIER']};
+function guessBody(brand,model){ const M=(brand+' '+model).toUpperCase(); for(const [t,arr] of Object.entries(BODY_HINTS)){ if(arr.some(k=>M.includes(k))) return t; } return 'hatch'; }
 
-/* ------------ Base price tables (2000–2025) ------------ */
-const BASE={  // baseline “new price x residual factor”
-  sedan:   {newP:800000,  dep:year=>Math.max(0.12,Math.pow(1-0.16, year))},
-  hatch:   {newP:600000,  dep:year=>Math.max(0.15,Math.pow(1-0.18, year))},
-  micro:   {newP:450000,  dep:year=>Math.max(0.18,Math.pow(1-0.20, year))},
-  suv:     {newP:1000000, dep:year=>Math.max(0.10,Math.pow(1-0.15, year))},
-  bike:    {newP:80000,   dep:year=>Math.max(0.07,Math.pow(1-0.22, year))},
-  scooter: {newP:65000,   dep:year=>Math.max(0.07,Math.pow(1-0.20, year))},
-  evcar:   {newP:1400000, dep:year=>Math.max(0.20,Math.pow(1-0.25, year))},
-  evbike:  {newP:110000,  dep:year=>Math.max(0.25,Math.pow(1-0.28, year))},
-  evscoot: {newP:90000,   dep:year=>Math.max(0.25,Math.pow(1-0.28, year))}
-};
-function bodyKey(sel,ev){
-  if(ev==='EV Car') return 'evcar';
-  if(ev==='EV Bike') return 'evbike';
-  if(ev==='EV Scooter') return 'evscoot';
-  const m=sel.toLowerCase(); return m.includes('sedan')?'sedan':m.includes('micro')?'micro':m.includes('suv')?'suv':m.includes('bike')?'bike':m.includes('scooter')?'scooter':'hatch';
-}
+/* ------------ Base anchors + factors (kept same) ------------ */
+const BASE={sedan:{newP:800000,dep:y=>Math.max(0.12,Math.pow(1-0.16,y))},hatch:{newP:600000,dep:y=>Math.max(0.15,Math.pow(1-0.18,y))},
+micro:{newP:450000,dep:y=>Math.max(0.18,Math.pow(1-0.20,y))},suv:{newP:1000000,dep:y=>Math.max(0.10,Math.pow(1-0.15,y))},
+bike:{newP:80000,dep:y=>Math.max(0.07,Math.pow(1-0.22,y))},scooter:{newP:65000,dep:y=>Math.max(0.07,Math.pow(1-0.20,y))},
+evcar:{newP:1400000,dep:y=>Math.max(0.20,Math.pow(1-0.25,y))},evbike:{newP:110000,dep:y=>Math.max(0.25,Math.pow(1-0.28,y))},evscoot:{newP:90000,dep:y=>Math.max(0.25,Math.pow(1-0.28,y))}};
+function bodyKey(sel){ const m=sel.toLowerCase(); if(m.includes('ev car'))return'evcar'; if(m.includes('ev bike'))return'evbike'; if(m.includes('ev scooter'))return'evscoot';
+  if(m.includes('sedan'))return'sedan'; if(m.includes('micro'))return'micro'; if(m.includes('suv'))return'suv'; if(m.includes('bike'))return'bike'; if(m.includes('scooter'))return'scooter'; return'hatch';}
 
-/* ------------ Fuel weights ------------ */
-function fuelFactor(f){
-  if(f==='Diesel') return 1.06;               // Diesel > Petrol
-  if(f.startsWith('Petrol')) return 1.00;
-  if(f==='CNG (Company)') return 0.98;        // stable but resale slightly tighter
-  if(f==='CNG (Aftermarket)') return 0.92;
-  if(f==='LPG (Company)') return 0.94;
-  if(f==='LPG (Aftermarket)') return 0.88;
-  if(f==='Electric') return 0.90;             // faster tech depreciation
-  return 1;
-}
+/* ------------ Fuel / color / owners factors (kept + checklist adj) ------------ */
+function fuelFactor(f){ if(f==='Diesel') return 1.06; if(f==='Petrol') return 1.00;
+  if(f==='CNG (Company)') return 0.98; if(f==='CNG (Aftermarket)') return 0.92; if(f==='LPG (Company)') return 0.94; if(f==='LPG (Aftermarket)') return 0.88; if(f==='Electric') return 0.90; return 1; }
 function colorAdj(c){ c=String(c||'').toUpperCase(); if(['WHITE','SILVER','GREY','GRAY'].includes(c)) return 1.02; if(['BLACK','BLUE','RED'].includes(c)) return 1.00; return 0.98; }
-function ownersPenalty(s){ return s.startsWith('1')?1:s.startsWith('2')?0.93:s.startsWith('3')?0.85:0.75; }
-function rupee(n){ try{return '₹'+Number(n).toLocaleString('en-IN');}catch{return '₹'+n} }
+function ownersPenalty(s){ return s.startsWith('1')?1:s.startsWith('2')?0.97:s.startsWith('3')?0.94:0.90; } // checklist: 3%, 6%, 10% approx factors
+const rs=n=>(n||0).toLocaleString('en-IN'); const rupee=n=>{try{return '₹'+Number(n).toLocaleString('en-IN')}catch{return '₹'+n}}
 
-/* ------------ Compute valuation ------------ */
+/* ------------ Checklist-specific helpers ------------ */
+const PRIORITY_RTOS = ["MH09","MH10","MH11","MH12","MH14","MH42","MH50"];
+const insBase = (key,fuel)=> (key==='bike'||key==='scooter') ? 1280 : (fuel==='Diesel'?9000:8500);
+function insDeductionAmt(key,fuel,insStatus,insTill){
+  const base=insBase(key,fuel);
+  if(insStatus!=='Valid') return base; // Expired / Renewal Applied => take full deduction
+  if(!insTill) return base;
+  const d=new Date(insTill+'-01'); if(isNaN(d)) return base;
+  const n=new Date(); const rem=(d.getFullYear()-n.getFullYear())*12+(d.getMonth()-n.getMonth());
+  if(rem<=0) return base; if(rem>=12) return 0;
+  const elapsed=12-rem; return Math.round(base*(elapsed/12));
+}
+function fitnessCost(key,fuel){ if(key==='bike'||key==='scooter') return 5000; return (fuel==='Diesel')?22000:18000; }
+function fitnessFine(expiry){
+  if(!expiry) return 0; const d=new Date(expiry+'-01'); if(isNaN(d)) return 0;
+  const n=new Date(); const m=(n.getFullYear()-d.getFullYear())*12+(n.getMonth()-d.getMonth());
+  return m>0 ? m*500 : 0;
+}
+
+/* ------------ Compute valuation (with all checklist rules) ------------ */
 function compute(){
   const brand=$('brand').value||'', model=$('model').value||'';
-  let body=$('body').value; if(!body) body='Hatchback';
-  // auto body from model if user hasn’t changed
-  if(body==='Hatchback' && brand+model) body = {sedan:'Sedan',hatch:'Hatchback',micro:'Micro',suv:'SUV'}[guessBody(brand,model)] || body;
-
-  // 7-seater bump (SUV)
+  let body=$('body').value || 'Hatchback';
+  if(body==='Hatchback' && (brand||model)) body = {sedan:'Sedan',hatch:'Hatchback',micro:'Micro',suv:'SUV'}[guessBody(brand,model)] || body;
+  const key = bodyKey(body);
   const seats=$('seats').value;
-  const key = bodyKey(body, body.startsWith('EV')?body:'');
-  const base=BASE[key]||BASE.hatch;
-
   const year=Number($('year').value||new Date().getFullYear());
   const age=Math.max(0,new Date().getFullYear()-year);
-  let p = base.newP * base.dep(age);
+  const fuel=$('fuel').value;
 
-  // seating bump for SUVs
-  if(key==='suv' && seats==='7') p*=1.06;
-
-  // km effect
+  // BASE
+  const baseCfg=BASE[key]||BASE.hatch;
+  let base = baseCfg.newP * baseCfg.dep(age);
+  if(key==='suv' && seats==='7') base*=1.06;
   const km=Number($('km').value||0);
   if(['suv','sedan','hatch','micro','evcar'].includes(key)){
-    if(km>60000) p -= (km-60000)*0.75; else if(km<30000) p*=1.04;
+    if(km>60000) base -= (km-60000)*0.75; else if(km<30000) base*=1.04;
   }else{
-    if(km>40000) p -= (km-40000)*0.30; else if(km<15000) p*=1.05;
+    if(km>40000) base -= (km-40000)*0.30; else if(km<15000) base*=1.05;
   }
+  if(['suv','sedan','hatch','micro','evcar'].includes(key) && $('trans').value==='Automatic') base*=1.03;
+  base*=ownersPenalty($('owners').value);
+  base*=fuelFactor(fuel);
+  base*=colorAdj($('color').value);
 
-  // transmission (cars)
-  if(['suv','sedan','hatch','micro','evcar'].includes(key)){
-    if($('trans').value==='Automatic') p*=1.03;
-  }
+  // New Price optional (15% weight)
+  const np=parseFloat(($('newPrice').value||'').trim()); if(!isNaN(np) && np>0){ base = Math.round(base*0.85 + np*0.15); }
 
-  // owners, fuel, color
-  p*=ownersPenalty($('owners').value);
-  p*=fuelFactor($('fuel').value);
-  p*=colorAdj($('color').value);
+  // RTO (Reg prefix)
+  const reg=($('reg').value||'').toUpperCase().replace(/\s+/g,'');
+  const rto = reg.slice(0,4);
+  const rtoDed = PRIORITY_RTOS.includes(rto)? 0 : Math.round(base*0.10);
 
-  // compliance
-  if($('rc').value==='Expired') p*=0.40;
-  if($('ins').value==='Expired') p*=0.97;
-  if($('puc').value==='Expired / Due') p*=0.98;
-
-  p = Math.max(5000, Math.round(p/1000)*1000);
-  const min=Math.max(5000, Math.round(p*0.93/1000)*1000);
-  const max=Math.max(min+1000, Math.round(p*1.07/1000)*1000);
-
-  return {min,max,mid:p, body, key};
-}
-
-/* ------------ Wire navigation ------------ */
-$('next1').onclick=()=>{
-  if(!$('name').value.trim() || !/^\d{10}$/.test(($('phone').value||'').trim()) || !$('city').value.trim()){
-    toast('Please complete customer details.'); return;
-  }
-  go(1);
-};
-$('back2').onclick=()=>go(0);
-$('next2').onclick=()=>{
-  if(!$('brand').value.trim() || !$('model').value.trim()){ toast('Enter brand & model.'); return; }
-  // show/hide transmission for cars
-  const bkey=bodyKey($('body').value, $('body').value);
-  $('transWrap').style.display = ['suv','sedan','hatch','micro','evcar'].includes(bkey)?'block':'none';
-  go(2);
-};
-$('back3').onclick=()=>go(1);
-$('next3').onclick=()=>{
-  if(!$('year').value || !$('km').value){ toast('Enter year & KMs.'); return; }
-  go(3);
-};
-$('back4').onclick=()=>go(2);
-
-$('calc').onclick=()=>{
-  const r=compute();
-  $('tagBody').textContent = $('body').value + ' • ' + $('seats').value + ' seats';
-  $('tagBrand').textContent = ($('brand').value+' '+$('model').value).trim() || '—';
-  $('tagYear').textContent  = $('year').value || '—';
-  $('tagKm').textContent    = (Number($('km').value||0)).toLocaleString('en-IN')+' km';
-  $('min').textContent=rupee(r.min); $('max').textContent=rupee(r.max); $('mid').textContent=rup
+  // Fitness (auto if 15+)
+  let fitState = $('fit').value, fitCost=0, fine=0;
+  if(age>=15){
