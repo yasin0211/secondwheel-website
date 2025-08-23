@@ -276,29 +276,25 @@
 /* ------------ CONFIG ------------ */
 const THEME_KEY='secondwheel.theme';
 const SW_MODE_KEY='sw.mode.v1';
-const ADMIN_PIN='7264'; // <- तुझा PIN
+const ADMIN_PIN='7264'; // Dealer PIN
 
 /* ------------ Mode Bootstrap ------------ */
 function setMode(m){ window.SW_MODE=m; document.body.dataset.mode=m; }
 function isAdmin(){ return window.SW_MODE==='admin'; }
-function unlock(pin){
-  if(pin===ADMIN_PIN){ localStorage.setItem(SW_MODE_KEY, String(Date.now())); setMode('admin'); alert('Dealer mode ON'); return true; }
-  alert('Wrong PIN'); return false;
-}
 (function initMode(){
   setMode('public');
   const saved=+localStorage.getItem(SW_MODE_KEY)||0;
   if(saved && (Date.now()-saved)<24*60*60*1000) setMode('admin');
-  // Keyboard secret
-  document.addEventListener('keydown', (e)=>{
-    if(e.altKey && e.shiftKey && e.code==='KeyA'){ const pin=prompt('Enter admin PIN'); if(pin) unlock(pin); }
+  document.addEventListener('keydown',(e)=>{
+    if(e.altKey && e.shiftKey && e.code==='KeyA'){
+      const pin=prompt('Enter admin PIN'); if(pin===ADMIN_PIN){ localStorage.setItem(SW_MODE_KEY,String(Date.now())); setMode('admin'); alert('Dealer mode ON'); }
+    }
   });
 })();
 
 /* ------------ Theme ------------ */
 const themeBtn=document.getElementById('themeBtn');
 function setTheme(t){ document.documentElement.setAttribute('data-theme', t==='dark'?'dark':'light'); localStorage.setItem(THEME_KEY,t); themeBtn.textContent=t==='dark'?'🌙':'☀️'; }
-// Default LIGHT
 setTheme(localStorage.getItem(THEME_KEY)||'light');
 themeBtn.onclick=()=> setTheme((localStorage.getItem(THEME_KEY)||'light')==='dark'?'light':'dark');
 
@@ -313,7 +309,7 @@ setLang('en');
 
 /* ------------ Helpers ------------ */
 const $ = id => document.getElementById(id);
-const toast=m=>{const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),1400);};
+const toast=(m)=>{const t=$('toast'); if(!t) return alert(m); t.textContent=m; t.classList.add('show'); clearTimeout(window._t); window._t=setTimeout(()=>t.classList.remove('show'),1400);};
 const sections=[$('s1'),$('s2'),$('s3'),$('s4'),$('s5')]; const headers=[$('h1'),$('h2'),$('h3'),$('h4'),$('h5')]; const bar=$('bar');
 function go(idx){ sections.forEach((s,i)=>s.hidden=i!==idx); headers.forEach((h,i)=>h.classList.toggle('active',i<=idx)); bar.style.width=(idx/4*100)+'%'; window.scrollTo({top:0,behavior:'smooth'}); }
 
@@ -409,16 +405,15 @@ function compute(){
   const age=Math.max(0,new Date().getFullYear()-year);
   const fuel=$('fuel').value;
 
-  // BASE
   const baseCfg=BASE[key]||BASE.hatch;
   let base=baseCfg.newP * baseCfg.dep(age);
   if(key==='suv' && seats==='7') base*=1.06;
 
   const km=Number($('km').value||0);
   if(['suv','sedan','hatch','micro','evcar'].includes(key)){
-    if(km>60000) base-=(km-60000)*0.75; else if(km<30000) base*=1.04;
+    if(km>60000) base-=(km-60000)0.75; else if(km<30000) base=1.04;
   }else{
-    if(km>40000) base-=(km-40000)*0.30; else if(km<15000) base*=1.05;
+    if(km>40000) base-=(km-40000)0.30; else if(km<15000) base=1.05;
   }
   if(['suv','sedan','hatch','micro','evcar'].includes(key) && $('trans').value==='Automatic') base*=1.03;
   base*=ownersPenalty($('owners').value);
@@ -428,7 +423,6 @@ function compute(){
   const np=parseFloat(($('newPrice').value||'').trim());
   if(!isNaN(np) && np>0){ base = Math.round(base*0.85 + np*0.15); }
 
-  // ON-ROAD CAP (cars only)
   const isCarKey = ['sedan','hatch','micro','suv','evcar'].includes(key);
   if(isCarKey){
     const onr = getOnroadPrice(brand, model, $('model').value||'', fuel, year);
@@ -439,15 +433,12 @@ function compute(){
     }
   }
 
-  // PUBLIC vs ADMIN weights
   const W = isAdmin() ? 1.0 : 0.45;
 
-  // RTO
   const reg=($('reg').value||'').toUpperCase().replace(/\s+/g,'');
   const rto=reg.slice(0,4);
   const rtoDed=PRIORITY_RTOS.includes(rto)?0:Math.round(base*0.10*W);
 
-  // Fitness
   let fitState=$('fit').value, fitCost=0, fine=0;
   if(age>=15){
     if(fitState==='Not Available'){ fitCost=Math.round(fitnessCost(key,fuel)*W); fine=Math.round(fitnessFine($('fitExpiry').value)*W); }
@@ -455,22 +446,18 @@ function compute(){
     fitState='Not Required (age < 15)'; $('fitExpiry').value='';
   }
 
-  // Insurance
   const insStatus=$('ins').value, insTill=$('insTill').value;
   const insDed=Math.round(insDeductionAmt(key,fuel,insStatus,insTill)*W);
 
-  // Condition
   const condSel=$('cond').value;
   const condPct=condSel==='Good'?0.02:condSel==='Average'?0.05:condSel==='Poor'?0.10:0;
   const condDed=Math.round(base*condPct*W);
 
-  // RC/PUC nudges
   if($('rc').value==='Expired') base=Math.round(base* (W<1?0.975:0.95));
   if($('puc').value==='Expired') base=Math.round(base* (W<1?0.995:0.985));
 
-  // Final
   let final=(base - rtoDed) - fitCost - fine - insDed - condDed;
-  if(!isAdmin()) final=Math.round(final*1.06); // optimism for public
+  if(!isAdmin()) final=Math.round(final*1.06);
   final=Math.max(final,(key==='bike'||key==='scooter')?5000:25000);
 
   const mid=Math.round(final/1000)*1000;
@@ -478,12 +465,12 @@ function compute(){
   const max=Math.max(min+1000,Math.round(mid*(isAdmin()?1.07:1.12)/1000)*1000);
 
   const breakdown = [
-    `Base (computed): ₹${rs(Math.round(base))}`,
-    `RTO ${PRIORITY_RTOS.includes(rto) ? '(Priority ✓)' : '(Non-priority −10%)'}: −₹${rs(rtoDed)}`,
-    `Fitness Charges: −₹${rs(fitCost)}`,
-    `Fine (₹500/mo): −₹${rs(fine)}`,
-    `Insurance (month-wise): −₹${rs(insDed)}`,
-    `Condition (${condSel||'—'}): −₹${rs(condDed)}`
+    Base (computed): ₹${rs(Math.round(base))},
+    RTO ${PRIORITY_RTOS.includes(rto) ? '(Priority ✓)' : '(Non-priority −10%)'}: −₹${rs(rtoDed)},
+    Fitness Charges: −₹${rs(fitCost)},
+    Fine (₹500/mo): −₹${rs(fine)},
+    Insurance (month-wise): −₹${rs(insDed)},
+    Condition (${condSel||'—'}): −₹${rs(condDed)}
   ].join('\n');
 
   return { min, max, mid, body, key, rto, insStatus, insTill, fitState, breakdown }
@@ -503,7 +490,7 @@ function compute(){
   yearEl?.addEventListener('input',sync); yearEl?.addEventListener('change',sync); sync();
 })();
 
-/* ------------ Bindings ------------ */
+/* ------------ Bindings + Save ------------ */
 (function(){
   const $=id=>document.getElementById(id);
   const t=m=>{const x=$('toast'); if(x){ x.textContent=m; x.classList.add('show'); setTimeout(()=>x.classList.remove('show'),1500);}};
@@ -574,69 +561,56 @@ Estimate: ₹${r.min.toLocaleString('en-IN')} – ₹${r.max.toLocaleString('en-
 
   $('again')?.addEventListener('click', ()=> go(0));
 
-// ======== CONFIG ========
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzT6PSGflN9L9d5NVZUwDnBmh2MkZdBI6_93GEpIi6YosFQoOmfBe6VoOzANtvPJ26E-A/exec";
+  /* ======== Google Sheet SAVE (CORS-safe echo URL) ======== */
+  // इथे तुमचा working echo URL पेस्ट करा (script.googleusercontent.com/macros/echo?....)
+  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwFHhAoK83U4vD60ucz7JOtj3xMvwUn3Jvf0G9rakBq3jLc_jIcrYxfe5V4GvGfXY6eHw/exec";
 
-// Toast helper
-function toast(msg){
-  const t=document.getElementById('toast');
-  if(!t) return alert(msg);
-  t.textContent=msg;
-  t.classList.add('show');
-  clearTimeout(window.__tt);
-  window.__tt=setTimeout(()=>t.classList.remove('show'),2000);
-}
+  document.getElementById('saveLead').addEventListener('click', async () => {
+    const payload = {
+      vid: String(Date.now()),
+      name: $('name')?.value || '',
+      phone: $('phone')?.value || '',
+      city: $('city')?.value || '',
+      notes: $('notes')?.value || '',
 
-// ======== SAVE button handler ========
-document.getElementById('saveLead').addEventListener('click', async () => {
-  const $ = id => document.getElementById(id);
+      type: $('body')?.value || '',
+      brand: $('brand')?.value || '',
+      model: $('model')?.value || '',
+      variant: '',
+      year: $('year')?.value || '',
+      fuel: $('fuel')?.value || '',
+      km: $('km')?.value || '',
+      reg: $('reg')?.value || '',
+      color: $('color')?.value || '',
+      owner: $('owners')?.value || '',
 
-  const payload = {
-    vid: String(Date.now()),
-    name: $('name')?.value || '',
-    phone: $('phone')?.value || '',
-    city: $('city')?.value || '',
-    notes: $('notes')?.value || '',
+      rcStatus: $('rc')?.value || '',
+      insuranceStatus: $('ins')?.value || '',
+      insTill: $('insTill')?.value || '',
+      puc: $('puc')?.value || '',
+      fit: $('fit')?.value || '',
+      fitExp: $('fitExpiry')?.value || '',
 
-    type: $('body')?.value || '',
-    brand: $('brand')?.value || '',
-    model: $('model')?.value || '',
-    variant: '',
-    year: $('year')?.value || '',
-    fuel: $('fuel')?.value || '',
-    km: $('km')?.value || '',
-    reg: $('reg')?.value || '',
-    color: $('color')?.value || '',
-    owner: $('owners')?.value || '',
+      slotDate: $('datePick')?.value || '',
+      slotTime: $('timePick')?.value || '',
 
-    rcStatus: $('rc')?.value || '',
-    insuranceStatus: $('ins')?.value || '',
-    insTill: $('insTill')?.value || '',
-    puc: $('puc')?.value || '',
-    fit: $('fit')?.value || '',
-    fitExp: $('fitExpiry')?.value || '',
+      estMin: (document.getElementById('min')?.textContent||'').replace(/[^\d]/g,''),
+      estMax: (document.getElementById('max')?.textContent||'').replace(/[^\d]/g,''),
+      source: 'sell-form'
+    };
 
-    slotDate: $('datePick')?.value || '',
-    slotTime: $('timePick')?.value || '',
+    try {
+      const res = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const out = await res.json();
+      if (!out.ok) throw new Error(out.error || "Save failed");
 
-    estMin: (document.getElementById('min')?.textContent||'').replace(/[^\d]/g,''),
-    estMax: (document.getElementById('max')?.textContent||'').replace(/[^\d]/g,''),
-    source: 'sell-form'
-  };
+      toast("✅ Submitted! We’ll call you shortly.");
 
-  try {
-    const res = await fetch(WEBAPP_URL, {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    const out = await res.json();
-    if (!out.ok) throw new Error(out.error || "Save failed");
-
-    toast("✅ Submitted! We’ll call you shortly.");
-
-    // Update WhatsApp link
-    const msg = encodeURIComponent(
+      const msg = encodeURIComponent(
 `Sell Lead
 Name: ${payload.name}
 Phone: ${payload.phone}
@@ -644,13 +618,16 @@ City: ${payload.city}
 Vehicle: ${payload.brand} ${payload.model} (${payload.type})
 Year/Fuel/KM: ${payload.year}/${payload.fuel}/${Number(payload.km||0).toLocaleString('en-IN')} km
 Est: ₹${Number(payload.estMin||0).toLocaleString('en-IN')}–₹${Number(payload.estMax||0).toLocaleString('en-IN')}`
-    );
-    const wa = document.getElementById('wa');
-    if (wa) wa.href = "https://wa.me/919822292955?text="+msg;
+      );
+      const wa = document.getElementById('wa');
+      if (wa) wa.href = "https://wa.me/919822292955?text="+msg;
 
-  } catch (err) {
-    console.error("Save error:", err);
-    toast("⚠️ Could not submit. Please try again.");
-  }
-});
+    } catch (err) {
+      console.error("Save error:", err);
+      toast("⚠️ Could not submit. Please try again.");
+    }
+  });
+})(); // <— IIFE properly closed
 </script>
+</body>
+</html>
