@@ -94,9 +94,9 @@
 <!-- Hidden On-road Catalog (sample) -->
 <script type="application/json" id="onroad-data">
 [
-  { "brand":"Toyota","model":"INNOVA CRYSTA","variant":"GX", "fuel":"Diesel",  "onroad_price": 2700000, "year_from":2016, "year_to":2022 },
-  { "brand":"Hyundai","model":"I10","variant":"MAGNA", "fuel":"Petrol", "onroad_price": 485000, "year_from":2008, "year_to":2011 },
-  { "brand":"Maruti Suzuki","model":"ALTO K10","variant":"VXI","fuel":"Petrol","onroad_price": 520000, "year_from":2014, "year_to":2020 }
+  {"brand":"Toyota","model":"INNOVA CRYSTA","variant":"GX","fuel":"Diesel","onroad_price":2700000,"year_from":2016,"year_to":2022},
+  {"brand":"Hyundai","model":"I10","variant":"MAGNA","fuel":"Petrol","onroad_price":485000,"year_from":2008,"year_to":2011},
+  {"brand":"Maruti Suzuki","model":"ALTO K10","variant":"VXI","fuel":"Petrol","onroad_price":520000,"year_from":2014,"year_to":2020}
 ]
 </script>
 
@@ -225,7 +225,7 @@
   </section>
 </main>
 
-<!-- FOOTER (same as index) -->
+<!-- FOOTER -->
 <footer class="sw-footer">
   <style>
     .sw-footer {background:#0e1116;color:#c9d1d9;border-top:1px solid #222;margin-top:40px;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Noto Sans',sans-serif;}
@@ -277,6 +277,7 @@
 const THEME_KEY='secondwheel.theme';
 const SW_MODE_KEY='sw.mode.v1';
 const ADMIN_PIN='7264'; // Dealer PIN
+const $ = id => document.getElementById(id);
 
 /* ------------ Mode Bootstrap ------------ */
 function setMode(m){ window.SW_MODE=m; document.body.dataset.mode=m; }
@@ -287,13 +288,14 @@ function isAdmin(){ return window.SW_MODE==='admin'; }
   if(saved && (Date.now()-saved)<24*60*60*1000) setMode('admin');
   document.addEventListener('keydown',(e)=>{
     if(e.altKey && e.shiftKey && e.code==='KeyA'){
-      const pin=prompt('Enter admin PIN'); if(pin===ADMIN_PIN){ localStorage.setItem(SW_MODE_KEY,String(Date.now())); setMode('admin'); alert('Dealer mode ON'); }
+      const pin=prompt('Enter admin PIN');
+      if(pin===ADMIN_PIN){ localStorage.setItem(SW_MODE_KEY,String(Date.now())); setMode('admin'); alert('Dealer mode ON'); }
     }
   });
 })();
 
 /* ------------ Theme ------------ */
-const themeBtn=document.getElementById('themeBtn');
+const themeBtn=$('themeBtn');
 function setTheme(t){ document.documentElement.setAttribute('data-theme', t==='dark'?'dark':'light'); localStorage.setItem(THEME_KEY,t); themeBtn.textContent=t==='dark'?'🌙':'☀️'; }
 setTheme(localStorage.getItem(THEME_KEY)||'light');
 themeBtn.onclick=()=> setTheme((localStorage.getItem(THEME_KEY)||'light')==='dark'?'light':'dark');
@@ -304,11 +306,10 @@ s1h:'1. Customer',s2h:'2. Vehicle',s3h:'3. Specs',s4h:'4. Condition',s5h:'5. Res
 's1.title':'Customer Details','s1.name':'Name','s1.phone':'Mobile Number','s1.city':'City','s1.notes':'Notes (optional)',
 's2.title':'Vehicle Basics','s2.brand':'Brand','s2.model':'Model','s2.body':'Body Type','s2.seats':'Seating'}};
 function setLang(lang){ document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i'); if(I18N[lang]&&I18N[lang][k]) el.textContent=I18N[lang][k]; }); }
-document.getElementById('langSeg').addEventListener('click',e=>{const b=e.target.closest('button'); if(!b)return; [...e.currentTarget.children].forEach(x=>x.classList.remove('active')); b.classList.add('active'); setLang(b.dataset.lang);});
+$('langSeg').addEventListener('click',e=>{const b=e.target.closest('button'); if(!b)return; [...e.currentTarget.children].forEach(x=>x.classList.remove('active')); b.classList.add('active'); setLang(b.dataset.lang);});
 setLang('en');
 
 /* ------------ Helpers ------------ */
-const $ = id => document.getElementById(id);
 const toast=(m)=>{const t=$('toast'); if(!t) return alert(m); t.textContent=m; t.classList.add('show'); clearTimeout(window._t); window._t=setTimeout(()=>t.classList.remove('show'),1400);};
 const sections=[$('s1'),$('s2'),$('s3'),$('s4'),$('s5')]; const headers=[$('h1'),$('h2'),$('h3'),$('h4'),$('h5')]; const bar=$('bar');
 function go(idx){ sections.forEach((s,i)=>s.hidden=i!==idx); headers.forEach((h,i)=>h.classList.toggle('active',i<=idx)); bar.style.width=(idx/4*100)+'%'; window.scrollTo({top:0,behavior:'smooth'}); }
@@ -357,7 +358,7 @@ function modelKey(m){ m=UC(m); return MODEL_ALIASES[m] || m; }
 function catKey(brand, model){ return brandKey(brand)+'|'+modelKey(model); }
 (function bootstrapOnRoad(){
   try{
-    const tag=document.getElementById('onroad-data'); if(!tag) return;
+    const tag=$('onroad-data'); if(!tag) return;
     const rows=JSON.parse(tag.textContent||'[]');
     rows.forEach(r=>{
       const b=brandKey(r.brand), m=modelKey(r.model), v=normVariant(r.variant||''), f=normFuel(r.fuel||''), price=Number(r.onroad_price)||0;
@@ -394,7 +395,7 @@ function onroadCapFactor(age){
   return 0.20;
 }
 
-/* ------------ Compute (mode-aware) ------------ */
+/* ------------ Compute ------------ */
 function compute(){
   const brand=$('brand').value||'', model=$('model').value||'';
   let body=$('body').value || 'Hatchback';
@@ -407,18 +408,15 @@ function compute(){
   const age=Math.max(0,new Date().getFullYear()-year);
   const fuel=$('fuel').value;
 
-  // BASE
   const baseCfg=BASE[key]||BASE.hatch;
   let base=baseCfg.newP * baseCfg.dep(age);
   if(key==='suv' && seats==='7') base*=1.06;
 
   const km=Number($('km').value||0);
   if(['suv','sedan','hatch','micro','evcar'].includes(key)){
-    if(km>60000) base -= (km-60000) * 0.75;
-    else if(km<30000) base *= 1.04;
-  } else {
-    if(km>40000) base -= (km-40000) * 0.30;
-    else if(km<15000) base *= 1.05;
+    if(km>60000) base -= (km-60000) * 0.75; else if(km<30000) base *= 1.04;
+  }else{
+    if(km>40000) base -= (km-40000) * 0.30; else if(km<15000) base *= 1.05;
   }
   if(['suv','sedan','hatch','micro','evcar'].includes(key) && $('trans').value==='Automatic') base*=1.03;
   base*=ownersPenalty($('owners').value);
@@ -428,51 +426,40 @@ function compute(){
   const np=parseFloat(($('newPrice').value||'').trim());
   if(!isNaN(np) && np>0){ base = Math.round(base*0.85 + np*0.15); }
 
-  // ON-ROAD CAP (cars only)
-  const isCarKey = ['sedan','hatch','micro','suv','evcar'].includes(key);
+  const isCarKey=['sedan','hatch','micro','suv','evcar'].includes(key);
   if(isCarKey){
-    const onr = getOnroadPrice(brand, model, $('model').value||'', fuel, year);
-    if(onr > 0){
-      let cap = onroadCapFactor(age) * onr;
-      if(key==='suv') cap = Math.round(cap * 1.06);
-      if(base > cap){ base = cap; }
+    const onr=getOnroadPrice(brand, model, $('model').value||'', fuel, year);
+    if(onr>0){
+      let cap=onroadCapFactor(age)*onr;
+      if(key==='suv') cap=Math.round(cap*1.06);
+      if(base>cap) base=cap;
     }
   }
 
-  // PUBLIC vs ADMIN
-  const W = isAdmin() ? 1.0 : 0.45;
+  const W=isAdmin()?1.0:0.45;
 
-  // RTO
   const reg=($('reg').value||'').toUpperCase().replace(/\s+/g,'');
   const rto=reg.slice(0,4);
   const rtoDed=PRIORITY_RTOS.includes(rto)?0:Math.round(base*0.10*W);
 
-  // Fitness
   let fitState=$('fit').value, fitCost=0, fine=0;
   if(age>=15){
-    if(fitState==='Not Available'){
-      fitCost=Math.round(fitnessCost(key,fuel)*W);
-      fine=Math.round(fitnessFine($('fitExpiry').value)*W);
-    }
+    if(fitState==='Not Available'){ fitCost=Math.round(fitnessCost(key,fuel)*W); fine=Math.round(fitnessFine($('fitExpiry').value)*W); }
   }else{
     fitState='Not Required (age < 15)'; $('fitExpiry').value='';
   }
 
-  // Insurance
   const insStatus=$('ins').value, insTill=$('insTill').value;
   const insDed=Math.round(insDeductionAmt(key,fuel,insStatus,insTill)*W);
 
-  // Condition
   const condSel=$('cond').value;
   const condPct=condSel==='Good'?0.02:condSel==='Average'?0.05:condSel==='Poor'?0.10:0;
   const condDed=Math.round(base*condPct*W);
 
-  // RC/PUC nudges
   if($('rc').value==='Expired') base=Math.round(base*(W<1?0.975:0.95));
   if($('puc').value==='Expired') base=Math.round(base*(W<1?0.995:0.985));
 
-  // Final
-  let final=(base - rtoDed) - fitCost - fine - insDed - condDed;
+  let final=(base-rtoDed)-fitCost-fine-insDed-condDed;
   if(!isAdmin()) final=Math.round(final*1.06);
   final=Math.max(final,(key==='bike'||key==='scooter')?5000:25000);
 
@@ -480,23 +467,22 @@ function compute(){
   const min=Math.max(5000,Math.round(mid*(isAdmin()?0.93:0.90)/1000)*1000);
   const max=Math.max(min+1000,Math.round(mid*(isAdmin()?1.07:1.12)/1000)*1000);
 
-  // <-- FIX: breakdown मध्ये backticks (template strings)
-  const breakdown = [
+  const breakdown=[
     `Base (computed): ₹${rs(Math.round(base))}`,
-    `RTO ${PRIORITY_RTOS.includes(rto) ? '(Priority ✓)' : '(Non-priority −10%)'}: −₹${rs(rtoDed)}`,
+    `RTO ${PRIORITY_RTOS.includes(rto)?'(Priority ✓)':'(Non-priority −10%)'}: −₹${rs(rtoDed)}`,
     `Fitness Charges: −₹${rs(fitCost)}`,
     `Fine (₹500/mo): −₹${rs(fine)}`,
     `Insurance (month-wise): −₹${rs(insDed)}`,
     `Condition (${condSel||'—'}): −₹${rs(condDed)}`
   ].join('\n');
 
-  return { min, max, mid, body, key, rto, insStatus, insTill, fitState, breakdown }
+  return {min,max,mid,body,key,rto,insStatus,insTill,fitState,breakdown};
 }
-/* ------------ Fitness auto toggle (15+ yrs) ------------ */
+
+/* ------------ Fitness auto toggle ------------ */
 (function(){
-  const $ = id => document.getElementById(id);
-  const yearEl = $('year'), fitEl  = $('fit'), fitExp = $('fitExpiry');
-  const fitExpRow = fitExp ? fitExp.closest('div') : null;
+  const yearEl=$('year'), fitEl=$('fit'), fitExp=$('fitExpiry');
+  const fitExpRow=fitExp?fitExp.closest('div'):null;
   function age(){const y=parseInt(yearEl?.value||0,10);const n=new Date().getFullYear();return (y&&y>=1900&&y<=n+1)?(n-y):0;}
   function sync(){
     const a=age();
@@ -508,7 +494,6 @@ function compute(){
 
 /* ------------ Bindings + Save ------------ */
 (function(){
-  const $=id=>document.getElementById(id);
   const t=m=>{const x=$('toast'); if(x){ x.textContent=m; x.classList.add('show'); setTimeout(()=>x.classList.remove('show'),1500);}};
 
   $('next1')?.addEventListener('click', ()=>{
@@ -557,31 +542,36 @@ function compute(){
     $('tagIns').textContent  = 'Insurance: '+($('ins')?.value||'')+($('insTill')?.value?(' till '+$('insTill')?.value):'');
     $('tagFit').textContent  = 'Fitness: '+($('fit')?.value||'');
     $('tagCond').textContent = 'Condition: '+($('cond')?.value||'');
-/* ------------ Google Sheet SAVE (frontend) ------------ */
-  // 👇 इथे तुझा Web App (exec) URL
-  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwFHhAoK83U4vD60ucz7JOtj3xMvwUn3Jvf0G9rakBq3jLc_jIcrYxfe5V4GvGfXY6eHw/exec";
 
-  // toast helper (already above; keep using same one)
-  function toast(msg){
-    const t=document.getElementById('toast');
-    if(!t) return alert(msg);
-    t.textContent=msg;
-    t.classList.add('show');
-    clearTimeout(window.__tt);
-    window.__tt=setTimeout(()=>t.classList.remove('show'),2000);
-  }
+    const text = encodeURIComponent(
+`Second Wheel – Sell Vehicle / Doorstep Inspection
+Name: ${$('name')?.value}
+Phone: ${$('phone')?.value}
+City: ${$('city')?.value}
+Vehicle: ${$('brand')?.value} ${$('model')?.value} (${ $('body')?.value })
+Year/Fuel/KM: ${$('year')?.value} / ${$('fuel')?.value} / ${(Number($('km')?.value||0)).toLocaleString('en-IN')} km
+Reg: ${$('reg')?.value}
+Insurance: ${$('ins')?.value}${$('insTill')?.value ? ' till ' + $('insTill')?.value : ''}
+Fitness: ${$('fit')?.value}${$('fitExpiry')?.value ? ' (exp ' + $('fitExpiry')?.value + ')' : ''}
+Estimate: ₹${r.min.toLocaleString('en-IN')} – ₹${r.max.toLocaleString('en-IN')} (mid ₹${r.mid.toLocaleString('en-IN')})`
+    );
+    const wa=$('wa'); if(wa) wa.href='https://wa.me/919822292955?text='+text;
 
-  // ======== SAVE button handler ========
-  document.getElementById('saveLead').addEventListener('click', async () => {
-    const $ = id => document.getElementById(id);
+    go(4);
+  });
 
+  $('again')?.addEventListener('click', ()=> go(0));
+
+  /* ======== Google Sheet SAVE (frontend) ======== */
+  const WEBAPP_URL="https://script.google.com/macros/s/AKfycbwFHhAoK83U4vD60ucz7JOtj3xMvwUn3Jvf0G9rakBq3jLc_jIcrYxfe5V4GvGfXY6eHw/exec";
+
+  $('saveLead').addEventListener('click', async () => {
     const payload = {
       vid: String(Date.now()),
       name: $('name')?.value || '',
       phone: $('phone')?.value || '',
       city: $('city')?.value || '',
       notes: $('notes')?.value || '',
-
       type: $('body')?.value || '',
       brand: $('brand')?.value || '',
       model: $('model')?.value || '',
@@ -592,19 +582,16 @@ function compute(){
       reg: $('reg')?.value || '',
       color: $('color')?.value || '',
       owner: $('owners')?.value || '',
-
       rcStatus: $('rc')?.value || '',
       insuranceStatus: $('ins')?.value || '',
       insTill: $('insTill')?.value || '',
       puc: $('puc')?.value || '',
       fit: $('fit')?.value || '',
       fitExp: $('fitExpiry')?.value || '',
-
       slotDate: $('datePick')?.value || '',
       slotTime: $('timePick')?.value || '',
-
-      estMin: (document.getElementById('min')?.textContent||'').replace(/[^\d]/g,''),
-      estMax: (document.getElementById('max')?.textContent||'').replace(/[^\d]/g,''),
+      estMin: ($('min')?.textContent||'').replace(/[^\d]/g,''),
+      estMax: ($('max')?.textContent||'').replace(/[^\d]/g,''),
       source: 'sell-form'
     };
 
@@ -615,15 +602,13 @@ function compute(){
         body: JSON.stringify(payload)
       });
 
-      // GAS ने JSON परत दिलं नाही/ CORS मुळे वाचता आलं नाही तरही UI fail होऊ नये
-      let ok = false, out = null;
-      try { out = await res.json(); ok = !!out?.ok; } catch(_){ ok = res.ok; }
-
-      if (!ok) throw new Error(out?.error || Save failed (${res.status}));
+      // Robust parse: JSON मिळालं नाही तरी res.ok चालेल
+      let out=null, ok=false;
+      try { out = await res.json(); ok = !!out?.ok; } catch(_) { ok = res.ok; }
+      if (!ok) throw new Error(out?.error || `Save failed (${res.status})`);
 
       toast("✅ Submitted! We’ll call you shortly.");
 
-      // WhatsApp link अपडेट
       const msg = encodeURIComponent(
 `Sell Lead
 Name: ${payload.name}
@@ -633,31 +618,14 @@ Vehicle: ${payload.brand} ${payload.model} (${payload.type})
 Year/Fuel/KM: ${payload.year}/${payload.fuel}/${Number(payload.km||0).toLocaleString('en-IN')} km
 Est: ₹${Number(payload.estMin||0).toLocaleString('en-IN')}–₹${Number(payload.estMax||0).toLocaleString('en-IN')}`
       );
-      const wa = document.getElementById('wa');
-      if (wa) wa.href = "https://wa.me/919822292955?text="+msg;
+      const wa=$('wa'); if(wa) wa.href="https://wa.me/919822292955?text="+msg;
 
     } catch (err) {
       console.error("Save error:", err);
       toast("⚠️ Could not submit. Please try again.");
     }
   });
-})();  /* IIFE END */
-Name: ${payload.name}
-Phone: ${payload.phone}
-City: ${payload.city}
-Vehicle: ${payload.brand} ${payload.model} (${payload.type})
-Year/Fuel/KM: ${payload.year}/${payload.fuel}/${Number(payload.km||0).toLocaleString('en-IN')} km
-Est: ₹${Number(payload.estMin||0).toLocaleString('en-IN')}–₹${Number(payload.estMax||0).toLocaleString('en-IN')}`
-      );
-      const wa = document.getElementById('wa');
-      if (wa) wa.href = "https://wa.me/919822292955?text="+msg;
-
-    } catch (err) {
-      console.error("Save error:", err);
-      toast("⚠️ Could not submit. Please try again.");
-    }
-  });
-})(); // <— IIFE properly closed
+})(); /* IIFE END */
 </script>
 </body>
 </html>
