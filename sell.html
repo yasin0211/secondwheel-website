@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Second Wheel — Sell & Valuation</title>
-<meta name="theme-color" content="#ffffff"/>
+<title>Second Wheel — Sell Your Vehicle</title>
+<meta name="theme-color" content="#0b0f17"/>
 <style>
-  /* THEME TOKENS — Light default */
+  /* THEME TOKENS */
   :root{
     --bg:#f7f8fb; --text:#0b0f17; --muted:#5b667a; --line:rgba(0,0,0,.12);
-    --header-bg:rgba(255,255,255,.9); --card:#ffffff; --input:#f2f4f8;
-    --btn-grad1:#f59e0b; --btn-grad2:#b45309; --ok1:#22c55e; --ok2:#15803d;
-    --shadow:0 10px 22px rgba(0,0,0,.10);
+    --header-bg:rgba(255,255,255,.9); --card:#ffffff;
+    --input:#f2f4f8; --btn-grad1:#f59e0b; --btn-grad2:#b45309;
+    --ok1:#22c55e; --ok2:#15803d; --shadow:0 10px 22px rgba(0,0,0,.10);
   }
   :root[data-theme="dark"]{
     --bg:#0b0f17; --text:#e5e7eb; --muted:#9aa3b2; --line:rgba(255,255,255,.12);
-    --header-bg:rgba(11,15,23,.85); --card:#121826; --input:#0f1626;
-    --btn-grad1:#f59e0b; --btn-grad2:#b45309; --ok1:#22c55e; --ok2:#15803d;
-    --shadow:0 12px 32px rgba(0,0,0,.35);
+    --header-bg:rgba(11,15,23,.85); --card:#121826;
+    --input:#0f1626; --btn-grad1:#f59e0b; --btn-grad2:#b45309;
+    --ok1:#22c55e; --ok2:#15803d; --shadow:0 12px 32px rgba(0,0,0,.35);
   }
 
   *{box-sizing:border-box}
@@ -27,15 +27,15 @@
 
   header{position:sticky;top:0;z-index:20;background:var(--header-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
   .flex{display:flex;align-items:center;gap:10px}.space{justify-content:space-between}
-  .brand img{width:44px;height:44px;border-radius:12px;box-shadow:var(--shadow)}
-  .brand h1{margin:0;font-size:16px;letter-spacing:.3px}
+  .brand img{width:44px;height:44px;border-radius:12px;box-shadow:var(--shadow)} .brand h1{margin:0;font-size:16px;letter-spacing:.3px}
 
   .seg{display:inline-flex;gap:6px;padding:6px;border:1px solid var(--line);border-radius:999px;background:rgba(0,0,0,.04)}
   :root[data-theme="dark"] .seg{background:rgba(255,255,255,.06)}
   .seg button{border:0;background:transparent;padding:8px 12px;border-radius:999px;color:var(--text);cursor:pointer}
   .seg button.active{background:var(--btn-grad1);color:#111;font-weight:800}
 
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));cursor:pointer}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.03);cursor:pointer}
+  :root[data-theme="dark"] .btn{background:rgba(255,255,255,.06)}
   .btn.primary{background:linear-gradient(180deg,var(--btn-grad1),var(--btn-grad2));color:#111;border:none}
   .btn.ok{background:linear-gradient(180deg,var(--ok1),var(--ok2));color:#111;border:none}
   .btn:disabled{opacity:.55;cursor:not-allowed}
@@ -64,9 +64,8 @@
   .big{font-size:28px;font-weight:900}
   .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(0,0,0,.04);font-weight:700}
   :root[data-theme="dark"] .pill{background:rgba(255,255,255,.06)}
-
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#ffffff;color:#111;border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
-  :root[data-theme="dark"] .toast{background:#111827;color:#e5e7eb}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
+  :root[data-theme="light"] .toast{background:#ffffff;color:#111}
   .toast.show{opacity:1}
 
   /* Admin badge */
@@ -76,18 +75,6 @@
     background:#16a34a; color:#0b0f17; padding:6px 10px; border-radius:8px; font-weight:800;
     box-shadow:0 6px 18px rgba(0,0,0,.35);
   }
-
-  /* Footer (index-style) */
-  footer.site{background:var(--card); color:var(--muted); border-top:1px solid var(--line); margin-top:28px}
-  footer.site .wrap{max-width:1100px;margin:auto;padding:28px 16px}
-  .fgrid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.2fr;gap:20px}
-  @media (max-width:900px){.fgrid{grid-template-columns:1fr 1fr}}
-  @media (max-width:560px){.fgrid{grid-template-columns:1fr}}
-  footer.site h3{margin:0 0 6px; font-size:20px; letter-spacing:.4px; color:var(--text)}
-  footer.site h4{margin:0 0 10px; font-size:14px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
-  footer.site a{display:flex;align-items:center;gap:6px;margin:6px 0;color:var(--text);opacity:.9}
-  footer.site a:hover{opacity:1; text-decoration:underline}
-  .fbottom{border-top:1px solid var(--line); margin-top:18px; padding:10px 0; font-size:12px; text-align:center}
 </style>
 </head>
 <body>
@@ -104,18 +91,18 @@
   </div>
 </header>
 
-<!-- Optional: On-road Catalog -->
+<!-- Hidden On-road Catalog (sample) -->
 <script type="application/json" id="onroad-data">
 [
-  { "brand":"Toyota","model":"INNOVA CRYSTA","variant":"GX","fuel":"Diesel","onroad_price":2700000,"year_from":2016,"year_to":2022 },
-  { "brand":"Hyundai","model":"I10","variant":"MAGNA","fuel":"Petrol","onroad_price":485000,"year_from":2008,"year_to":2011 },
-  { "brand":"Maruti Suzuki","model":"ALTO K10","variant":"VXI","fuel":"Petrol","onroad_price":520000,"year_from":2014,"year_to":2020 }
+  { "brand":"Toyota","model":"INNOVA CRYSTA","variant":"GX", "fuel":"Diesel",  "onroad_price": 2700000, "year_from":2016, "year_to":2022 },
+  { "brand":"Hyundai","model":"I10","variant":"MAGNA", "fuel":"Petrol", "onroad_price": 485000, "year_from":2008, "year_to":2011 },
+  { "brand":"Maruti Suzuki","model":"ALTO K10","variant":"VXI","fuel":"Petrol","onroad_price": 520000, "year_from":2014, "year_to":2020 }
 ]
 </script>
 
 <main class="wrap" id="app">
   <div class="card pad">
-    <h2 class="title" data-i="title">Sale Your Vehicle</h2>
+    <h2 class="title" data-i="title">Sell Your Vehicle</h2>
     <div class="steps">
       <div class="step active" id="h1" data-i="s1h">1. Customer</div>
       <div class="step" id="h2" data-i="s2h">2. Vehicle</div>
@@ -194,10 +181,10 @@
     <div class="row">
       <div><label>RC</label><select id="rc"><option>Valid</option><option>Expired</option></select></div>
       <div><label>Insurance</label><select id="ins"><option>Valid</option><option>Expired</option></select></div>
-      <div><label>Insurance Valid Till (YYYY-MM)</label><input type="month" id="insTill"/></div>
+      <div><label>Insurance Valid Till (DD/MM/YYYY)</label><input type="date" id="insTill"/></div>
       <div><label>PUC / Green Tax</label><select id="puc"><option>Valid / Paid</option><option>Expired</option></select></div>
       <div><label>Fitness Certificate</label><select id="fit"><option>Not Required (age &lt; 15)</option><option>Available</option><option>Not Available</option></select></div>
-      <div><label>Fitness Expiry (YYYY-MM)</label><input type="month" id="fitExpiry"/></div>
+      <div><label>Fitness Expiry (DD/MM/YYYY)</label><input type="date" id="fitExpiry"/></div>
       <div><label>Overall Condition</label><select id="cond"><option>Excellent</option><option>Good</option><option>Average</option><option>Poor</option></select></div>
       <div><label>Inspection Date</label><input type="date" id="datePick"/></div>
       <div><label>Time Slot</label><select id="timePick"><option>10am - 1pm</option><option>3pm - 4pm</option><option>5pm - 7pm</option></select></div>
@@ -238,45 +225,60 @@
   </section>
 </main>
 
-<!-- FOOTER (index-style) -->
-<footer class="site">
+<!-- FOOTER (same as index) -->
+<footer class="sw-footer">
+  <style>
+    .sw-footer {background:#0e1116;color:#c9d1d9;border-top:1px solid #222;margin-top:40px;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Noto Sans',sans-serif;}
+    .sw-footer .wrap {max-width:1100px;margin:auto;padding:28px 16px;}
+    .sw-footer h3 {margin:0 0 6px;font-size:20px;letter-spacing:.4px;}
+    .sw-footer p.muted {margin:0 0 16px;color:#9aa4ad;font-size:13px;}
+    .sw-grid {display:grid;grid-template-columns:1.2fr 1fr 1fr 1.2fr;gap:20px;}
+    .sw-col h4 {margin:0 0 10px;font-size:14px;color:#aab2bd;text-transform:uppercase;letter-spacing:.6px;}
+    .sw-col a {display:flex;align-items:center;gap:6px;margin:6px 0;color:#d6dde4;text-decoration:none;font-size:14px;}
+    .sw-col a:hover {color:#fff;text-decoration:underline;}
+    .sw-col img {width:16px;height:16px;}
+    .sw-bottom {border-top:1px solid #222;margin-top:18px;padding:10px 0;color:#9aa4ad;font-size:12px;text-align:center;}
+    @media (max-width:900px){.sw-grid{grid-template-columns:1fr 1fr}}
+    @media (max-width:560px){.sw-grid{grid-template-columns:1fr}}
+  </style>
   <div class="wrap">
-    <div class="fgrid">
-      <div>
+    <div class="sw-grid">
+      <div class="sw-col">
         <h3>SECOND WHEEL</h3>
         <p class="muted">Trusted Vehicles, Smart Deals</p>
       </div>
-      <div>
+      <div class="sw-col">
         <h4>Company</h4>
-        <a href="about.html">About Us</a>
-        <a href="contact.html">Contact Us</a>
+        <a href="about.html">About Us</a><a href="contact.html">Contact Us</a>
       </div>
-      <div>
+      <div class="sw-col">
         <h4>Legal</h4>
-        <a href="terms.html">Terms &amp; Conditions</a>
-        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms &amp; Conditions</a><a href="privacy.html">Privacy Policy</a>
       </div>
-      <div>
+      <div class="sw-col">
         <h4>Follow Us</h4>
-        <a href="https://www.instagram.com/secondwheel.in?igsh=b3V0c3l4dnhoa2pt" target="_blank">Instagram</a>
-        <a href="https://www.facebook.com/secondwheelin/" target="_blank">Facebook Page</a>
-        <a href="https://www.facebook.com/groups/secondwheelin/" target="_blank">Facebook Group</a>
+        <a href="https://www.instagram.com/secondwheel.in?igsh=b3V0c3l4dnhoa2pt" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram"> Instagram</a>
+        <a href="https://www.facebook.com/secondwheelin/" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook"> Facebook Page</a>
+        <a href="https://www.facebook.com/groups/secondwheelin/" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" alt="Facebook Group"> Facebook Group</a>
       </div>
     </div>
-    <div class="fbottom"><span id="yr"></span> © Second Wheel — All rights reserved.</div>
+    <div class="sw-bottom"><span id="yr"></span> © Second Wheel — All rights reserved.</div>
   </div>
+  <script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
 </footer>
 
 <div id="toast" class="toast">Saved!</div>
 
 <script>
 /* ------------ CONFIG ------------ */
-const GAS_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE"; // <-- REPLACE THIS
-const THEME_MODE_KEY='secondwheel.theme.mode'; // 'light' | 'dark' | 'system'
+const THEME_KEY='secondwheel.theme';
 const SW_MODE_KEY='sw.mode.v1';
-const ADMIN_PIN='2468';
+const ADMIN_PIN='7264'; // <- तुझा PIN
 
-/* ------------ Mode (Public/Admin) ------------ */
+/* ------------ Mode Bootstrap ------------ */
 function setMode(m){ window.SW_MODE=m; document.body.dataset.mode=m; }
 function isAdmin(){ return window.SW_MODE==='admin'; }
 function unlock(pin){
@@ -287,37 +289,21 @@ function unlock(pin){
   setMode('public');
   const saved=+localStorage.getItem(SW_MODE_KEY)||0;
   if(saved && (Date.now()-saved)<24*60*60*1000) setMode('admin');
-  document.addEventListener('keydown',(e)=>{
+  // Keyboard secret
+  document.addEventListener('keydown', (e)=>{
     if(e.altKey && e.shiftKey && e.code==='KeyA'){ const pin=prompt('Enter admin PIN'); if(pin) unlock(pin); }
   });
 })();
 
-/* ------------ Theme (index-like: light/dark/system) ------------ */
-(function(){
-  const btn=document.getElementById('themeBtn');
-  const meta=document.querySelector('meta[name="theme-color"]');
-  const prefers=()=>window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const resolve=m=>m==='system'?(prefers()?'dark':'light'):(m==='dark'||m==='light'?m:'light');
-  function setMode(m){
-    localStorage.setItem(THEME_MODE_KEY,m);
-    const eff=resolve(m);
-    document.documentElement.setAttribute('data-theme',eff);
-    btn.textContent=eff==='dark'?'🌙':'☀️';
-    meta && meta.setAttribute('content', eff==='dark' ? '#0b0f17' : '#ffffff');
-  }
-  const init = localStorage.getItem(THEME_MODE_KEY) || (prefers() ? 'dark' : 'light');
-  setMode(init);
-  btn.addEventListener('click',()=>{
-    const cur=localStorage.getItem(THEME_MODE_KEY)||'light';
-    const next=cur==='light'?'dark':cur==='dark'?'system':'light';
-    setMode(next);
-  });
-  const mm=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
-  mm && mm.addEventListener && mm.addEventListener('change',()=>{ if((localStorage.getItem(THEME_MODE_KEY)||'light')==='system'){ setMode('system'); }});
-})();
+/* ------------ Theme ------------ */
+const themeBtn=document.getElementById('themeBtn');
+function setTheme(t){ document.documentElement.setAttribute('data-theme', t==='dark'?'dark':'light'); localStorage.setItem(THEME_KEY,t); themeBtn.textContent=t==='dark'?'🌙':'☀️'; }
+// Default LIGHT
+setTheme(localStorage.getItem(THEME_KEY)||'light');
+themeBtn.onclick=()=> setTheme((localStorage.getItem(THEME_KEY)||'light')==='dark'?'light':'dark');
 
 /* ------------ I18N (short) ------------ */
-const I18N={en:{title:'Instant Valuation',next:'Continue',back:'Back',calc:'Get Valuation',
+const I18N={en:{title:'Sell Your Vehicle',next:'Continue',back:'Back',calc:'Get Valuation',
 s1h:'1. Customer',s2h:'2. Vehicle',s3h:'3. Specs',s4h:'4. Condition',s5h:'5. Result',
 's1.title':'Customer Details','s1.name':'Name','s1.phone':'Mobile Number','s1.city':'City','s1.notes':'Notes (optional)',
 's2.title':'Vehicle Basics','s2.brand':'Brand','s2.model':'Model','s2.body':'Body Type','s2.seats':'Seating'}};
@@ -326,7 +312,7 @@ document.getElementById('langSeg').addEventListener('click',e=>{const b=e.target
 setLang('en');
 
 /* ------------ Helpers ------------ */
-const $=id=>document.getElementById(id);
+const $ = id => document.getElementById(id);
 const toast=m=>{const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),1400);};
 const sections=[$('s1'),$('s2'),$('s3'),$('s4'),$('s5')]; const headers=[$('h1'),$('h2'),$('h3'),$('h4'),$('h5')]; const bar=$('bar');
 function go(idx){ sections.forEach((s,i)=>s.hidden=i!==idx); headers.forEach((h,i)=>h.classList.toggle('active',i<=idx)); bar.style.width=(idx/4*100)+'%'; window.scrollTo({top:0,behavior:'smooth'}); }
@@ -505,6 +491,7 @@ function compute(){
 
 /* ------------ Fitness auto toggle (15+ yrs) ------------ */
 (function(){
+  const $ = id => document.getElementById(id);
   const yearEl = $('year'), fitEl  = $('fit'), fitExp = $('fitExpiry');
   const fitExpRow = fitExp ? fitExp.closest('div') : null;
   function age(){const y=parseInt(yearEl?.value||0,10);const n=new Date().getFullYear();return (y&&y>=1900&&y<=n+1)?(n-y):0;}
@@ -516,8 +503,9 @@ function compute(){
   yearEl?.addEventListener('input',sync); yearEl?.addEventListener('change',sync); sync();
 })();
 
-/* ------------ Bindings + Save Lead ------------ */
+/* ------------ Bindings ------------ */
 (function(){
+  const $=id=>document.getElementById(id);
   const t=m=>{const x=$('toast'); if(x){ x.textContent=m; x.classList.add('show'); setTimeout(()=>x.classList.remove('show'),1500);}};
 
   $('next1')?.addEventListener('click', ()=>{
@@ -555,8 +543,8 @@ function compute(){
     if(age>=15 && $('fit')?.value==='Not Available' && !$('fitExpiry')?.value) return t('Enter Fitness expiry');
 
     const r=compute();
-    const rs=n=>'₹'+Number(n).toLocaleString('en-IN');
-    $('min').textContent=rs(r.min); $('max').textContent=rs(r.max); $('mid').textContent=rs(r.mid);
+    const rsF=n=>'₹'+Number(n).toLocaleString('en-IN');
+    $('min').textContent=rsF(r.min); $('max').textContent=rsF(r.max); $('mid').textContent=rsF(r.mid);
 
     $('tagBody').textContent = ($('body')?.value||'')+' • '+($('seats')?.value||'')+' seats';
     $('tagBrand').textContent= ( ($('brand')?.value||'')+' '+($('model')?.value||'') ).trim();
@@ -567,7 +555,6 @@ function compute(){
     $('tagFit').textContent  = 'Fitness: '+($('fit')?.value||'');
     $('tagCond').textContent = 'Condition: '+($('cond')?.value||'');
 
-    // WhatsApp CTA (FIXED: actually set href)
     const text = encodeURIComponent(
 `Second Wheel – Sell Vehicle / Doorstep Inspection
 Name: ${$('name')?.value}
@@ -580,37 +567,36 @@ Insurance: ${$('ins')?.value}${$('insTill')?.value ? ' till ' + $('insTill')?.va
 Fitness: ${$('fit')?.value}${$('fitExpiry')?.value ? ' (exp ' + $('fitExpiry')?.value + ')' : ''}
 Estimate: ₹${r.min.toLocaleString('en-IN')} – ₹${r.max.toLocaleString('en-IN')} (mid ₹${r.mid.toLocaleString('en-IN')})`
     );
-    const wa=$('wa'); if(wa) wa.href='https://wa.me/919822292955?text='+text;
+    const wa=document.getElementById('wa'); if(wa) wa.href='https://wa.me/919822292955?text='+text;
 
     go(4);
   });
 
   $('again')?.addEventListener('click', ()=> go(0));
 
-  // Save to Google Sheet via Apps Script
+  // ====== SAVE to Google Sheet ======
+  const WEBAPP_URL="https://script.google.com/macros/s/AKfycbycZOBt9bYvjzEQt4s1nMX9XdlEmTb4AoMWMeSNxIIqpcPMs3tq607afPsP0K6lJZkF9A/exec";
   $('saveLead')?.addEventListener('click', async ()=>{
-    const payload={
-      ts: new Date().toISOString(),
-      mode: isAdmin()?'admin':'public',
-      name: $('name')?.value, phone: $('phone')?.value, city: $('city')?.value, notes: $('notes')?.value,
-      brand:$('brand')?.value, model:$('model')?.value, body:$('body')?.value, seats:$('seats')?.value, reg:$('reg')?.value,
-      year:$('year')?.value, fuel:$('fuel')?.value, km:$('km')?.value, trans:$('trans')?.value, owners:$('owners')?.value, color:$('color')?.value,
-      rc:$('rc')?.value, ins:$('ins')?.value, insTill:$('insTill')?.value, puc:$('puc')?.value,
-      fit:$('fit')?.value, fitExpiry:$('fitExpiry')?.value,
-      date:$('datePick')?.value, time:$('timePick')?.value,
-      estimateMin: ($('min')?.textContent||'').replace(/[^\d]/g,''), 
-      estimateMid: ($('mid')?.textContent||'').replace(/[^\d]/g,''), 
-      estimateMax: ($('max')?.textContent||'').replace(/[^\d]/g,'')
+    const payload = {
+      vid: Date.now(),
+      name: $('name').value, phone: $('phone').value, city: $('city').value,
+      notes: $('notes').value, type: $('body').value,
+      brand: $('brand').value, model: $('model').value, variant: '', year: $('year').value,
+      fuel: $('fuel').value, km: $('km').value, reg: $('reg').value,
+      color: $('color').value, owner: $('owners').value,
+      rcStatus: $('rc').value, insuranceStatus: $('ins').value,
+      puc: $('puc').value, greenTax: $('puc').value,
+      slotDate: $('datePick').value, slotTime: $('timePick').value,
+      estMin: document.getElementById('min').textContent.replace(/[₹,\s]/g,''), 
+      estMax: document.getElementById('max').textContent.replace(/[₹,\s]/g,'')
     };
     try{
-      if(!GAS_URL || GAS_URL.startsWith('PASTE_')){ toast('Add GAS_URL (Apps Script)'); return; }
-      await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-      toast('Booked! We will contact you.');
-    }catch(e){ console.error(e); toast('Save failed'); }
+      const r = await fetch(WEBAPP_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      const res = await r.json();
+      if(res.ok){ toast('✅ Lead saved!'); }
+      else{ toast('❌ Error: '+(res.error||'Failed')); }
+    }catch(e){ toast('⚠️ Failed: '+e.message); }
   });
-
-  // Footer year
-  $('yr') && ($('yr').textContent = new Date().getFullYear());
 })();
 </script>
 </body>
