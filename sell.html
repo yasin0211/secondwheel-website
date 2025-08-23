@@ -398,22 +398,27 @@ function onroadCapFactor(age){
 function compute(){
   const brand=$('brand').value||'', model=$('model').value||'';
   let body=$('body').value || 'Hatchback';
-  if(body==='Hatchback' && (brand||model)) body = {sedan:'Sedan',hatch:'Hatchback',micro:'Micro',suv:'SUV'}[guessBody(brand,model)] || body;
+  if(body==='Hatchback' && (brand||model))
+    body = {sedan:'Sedan',hatch:'Hatchback',micro:'Micro',suv:'SUV'}[guessBody(brand,model)] || body;
+
   const key=bodyKey(body);
   const seats=$('seats').value;
   const year=Number($('year').value||new Date().getFullYear());
   const age=Math.max(0,new Date().getFullYear()-year);
   const fuel=$('fuel').value;
 
+  // BASE
   const baseCfg=BASE[key]||BASE.hatch;
   let base=baseCfg.newP * baseCfg.dep(age);
   if(key==='suv' && seats==='7') base*=1.06;
 
   const km=Number($('km').value||0);
   if(['suv','sedan','hatch','micro','evcar'].includes(key)){
-    if(km>60000) base-=(km-60000)0.75; else if(km<30000) base=1.04;
-  }else{
-    if(km>40000) base-=(km-40000)0.30; else if(km<15000) base=1.05;
+    if(km>60000) base -= (km-60000) * 0.75;
+    else if(km<30000) base *= 1.04;
+  } else {
+    if(km>40000) base -= (km-40000) * 0.30;
+    else if(km<15000) base *= 1.05;
   }
   if(['suv','sedan','hatch','micro','evcar'].includes(key) && $('trans').value==='Automatic') base*=1.03;
   base*=ownersPenalty($('owners').value);
@@ -423,6 +428,7 @@ function compute(){
   const np=parseFloat(($('newPrice').value||'').trim());
   if(!isNaN(np) && np>0){ base = Math.round(base*0.85 + np*0.15); }
 
+  // ON-ROAD CAP (cars only)
   const isCarKey = ['sedan','hatch','micro','suv','evcar'].includes(key);
   if(isCarKey){
     const onr = getOnroadPrice(brand, model, $('model').value||'', fuel, year);
@@ -433,29 +439,39 @@ function compute(){
     }
   }
 
+  // PUBLIC vs ADMIN
   const W = isAdmin() ? 1.0 : 0.45;
 
+  // RTO
   const reg=($('reg').value||'').toUpperCase().replace(/\s+/g,'');
   const rto=reg.slice(0,4);
   const rtoDed=PRIORITY_RTOS.includes(rto)?0:Math.round(base*0.10*W);
 
+  // Fitness
   let fitState=$('fit').value, fitCost=0, fine=0;
   if(age>=15){
-    if(fitState==='Not Available'){ fitCost=Math.round(fitnessCost(key,fuel)*W); fine=Math.round(fitnessFine($('fitExpiry').value)*W); }
+    if(fitState==='Not Available'){
+      fitCost=Math.round(fitnessCost(key,fuel)*W);
+      fine=Math.round(fitnessFine($('fitExpiry').value)*W);
+    }
   }else{
     fitState='Not Required (age < 15)'; $('fitExpiry').value='';
   }
 
+  // Insurance
   const insStatus=$('ins').value, insTill=$('insTill').value;
   const insDed=Math.round(insDeductionAmt(key,fuel,insStatus,insTill)*W);
 
+  // Condition
   const condSel=$('cond').value;
   const condPct=condSel==='Good'?0.02:condSel==='Average'?0.05:condSel==='Poor'?0.10:0;
   const condDed=Math.round(base*condPct*W);
 
-  if($('rc').value==='Expired') base=Math.round(base* (W<1?0.975:0.95));
-  if($('puc').value==='Expired') base=Math.round(base* (W<1?0.995:0.985));
+  // RC/PUC nudges
+  if($('rc').value==='Expired') base=Math.round(base*(W<1?0.975:0.95));
+  if($('puc').value==='Expired') base=Math.round(base*(W<1?0.995:0.985));
 
+  // Final
   let final=(base - rtoDed) - fitCost - fine - insDed - condDed;
   if(!isAdmin()) final=Math.round(final*1.06);
   final=Math.max(final,(key==='bike'||key==='scooter')?5000:25000);
@@ -464,18 +480,18 @@ function compute(){
   const min=Math.max(5000,Math.round(mid*(isAdmin()?0.93:0.90)/1000)*1000);
   const max=Math.max(min+1000,Math.round(mid*(isAdmin()?1.07:1.12)/1000)*1000);
 
+  // <-- FIX: breakdown मध्ये backticks (template strings)
   const breakdown = [
-    Base (computed): ₹${rs(Math.round(base))},
-    RTO ${PRIORITY_RTOS.includes(rto) ? '(Priority ✓)' : '(Non-priority −10%)'}: −₹${rs(rtoDed)},
-    Fitness Charges: −₹${rs(fitCost)},
-    Fine (₹500/mo): −₹${rs(fine)},
-    Insurance (month-wise): −₹${rs(insDed)},
-    Condition (${condSel||'—'}): −₹${rs(condDed)}
+    `Base (computed): ₹${rs(Math.round(base))}`,
+    `RTO ${PRIORITY_RTOS.includes(rto) ? '(Priority ✓)' : '(Non-priority −10%)'}: −₹${rs(rtoDed)}`,
+    `Fitness Charges: −₹${rs(fitCost)}`,
+    `Fine (₹500/mo): −₹${rs(fine)}`,
+    `Insurance (month-wise): −₹${rs(insDed)}`,
+    `Condition (${condSel||'—'}): −₹${rs(condDed)}`
   ].join('\n');
 
   return { min, max, mid, body, key, rto, insStatus, insTill, fitState, breakdown }
 }
-
 /* ------------ Fitness auto toggle (15+ yrs) ------------ */
 (function(){
   const $ = id => document.getElementById(id);
