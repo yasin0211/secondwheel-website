@@ -561,8 +561,7 @@ Estimate: ₹${r.min.toLocaleString('en-IN')} – ₹${r.max.toLocaleString('en-
   });
 
   $('again')?.addEventListener('click', ()=> go(0));
- </script>
-  <script>
+ 
 // --- GAS Web‑App URL (तुझं exec URL) ---
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyynSEn0mygSV20gB6JH0arLwPJUmKsOM78HcQ0OBWF-i2Da5HJVw5rnC-O0JIgqZcXkA/exec";
 
@@ -649,7 +648,8 @@ Est: ₹${Number(payload.estMin||0).toLocaleString('en-IN')}–₹${Number(paylo
     console.error("Save error:", err);
     toast("⚠️ Could not submit. Please try again.");
   }
-});
+});   // saveLead click handler end
+})(); //IIFE end
  </script>
 </body>
 </html>
