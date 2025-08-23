@@ -74,9 +74,166 @@
   </div>
 
   <!-- STEP 1 -->
-  <!-- (तुझ्या मूळप्रमाणे step 1–5 आहेत; मी फक्त चुकीचे बंद tags व data_i → data-i fix केले आहे) -->
+  <section class="card pad" id="s1">
+    <h3 class="title" data-i="s1.title">Customer Details</h3>
+    <div class="row">
+      <div><label data-i="s1.name">Name</label><input id="name" placeholder="Your name"/></div>
+      <div><label data-i="s1.phone">Mobile Number</label><input id="phone" inputmode="numeric" maxlength="10" placeholder="10-digit"/></div>
+      <div><label data-i="s1.city">City</label><input id="city" placeholder="Satara"/></div>
+      <div><label data-i="s1.notes">Notes (optional)</label><input id="notes" placeholder="Any info…"/></div>
+    </div>
+    <div class="flex" style="gap:10px;margin-top:12px">
+      <button class="btn primary" id="next1" data-i="next">Continue</button>
+    </div>
+  </section>
 
-  <!-- बाकी सर्व तुझ्या version प्रमाणे ठेवले आहे -->
+  <!-- STEP 2 -->
+  <section class="card pad" id="s2" hidden>
+    <h3 class="title" data-i="s2.title">Vehicle Basics</h3>
+    <div class="row">
+      <div><label data-i="s2.brand">Brand</label><input id="brand" placeholder="Maruti / Hyundai / Honda…"/></div>
+      <div><label data-i="s2.model">Model</label><input id="model" placeholder="Swift / i10 / City…"/></div>
+      <div>
+        <label data-i="s2.body">Body Type</label>
+        <select id="body">
+          <option>Sedan</option><option>Hatchback</option><option>Micro</option><option>SUV</option>
+          <option>Bike</option><option>Scooter</option><option>EV Car</option><option>EV Bike</option><option>EV Scooter</option>
+        </select>
+      </div>
+      <div>
+        <label data-i="s2.seats">Seating</label>
+        <select id="seats"><option>4/5</option><option>6</option><option>7</option></select>
+      </div>
+      <div><label>Registration No.</label><input id="reg" placeholder="MH12 AB 1234"/></div>
+    </div>
+    <div class="flex" style="gap:10px;margin-top:12px">
+      <button class="btn" id="back2" data-i="back">Back</button>
+      <button class="btn primary" id="next2" data-i="next">Continue</button>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="card pad" id="s3" hidden>
+    <h3 class="title" data-i="s3.title">Specs</h3>
+    <div class="row">
+      <div><label>Year</label><input id="year" type="number" min="2001" max="2030" placeholder="2018"/></div>
+      <div><label>Fuel</label><select id="fuel">
+        <option>Petrol</option><option>Diesel</option>
+        <option>CNG (Company)</option><option>CNG (Aftermarket)</option>
+        <option>LPG (Company)</option><option>LPG (Aftermarket)</option>
+        <option>Electric</option></select>
+      </div>
+      <div><label>KM</label><input id="km" type="number" min="0" step="500" placeholder="60000"/></div>
+      <div id="transWrap"><label>Transmission</label><select id="trans"><option>Manual</option><option>Automatic</option></select></div>
+      <div><label>Owners</label><select id="owners"><option>1st</option><option>2nd</option><option>3rd</option><option>4th+</option></select></div>
+      <div><label>Color</label><select id="color"><option>White</option><option>Silver</option><option>Grey</option><option>Black</option><option>Blue</option><option>Red</option><option>Other</option></select></div>
+      <div><label>New Price (optional)</label><input id="newPrice" type="number" min="0" placeholder="Ex-Showroom / On-Road"/></div>
+    </div>
+    <div class="flex" style="gap:10px;margin-top:12px">
+      <button class="btn" id="back3" data-i="back">Back</button>
+      <button class="btn primary" id="next3" data-i="next">Continue</button>
+    </div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="card pad" id="s4" hidden>
+    <h3 class="title" data-i="s4.title">Condition & Compliance</h3>
+    <div class="row">
+      <div><label>RC</label>
+        <select id="rc">
+          <option>Valid</option>
+          <option>Expired</option>
+        </select>
+      </div>
+
+      <div><label>Insurance</label>
+        <select id="ins">
+          <option>Valid</option>
+          <option>Expired</option>
+        </select>
+      </div>
+
+      <div><label>Insurance Valid Till (DD/MM/YYYY)</label>
+        <input type="date" id="insTill" placeholder="DD/MM/YYYY"/>
+      </div>
+
+      <div><label>PUC / Green Tax</label>
+        <select id="puc">
+          <option>Valid / Paid</option>
+          <option>Expired</option>
+        </select>
+      </div>
+
+      <div><label>Fitness Certificate</label>
+        <select id="fit">
+          <option>Not Required (age &lt; 15)</option>
+          <option>Available</option>
+          <option>Not Available</option>
+        </select>
+      </div>
+
+      <div><label>Fitness Expiry (DD/MM/YYYY)</label>
+        <input type="date" id="fitExpiry" placeholder="DD/MM/YYYY"/>
+      </div>
+
+      <div><label>Overall Condition</label>
+        <select id="cond">
+          <option>Excellent</option>
+          <option>Good</option>
+          <option>Average</option>
+          <option>Poor</option>
+        </select>
+      </div>
+
+      <div><label>Inspection Date</label>
+        <input type="date" id="datePick"/>
+      </div>
+
+      <div><label>Time Slot</label>
+        <select id="timePick">
+          <option>10am - 1pm</option>
+          <option>3pm - 4pm</option>
+          <option>5pm - 7pm</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Buttons are part of STEP 4 -->
+    <div class="flex" style="gap:10px;margin-top:12px">
+      <button class="btn" id="back4" data-i="back">Back</button>
+      <button class="btn primary" id="calc" data-i="calc">Get Valuation</button>
+    </div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="card pad" id="s5" hidden>
+    <h3 class="title">Your Estimated Price</h3>
+    <div class="flex" style="gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <span class="pill" id="tagBody">—</span>
+      <span class="pill" id="tagBrand">—</span>
+      <span class="pill" id="tagYear">—</span>
+      <span class="pill" id="tagKm">—</span>
+      <span class="pill" id="tagRTO">—</span>
+      <span class="pill" id="tagIns">—</span>
+      <span class="pill" id="tagFit">—</span>
+      <span class="pill" id="tagCond">—</span>
+    </div>
+    <div class="gauge"><div class="g1"></div><div class="g2"></div><div class="g3"></div></div>
+    <div class="range"><div class="muted">Conservative</div><div class="muted">Average</div><div class="muted">Excellent</div></div>
+    <div class="flex space" style="margin-top:12px;align-items:flex-end">
+      <div><div class="muted">Estimated Range</div><div class="big"><span id="min">₹—</span> — <span id="max">₹—</span></div></div>
+      <div><div class="muted">Most Likely</div><div class="big" id="mid">₹—</div></div>
+    </div>
+    <!-- <div id="breakdown" class="muted" style="margin-top:10px;white-space:pre-line"></div> -->
+    <div class="flex" style="gap:10px;margin-top:12px;flex-wrap:wrap">
+      <a id="wa" class="btn primary" target="_blank" rel="noopener"
+         href="https://wa.me/919822292955?text=Hi%20I%20want%20final%20quote">💬 WhatsApp Final Quote</a>
+      <a id="call" class="btn" href="tel:+919822292955">📞 Call Now</a>
+      <button id="saveLead" class="btn ok">🚗 Book Doorstep Inspection</button>
+      <button id="again" class="btn" style="margin-left:auto">↺ Recalculate</button>
+    </div>
+    <p class="muted" style="margin-top:10px">*Final price depends on physical inspection and compliance documents.</p>
+  </section>
 </main>
 
 <footer class="wrap">
@@ -91,11 +248,350 @@
 
 <script>
 /* ------------ CONFIG ------------ */
-const GAS_URL="https://script.google.com/macros/s/AKfycbx4UMs3NH7DBVGae4wnUd59ziOlQEDjq4v3z3tPvL28e-2Cb_0NWRf1wFLUvwhPpRC49w/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbx4UMs3NH7DBVGae4wnUd59ziOlQEDjq4v3z3tPvL28e-2Cb_0NWRf1wFLUvwhPpRC49w/exec";
 const THEME_KEY='secondwheel.theme';
 const VID = (()=>Math.random().toString(36).slice(2,6)+'-'+Date.now().toString(36).slice(-4))();
+
+/* ------------ THEME ------------ */
+const themeBtn=document.getElementById('themeBtn');
+function setTheme(t){ document.documentElement.setAttribute('data-theme',t); localStorage.setItem(THEME_KEY,t); themeBtn.textContent=t==='dark'?'🌙':'☀️'; }
+themeBtn.onclick=()=> setTheme((localStorage.getItem(THEME_KEY)||'dark')==='dark'?'light':'dark');
+setTheme(localStorage.getItem(THEME_KEY)||'dark');
+
+/* ------------ I18N ------------ */
+const I18N={en:{title:'Instant Valuation',next:'Continue',back:'Back',calc:'Get Valuation',
+s1h:'1. Customer',s2h:'2. Vehicle',s3h:'3. Specs',s4h:'4. Condition',s5h:'5. Result',
+'s1.title':'Customer Details','s1.name':'Name','s1.phone':'Mobile Number','s1.city':'City','s1.notes':'Notes (optional)',
+'s2.title':'Vehicle Basics','s2.brand':'Brand','s2.model':'Model','s2.body':'Body Type','s2.seats':'Seating'}};
+function setLang(lang){ document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i'); if(I18N[lang]&&I18N[lang][k]) el.textContent=I18N[lang][k]; }); }
+document.getElementById('langSeg').addEventListener('click',e=>{const b=e.target.closest('button'); if(!b)return; [...e.currentTarget.children].forEach(x=>x.classList.remove('active')); b.classList.add('active'); setLang(b.dataset.lang);});
+setLang('en');
+
+/* ------------ Helpers ------------ */
+const $ = id => document.getElementById(id);
+const toast=m=>{const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),1400);};
+const sections=[$('s1'),$('s2'),$('s3'),$('s4'),$('s5')]; const headers=[$('h1'),$('h2'),$('h3'),$('h4'),$('h5')]; const bar=$('bar');
+function go(idx){ sections.forEach((s,i)=>s.hidden=i!==idx); headers.forEach((h,i)=>h.classList.toggle('active',i<=idx)); bar.style.width=(idx/4*100)+'%'; window.scrollTo({top:0,behavior:'smooth'}); }
+
+/* ------------ Body detect ------------ */
+const BODY_HINTS={sedan:['DZIRE','CITY','VERNA','CIAZ','RAPID','SLAVIA','AURA'], hatch:['SWIFT','I10','I20','ALTO','WAGON','BALENO','TIAGO'], micro:['KWID','S-PRESSO','REDIGO'],
+suv:['ERTIGA','XUV','ALCAZAR','HECTOR','CRETA','BREZZA','VENUE','NEXON','SCORPIO','SAFARI','HARRIER']};
+function guessBody(brand,model){ const M=(brand+' '+model).toUpperCase(); for(const [t,arr] of Object.entries(BODY_HINTS)){ if(arr.some(k=>M.includes(k))) return t; } return 'hatch'; }
+
+/* ------------ Base + factors ------------ */
+const BASE={sedan:{newP:800000,dep:y=>Math.max(0.12,Math.pow(1-0.16,y))},hatch:{newP:600000,dep:y=>Math.max(0.15,Math.pow(1-0.18,y))},micro:{newP:450000,dep:y=>Math.max(0.18,Math.pow(1-0.20,y))},
+suv:{newP:1000000,dep:y=>Math.max(0.10,Math.pow(1-0.15,y))},bike:{newP:80000,dep:y=>Math.max(0.07,Math.pow(1-0.22,y))},scooter:{newP:65000,dep:y=>Math.max(0.07,Math.pow(1-0.20,y))},
+evcar:{newP:1400000,dep:y=>Math.max(0.20,Math.pow(1-0.25,y))},evbike:{newP:110000,dep:y=>Math.max(0.25,Math.pow(1-0.28,y))},evscoot:{newP:90000,dep:y=>Math.max(0.25,Math.pow(1-0.28,y))}};
+function bodyKey(sel){ const m=sel.toLowerCase(); if(m.includes('ev car'))return'evcar'; if(m.includes('ev bike'))return'evbike'; if(m.includes('ev scooter'))return'evscoot';
+  if(m.includes('sedan'))return'sedan'; if(m.includes('micro'))return'micro'; if(m.includes('suv'))return'suv'; if(m.includes('bike'))return'bike'; if(m.includes('scooter'))return'scooter'; return'hatch';}
+function fuelFactor(f){ if(f==='Diesel') return 1.06; if(f==='Petrol') return 1.00; if(f==='CNG (Company)') return 0.98; if(f==='CNG (Aftermarket)') return 0.92; if(f==='LPG (Company)') return 0.94; if(f==='LPG (Aftermarket)') return 0.88; if(f==='Electric') return 0.90; return 1; }
+function colorAdj(c){ c=String(c||'').toUpperCase(); if(['WHITE','SILVER','GREY','GRAY'].includes(c)) return 1.02; if(['BLACK','BLUE','RED'].includes(c)) return 1.00; return 0.98; }
+function ownersPenalty(s){ return s.startsWith('1')?1:s.startsWith('2')?0.97:s.startsWith('3')?0.94:0.90; }
+const rs=n=>(n||0).toLocaleString('en-IN'); const rupee=n=>{try{return '₹'+Number(n).toLocaleString('en-IN')}catch{return '₹'+n}}
+
+/* ------------ Checklist helpers ------------ */
+const PRIORITY_RTOS=["MH09","MH10","MH11","MH12","MH14","MH42","MH50"];
+const insBase=(key,fuel)=> (key==='bike'||key==='scooter')?1280:(fuel==='Diesel'?9000:8500);
+function insDeductionAmt(key,fuel,insStatus,insTill){
+  const base=insBase(key,fuel);
+  if(insStatus!=='Valid') return base;
+  if(!insTill) return base;
+  const d=new Date(insTill+'-01'); if(isNaN(d)) return base;
+  const n=new Date(); const rem=(d.getFullYear()-n.getFullYear())*12+(d.getMonth()-n.getMonth());
+  if(rem<=0) return base; if(rem>=12) return 0;
+  const elapsed=12-rem; return Math.round(base*(elapsed/12));
+}
+function fitnessCost(key,fuel){ if(key==='bike'||key==='scooter') return 5000; return (fuel==='Diesel')?22000:18000; }
+function fitnessFine(expiry){ if(!expiry) return 0; const d=new Date(expiry+'-01'); if(isNaN(d)) return 0; const n=new Date(); const m=(n.getFullYear()-d.getFullYear())*12+(n.getMonth()-d.getMonth()); return m>0?m*500:0; }
+
+/* ------------ Compute valuation ------------ */
+function compute(){
+  const brand=$('brand').value||'', model=$('model').value||'';
+  let body=$('body').value || 'Hatchback';
+  if(body==='Hatchback' && (brand||model)) body = {sedan:'Sedan',hatch:'Hatchback',micro:'Micro',suv:'SUV'}[guessBody(brand,model)] || body;
+  const key=bodyKey(body);
+  const seats=$('seats').value;
+  const year=Number($('year').value||new Date().getFullYear());
+  const age=Math.max(0,new Date().getFullYear()-year);
+  const fuel=$('fuel').value;
+
+  // BASE
+  const baseCfg=BASE[key]||BASE.hatch;
+  let base=baseCfg.newP * baseCfg.dep(age);
+  if(key==='suv' && seats==='7') base*=1.06;
+
+  const km=Number($('km').value||0);
+  if(['suv','sedan','hatch','micro','evcar'].includes(key)){
+    if(km>60000) base-=(km-60000)*0.75; else if(km<30000) base*=1.04;
+  }else{
+    if(km>40000) base-=(km-40000)*0.30; else if(km<15000) base*=1.05;
+  }
+
+  if(['suv','sedan','hatch','micro','evcar'].includes(key) && $('trans').value==='Automatic') base*=1.03;
+
+  base*=ownersPenalty($('owners').value);
+  base*=fuelFactor(fuel);
+  base*=colorAdj($('color').value);
+
+  // New Price optional (15% weight)
+  const np=parseFloat(($('newPrice').value||'').trim());
+  if(!isNaN(np) && np>0){ base = Math.round(base*0.85 + np*0.15); }
+
+  // RTO (Reg prefix)
+  const reg=($('reg').value||'').toUpperCase().replace(/\s+/g,'');
+  const rto=reg.slice(0,4);
+  const rtoDed=PRIORITY_RTOS.includes(rto)?0:Math.round(base*0.10);
+
+  // Fitness (auto if 15+)
+  let fitState=$('fit').value, fitCost=0, fine=0;
+  if(age>=15){
+    if(fitState==='Not Available'){ fitCost=fitnessCost(key,fuel); fine=fitnessFine($('fitExpiry').value); }
+  }else{
+    fitState='Not Required (age < 15)'; $('fitExpiry').value='';
+  }
+
+  // Insurance
+  const insStatus=$('ins').value;
+  const insTill=$('insTill').value;
+  const insDed=insDeductionAmt(key,fuel,insStatus,insTill);
+
+  // Condition %
+  const condSel=$('cond').value;
+  const condPct=condSel==='Good'?0.02:condSel==='Average'?0.05:condSel==='Poor'?0.10:0;
+  const condDed=Math.round(base*condPct);
+
+  // RC/PUC nudges
+  if($('rc').value==='Expired') base*=0.95;
+  if($('puc').value==='Expired') base*=0.985;
+
+  // Final
+  const afterRto=base - rtoDed;
+  let final=afterRto - fitCost - fine - insDed - condDed;
+  final=Math.max(final,(key==='bike'||key==='scooter')?5000:25000);
+
+  const mid=Math.round(final/1000)*1000;
+  const min=Math.max(5000,Math.round(mid*0.93/1000)*1000);
+  const max=Math.max(min+1000,Math.round(mid*1.07/1000)*1000);
+
+  const breakdown = [
+    `Base (computed): ₹${rs(Math.round(base))}`,
+    `RTO ${PRIORITY_RTOS.includes(rto) ? '(Priority ✓)' : '(Non-priority −10%)'}: −₹${rs(rtoDed)}`,
+    `Fitness Charges: −₹${rs(fitCost)}`,
+    `Fine (₹500/mo): −₹${rs(fine)}`,
+    `Insurance (month-wise): −₹${rs(insDed)}`,
+    `Condition (${condSel}): −₹${rs(condDed)}`
+  ].join('\n');
+
+  return { min, max, mid, body, key, rto, insStatus, insTill, fitState, breakdown }
+}
 </script>
 
-<!-- (बाकी JS functions तसंच – फक्त missing quote, tag closing fix केलं आहे) -->
+<!-- 15-years auto-fitness patch -->
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const yearEl = $('year');
+  const fitEl  = $('fit');
+  const fitExp = $('fitExpiry');
+  const fitExpRow = fitExp ? fitExp.closest('div') : null;
+
+  function getAge(){
+    const y = parseInt(yearEl?.value || 0, 10);
+    const nowY = new Date().getFullYear();
+    return (y && y >= 1900 && y <= nowY + 1) ? (nowY - y) : 0;
+  }
+
+  function syncFitness(){
+    if(!yearEl || !fitEl) return;
+    const age = getAge();
+    if(age >= 15){
+      fitEl.disabled = false;
+      if(fitEl.value === 'Not Required (age < 15)' || !fitEl.value){
+        fitEl.value = 'Not Available';
+      }
+      if(fitExp){
+        fitExp.disabled = false;
+        if(fitExpRow) fitExpRow.style.display = 'block';
+      }
+    }else{
+      fitEl.value = 'Not Required (age < 15)';
+      fitEl.disabled = true;
+      if(fitExp){
+        fitExp.value = '';
+        fitExp.disabled = true;
+        if(fitExpRow) fitExpRow.style.display = 'none';
+      }
+    }
+  }
+
+  yearEl?.addEventListener('input',  syncFitness);
+  yearEl?.addEventListener('change', syncFitness);
+  syncFitness();
+})();
+</script>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const toast = m => { const t = $('toast'); if(!t) return; t.textContent = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1500); };
+
+  // ---- Step gating ----
+  $('next1')?.addEventListener('click', ()=>{
+    const ok = $('name')?.value && /^\d{10}$/.test(($('phone')?.value||'').trim()) && $('city')?.value;
+    if(!ok){ toast('Please fill Name, 10-digit Mobile & City'); return; }
+    go && go(1);
+  });
+  $('back2')?.addEventListener('click', ()=> go && go(0));
+  $('next2')?.addEventListener('click', ()=>{
+    if(!$('brand')?.value || !$('model')?.value){ toast('Enter brand & model'); return; }
+    const body = ($('body')?.value||'').toLowerCase();
+    const bkey = body.includes('suv')||body.includes('sedan')||body.includes('hatch')||body.includes('micro')||body.includes('ev car');
+    $('transWrap').style.display = bkey ? 'block' : 'none';
+    go && go(2);
+  });
+  $('back3')?.addEventListener('click', ()=> go && go(1));
+  $('next3')?.addEventListener('click', ()=>{
+    if(!$('year')?.value || !$('km')?.value){ toast('Enter year & KMs'); return; }
+    go && go(3);
+  });
+  $('back4')?.addEventListener('click', ()=> go && go(2));
+  $('again')?.addEventListener('click', ()=> go && go(0));
+
+  // ---- Calculate ----
+  $('calc')?.addEventListener('click', ()=>{
+    const y = +($('year')?.value||0);
+    if(!y || y<2001 || y>2030){ toast('Enter year 2001–2030'); return; }
+
+    if($('ins')?.value==='Valid' && !$('insTill')?.value){ toast('Select insurance month'); return; }
+    const age = new Date().getFullYear() - y;
+    if(age>=15 && $('fit')?.value==='Not Available' && !$('fitExpiry')?.value){
+      toast('Enter fitness expiry'); return;
+    }
+
+    const r = (typeof compute==='function') ? compute() : null;
+    if(!r){ toast('Compute failed'); return; }
+
+    const fmt = n => '₹' + Number(n).toLocaleString('en-IN');
+    $('min')  && ( $('min').textContent = fmt(r.min) );
+    $('max')  && ( $('max').textContent = fmt(r.max) );
+    $('mid')  && ( $('mid').textContent = fmt(r.mid) );
+    $('breakdown') && ( $('breakdown').textContent = r.breakdown );
+
+    $('tagBody') && ( $('tagBody').textContent = ($('body')?.value||'') + ' • ' + ($('seats')?.value||'') + ' seats' );
+    $('tagBrand')&& ( $('tagBrand').textContent = ( ($('brand')?.value||'') + ' ' + ($('model')?.value||'') ).trim() );
+    $('tagYear') && ( $('tagYear').textContent = $('year')?.value||'—' );
+    $('tagKm')   && ( $('tagKm').textContent   = (Number($('km')?.value||0)).toLocaleString('en-IN') + ' km' );
+    $('tagRTO')  && ( $('tagRTO').textContent  = r.rto ? ('RTO ' + r.rto) : 'RTO —' );
+    $('tagIns')  && ( $('tagIns').textContent  = 'Insurance: ' + r.insStatus + (r.insTill?(' till '+r.insTill):'') );
+    $('tagFit')  && ( $('tagFit').textContent  = 'Fitness: ' + r.fitState );
+    $('tagCond') && ( $('tagCond').textContent = 'Condition: ' + ($('cond')?.value||'') );
+
+    go && go(4);
+  });
+})();
+</script>
+
+<!-- ========= Bindings + Validations (separate script) ========= -->
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const t=(m)=>{const x=$('toast'); if(x){ x.textContent=m; x.classList.add('show'); setTimeout(()=>x.classList.remove('show'),1500);}};
+
+  // Step gating (duplicate safety – fine)
+  $('next1')?.addEventListener('click', ()=>{
+    const ok=$('name')?.value && /^\d{10}$/.test(($('phone')?.value||'').trim()) && $('city')?.value;
+    if(!ok) return t('Please fill Name, 10-digit Mobile & City');
+    typeof go==='function' && go(1);
+  });
+  $('back2')?.addEventListener('click', ()=> typeof go==='function' && go(0));
+  $('next2')?.addEventListener('click', ()=>{
+    if(!$('brand')?.value || !$('model')?.value || !$('reg')?.value) return t('Enter Brand, Model & Registration No.');
+    const m=($('body')?.value||'').toLowerCase();
+    const k=m.includes('ev car')?'evcar':m.includes('ev bike')?'evbike':m.includes('ev scooter')?'evscoot':
+            m.includes('sedan')?'sedan':m.includes('micro')?'micro':m.includes('suv')?'suv':
+            m.includes('bike')?'bike':m.includes('scooter')?'scooter':'hatch';
+    if($('transWrap')) $('transWrap').style.display=['suv','sedan','hatch','micro','evcar'].includes(k)?'block':'none';
+    typeof go==='function' && go(2);
+  });
+  $('back3')?.addEventListener('click', ()=> typeof go==='function' && go(1));
+  $('next3')?.addEventListener('click', ()=>{
+    const y=+($('year')?.value||0);
+    if(!y || y<2001 || y>2030) return t('Enter year 2001–2030');
+    if(!$('km')?.value) return t('Enter KMs');
+    const age=new Date().getFullYear()-y;
+    if(age>=15 && $('fit')) $('fit').value='Not Available';
+    if(age<15){ if($('fit')) $('fit').value='Not Required (age < 15)'; if($('fitExpiry')) $('fitExpiry').value=''; }
+    typeof go==='function' && go(3);
+  });
+  $('back4')?.addEventListener('click', ()=> typeof go==='function' && go(2));
+
+  // Calc -> Result + WhatsApp CTA + Save
+  $('calc')?.addEventListener('click', ()=>{
+    const y=+($('year')?.value||0);
+    if(!y || y<2001 || y>2030) return t('Enter year 2001–2030');
+    if($('ins')?.value==='Valid' && !$('insTill')?.value) return t('Select Insurance month');
+    const age=new Date().getFullYear()-y;
+    if(age>=15 && $('fit')?.value==='Not Available' && !$('fitExpiry')?.value) return t('Enter Fitness expiry');
+
+    const r=(typeof compute==='function')?compute():null;
+    if(!r) return t('Compute failed');
+
+    const rs=n=>'₹'+Number(n).toLocaleString('en-IN');
+    $('min') && ( $('min').textContent = rs(r.min) );
+    $('max') && ( $('max').textContent = rs(r.max) );
+    $('mid') && ( $('mid').textContent = rs(r.mid) );
+    $('breakdown') && ( $('breakdown').textContent = r.breakdown );
+
+    // tags
+    $('tagBody') && ( $('tagBody').textContent = ($('body')?.value||'')+' • '+($('seats')?.value||'')+' seats' );
+    $('tagBrand') && ( $('tagBrand').textContent = ( ($('brand')?.value||'')+' '+($('model')?.value||'') ).trim() );
+    $('tagYear') && ( $('tagYear').textContent = $('year')?.value||'—' );
+    $('tagKm') && ( $('tagKm').textContent = (Number($('km')?.value||0)).toLocaleString('en-IN')+' km' );
+    $('tagRTO') && ( $('tagRTO').textContent = r.rto ? ('RTO '+r.rto) : 'RTO —' );
+    $('tagIns') && ( $('tagIns').textContent = 'Insurance: '+r.insStatus+(r.insTill?(' till '+r.insTill):'') );
+    $('tagFit') && ( $('tagFit').textContent = 'Fitness: '+r.fitState );
+    $('tagCond') && ( $('tagCond').textContent = 'Condition: '+($('cond')?.value||'') );
+
+    // WhatsApp CTA
+    const text = encodeURIComponent(
+      'Second Wheel – Sell Vehicle / Doorstep Inspection\n'
+      +`Name: ${$('name')?.value}\nPhone: ${$('phone')?.value}\nCity: ${$('city')?.value}\n`
+      +`Vehicle: ${$('brand')?.value} ${$('model')?.value} (${ $('body')?.value })\n`
+      +`Year/Fuel/KM: ${$('year')?.value} / ${$('fuel')?.value} / ${(Number($('km')?.value||0)).toLocaleString('en-IN')} km\n`
+      +`Reg: ${$('reg')?.value}\nInsurance: ${$('ins')?.value}${$('insTill')?.value?(' till '+$('insTill')?.value):''}\n`
+      +`Fitness: ${$('fit')?.value}${$('fitExpiry')?.value?(' (exp '+$('fitExpiry')?.value+')':''}\n`
+      +`Estimate: ₹${r.min.toLocaleString('en-IN')} – ₹${r.max.toLocaleString('en-IN')} (mid ₹${r.mid.toLocaleString('en-IN')})`
+    );
+    const wa=document.getElementById('wa'); if(wa) wa.href='https://wa.me/919822292955?text='+text;
+
+    typeof go==='function' && go(4);
+  });
+
+  $('again')?.addEventListener('click', ()=> typeof go==='function' && go(0));
+
+  // Save lead
+  $('saveLead')?.addEventListener('click', async ()=>{
+    const payload={
+      vid: (window.VID||('v-'+Date.now())),
+      ts: new Date().toISOString(),
+      name: $('name')?.value, phone: $('phone')?.value, city: $('city')?.value, notes: $('notes')?.value,
+      brand:$('brand')?.value, model:$('model')?.value, body:$('body')?.value, seats:$('seats')?.value, reg:$('reg')?.value,
+      year:$('year')?.value, fuel:$('fuel')?.value, km:$('km')?.value, trans:$('trans')?.value, owners:$('owners')?.value, color:$('color')?.value,
+      rc:$('rc')?.value, ins:$('ins')?.value, insTill:$('insTill')?.value, puc:$('puc')?.value,
+      fit:$('fit')?.value, fitExpiry:$('fitExpiry')?.value,
+      date:$('datePick')?.value, time:$('timePick')?.value,
+      estimateMin: ($('min')?.textContent||'').replace(/[^\d]/g,''), 
+      estimateMid: ($('mid')?.textContent||'').replace(/[^\d]/g,''), 
+      estimateMax: ($('max')?.textContent||'').replace(/[^\d]/g,''),
+      breakdown: $('breakdown')?.textContent||''
+    };
+    try{
+      if(!GAS_URL || GAS_URL.startsWith('PASTE_')){ t('Add GAS_URL to enable saving'); return; }
+      await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      t('Saved!');
+    }catch(e){ console.error(e); t('Save failed'); }
+  });
+})();
+</script>
 </body>
 </html>
