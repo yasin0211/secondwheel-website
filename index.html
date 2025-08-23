@@ -6,13 +6,30 @@
 <title>Second Wheel – Trusted Vehicles, Smart Deals</title>
 <meta name="theme-color" content="#111827" />
 <style>
+  /* ---------- THEME TOKENS ---------- */
+  /* Light = default */
   :root{
-    --bg:#0b0f17; --card:#121826; --muted:#9aa3b2; --text:#e5e7eb;
-    --brand:#f59e0b; --brand-2:#22c55e; --shadow:0 8px 28px rgba(0,0,0,.35);
-  }
-  :root[data-theme="light"]{
-    --bg:#f7f8fb; --card:#ffffff; --text:#0b0f17; --muted:#5b667a;
+    --bg:#f7f8fb; --text:#0b0f17; --muted:#5b667a;
+    --line:rgba(0,0,0,.12);
+    --card:#ffffff;
+    --header-bg:rgba(255,255,255,.90);
+    --footer-bg:#f1f5f9;
+    --input:#f2f4f8;
     --brand:#f59e0b; --brand-2:#16a34a;
+    --shadow:0 10px 22px rgba(0,0,0,.10);
+    --toast-bg:#ffffff; --toast-text:#0b0f17;
+  }
+  /* Dark = optional */
+  :root[data-theme="dark"]{
+    --bg:#0b0f17; --text:#e5e7eb; --muted:#9aa3b2;
+    --line:rgba(255,255,255,.12);
+    --card:#121826;
+    --header-bg:rgba(11,15,23,.85);
+    --footer-bg:#0c121e;
+    --input:#0f1626;
+    --brand:#f59e0b; --brand-2:#22c55e;
+    --shadow:0 12px 32px rgba(0,0,0,.35);
+    --toast-bg:#111827; --toast-text:#e5e7eb;
   }
 
   *{box-sizing:border-box}
@@ -23,73 +40,87 @@
   .container{max-width:1160px;margin:0 auto;padding:16px}
 
   /* --- Featured Vehicle Card Compact --- */
-  #vehiclesRow {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-  @media (min-width: 720px) { #vehiclesRow { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  @media (min-width: 1024px) { #vehiclesRow { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  #vehiclesRow { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  @media (min-width:720px){ #vehiclesRow{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
+  @media (min-width:1024px){ #vehiclesRow{ grid-template-columns:repeat(4,minmax(0,1fr)); } }
 
-  .vehicle { border-radius: 12px; padding: 8px; background: var(--card);
-             border:1px solid rgba(255,255,255,.06); box-shadow: var(--shadow); }
-  .vehicle .media { position:relative }
-  .vehicle .media img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; }
-  .vehicle .tag{position:absolute;top:8px;left:8px;background:var(--brand);color:#111;
-                padding:3px 8px;border-radius:999px;font-weight:700;font-size:12px}
-  .vehicle .body { padding: 8px; }
-  .vehicle .title { font-size: 14px; font-weight: bold; }
-  .vehicle .meta { font-size: 11px; color: gray; display:flex; justify-content:space-between }
-  .vehicle .desc { font-size: 12px; margin-top: 4px; }
-  .vehicle .actions { display:flex; gap:8px; margin-top:8px }
-  .vehicle .actions .btn { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
+  .vehicle{ border-radius:12px; padding:8px; background:var(--card);
+            border:1px solid var(--line); box-shadow:var(--shadow); }
+  .vehicle .media{ position:relative }
+  .vehicle .media img{ width:100%; height:150px; object-fit:cover; border-radius:10px; }
+  .vehicle .tag{ position:absolute; top:8px; left:8px; background:var(--brand); color:#111;
+                 padding:3px 8px; border-radius:999px; font-weight:700; font-size:12px }
+  .vehicle .body{ padding:8px; }
+  .vehicle .title{ font-size:14px; font-weight:800; }
+  .vehicle .meta{ font-size:11px; color:var(--muted); display:flex; justify-content:space-between }
+  .vehicle .actions{ display:flex; gap:8px; margin-top:8px }
+  .vehicle .actions .btn{ padding:6px 10px; font-size:12px; border-radius:8px; }
 
-  /* Header */
-  header{position:sticky;top:0;z-index:50;background:rgba(11,15,23,.72);
-         backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
+  /* Header (theme-aware) */
+  header{ position:sticky; top:0; z-index:50; background:var(--header-bg);
+          backdrop-filter:blur(12px); border-bottom:1px solid var(--line) }
   .nav{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:10px 12px}
   .brand{display:flex;align-items:center;gap:12px}
   .brand img{width:44px;height:44px;border-radius:12px;box-shadow:var(--shadow)}
   .brand h1{font-size:16px;margin:0;font-weight:800;letter-spacing:.3px}
   .top-links{display:flex;gap:10px;flex-wrap:wrap}
-  .pill{padding:10px 14px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.04)}
+  .pill{padding:10px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(0,0,0,.04)}
+  :root[data-theme="dark"] .pill{ background:rgba(255,255,255,.04) }
   .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;
-       border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));cursor:pointer}
+       border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+       cursor:pointer}
   .btn:active{transform:translateY(1px)}
-  .btn-primary{background:linear-gradient(180deg, #f59e0b, #b45309);color:#111}
+  .btn-primary{background:linear-gradient(180deg, var(--brand), #b45309);color:#111}
   .toolbar{display:flex;gap:8px;align-items:center}
-  .seg{display:inline-flex;border:1px solid rgba(255,255,255,.1);border-radius:999px;overflow:hidden}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
   .seg button{border:0;background:transparent;padding:8px 10px;color:var(--text);cursor:pointer}
-  .seg button.active{background:rgba(255,255,255,.16)}
+  .seg button.active{background:rgba(0,0,0,.06)}
+  :root[data-theme="dark"] .seg button.active{background:rgba(255,255,255,.16)}
 
   /* Hero */
-  .hero{position:relative;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.06)}
-  .hero-bg{position:absolute;inset:0;background:radial-gradient(90% 60% at 50% 40%, rgba(245,158,11,.12), transparent 60%), linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.55));}
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero-bg{position:absolute;inset:0;
+    background:
+      radial-gradient(90% 60% at 50% 40%, rgba(245,158,11,.12), transparent 60%),
+      linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.14));
+  }
+  :root[data-theme="dark"] .hero-bg{
+    background:
+      radial-gradient(90% 60% at 50% 40%, rgba(245,158,11,.12), transparent 60%),
+      linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.55));
+  }
   .hero-inner{position:relative;z-index:1;padding:48px 16px 28px}
   .hero h2{font-size:28px;margin:0 0 10px}
-  .hero p{margin:0 0 18px;color:#cbd5e1}
-  .toggle{display:inline-grid;grid-auto-flow:column;gap:8px;background:rgba(0,0,0,.35);padding:6px;border-radius:999px;border:1px solid rgba(255,255,255,.12)}
+  .hero p{margin:0 0 18px;color:var(--muted)}
+  .toggle{display:inline-grid;grid-auto-flow:column;gap:8px;background:rgba(0,0,0,.05);padding:6px;border-radius:999px;border:1px solid var(--line)}
+  :root[data-theme="dark"] .toggle{ background:rgba(0,0,0,.35) }
   .toggle button{padding:10px 14px;border-radius:999px;border:none;background:transparent;color:var(--text);cursor:pointer}
   .toggle button.active{background:var(--brand);color:#111;font-weight:700}
 
-  /* Grids for “tools” */
+  /* Cards grid */
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
   @media(min-width:720px){.grid{grid-template-columns:repeat(4,1fr)}}
-  .card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:14px;box-shadow:var(--shadow);transition:transform .15s ease}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow);transition:transform .15s ease}
   .card:hover{transform:translateY(-2px)}
   .card h3{margin:10px 0 4px;font-size:15px}
   .muted{color:var(--muted)}
 
   /* Toast */
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;border:1px solid rgba(255,255,255,.08);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .3s}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:var(--toast-bg);color:var(--toast-text);
+         border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .3s}
   .toast.show{opacity:1}
 
-  /* Footer */
-  footer{border-top:1px solid rgba(255,255,255,.06);background:#0c121e}
-  footer .cols{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-  @media(min-width:720px){footer .cols{grid-template-columns:repeat(4,1fr)}}
-  footer a{display:block;padding:6px 0;color:#cbd5e1}
-
+  /* Footer (theme-aware) */
+  footer{background:var(--footer-bg); color:var(--muted); border-top:1px solid var(--line); margin-top:40px}
+  footer .wrap{max-width:1100px;margin:auto;padding:28px 16px}
+  .fgrid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.2fr;gap:20px}
+  @media (max-width:900px){.fgrid{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.fgrid{grid-template-columns:1fr}}
+  footer h3{margin:0 0 6px; font-size:20px; letter-spacing:.4px; color:var(--text)}
+  footer h4{margin:0 0 10px; font-size:14px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
+  footer a{display:flex;align-items:center;gap:6px;margin:6px 0;color:var(--text);opacity:.9}
+  footer a:hover{opacity:1; text-decoration:underline}
+  .fbottom{border-top:1px solid var(--line); margin-top:18px; padding:10px 0; font-size:12px; text-align:center}
   .whatsapp{position:fixed;right:16px;bottom:16px;z-index:60}
   .whatsapp a{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:#25D366;color:#111;font-weight:700;box-shadow:var(--shadow)}
   .hidden{display:none !important}
@@ -109,7 +140,7 @@
           <button data-lang="hi">HI</button>
           <button data-lang="mr">MR</button>
         </div>
-        <button class="btn" id="darkToggle" aria-label="Toggle dark">🌙</button>
+        <button class="btn" id="darkToggle" aria-label="Toggle theme">☀️</button>
       </div>
     </div>
     <nav class="container top-links" aria-label="Primary">
@@ -164,171 +195,136 @@
   <div class="whatsapp"><a href="https://wa.me/919822292955" target="_blank" rel="noopener">WhatsApp</a></div>
   <div id="toast" class="toast" role="status" aria-live="polite">Saved!</div>
 
-    <footer>
-<footer class="sw-footer">
-  <style>
-    .sw-footer {
-      background:#0e1116;
-      color:#c9d1d9;
-      border-top:1px solid #222;
-      margin-top:40px;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Noto Sans',sans-serif;
-    }
-    .sw-footer .wrap {
-      max-width:1100px;
-      margin:auto;
-      padding:28px 16px;
-    }
-    .sw-footer h3 {
-      margin:0 0 6px;
-      font-size:20px;
-      letter-spacing:.4px;
-    }
-    .sw-footer p.muted {
-      margin:0 0 16px;
-      color:#9aa4ad;
-      font-size:13px;
-    }
-    .sw-grid {
-      display:grid;
-      grid-template-columns:1.2fr 1fr 1fr 1.2fr;
-      gap:20px;
-    }
-    .sw-col h4 {
-      margin:0 0 10px;
-      font-size:14px;
-      color:#aab2bd;
-      text-transform:uppercase;
-      letter-spacing:.6px;
-    }
-    .sw-col a {
-      display:flex;
-      align-items:center;
-      gap:6px;
-      margin:6px 0;
-      color:#d6dde4;
-      text-decoration:none;
-      font-size:14px;
-    }
-    .sw-col a:hover {
-      color:#fff;
-      text-decoration:underline;
-    }
-    .sw-col img {
-      width:16px;
-      height:16px;
-    }
-    .sw-bottom {
-      border-top:1px solid #222;
-      margin-top:18px;
-      padding:10px 0;
-      color:#9aa4ad;
-      font-size:12px;
-      text-align:center;
-    }
-    @media (max-width:900px){.sw-grid{grid-template-columns:1fr 1fr}}
-    @media (max-width:560px){.sw-grid{grid-template-columns:1fr}}
-  </style>
-
-  <div class="wrap">
-    <div class="sw-grid">
-      <!-- Brand -->
-      <div class="sw-col">
-        <h3>SECOND WHEEL</h3>
-        <p class="muted">Trusted Vehicles, Smart Deals</p>
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="fgrid">
+        <div>
+          <h3>SECOND WHEEL</h3>
+          <p class="muted">Trusted Vehicles, Smart Deals</p>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <a href="about.html">About Us</a>
+          <a href="contact.html">Contact Us</a>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <a href="terms.html">Terms &amp; Conditions</a>
+          <a href="privacy.html">Privacy Policy</a>
+        </div>
+        <div>
+          <h4>Follow Us</h4>
+          <a href="https://www.instagram.com/secondwheel.in?igsh=b3V0c3l4dnhoa2pt" target="_blank">Instagram</a>
+          <a href="https://www.facebook.com/secondwheelin/" target="_blank">Facebook Page</a>
+          <a href="https://www.facebook.com/groups/secondwheelin/" target="_blank">Facebook Group</a>
+        </div>
       </div>
-
-      <!-- Company -->
-      <div class="sw-col">
-        <h4>Company</h4>
-        <a href="about.html">About Us</a>
-        <a href="contact.html">Contact Us</a>
-      </div>
-
-      <!-- Legal -->
-      <div class="sw-col">
-        <h4>Legal</h4>
-        <a href="terms.html">Terms &amp; Conditions</a>
-        <a href="privacy.html">Privacy Policy</a>
-      </div>
-
-      <!-- Follow -->
-      <div class="sw-col">
-        <h4>Follow Us</h4>
-        <a href="https://www.instagram.com/secondwheel.in?igsh=b3V0c3l4dnhoa2pt" target="_blank">
-          <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram"> Instagram
-        </a>
-        <a href="https://www.facebook.com/secondwheelin/" target="_blank">
-          <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook"> Facebook Page
-        </a>
-        <a href="https://www.facebook.com/groups/secondwheelin/" target="_blank">
-          <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" alt="Facebook Group"> Facebook Group
-        </a>
-      </div>
+      <div class="fbottom"><span id="yr"></span> © Second Wheel — All rights reserved.</div>
     </div>
+  </footer>
 
-    <div class="sw-bottom">
-      <span id="yr"></span> © Second Wheel — All rights reserved.
-    </div>
-  </div>
-
-  <script>
-    document.getElementById('yr').textContent = new Date().getFullYear();
-  </script>
-</footer>
-</footer>
-   <!-- Supabase JS -->
+  <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Language + Theme bootstrap -->
+  <!-- Language + Theme bootstrap (URL param + toggle + memory) -->
   <script>
-  const I18N = {
-    en:{'nav.home':'Home','nav.buy':'Buy','nav.sell':'Sell','nav.valuation':'Valuation','nav.tools':'Tools',
-        'hero.title':'Trusted Vehicles, Smart Deals','hero.subtitle':'Buy & Sell pre-owned Cars and Bikes with complete peace of mind.',
-        'hero.buy':'Buy','hero.sell':'Sell','hero.buycar':'Buy Car','hero.buybike':'Buy Bike','hero.sellcar':'Sell Car','hero.sellbike':'Sell Bike',
-        'feat.title':'Featured Vehicles','feat.filter':'Brand'},
-    hi:{'nav.home':'होम','nav.buy':'खरीदें','nav.sell':'बेचें','nav.valuation':'वैल्यूएशन','nav.tools':'टूल्स',
-        'hero.title':'ट्रस्टेड व्हीकल्स, स्मार्ट डील्स','hero.subtitle':'पुरानी कार/बाइक निश्चिंत होकर खरीदें और बेचें।',
-        'hero.buy':'खरीदें','hero.sell':'बेचें','hero.buycar':'कार खरीदें','hero.buybike':'बाइक खरीदें','hero.sellcar':'कार बेचें','hero.sellbike':'बाइक बेचें',
-        'feat.title':'फ़ीचर्ड वाहन','feat.filter':'ब्रांड'},
-    mr:{'nav.home':'मुखपृष्ठ','nav.buy':'खरेदी','nav.sell':'विक्री','nav.valuation':'मूल्यांकन','nav.tools':'साधने',
-        'hero.title':'विश्वसनीय व्हेइकल्स, स्मार्ट डील्स','hero.subtitle':'जुन्या कार/बाईक निर्धास्तपणे खरेदी-विक्री करा.',
-        'hero.buy':'खरेदी','hero.sell':'विक्री','hero.buycar':'कार खरेदी','hero.buybike':'बाईक खरेदी','hero.sellcar':'कार विक्री','hero.sellbike':'बाईक विक्री',
-        'feat.title':'फीचर्ड वाहने','feat.filter':'ब्रँड'}
-  };
-  const KEY_LANG='secondwheel.lang', KEY_THEME='secondwheel.theme';
-  const langSeg=document.getElementById('langSeg');
-  const darkBtn=document.getElementById('darkToggle');
-  const toastEl=document.getElementById('toast');
+  (function(){
+    const I18N = {
+      en:{'nav.home':'Home','nav.buy':'Buy','nav.sell':'Sell','nav.valuation':'Valuation','nav.tools':'Tools',
+          'hero.title':'Trusted Vehicles, Smart Deals','hero.subtitle':'Buy & Sell pre-owned Cars and Bikes with complete peace of mind.',
+          'hero.buy':'Buy','hero.sell':'Sell','hero.buycar':'Buy Car','hero.buybike':'Buy Bike','hero.sellcar':'Sell Car','hero.sellbike':'Sell Bike',
+          'feat.title':'Featured Vehicles','feat.filter':'Brand'},
+      hi:{'nav.home':'होम','nav.buy':'खरीदें','nav.sell':'बेचें','nav.valuation':'वैल्यूएशन','nav.tools':'टूल्स',
+          'hero.title':'ट्रस्टेड व्हीकल्स, स्मार्ट डील्स','hero.subtitle':'पुरानी कार/बाइक निश्चिंत होकर खरीदें और बेचें।',
+          'hero.buy':'खरीदें','hero.sell':'बेचें','hero.buycar':'कार खरीदें','hero.buybike':'बाइक खरीदें','hero.sellcar':'कार बेचें','hero.sellbike':'बाइक बेचें',
+          'feat.title':'फ़ीचर्ड वाहन','feat.filter':'ब्रांड'},
+      mr:{'nav.home':'मुखपृष्ठ','nav.buy':'खरेदी','nav.sell':'विक्री','nav.valuation':'मूल्यांकन','nav.tools':'साधने',
+          'hero.title':'विश्वसनीय व्हेइकल्स, स्मार्ट डील्स','hero.subtitle':'जुन्या कार/बाईक निर्धास्तपणे खरेदी-विक्री करा.',
+          'hero.buy':'खरेदी','hero.sell':'विक्री','hero.buycar':'कार खरेदी','hero.buybike':'बाईक खरेदी','hero.sellcar':'कार विक्री','hero.sellbike':'बाईक विक्री',
+          'feat.title':'फीचर्ड वाहने','feat.filter':'ब्रँड'}
+    };
+    const KEY_LANG='secondwheel.lang';
+    const KEY_MODE='secondwheel.theme.mode'; // 'light' | 'dark' | 'system'
 
-  function toast(msg){ toastEl.textContent=msg; toastEl.classList.add('show'); clearTimeout(window.__t); window.__t=setTimeout(()=>toastEl.classList.remove('show'),1400); }
-  function applyLang(l){
-    document.querySelectorAll('[data-i18n]').forEach(el=>{
-      const k=el.getAttribute('data-i18n');
-      if(I18N[l] && I18N[l][k]) el.textContent=I18N[l][k];
-    });
-    localStorage.setItem(KEY_LANG,l);
-    langSeg?.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
-  }
-  function setTheme(t){
-    document.documentElement.setAttribute('data-theme',t);
-    localStorage.setItem(KEY_THEME,t);
-    if(darkBtn) darkBtn.textContent=(t==='dark')?'🌙':'☀️';
-  }
-  document.addEventListener('DOMContentLoaded',()=>{
+    const langSeg=document.getElementById('langSeg');
+    const darkBtn=document.getElementById('darkToggle');
+    const toastEl=document.getElementById('toast');
+
+    function toast(msg){ if(!toastEl) return; toastEl.textContent=msg; toastEl.classList.add('show'); clearTimeout(window.__t); window.__t=setTimeout(()=>toastEl.classList.remove('show'),1400); }
+    function applyLang(l){
+      document.querySelectorAll('[data-i18n]').forEach(el=>{ const k=el.getAttribute('data-i18n'); if(I18N[l]&&I18N[l][k]) el.textContent=I18N[l][k]; });
+      localStorage.setItem(KEY_LANG,l);
+      langSeg?.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
+    }
+
+    function systemPrefersDark(){ return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; }
+    function resolve(mode){ if(mode==='system') return systemPrefersDark()?'dark':'light'; return (mode==='dark'||mode==='light')?mode:'light'; }
+    function setThemeMode(mode){
+      localStorage.setItem(KEY_MODE, mode);
+      const eff = resolve(mode);
+      document.documentElement.setAttribute('data-theme', eff);
+      if(darkBtn) darkBtn.textContent = (eff==='dark') ? '🌙' : '☀️';
+      // meta theme-color update (nice for mobile status bar)
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if(meta) meta.setAttribute('content', eff==='dark' ? '#0b0f17' : '#ffffff');
+    }
+    function readParamMode(){
+      const url = new URL(window.location.href);
+      let m = (url.searchParams.get('mode')||'').toLowerCase();
+      if(!m && url.hash.startsWith('#mode=')) m = url.hash.slice(6).toLowerCase();
+      return ['light','dark','system'].includes(m) ? m : null;
+    }
+
     document.getElementById('yr').textContent=new Date().getFullYear();
+
+    // language
     applyLang(localStorage.getItem(KEY_LANG)||'en');
-    setTheme(localStorage.getItem(KEY_THEME)||'dark');
-    langSeg.addEventListener('click',e=>{
+    langSeg?.addEventListener('click',e=>{
       const btn=e.target.closest('button[data-lang]'); if(!btn) return;
       applyLang(btn.dataset.lang); toast('Language: '+btn.dataset.lang.toUpperCase());
     });
-    darkBtn.addEventListener('click',()=>{ const next=(localStorage.getItem(KEY_THEME)||'dark')==='dark'?'light':'dark'; setTheme(next); });
-  });
+
+    // theme bootstrap: URL > saved > system > light
+    const fromParam = readParamMode();
+    const saved     = localStorage.getItem(KEY_MODE);
+    const initial   = fromParam || saved || (systemPrefersDark() ? 'dark' : 'light');
+    setThemeMode(initial);
+
+    // system listener (only if mode=system)
+    const mm = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+    if(mm && mm.addEventListener){
+      mm.addEventListener('change', ()=> { if((localStorage.getItem(KEY_MODE)||'light')==='system') setThemeMode('system'); });
+    }
+
+    // toggle cycles: light → dark → system → light …
+    darkBtn?.addEventListener('click', ()=>{
+      const cur = localStorage.getItem(KEY_MODE) || 'light';
+      const nxt = cur==='light' ? 'dark' : cur==='dark' ? 'system' : 'light';
+      setThemeMode(nxt);
+      toast('Theme: '+nxt);
+    });
+
+    // Buy/Sell tabs
+    const buyBtn = document.getElementById('tabBuy');
+    const sellBtn= document.getElementById('tabSell');
+    const panelB = document.getElementById('panelBuy');
+    const panelS = document.getElementById('panelSell');
+    function show(which){
+      const b = which==='buy';
+      buyBtn.classList.toggle('active', b);
+      sellBtn.classList.toggle('active', !b);
+      panelB.classList.toggle('hidden', !b);
+      panelS.classList.toggle('hidden', b);
+    }
+    buyBtn?.addEventListener('click', ()=>show('buy'));
+    sellBtn?.addEventListener('click',()=>show('sell'));
+  })();
   </script>
-  <!-- Featured from Supabase (robust loader with extensionless support) -->
+
+  <!-- Featured from Supabase -->
   <script>
-  (function(){
+  (async function(){
     const SUPABASE_URL='https://wbjwvxckbfkutqqbgupq.supabase.co';
     const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
     const BUCKET='vehicals';
@@ -364,12 +360,10 @@
       const { data } = await client.storage.from(BUCKET).list(prefix, { limit: 200 });
       return data || [];
     }
-    // Accept ANY non-json file (works even if filename has no extension)
     async function firstImageUrl(client, prefix){
       const listArr = await list(client, prefix);
-      const first = listArr
-        .filter(x => !/\.json$/i.test(x.name))
-        .sort((a,b)=> a.name.localeCompare(b.name))[0];
+      const first = listArr.filter(x=>!/\.json$/i.test(x.name))
+                           .sort((a,b)=>a.name.localeCompare(b.name))[0];
       return first ? publicUrl(client, `${prefix}/${first.name}`) : '';
     }
 
@@ -394,7 +388,6 @@
           const alt = `${metaJson.type}/${folderName}`;
           img = await firstImageUrl(client, alt);
         }
-        // corrected fallback (no extra 'vehicals/' prefix inside getPublicUrl)
         if(!img) img = publicUrl(client, 'logo.png');
 
         items.push({
@@ -421,17 +414,11 @@
       render('');
     }
 
-    document.addEventListener('DOMContentLoaded', async ()=>{
-      try{ await run(); }
-      catch(e){
-        console.warn('Featured fetch failed, showing placeholder.', e);
-        const fallback = document.createElement('div');
-        fallback.className='muted';
-        fallback.style.padding='8px';
-        fallback.textContent='No featured vehicles found.';
-        row.innerHTML=''; row.appendChild(fallback);
-      }
-    });
+    try{ await run(); }
+    catch(e){
+      console.warn('Featured fetch failed, showing placeholder.', e);
+      row.innerHTML = '<div class="muted" style="padding:8px">No featured vehicles found.</div>';
+    }
   })();
   </script>
 </body>
