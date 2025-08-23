@@ -557,31 +557,24 @@ function compute(){
     $('tagIns').textContent  = 'Insurance: '+($('ins')?.value||'')+($('insTill')?.value?(' till '+$('insTill')?.value):'');
     $('tagFit').textContent  = 'Fitness: '+($('fit')?.value||'');
     $('tagCond').textContent = 'Condition: '+($('cond')?.value||'');
-
-    const text = encodeURIComponent(
-`Second Wheel – Sell Vehicle / Doorstep Inspection
-Name: ${$('name')?.value}
-Phone: ${$('phone')?.value}
-City: ${$('city')?.value}
-Vehicle: ${$('brand')?.value} ${$('model')?.value} (${ $('body')?.value })
-Year/Fuel/KM: ${$('year')?.value} / ${$('fuel')?.value} / ${(Number($('km')?.value||0)).toLocaleString('en-IN')} km
-Reg: ${$('reg')?.value}
-Insurance: ${$('ins')?.value}${$('insTill')?.value ? ' till ' + $('insTill')?.value : ''}
-Fitness: ${$('fit')?.value}${$('fitExpiry')?.value ? ' (exp ' + $('fitExpiry')?.value + ')' : ''}
-Estimate: ₹${r.min.toLocaleString('en-IN')} – ₹${r.max.toLocaleString('en-IN')} (mid ₹${r.mid.toLocaleString('en-IN')})`
-    );
-    const wa=document.getElementById('wa'); if(wa) wa.href='https://wa.me/919822292955?text='+text;
-
-    go(4);
-  });
-
-  $('again')?.addEventListener('click', ()=> go(0));
-
-  /* ======== Google Sheet SAVE (CORS-safe echo URL) ======== */
-  // इथे तुमचा working echo URL पेस्ट करा (script.googleusercontent.com/macros/echo?....)
+/* ------------ Google Sheet SAVE (frontend) ------------ */
+  // 👇 इथे तुझा Web App (exec) URL
   const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwFHhAoK83U4vD60ucz7JOtj3xMvwUn3Jvf0G9rakBq3jLc_jIcrYxfe5V4GvGfXY6eHw/exec";
 
+  // toast helper (already above; keep using same one)
+  function toast(msg){
+    const t=document.getElementById('toast');
+    if(!t) return alert(msg);
+    t.textContent=msg;
+    t.classList.add('show');
+    clearTimeout(window.__tt);
+    window.__tt=setTimeout(()=>t.classList.remove('show'),2000);
+  }
+
+  // ======== SAVE button handler ========
   document.getElementById('saveLead').addEventListener('click', async () => {
+    const $ = id => document.getElementById(id);
+
     const payload = {
       vid: String(Date.now()),
       name: $('name')?.value || '',
@@ -621,13 +614,34 @@ Estimate: ₹${r.min.toLocaleString('en-IN')} – ₹${r.max.toLocaleString('en-
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-      const out = await res.json();
-      if (!out.ok) throw new Error(out.error || "Save failed");
+
+      // GAS ने JSON परत दिलं नाही/ CORS मुळे वाचता आलं नाही तरही UI fail होऊ नये
+      let ok = false, out = null;
+      try { out = await res.json(); ok = !!out?.ok; } catch(_){ ok = res.ok; }
+
+      if (!ok) throw new Error(out?.error || Save failed (${res.status}));
 
       toast("✅ Submitted! We’ll call you shortly.");
 
+      // WhatsApp link अपडेट
       const msg = encodeURIComponent(
 `Sell Lead
+Name: ${payload.name}
+Phone: ${payload.phone}
+City: ${payload.city}
+Vehicle: ${payload.brand} ${payload.model} (${payload.type})
+Year/Fuel/KM: ${payload.year}/${payload.fuel}/${Number(payload.km||0).toLocaleString('en-IN')} km
+Est: ₹${Number(payload.estMin||0).toLocaleString('en-IN')}–₹${Number(payload.estMax||0).toLocaleString('en-IN')}`
+      );
+      const wa = document.getElementById('wa');
+      if (wa) wa.href = "https://wa.me/919822292955?text="+msg;
+
+    } catch (err) {
+      console.error("Save error:", err);
+      toast("⚠️ Could not submit. Please try again.");
+    }
+  });
+})();  /* IIFE END */
 Name: ${payload.name}
 Phone: ${payload.phone}
 City: ${payload.city}
