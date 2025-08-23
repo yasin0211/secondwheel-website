@@ -575,29 +575,72 @@ Estimate: ₹${r.min.toLocaleString('en-IN')} – ₹${r.max.toLocaleString('en-
   $('again')?.addEventListener('click', ()=> go(0));
 
   // ====== SAVE to Google Sheet ======
-  const WEBAPP_URL="https://script.google.com/macros/s/AKfycbycZOBt9bYvjzEQt4s1nMX9XdlEmTb4AoMWMeSNxIIqpcPMs3tq607afPsP0K6lJZkF9A/exec";
-  $('saveLead')?.addEventListener('click', async ()=>{
-    const payload = {
-      vid: Date.now(),
-      name: $('name').value, phone: $('phone').value, city: $('city').value,
-      notes: $('notes').value, type: $('body').value,
-      brand: $('brand').value, model: $('model').value, variant: '', year: $('year').value,
-      fuel: $('fuel').value, km: $('km').value, reg: $('reg').value,
-      color: $('color').value, owner: $('owners').value,
-      rcStatus: $('rc').value, insuranceStatus: $('ins').value,
-      puc: $('puc').value, greenTax: $('puc').value,
-      slotDate: $('datePick').value, slotTime: $('timePick').value,
-      estMin: document.getElementById('min').textContent.replace(/[₹,\s]/g,''), 
-      estMax: document.getElementById('max').textContent.replace(/[₹,\s]/g,'')
-    };
-    try{
-      const r = await fetch(WEBAPP_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-      const res = await r.json();
-      if(res.ok){ toast('✅ Lead saved!'); }
-      else{ toast('❌ Error: '+(res.error||'Failed')); }
-    }catch(e){ toast('⚠️ Failed: '+e.message); }
-  });
-})();
+  const WEBAPP_URL="https://script.google.com/macros/s/AKfycbyQmVRdXIWdGxU6ek9RoWQZfeGQ0-5hPZ_0FLFgB-TEba0_nmOB1t12VU3-0OPDTs3j/exec";
+document.getElementById('saveLead')?.addEventListener('click', async () => {
+  const $ = id => document.getElementById(id);
+
+  // फॉर्म मधून डेटा
+  const payload = {
+    vid:  String(Date.now()),
+    name:  $('name')?.value,
+    phone: $('phone')?.value,
+    city:  $('city')?.value,
+    notes: $('notes')?.value,
+
+    type:   ($('body')?.value || ''),
+    brand:  $('brand')?.value,
+    model:  $('model')?.value,
+    variant: '',
+
+    year:   $('year')?.value,
+    fuel:   $('fuel')?.value,
+    km:     $('km')?.value,
+    reg:    $('reg')?.value,
+    color:  $('color')?.value,
+    owner:  $('owners')?.value,
+
+    rcStatus:        $('rc')?.value,
+    insuranceStatus: $('ins')?.value,
+    puc:             $('puc')?.value,
+    greenTax:        '',
+
+    slotDate: $('datePick')?.value,
+    slotTime: $('timePick')?.value,
+
+    // स्क्रीनवरील अंदाज; फक्त अंक काढून
+    estMin: (document.getElementById('min')?.textContent || '').replace(/[^\d]/g,''),
+    estMax: (document.getElementById('max')?.textContent || '').replace(/[^\d]/g,''),
+    source: 'sell-form'
+  };
+
+  // 1) Proper JSON POST (CORS OK with googleusercontent URL)
+  try{
+    const res = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const j = await res.json().catch(()=> ({}));
+    if(res.ok && j.ok){
+      alert('✅ Booked! Lead saved to Google Sheets.');
+      return;
+    }
+    throw new Error(j.error || res.statusText);
+  }catch(err){
+    console.warn('JSON post failed, trying no-cors fallback:', err);
+  }
+
+  // 2) Fallback: no-cors (response वाचता येत नाही; पण Sheet ला हिट होते)
+  try{
+    await fetch(WEBAPP_URL, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{ 'Content-Type':'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    alert('✅ Submitted (fallback). Please verify in Google Sheet.');
+  }catch(e){
+    alert('⚠️ Could not submit lead: ' + e.message);
+  }
+});
 </script>
-</body>
-</html>
