@@ -574,85 +574,84 @@ Estimate: ₹${r.min.toLocaleString('en-IN')} – ₹${r.max.toLocaleString('en-
 
   $('again')?.addEventListener('click', ()=> go(0));
 
-<!-- ======== SAVE to Google Sheet ======== -->
 <script>
-  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwFHhAoK83U4vD60ucz7JOtj3xMvwUn3Jvf0G9rakBq3jLc_jIcrYxfe5V4GvGfXY6eHw/exec";
+// ======== CONFIG ========
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzT6PSGflN9L9d5NVZUwDnBmh2MkZdBI6_93GEpIi6YosFQoOmfBe6VoOzANtvPJ26E-A/exec";
 
-  // Toast helper
-  function toast(m){
-    const t = document.getElementById('toast');
-    if(!t){ alert(m); return; }
-    t.textContent = m;
-    t.classList.add('show');
-    clearTimeout(window.__t);
-    window.__t = setTimeout(()=>t.classList.remove('show'),1500);
-  }
+// Toast helper
+function toast(msg){
+  const t=document.getElementById('toast');
+  if(!t) return alert(msg);
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(window.__tt);
+  window.__tt=setTimeout(()=>t.classList.remove('show'),2000);
+}
 
-  // 2) Save button handler
-  document.getElementById('saveLead').addEventListener('click', async () => {
-    const $ = id => document.getElementById(id);
+// ======== SAVE button handler ========
+document.getElementById('saveLead').addEventListener('click', async () => {
+  const $ = id => document.getElementById(id);
 
-    const payload = {
-      vid: String(Date.now()),
-      // customer
-      name:  $('name').value,
-      phone: $('phone').value,
-      city:  $('city').value,
-      notes: $('notes').value,
-      // vehicle
-      type:   $('body').value,
-      brand:  $('brand').value,
-      model:  $('model').value,
-      variant: '',
-      year:   $('year').value,
-      fuel:   $('fuel').value,
-      km:     $('km').value,
-      reg:    $('reg').value,
-      color:  $('color').value,
-      owner:  $('owners').value,
-      // compliance
-      rcStatus:        $('rc').value,
-      insuranceStatus: $('ins').value,
-      insTill:         $('insTill').value,
-      puc:             $('puc').value,
-      fit:             $('fit').value,
-      fitExp:          $('fitExpiry').value,
-      // appointment
-      slotDate: $('datePick').value,
-      slotTime: $('timePick').value,
-      // estimate
-      estMin: (document.getElementById('min').textContent||'').replace(/[^\d]/g,''),
-      estMax: (document.getElementById('max').textContent||'').replace(/[^\d]/g,''),
-      source: 'sell-form'
-    };
+  const payload = {
+    vid: String(Date.now()),
+    name: $('name')?.value || '',
+    phone: $('phone')?.value || '',
+    city: $('city')?.value || '',
+    notes: $('notes')?.value || '',
 
-    try{
-      const res = await fetch(WEBAPP_URL, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(payload)
-      });
-      const out = await res.json();
-      if(!out || !out.ok) throw new Error('bad response');
+    type: $('body')?.value || '',
+    brand: $('brand')?.value || '',
+    model: $('model')?.value || '',
+    variant: '',
+    year: $('year')?.value || '',
+    fuel: $('fuel')?.value || '',
+    km: $('km')?.value || '',
+    reg: $('reg')?.value || '',
+    color: $('color')?.value || '',
+    owner: $('owners')?.value || '',
 
-      toast('✅ Submitted! We’ll call you shortly.');
+    rcStatus: $('rc')?.value || '',
+    insuranceStatus: $('ins')?.value || '',
+    insTill: $('insTill')?.value || '',
+    puc: $('puc')?.value || '',
+    fit: $('fit')?.value || '',
+    fitExp: $('fitExpiry')?.value || '',
 
-      // WhatsApp link अपडेट (optional)
-      const msg = encodeURIComponent(
-        `Sell Lead
+    slotDate: $('datePick')?.value || '',
+    slotTime: $('timePick')?.value || '',
+
+    estMin: (document.getElementById('min')?.textContent||'').replace(/[^\d]/g,''),
+    estMax: (document.getElementById('max')?.textContent||'').replace(/[^\d]/g,''),
+    source: 'sell-form'
+  };
+
+  try {
+    const res = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const out = await res.json();
+    if (!out.ok) throw new Error(out.error || "Save failed");
+
+    toast("✅ Submitted! We’ll call you shortly.");
+
+    // Update WhatsApp link
+    const msg = encodeURIComponent(
+`Sell Lead
 Name: ${payload.name}
 Phone: ${payload.phone}
 City: ${payload.city}
-Vehicle: ${payload.brand} ${payload.model}
+Vehicle: ${payload.brand} ${payload.model} (${payload.type})
 Year/Fuel/KM: ${payload.year}/${payload.fuel}/${Number(payload.km||0).toLocaleString('en-IN')} km
 Est: ₹${Number(payload.estMin||0).toLocaleString('en-IN')}–₹${Number(payload.estMax||0).toLocaleString('en-IN')}`
-      );
-      const wa = document.getElementById('wa');
-      if(wa) wa.href = https://wa.me/919822292955?text=${msg};
-    }catch(err){
-      console.error('Save error:', err);
-      toast('⚠️ Could not submit. Please try again.');
-    }
-  });
+    );
+    const wa = document.getElementById('wa');
+    if (wa) wa.href = "https://wa.me/919822292955?text="+msg;
+
+  } catch (err) {
+    console.error("Save error:", err);
+    toast("⚠️ Could not submit. Please try again.");
+  }
+});
 </script>
