@@ -2,376 +2,616 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Second Wheel — Sell</title>
-<meta name="theme-color" content="#0b0f17"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Second Wheel — Sell & Valuation</title>
+<meta name="theme-color" content="#ffffff"/>
 <style>
-  :root{ --bg:#0b0f17; --card:#121826; --text:#e5e7eb; --muted:#9aa3b2;
-    --brand:#f59e0b; --ok:#22c55e; --line:rgba(255,255,255,.10); --shadow:0 10px 28px rgba(0,0,0,.35); }
-  :root[data-theme="light"]{ --bg:#f7f8fb; --card:#ffffff; --text:#0b0f17; --muted:#5b667a; --line:rgba(0,0,0,.12); }
+  /* THEME TOKENS — Light default */
+  :root{
+    --bg:#f7f8fb; --text:#0b0f17; --muted:#5b667a; --line:rgba(0,0,0,.12);
+    --header-bg:rgba(255,255,255,.9); --card:#ffffff; --input:#f2f4f8;
+    --btn-grad1:#f59e0b; --btn-grad2:#b45309; --ok1:#22c55e; --ok2:#15803d;
+    --shadow:0 10px 22px rgba(0,0,0,.10);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0b0f17; --text:#e5e7eb; --muted:#9aa3b2; --line:rgba(255,255,255,.12);
+    --header-bg:rgba(11,15,23,.85); --card:#121826; --input:#0f1626;
+    --btn-grad1:#f59e0b; --btn-grad2:#b45309; --ok1:#22c55e; --ok2:#15803d;
+    --shadow:0 12px 32px rgba(0,0,0,.35);
+  }
+
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
   a{color:inherit;text-decoration:none}
-  img{max-width:100%;display:block}
-  .wrap{max-width:920px;margin:0 auto;padding:14px 16px}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
 
-  /* Header */
-  header{position:sticky;top:0;z-index:20;background:rgba(11,15,23,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  .hrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0}
-  .brand{display:flex;align-items:center;gap:10px}
-  .brand img{width:48px;height:48px;border-radius:12px;box-shadow:var(--shadow)}
+  header{position:sticky;top:0;z-index:20;background:var(--header-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .flex{display:flex;align-items:center;gap:10px}.space{justify-content:space-between}
+  .brand img{width:44px;height:44px;border-radius:12px;box-shadow:var(--shadow)}
   .brand h1{margin:0;font-size:16px;letter-spacing:.3px}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
-  .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border:none}
-  .btn.ok{background:linear-gradient(180deg,#22c55e,#15803d);color:#111;border:none}
-  .btn:active{transform:translateY(1px)}
 
-  /* Steps */
-  .steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}
-  .step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow)}
-  .dot{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid var(--line);font-weight:800}
-  .step.active .dot{background:var(--brand);color:#111;border-color:transparent}
-  .step.done .dot{background:var(--ok);color:#111;border-color:transparent}
-  .step small{color:var(--muted);display:block;margin-top:2px}
+  .seg{display:inline-flex;gap:6px;padding:6px;border:1px solid var(--line);border-radius:999px;background:rgba(0,0,0,.04)}
+  :root[data-theme="dark"] .seg{background:rgba(255,255,255,.06)}
+  .seg button{border:0;background:transparent;padding:8px 12px;border-radius:999px;color:var(--text);cursor:pointer}
+  .seg button.active{background:var(--btn-grad1);color:#111;font-weight:800}
 
-  /* Cards */
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px;margin-top:12px}
-  h2{margin:0 0 8px;font-size:18px}
-  label{display:block;margin:10px 0 6px;color:var(--muted);font-weight:700}
-  input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0f1626;color:var(--text);outline:none}
-  :root[data-theme="light"] input,:root[data-theme="light"] select,:root[data-theme="light"] textarea{background:#f2f4f8;color:#111}
-  input:focus,select:focus,textarea:focus{border-color:#3b82f6}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  @media (max-width:640px){ .grid2{grid-template-columns:1fr} }
-  .chips{display:flex;gap:8px;flex-wrap:wrap}
-  .chip{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
-  .chip.active{background:var(--brand);color:#111;border-color:transparent;font-weight:800}
-  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-  .hidden{display:none !important}
-  .note{color:var(--muted);font-size:12px}
-  .price{font-size:24px;font-weight:900}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));cursor:pointer}
+  .btn.primary{background:linear-gradient(180deg,var(--btn-grad1),var(--btn-grad2));color:#111;border:none}
+  .btn.ok{background:linear-gradient(180deg,var(--ok1),var(--ok2));color:#111;border:none}
+  .btn:disabled{opacity:.55;cursor:not-allowed}
 
-  /* Toast */
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#e5e7eb;border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+  .pad{padding:16px}
+  .title{margin:0 0 8px;font-weight:900}
+  .muted{color:var(--muted)}
+  .row{display:grid;grid-template-columns:1fr;gap:10px}
+  @media(min-width:720px){ .row{grid-template-columns:repeat(2,1fr)} }
+  label{font-weight:700;margin:6px 2px;display:block}
+  input,select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--input);color:var(--text);outline:none}
+
+  .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0 14px}
+  .step{padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.04);font-weight:700;text-align:center}
+  :root[data-theme="dark"] .step{background:rgba(255,255,255,.06)}
+  .step.active{background:var(--btn-grad1);color:#111;border-color:transparent}
+  .progress{height:6px;background:#d8dde7;border-radius:999px;overflow:hidden;margin-top:6px}
+  :root[data-theme="dark"] .progress{background:#1f2937}
+  .bar{height:100%;background:linear-gradient(90deg,var(--btn-grad1),#ef4444);width:0%}
+
+  .gauge{position:relative;height:10px;background:#e9edf5;border-radius:999px;overflow:hidden;border:1px solid var(--line);margin-top:6px}
+  :root[data-theme="dark"] .gauge{background:#111827}
+  .g1{height:100%;background:#ef4444;width:33%}.g2{height:100%;background:#f59e0b;width:34%}.g3{height:100%;background:#22c55e;width:33%}
+  .range{display:flex;justify-content:space-between;margin:6px 2px 0}
+  .big{font-size:28px;font-weight:900}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(0,0,0,.04);font-weight:700}
+  :root[data-theme="dark"] .pill{background:rgba(255,255,255,.06)}
+
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#ffffff;color:#111;border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
+  :root[data-theme="dark"] .toast{background:#111827;color:#e5e7eb}
   .toast.show{opacity:1}
+
+  /* Admin badge */
+  body[data-mode="admin"]::after{
+    content:"DEALER MODE";
+    position:fixed; right:10px; bottom:10px; z-index:9999;
+    background:#16a34a; color:#0b0f17; padding:6px 10px; border-radius:8px; font-weight:800;
+    box-shadow:0 6px 18px rgba(0,0,0,.35);
+  }
+
+  /* Footer (index-style) */
+  footer.site{background:var(--card); color:var(--muted); border-top:1px solid var(--line); margin-top:28px}
+  footer.site .wrap{max-width:1100px;margin:auto;padding:28px 16px}
+  .fgrid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.2fr;gap:20px}
+  @media (max-width:900px){.fgrid{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.fgrid{grid-template-columns:1fr}}
+  footer.site h3{margin:0 0 6px; font-size:20px; letter-spacing:.4px; color:var(--text)}
+  footer.site h4{margin:0 0 10px; font-size:14px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
+  footer.site a{display:flex;align-items:center;gap:6px;margin:6px 0;color:var(--text);opacity:.9}
+  footer.site a:hover{opacity:1; text-decoration:underline}
+  .fbottom{border-top:1px solid var(--line); margin-top:18px; padding:10px 0; font-size:12px; text-align:center}
 </style>
 </head>
 <body>
 <header>
-  <div class="wrap hrow">
-    <div class="brand">
-      <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel logo">
+  <div class="wrap flex space">
+    <div class="brand flex">
+      <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel">
       <h1>SECOND WHEEL</h1>
     </div>
-    <button id="themeBtn" class="btn" aria-label="Toggle theme">🌙</button>
+    <div class="flex" style="gap:8px">
+      <div class="seg" id="langSeg"><button data-lang="en" class="active">EN</button><button data-lang="hi">HI</button><button data-lang="mr">MR</button></div>
+      <button id="themeBtn" class="btn" aria-label="Toggle theme">☀️</button>
+    </div>
   </div>
 </header>
 
-<main class="wrap">
-  <!-- Step indicator -->
-  <div class="steps">
-    <div class="step active" id="s1step"><div class="dot">1</div><div><b>Vehicle Details</b><small>RC / Insurance / PUC</small></div></div>
-    <div class="step" id="s2step"><div class="dot">2</div><div><b>Customer Details</b><small>Verify phone</small></div></div>
-    <div class="step" id="s3step"><div class="dot">3</div><div><b>Instant Valuation</b><small>Doorstep slot</small></div></div>
+<!-- Optional: On-road Catalog -->
+<script type="application/json" id="onroad-data">
+[
+  { "brand":"Toyota","model":"INNOVA CRYSTA","variant":"GX","fuel":"Diesel","onroad_price":2700000,"year_from":2016,"year_to":2022 },
+  { "brand":"Hyundai","model":"I10","variant":"MAGNA","fuel":"Petrol","onroad_price":485000,"year_from":2008,"year_to":2011 },
+  { "brand":"Maruti Suzuki","model":"ALTO K10","variant":"VXI","fuel":"Petrol","onroad_price":520000,"year_from":2014,"year_to":2020 }
+]
+</script>
+
+<main class="wrap" id="app">
+  <div class="card pad">
+    <h2 class="title" data-i="title">Sale Your Vehicle</h2>
+    <div class="steps">
+      <div class="step active" id="h1" data-i="s1h">1. Customer</div>
+      <div class="step" id="h2" data-i="s2h">2. Vehicle</div>
+      <div class="step" id="h3" data-i="s3h">3. Specs</div>
+      <div class="step" id="h4" data-i="s4h">4. Condition</div>
+      <div class="step" id="h5" data-i="s5h">5. Result</div>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
   </div>
 
   <!-- STEP 1 -->
-  <section class="card" id="s1">
-    <h2>Vehicle Details</h2>
-    <div class="grid2">
-      <div><label>Vehicle Number <small class="note">(MH12 / MH14 / MH11)</small></label><input id="vehNumber" placeholder="MH12 AB 1234" required></div>
-      <div><label>Make</label><input id="make" placeholder="Maruti / Hyundai / Honda…" required></div>
-      <div><label>Model</label><input id="model" placeholder="Swift / i10 / City…" required></div>
-      <div><label>Variant</label><input id="variant" placeholder="VXi / ZDi / Sportz…" required></div>
-      <div><label>Colour</label><input id="color" placeholder="White / Silver / Grey…" required></div>
-      <div><label>KM Driven</label><input id="km" type="number" inputmode="numeric" placeholder="72000" required></div>
-      <div>
-        <label>Owner</label>
-        <select id="owner" required>
-          <option value="">Select</option><option>1st</option><option>2nd</option><option>3rd</option><option>4th+</option>
-        </select>
-      </div>
-      <div>
-        <label>Fuel</label>
-        <select id="fuel" required>
-          <option value="">Select</option>
-          <option value="petrol">Petrol</option>
-          <option value="diesel">Diesel</option>
-          <option value="cng">CNG</option>
-          <option value="electric">Electric</option>
-        </select>
-      </div>
-      <div>
-        <label>Type</label>
-        <select id="type" required>
-          <option value="car">Car</option>
-          <option value="bike">Bike</option>
-          <option value="scooter">Scooter</option>
-        </select>
-      </div>
-      <div><label>Year</label><input id="year" type="number" inputmode="numeric" placeholder="2016" required></div>
+  <section class="card pad" id="s1">
+    <h3 class="title" data-i="s1.title">Customer Details</h3>
+    <div class="row">
+      <div><label data-i="s1.name">Name</label><input id="name" placeholder="Your name"/></div>
+      <div><label data-i="s1.phone">Mobile Number</label><input id="phone" inputmode="numeric" maxlength="10" placeholder="10-digit"/></div>
+      <div><label data-i="s1.city">City</label><input id="city" placeholder="Satara"/></div>
+      <div><label data-i="s1.notes">Notes (optional)</label><input id="notes" placeholder="Any info…"/></div>
     </div>
-
-    <!-- RC & Green Tax: only for 15+ years -->
-    <div class="grid2 hidden" id="ageOnlyRow1">
-      <div>
-        <label>RC / Fitness</label>
-        <div class="chips" id="rcChips">
-          <span class="chip" data-val="ok">OK</span>
-          <span class="chip" data-val="pending">Pending</span>
-          <span class="chip" data-val="expired">Expired</span>
-        </div>
-      </div>
-      <div>
-        <label>Green Tax</label>
-        <div class="chips" id="taxChips">
-          <span class="chip" data-val="paid">Paid</span>
-          <span class="chip" data-val="due">Due</span>
-          <span class="chip" data-val="na">Don’t know</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Always visible -->
-    <div class="grid2">
-      <div>
-        <label>Insurance</label>
-        <div class="chips" id="insChips">
-          <span class="chip" data-val="ok">Valid</span>
-          <span class="chip" data-val="expired">Expired</span>
-        </div>
-      </div>
-      <div>
-        <label>PUC</label>
-        <div class="chips" id="pucChips">
-          <span class="chip" data-val="ok">Valid</span>
-          <span class="chip" data-val="expired">Expired</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button id="go2" class="btn primary">Continue</button>
+    <div class="flex" style="gap:10px;margin-top:12px">
+      <button class="btn primary" id="next1" data-i="next">Continue</button>
     </div>
   </section>
 
   <!-- STEP 2 -->
-  <section class="card hidden" id="s2">
-    <h2>Customer Details</h2>
-    <div class="grid2">
-      <div><label>Customer Name</label><input id="custName" placeholder="Your name" required></div>
-      <div><label>Mobile Number</label><input id="custPhone" placeholder="10-digit" maxlength="10" inputmode="numeric" required></div>
-      <div><label>City</label><input id="city" placeholder="Satara" required></div>
-      <div><label>Notes (optional)</label><input id="notes" placeholder="Any info…"></div>
+  <section class="card pad" id="s2" hidden>
+    <h3 class="title" data-i="s2.title">Vehicle Basics</h3>
+    <div class="row">
+      <div><label data-i="s2.brand">Brand</label><input id="brand" placeholder="Maruti / Hyundai / Honda…"/></div>
+      <div><label data-i="s2.model">Model</label><input id="model" placeholder="Swift / Alto K10 / i10…"/></div>
+      <div>
+        <label data-i="s2.body">Body Type</label>
+        <select id="body">
+          <option>Hatchback</option><option>Sedan</option><option>Micro</option><option>SUV</option>
+          <option>Bike</option><option>Scooter</option><option>EV Car</option><option>EV Bike</option><option>EV Scooter</option>
+        </select>
+      </div>
+      <div>
+        <label data-i="s2.seats">Seating</label>
+        <select id="seats"><option>4/5</option><option>6</option><option>7</option></select>
+      </div>
+      <div><label>Registration No.</label><input id="reg" placeholder="MH12 AB 1234"/></div>
     </div>
-    <div class="actions">
-      <button id="back1" class="btn">Back</button>
-      <button id="go3" class="btn primary">Get Instrument Valuation</button>
+    <div class="flex" style="gap:10px;margin-top:12px">
+      <button class="btn" id="back2" data-i="back">Back</button>
+      <button class="btn primary" id="next2" data-i="next">Continue</button>
     </div>
   </section>
 
   <!-- STEP 3 -->
-  <section class="card hidden" id="s3">
-    <h2>Instant Valuation</h2>
-    <div class="price" id="valPrice">₹ —</div>
-    <p class="note">* हे Instant estimate आहे — Final price Doorstep Inspection नंतर निश्चित होईल.</p>
-
-    <div class="grid2">
-      <div>
-        <label>Pick Inspection Date</label>
-        <input type="date" id="datePick">
+  <section class="card pad" id="s3" hidden>
+    <h3 class="title" data-i="s3.title">Specs</h3>
+    <div class="row">
+      <div><label>Year</label><input id="year" type="number" min="2001" max="2030" placeholder="2018"/></div>
+      <div><label>Fuel</label><select id="fuel">
+        <option>Petrol</option><option>Diesel</option>
+        <option>CNG (Company)</option><option>CNG (Aftermarket)</option>
+        <option>LPG (Company)</option><option>LPG (Aftermarket)</option>
+        <option>Electric</option></select>
       </div>
-      <div>
-        <label>Time Slot</label>
-        <select id="timePick">
-          <option value="10-1">10am – 1pm</option>
-          <option value="2-6">2pm – 6pm</option>
-        </select>
-      </div>
+      <div><label>KM</label><input id="km" type="number" min="0" step="500" placeholder="60000"/></div>
+      <div id="transWrap"><label>Transmission</label><select id="trans"><option>Manual</option><option>Automatic</option></select></div>
+      <div><label>Owners</label><select id="owners"><option>1st</option><option>2nd</option><option>3rd</option><option>4th+</option></select></div>
+      <div><label>Color</label><select id="color"><option>White</option><option>Silver</option><option>Grey</option><option>Black</option><option>Blue</option><option>Red</option><option>Other</option></select></div>
+      <div><label>New Price (optional)</label><input id="newPrice" type="number" min="0" placeholder="Ex-Showroom / On-Road"/></div>
     </div>
-
-    <div class="actions">
-      <a id="waBtn" class="btn" target="_blank" rel="noopener">WhatsApp</a>
-      <button id="saveLead" class="btn ok">Book Doorstep Inspection</button>
+    <div class="flex" style="gap:10px;margin-top:12px">
+      <button class="btn" id="back3" data-i="back">Back</button>
+      <button class="btn primary" id="next3" data-i="next">Continue</button>
     </div>
   </section>
+
+  <!-- STEP 4 -->
+  <section class="card pad" id="s4" hidden>
+    <h3 class="title" data-i="s4.title">Condition & Compliance</h3>
+    <div class="row">
+      <div><label>RC</label><select id="rc"><option>Valid</option><option>Expired</option></select></div>
+      <div><label>Insurance</label><select id="ins"><option>Valid</option><option>Expired</option></select></div>
+      <div><label>Insurance Valid Till (YYYY-MM)</label><input type="month" id="insTill"/></div>
+      <div><label>PUC / Green Tax</label><select id="puc"><option>Valid / Paid</option><option>Expired</option></select></div>
+      <div><label>Fitness Certificate</label><select id="fit"><option>Not Required (age &lt; 15)</option><option>Available</option><option>Not Available</option></select></div>
+      <div><label>Fitness Expiry (YYYY-MM)</label><input type="month" id="fitExpiry"/></div>
+      <div><label>Overall Condition</label><select id="cond"><option>Excellent</option><option>Good</option><option>Average</option><option>Poor</option></select></div>
+      <div><label>Inspection Date</label><input type="date" id="datePick"/></div>
+      <div><label>Time Slot</label><select id="timePick"><option>10am - 1pm</option><option>3pm - 4pm</option><option>5pm - 7pm</option></select></div>
+    </div>
+    <div class="flex" style="gap:10px;margin-top:12px">
+      <button class="btn" id="back4" data-i="back">Back</button>
+      <button class="btn primary" id="calc" data-i="calc">Get Valuation</button>
+    </div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="card pad" id="s5" hidden>
+    <h3 class="title">Your Estimated Price</h3>
+    <div class="flex" style="gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <span class="pill" id="tagBody">—</span>
+      <span class="pill" id="tagBrand">—</span>
+      <span class="pill" id="tagYear">—</span>
+      <span class="pill" id="tagKm">—</span>
+      <span class="pill" id="tagRTO">—</span>
+      <span class="pill" id="tagIns">—</span>
+      <span class="pill" id="tagFit">—</span>
+      <span class="pill" id="tagCond">—</span>
+    </div>
+    <div class="gauge"><div class="g1"></div><div class="g2"></div><div class="g3"></div></div>
+    <div class="range"><div class="muted">Conservative</div><div class="muted">Average</div><div class="muted">Excellent</div></div>
+    <div class="flex space" style="margin-top:12px;align-items:flex-end">
+      <div><div class="muted">Estimated Range</div><div class="big"><span id="min">₹—</span> — <span id="max">₹—</span></div></div>
+      <div><div class="muted">Most Likely</div><div class="big" id="mid">₹—</div></div>
+    </div>
+    <div class="flex" style="gap:10px;margin-top:12px;flex-wrap:wrap">
+      <a id="wa" class="btn primary" target="_blank" rel="noopener"
+         href="https://wa.me/919822292955?text=Hi%20I%20want%20final%20quote">💬 WhatsApp Final Quote</a>
+      <a id="call" class="btn" href="tel:+919822292955">📞 Call Now</a>
+      <button id="saveLead" class="btn ok">🚗 Book Doorstep Inspection</button>
+      <button id="again" class="btn" style="margin-left:auto">↺ Recalculate</button>
+    </div>
+    <p class="muted" style="margin-top:10px">*Final price depends on physical inspection and compliance documents.</p>
+  </section>
 </main>
+
+<!-- FOOTER (index-style) -->
+<footer class="site">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <h3>SECOND WHEEL</h3>
+        <p class="muted">Trusted Vehicles, Smart Deals</p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact Us</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="terms.html">Terms &amp; Conditions</a>
+        <a href="privacy.html">Privacy Policy</a>
+      </div>
+      <div>
+        <h4>Follow Us</h4>
+        <a href="https://www.instagram.com/secondwheel.in?igsh=b3V0c3l4dnhoa2pt" target="_blank">Instagram</a>
+        <a href="https://www.facebook.com/secondwheelin/" target="_blank">Facebook Page</a>
+        <a href="https://www.facebook.com/groups/secondwheelin/" target="_blank">Facebook Group</a>
+      </div>
+    </div>
+    <div class="fbottom"><span id="yr"></span> © Second Wheel — All rights reserved.</div>
+  </div>
+</footer>
 
 <div id="toast" class="toast">Saved!</div>
 
 <script>
-/* THEME */
-(function(){
-  const KEY='sw.theme';
-  const b=document.getElementById('themeBtn');
-  function setT(t){ document.documentElement.setAttribute('data-theme',t); localStorage.setItem(KEY,t); b.textContent=(t==='dark')?'🌙':'☀️'; }
-  setT(localStorage.getItem(KEY)||'dark');
-  b.addEventListener('click',()=> setT((localStorage.getItem(KEY)||'dark')==='dark'?'light':'dark'));
+/* ------------ CONFIG ------------ */
+const GAS_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE"; // <-- REPLACE THIS
+const THEME_MODE_KEY='secondwheel.theme.mode'; // 'light' | 'dark' | 'system'
+const SW_MODE_KEY='sw.mode.v1';
+const ADMIN_PIN='2468';
+
+/* ------------ Mode (Public/Admin) ------------ */
+function setMode(m){ window.SW_MODE=m; document.body.dataset.mode=m; }
+function isAdmin(){ return window.SW_MODE==='admin'; }
+function unlock(pin){
+  if(pin===ADMIN_PIN){ localStorage.setItem(SW_MODE_KEY, String(Date.now())); setMode('admin'); alert('Dealer mode ON'); return true; }
+  alert('Wrong PIN'); return false;
+}
+(function initMode(){
+  setMode('public');
+  const saved=+localStorage.getItem(SW_MODE_KEY)||0;
+  if(saved && (Date.now()-saved)<24*60*60*1000) setMode('admin');
+  document.addEventListener('keydown',(e)=>{
+    if(e.altKey && e.shiftKey && e.code==='KeyA'){ const pin=prompt('Enter admin PIN'); if(pin) unlock(pin); }
+  });
 })();
 
-/* HELPERS / STATE */
-/* <<< REPLACE THIS WITH YOUR LATEST DEPLOYED WEB APP URL IF YOU REDEPLOY >>> */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxtUUG42G136Xsg5d8FCzcBdasOZUfZHzNSaPoBlvIEZzjrTfiFPvKGDaCX7OZMM81oTw/exec';
-const VID = (()=> Math.random().toString(36).slice(2,6)+'-'+Date.now().toString(36).slice(-4))();
-const $ = id => document.getElementById(id);
-const toast = m => { const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(window.__t); window.__t=setTimeout(()=>t.classList.remove('show'),1400); };
-
-function req(el){ return el && el.value && el.value.toString().trim().length>0; }
-function bindChips(id){
-  const g=$(id); if(!g) return;
-  g.addEventListener('click',e=>{
-    const c=e.target.closest('.chip'); if(!c) return;
-    g.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
-    c.classList.add('active');
+/* ------------ Theme (index-like: light/dark/system) ------------ */
+(function(){
+  const btn=document.getElementById('themeBtn');
+  const meta=document.querySelector('meta[name="theme-color"]');
+  const prefers=()=>window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const resolve=m=>m==='system'?(prefers()?'dark':'light'):(m==='dark'||m==='light'?m:'light');
+  function setMode(m){
+    localStorage.setItem(THEME_MODE_KEY,m);
+    const eff=resolve(m);
+    document.documentElement.setAttribute('data-theme',eff);
+    btn.textContent=eff==='dark'?'🌙':'☀️';
+    meta && meta.setAttribute('content', eff==='dark' ? '#0b0f17' : '#ffffff');
+  }
+  const init = localStorage.getItem(THEME_MODE_KEY) || (prefers() ? 'dark' : 'light');
+  setMode(init);
+  btn.addEventListener('click',()=>{
+    const cur=localStorage.getItem(THEME_MODE_KEY)||'light';
+    const next=cur==='light'?'dark':cur==='dark'?'system':'light';
+    setMode(next);
   });
-}
-['rcChips','insChips','pucChips','taxChips'].forEach(bindChips);
-function getChip(id){ const g=$(id); if(!g) return null; let v=null; g.querySelectorAll('.chip').forEach(ch=>{ if(ch.classList.contains('active')) v=ch.dataset.val; }); return v; }
+  const mm=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+  mm && mm.addEventListener && mm.addEventListener('change',()=>{ if((localStorage.getItem(THEME_MODE_KEY)||'light')==='system'){ setMode('system'); }});
+})();
 
-/* 15+ YEARS: show/hide RC & Green Tax */
-function needsAgeFields(){
-  const y=Number($('year').value||0); if(!y) return false;
-  const now=(new Date()).getFullYear();
-  return (now - y) >= 15;
-}
-function toggleAgeFields(){
-  const show = needsAgeFields();
-  $('ageOnlyRow1').classList.toggle('hidden', !show);
-  if(!show){
-    ['rcChips','taxChips'].forEach(id=>{
-      const g=$(id); if(!g) return;
-      g.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
-    });
-  }
-}
-$('year').addEventListener('input', toggleAgeFields);
-document.addEventListener('DOMContentLoaded', toggleAgeFields);
+/* ------------ I18N (short) ------------ */
+const I18N={en:{title:'Instant Valuation',next:'Continue',back:'Back',calc:'Get Valuation',
+s1h:'1. Customer',s2h:'2. Vehicle',s3h:'3. Specs',s4h:'4. Condition',s5h:'5. Result',
+'s1.title':'Customer Details','s1.name':'Name','s1.phone':'Mobile Number','s1.city':'City','s1.notes':'Notes (optional)',
+'s2.title':'Vehicle Basics','s2.brand':'Brand','s2.model':'Model','s2.body':'Body Type','s2.seats':'Seating'}};
+function setLang(lang){ document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i'); if(I18N[lang]&&I18N[lang][k]) el.textContent=I18N[lang][k]; }); }
+document.getElementById('langSeg').addEventListener('click',e=>{const b=e.target.closest('button'); if(!b)return; [...e.currentTarget.children].forEach(x=>x.classList.remove('active')); b.classList.add('active'); setLang(b.dataset.lang);});
+setLang('en');
 
-/* STEP NAV */
-const s1=$('s1'), s2=$('s2'), s3=$('s3'), s1s=$('s1step'), s2s=$('s2step'), s3s=$('s3step');
-function setStep(n){
-  [s1,s2,s3].forEach((sec,i)=> sec.classList.toggle('hidden', i!==n-1));
-  [s1s,s2s,s3s].forEach((st,i)=>{ st.classList.toggle('active', i===n-1); st.classList.toggle('done', i<n-1); });
-  window.scrollTo({top:0, behavior:'smooth'});
-}
+/* ------------ Helpers ------------ */
+const $=id=>document.getElementById(id);
+const toast=m=>{const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),1400);};
+const sections=[$('s1'),$('s2'),$('s3'),$('s4'),$('s5')]; const headers=[$('h1'),$('h2'),$('h3'),$('h4'),$('h5')]; const bar=$('bar');
+function go(idx){ sections.forEach((s,i)=>s.hidden=i!==idx); headers.forEach((h,i)=>h.classList.toggle('active',i<=idx)); bar.style.width=(idx/4*100)+'%'; window.scrollTo({top:0,behavior:'smooth'}); }
 
-/* VALIDATION */
-function validateStep1(){
-  const basic = req($('vehNumber'))&&req($('make'))&&req($('model'))&&req($('variant'))&&req($('color'))&&req($('km'))&&req($('owner'))&&req($('fuel'))&&req($('type'))&&req($('year'));
-  if(!basic){ toast('Please complete all Vehicle Details.'); return false; }
-  if(needsAgeFields()){
-    if(!getChip('rcChips') || !getChip('taxChips')){ toast('Select RC/Fitness & Green Tax status.'); return false; }
-  }
-  if(!getChip('insChips') || !getChip('pucChips')){ toast('Select Insurance & PUC.'); return false; }
-  return true;
-}
-function validateStep2(){
-  const ph=$('custPhone').value.trim();
-  const ok=req($('custName')) && /^\d{10}$/.test(ph) && req($('city'));
-  if(!ok) toast('Please complete Customer Details correctly.');
-  return ok;
-}
+/* ------------ Body detect ------------ */
+const BODY_HINTS={sedan:['DZIRE','CITY','VERNA','CIAZ','RAPID','SLAVIA','AURA'], hatch:['SWIFT','I10','I20','ALTO','WAGON','BALENO','TIAGO'], micro:['KWID','S-PRESSO','REDIGO'],
+suv:['ERTIGA','XUV','ALCAZAR','HECTOR','CRETA','BREZZA','VENUE','NEXON','SCORPIO','SAFARI','HARRIER']};
+function guessBody(brand,model){ const M=(brand+' '+model).toUpperCase(); for(const [t,arr] of Object.entries(BODY_HINTS)){ if(arr.some(k=>M.includes(k))) return t; } return 'hatch'; }
 
-/* VALUATION */
-function calcBase(type,year,fuel,km,makeBrand){
-  const now=(new Date()).getFullYear(); const age=Math.max(0,now-(Number(year)||now));
-  let base=(type==='car')?450000:(type==='bike'?35000:30000);
-  const B=(makeBrand||'').toUpperCase();
-  if(type==='car'&&['MARUTI','HYUNDAI','HONDA','TOYOTA'].some(x=>B.includes(x))) base*=1.08;
-  if(type==='bike'&&['HERO','BAJAJ','ROYAL ENFIELD'].some(x=>B.includes(x))) base*=1.10;
-  if(type==='scooter'&&['HONDA','HERO','TVS'].some(x=>B.includes(x))) base*=1.08;
-  if(type==='car'){ if(fuel==='diesel') base*=1.08; if(fuel==='cng') base*=1.05; if(fuel==='electric') base*=1.12; }
-  base*=Math.max(0.35,(1-age*0.06));
-  const kmx=Number(km)||0; const over=Math.max(0,kmx-(type==='car'?50000:20000)); const blocks=Math.floor(over/(type==='car'?10000:5000));
-  base*=(1-blocks*0.02);
-  return Math.max(15000,Math.round(base));
-}
-function docAdjust(base){
-  let adj=0; const y=Number($('year').value)||new Date().getFullYear(); const now=(new Date()).getFullYear();
-  if((now-y)>=15){ if(getChip('rcChips')!=='ok') adj-=0.10; if(getChip('taxChips')==='due') adj-=0.03; }
-  if(getChip('insChips')==='expired') adj-=0.05;
-  const min=Math.round(base*(1+adj-0.04)), max=Math.round(base*(1+adj+0.05));
-  return {min:Math.max(10000,min), max:Math.max(12000,max)};
-}
-function makeWaMessage(min,max){
-  const parts=[];
-  parts.push(`Lead ID: ${VID}`);
-  parts.push(`Vehicle: ${$('vehNumber').value} | ${$('make').value} ${$('model').value} ${$('variant').value} (${ $('year').value })`);
-  parts.push(`Fuel: ${$('fuel').value.toUpperCase()} | KM: ${$('km').value} | Owner: ${$('owner').value} | Color: ${$('color').value}`);
-  if(needsAgeFields()){
-    if(getChip('rcChips')) parts.push(`RC/Fitness: ${getChip('rcChips')}`);
-    if(getChip('taxChips')) parts.push(`GreenTax: ${getChip('taxChips')}`);
-  }
-  parts.push(`Insurance: ${getChip('insChips') || '-'}, PUC: ${getChip('pucChips') || '-'}`);
-  parts.push(`Estimate: ₹${min.toLocaleString('en-IN')}–₹${max.toLocaleString('en-IN')}`);
-  parts.push(`Customer: ${$('custName').value}, ${$('custPhone').value} (${ $('city').value })`);
-  return parts.join(' | ');
-}
-function updateValuation(){
-  const base=calcBase($('type').value,$('year').value,$('fuel').value,$('km').value,$('make').value);
-  const r=docAdjust(base);
-  $('valPrice').textContent='₹ '+r.min.toLocaleString('en-IN')+' – ₹ '+r.max.toLocaleString('en-IN');
-  $('waBtn').href='https://wa.me/919822292955?text='+encodeURIComponent(makeWaMessage(r.min,r.max));
-}
+/* ------------ Base + factors ------------ */
+const BASE={sedan:{newP:800000,dep:y=>Math.max(0.12,Math.pow(1-0.16,y))},hatch:{newP:600000,dep:y=>Math.max(0.15,Math.pow(1-0.18,y))},micro:{newP:450000,dep:y=>Math.max(0.18,Math.pow(1-0.20,y))},
+suv:{newP:1000000,dep:y=>Math.max(0.10,Math.pow(1-0.15,y))},bike:{newP:80000,dep:y=>Math.max(0.07,Math.pow(1-0.22,y))},scooter:{newP:65000,dep:y=>Math.max(0.07,Math.pow(1-0.20,y))},
+evcar:{newP:1400000,dep:y=>Math.max(0.20,Math.pow(1-0.25,y))},evbike:{newP:110000,dep:y=>Math.max(0.25,Math.pow(1-0.28,y))},evscoot:{newP:90000,dep:y=>Math.max(0.25,Math.pow(1-0.28,y))}};
+function bodyKey(sel){ const m=sel.toLowerCase(); if(m.includes('ev car'))return'evcar'; if(m.includes('ev bike'))return'evbike'; if(m.includes('ev scooter'))return'evscoot';
+  if(m.includes('sedan'))return'sedan'; if(m.includes('micro'))return'micro'; if(m.includes('suv'))return'suv'; if(m.includes('bike'))return'bike'; if(m.includes('scooter'))return'scooter'; return'hatch';}
+function fuelFactor(f){ if(f==='Diesel') return 1.06; if(f==='Petrol') return 1.00; if(f.includes('CNG')&&f.includes('Company')) return 0.98; if(f.includes('CNG')&&f.includes('After')) return 0.92; if(f.includes('LPG')&&f.includes('Company')) return 0.94; if(f.includes('LPG')&&f.includes('After')) return 0.88; if(f==='Electric') return 0.90; return 1; }
+function colorAdj(c){ c=String(c||'').toUpperCase(); if(['WHITE','SILVER','GREY','GRAY'].includes(c)) return 1.02; if(['BLACK','BLUE','RED'].includes(c)) return 1.00; return 0.98; }
+function ownersPenalty(s){ return s.startsWith('1')?1:s.startsWith('2')?0.97:s.startsWith('3')?0.94:0.90; }
+const rs=n=>(n||0).toLocaleString('en-IN');
 
-/* SAVE to Google Sheets (Apps Script) — no preflight, using form-encoded body */
-async function saveLead(){
-  const payload={
-    vid:VID, name:$('custName').value.trim(), phone:$('custPhone').value.trim(), city:$('city').value.trim(),
-    type:$('type').value, brand:$('make').value.trim(), model:$('model').value.trim(), year:$('year').value.trim(),
-    fuel:$('fuel').value, km:$('km').value.trim(), reg:$('vehNumber').value.trim(), color:$('color').value.trim(), owner:$('owner').value,
-    rcStatus: needsAgeFields()? (getChip('rcChips')||'') : '', insuranceStatus:getChip('insChips')||'',
-    greenTax: needsAgeFields()? (getChip('taxChips')||'') : '', puc:getChip('pucChips')||'',
-    notes:$('notes').value.trim(), source:'sell-form',
-    slotDate:$('datePick').value||'', slotTime:$('timePick').value||''
-  };
+/* ------------ Compliance helpers ------------ */
+const PRIORITY_RTOS=["MH09","MH10","MH11","MH12","MH14","MH42","MH50"];
+const insBase=(key,fuel)=> (key==='bike'||key==='scooter')?1280:(fuel==='Diesel'?9000:8500);
+function insDeductionAmt(key,fuel,insStatus,insTill){
+  const base=insBase(key,fuel);
+  if(insStatus!=='Valid') return base;
+  if(!insTill) return base;
+  const d=new Date(insTill+'-01'); if(isNaN(d)) return base;
+  const n=new Date(); const rem=(d.getFullYear()-n.getFullYear())*12+(d.getMonth()-n.getMonth());
+  if(rem<=0) return base; if(rem>=12) return 0;
+  const elapsed=12-rem; return Math.round(base*(elapsed/12));
+}
+function fitnessCost(key,fuel){ if(key==='bike'||key==='scooter') return 5000; return (fuel==='Diesel')?22000:18000; }
+function fitnessFine(expiry){ if(!expiry) return 0; const d=new Date(expiry+'-01'); if(isNaN(d)) return 0; const n=new Date(); const m=(n.getFullYear()-d.getFullYear())*12+(n.getMonth()-d.getMonth()); return m>0?m*500:0; }
+
+/* ================== ON-ROAD CATALOG ================== */
+const ONR = new Map();
+const U = s => String(s||'').trim();
+const UC = s => U(s).toUpperCase();
+function normFuel(f){ f=UC(f); if(/PET/.test(f)) return 'PETROL'; if(/DSL|DIE/.test(f)) return 'DIESEL'; if(/CNG/.test(f)) return 'CNG'; if(/LPG/.test(f)) return 'LPG'; if(/ELEC|EV/.test(f)) return 'ELECTRIC'; return f||''; }
+const BRAND_ALIASES = { 'MARUTI':'MARUTI SUZUKI','MARUTI SUZUKI':'MARUTI SUZUKI','MSIL':'MARUTI SUZUKI','HYUNDAI':'HYUNDAI','TOYOTA':'TOYOTA','TATA':'TATA','MAHINDRA':'MAHINDRA' };
+const MODEL_ALIASES  = { 'ALTO K10':'ALTO K10','I10':'I10','INNOVA':'INNOVA CRYSTA','INNOVA CRYSTA':'INNOVA CRYSTA' };
+function normVariant(v){ v=UC(v); v=v.replace(/\bMT\b/g,'MANUAL').replace(/\bAT\b/g,'AUTOMATIC'); return v.replace(/\s+/g,' ').trim(); }
+function brandKey(b){ return BRAND_ALIASES[UC(b)] || UC(b); }
+function modelKey(m){ m=UC(m); return MODEL_ALIASES[m] || m; }
+function catKey(brand, model){ return brandKey(brand)+'|'+modelKey(model); }
+(function bootstrapOnRoad(){
   try{
-    const res = await fetch(GAS_URL, {
-      method:'POST',
-      body: new URLSearchParams({ payload: JSON.stringify(payload) })
+    const tag=document.getElementById('onroad-data'); if(!tag) return;
+    const rows=JSON.parse(tag.textContent||'[]');
+    rows.forEach(r=>{
+      const b=brandKey(r.brand), m=modelKey(r.model), v=normVariant(r.variant||''), f=normFuel(r.fuel||''), price=Number(r.onroad_price)||0;
+      const yf=r.year_from?Number(r.year_from):null, yt=r.year_to?Number(r.year_to):null;
+      if(!b||!m||!price) return;
+      const key=catKey(b,m); const list=ONR.get(key)||[];
+      list.push({brand:b,model:m,variant:v,fuel:f,price,yf,yt}); ONR.set(key,list);
     });
-    const j = await res.json().catch(()=>({ok:false}));
-    if(j && j.ok){ toast('Saved ✓'); return true; }
-    toast('Save failed'); return false;
-  }catch(e){ console.error(e); toast('Save failed'); return false; }
+  }catch(e){ console.warn('ON-ROAD catalog load failed', e); }
+})();
+function getOnroadPrice(brand, model, variant, fuel, year){
+  if(ONR.size===0) return 0;
+  const key=catKey(brand,model), list=ONR.get(key); if(!list||!list.length) return 0;
+  const yr=Number(year)||null;
+  const matches=(row,needV,needF)=>{
+    if(needV && row.variant && normVariant(variant)!==row.variant) return false;
+    if(needF && row.fuel && normFuel(fuel)!==row.fuel) return false;
+    if(yr && (row.yf && yr<row.yf)) return false;
+    if(yr && (row.yt && yr>row.yt)) return false;
+    return true;
+  };
+  let cand=list.find(r=>matches(r,true,true)); if(cand) return cand.price;
+  cand=list.find(r=>matches(r,false,true));     if(cand) return cand.price;
+  cand=list.find(r=>matches(r,true,false));     if(cand) return cand.price;
+  return list[0].price||0;
+}
+function onroadCapFactor(age){
+  if(age<=1) return 0.92;
+  if(age<=3) return 0.82;
+  if(age<=5) return 0.70;
+  if(age<=8) return 0.60;
+  if(age<=12) return 0.48;
+  if(age<=15) return 0.35;
+  return 0.20;
 }
 
-/* Wires */
-$('go2').addEventListener('click',()=>{ if(!validateStep1()) return; setStep(2); });
-$('back1').addEventListener('click',()=> setStep(1));
-$('go3').addEventListener('click',()=>{
-  if(!validateStep2()) return;
-  updateValuation();
-  setStep(3);
-  s1s.classList.add('done'); s2s.classList.add('done');
-});
-$('saveLead').addEventListener('click', async ()=>{
-  const ok = await saveLead();
-  if(ok) toast('Inspection slot saved');
-});
-['change','input'].forEach(ev=>{
-  ['km','year','fuel','type','make','vehNumber','model','variant','owner','color'].forEach(id=>{
-    $(id).addEventListener(ev, ()=>{ if(!s3.classList.contains('hidden')) updateValuation(); });
+/* ------------ Compute (mode-aware) ------------ */
+function compute(){
+  const brand=$('brand').value||'', model=$('model').value||'';
+  let body=$('body').value || 'Hatchback';
+  if(body==='Hatchback' && (brand||model)) body = {sedan:'Sedan',hatch:'Hatchback',micro:'Micro',suv:'SUV'}[guessBody(brand,model)] || body;
+  const key=bodyKey(body);
+  const seats=$('seats').value;
+  const year=Number($('year').value||new Date().getFullYear());
+  const age=Math.max(0,new Date().getFullYear()-year);
+  const fuel=$('fuel').value;
+
+  // BASE
+  const baseCfg=BASE[key]||BASE.hatch;
+  let base=baseCfg.newP * baseCfg.dep(age);
+  if(key==='suv' && seats==='7') base*=1.06;
+
+  const km=Number($('km').value||0);
+  if(['suv','sedan','hatch','micro','evcar'].includes(key)){
+    if(km>60000) base-=(km-60000)*0.75; else if(km<30000) base*=1.04;
+  }else{
+    if(km>40000) base-=(km-40000)*0.30; else if(km<15000) base*=1.05;
+  }
+  if(['suv','sedan','hatch','micro','evcar'].includes(key) && $('trans').value==='Automatic') base*=1.03;
+  base*=ownersPenalty($('owners').value);
+  base*=fuelFactor(fuel);
+  base*=colorAdj($('color').value);
+
+  const np=parseFloat(($('newPrice').value||'').trim());
+  if(!isNaN(np) && np>0){ base = Math.round(base*0.85 + np*0.15); }
+
+  // ON-ROAD CAP (cars only)
+  const isCarKey = ['sedan','hatch','micro','suv','evcar'].includes(key);
+  if(isCarKey){
+    const onr = getOnroadPrice(brand, model, $('model').value||'', fuel, year);
+    if(onr > 0){
+      let cap = onroadCapFactor(age) * onr;
+      if(key==='suv') cap = Math.round(cap * 1.06);
+      if(base > cap){ base = cap; }
+    }
+  }
+
+  // PUBLIC vs ADMIN weights
+  const W = isAdmin() ? 1.0 : 0.45;
+
+  // RTO
+  const reg=($('reg').value||'').toUpperCase().replace(/\s+/g,'');
+  const rto=reg.slice(0,4);
+  const rtoDed=PRIORITY_RTOS.includes(rto)?0:Math.round(base*0.10*W);
+
+  // Fitness
+  let fitState=$('fit').value, fitCost=0, fine=0;
+  if(age>=15){
+    if(fitState==='Not Available'){ fitCost=Math.round(fitnessCost(key,fuel)*W); fine=Math.round(fitnessFine($('fitExpiry').value)*W); }
+  }else{
+    fitState='Not Required (age < 15)'; $('fitExpiry').value='';
+  }
+
+  // Insurance
+  const insStatus=$('ins').value, insTill=$('insTill').value;
+  const insDed=Math.round(insDeductionAmt(key,fuel,insStatus,insTill)*W);
+
+  // Condition
+  const condSel=$('cond').value;
+  const condPct=condSel==='Good'?0.02:condSel==='Average'?0.05:condSel==='Poor'?0.10:0;
+  const condDed=Math.round(base*condPct*W);
+
+  // RC/PUC nudges
+  if($('rc').value==='Expired') base=Math.round(base* (W<1?0.975:0.95));
+  if($('puc').value==='Expired') base=Math.round(base* (W<1?0.995:0.985));
+
+  // Final
+  let final=(base - rtoDed) - fitCost - fine - insDed - condDed;
+  if(!isAdmin()) final=Math.round(final*1.06); // optimism for public
+  final=Math.max(final,(key==='bike'||key==='scooter')?5000:25000);
+
+  const mid=Math.round(final/1000)*1000;
+  const min=Math.max(5000,Math.round(mid*(isAdmin()?0.93:0.90)/1000)*1000);
+  const max=Math.max(min+1000,Math.round(mid*(isAdmin()?1.07:1.12)/1000)*1000);
+
+  const breakdown = [
+    `Base (computed): ₹${rs(Math.round(base))}`,
+    `RTO ${PRIORITY_RTOS.includes(rto) ? '(Priority ✓)' : '(Non-priority −10%)'}: −₹${rs(rtoDed)}`,
+    `Fitness Charges: −₹${rs(fitCost)}`,
+    `Fine (₹500/mo): −₹${rs(fine)}`,
+    `Insurance (month-wise): −₹${rs(insDed)}`,
+    `Condition (${condSel||'—'}): −₹${rs(condDed)}`
+  ].join('\n');
+
+  return { min, max, mid, body, key, rto, insStatus, insTill, fitState, breakdown }
+}
+
+/* ------------ Fitness auto toggle (15+ yrs) ------------ */
+(function(){
+  const yearEl = $('year'), fitEl  = $('fit'), fitExp = $('fitExpiry');
+  const fitExpRow = fitExp ? fitExp.closest('div') : null;
+  function age(){const y=parseInt(yearEl?.value||0,10);const n=new Date().getFullYear();return (y&&y>=1900&&y<=n+1)?(n-y):0;}
+  function sync(){
+    const a=age();
+    if(a>=15){ fitEl.disabled=false; if(fitEl.value==='Not Required (age < 15)'||!fitEl.value) fitEl.value='Not Available'; if(fitExp){fitExp.disabled=false; if(fitExpRow) fitExpRow.style.display='block';}}
+    else{ fitEl.value='Not Required (age < 15)'; fitEl.disabled=true; if(fitExp){fitExp.value=''; fitExp.disabled=true; if(fitExpRow) fitExpRow.style.display='none';}}
+  }
+  yearEl?.addEventListener('input',sync); yearEl?.addEventListener('change',sync); sync();
+})();
+
+/* ------------ Bindings + Save Lead ------------ */
+(function(){
+  const t=m=>{const x=$('toast'); if(x){ x.textContent=m; x.classList.add('show'); setTimeout(()=>x.classList.remove('show'),1500);}};
+
+  $('next1')?.addEventListener('click', ()=>{
+    const ok=$('name')?.value && /^\d{10}$/.test(($('phone')?.value||'').trim()) && $('city')?.value;
+    if(!ok) return t('Please fill Name, 10-digit Mobile & City');
+    go(1);
   });
-});
+  $('back2')?.addEventListener('click', ()=> go(0));
+  $('next2')?.addEventListener('click', ()=>{
+    if(!$('brand')?.value || !$('model')?.value){ return t('Enter brand & model'); }
+    const m=($('body')?.value||'').toLowerCase();
+    const k=m.includes('ev car')?'evcar':m.includes('ev bike')?'evbike':m.includes('ev scooter')?'evscoot':
+            m.includes('sedan')?'sedan':m.includes('micro')?'micro':m.includes('suv')?'suv':
+            m.includes('bike')?'bike':m.includes('scooter')?'scooter':'hatch';
+    if($('transWrap')) $('transWrap').style.display=['suv','sedan','hatch','micro','evcar'].includes(k)?'block':'none';
+    go(2);
+  });
+  $('back3')?.addEventListener('click', ()=> go(1));
+  $('next3')?.addEventListener('click', ()=>{
+    const y=+($('year')?.value||0);
+    if(!y || y<2001 || y>2030) return t('Enter year 2001–2030');
+    if(!$('km')?.value) return t('Enter KMs');
+    const age=new Date().getFullYear()-y;
+    if(age>=15 && $('fit')) $('fit').value='Not Available';
+    if(age<15){ if($('fit')) $('fit').value='Not Required (age < 15)'; if($('fitExpiry')) $('fitExpiry').value=''; }
+    go(3);
+  });
+  $('back4')?.addEventListener('click', ()=> go(2));
+
+  $('calc')?.addEventListener('click', ()=>{
+    const y=+($('year')?.value||0);
+    if(!y || y<2001 || y>2030) return t('Enter year 2001–2030');
+    if($('ins')?.value==='Valid' && !$('insTill')?.value) return t('Select Insurance month');
+    const age=new Date().getFullYear()-y;
+    if(age>=15 && $('fit')?.value==='Not Available' && !$('fitExpiry')?.value) return t('Enter Fitness expiry');
+
+    const r=compute();
+    const rs=n=>'₹'+Number(n).toLocaleString('en-IN');
+    $('min').textContent=rs(r.min); $('max').textContent=rs(r.max); $('mid').textContent=rs(r.mid);
+
+    $('tagBody').textContent = ($('body')?.value||'')+' • '+($('seats')?.value||'')+' seats';
+    $('tagBrand').textContent= ( ($('brand')?.value||'')+' '+($('model')?.value||'') ).trim();
+    $('tagYear').textContent = $('year')?.value||'—';
+    $('tagKm').textContent   = (Number($('km')?.value||0)).toLocaleString('en-IN')+' km';
+    const reg=($('reg')?.value||'').toUpperCase().replace(/\s+/g,''); $('tagRTO').textContent = reg?('RTO '+reg.slice(0,4)):'RTO —';
+    $('tagIns').textContent  = 'Insurance: '+($('ins')?.value||'')+($('insTill')?.value?(' till '+$('insTill')?.value):'');
+    $('tagFit').textContent  = 'Fitness: '+($('fit')?.value||'');
+    $('tagCond').textContent = 'Condition: '+($('cond')?.value||'');
+
+    // WhatsApp CTA (FIXED: actually set href)
+    const text = encodeURIComponent(
+`Second Wheel – Sell Vehicle / Doorstep Inspection
+Name: ${$('name')?.value}
+Phone: ${$('phone')?.value}
+City: ${$('city')?.value}
+Vehicle: ${$('brand')?.value} ${$('model')?.value} (${ $('body')?.value })
+Year/Fuel/KM: ${$('year')?.value} / ${$('fuel')?.value} / ${(Number($('km')?.value||0)).toLocaleString('en-IN')} km
+Reg: ${$('reg')?.value}
+Insurance: ${$('ins')?.value}${$('insTill')?.value ? ' till ' + $('insTill')?.value : ''}
+Fitness: ${$('fit')?.value}${$('fitExpiry')?.value ? ' (exp ' + $('fitExpiry')?.value + ')' : ''}
+Estimate: ₹${r.min.toLocaleString('en-IN')} – ₹${r.max.toLocaleString('en-IN')} (mid ₹${r.mid.toLocaleString('en-IN')})`
+    );
+    const wa=$('wa'); if(wa) wa.href='https://wa.me/919822292955?text='+text;
+
+    go(4);
+  });
+
+  $('again')?.addEventListener('click', ()=> go(0));
+
+  // Save to Google Sheet via Apps Script
+  $('saveLead')?.addEventListener('click', async ()=>{
+    const payload={
+      ts: new Date().toISOString(),
+      mode: isAdmin()?'admin':'public',
+      name: $('name')?.value, phone: $('phone')?.value, city: $('city')?.value, notes: $('notes')?.value,
+      brand:$('brand')?.value, model:$('model')?.value, body:$('body')?.value, seats:$('seats')?.value, reg:$('reg')?.value,
+      year:$('year')?.value, fuel:$('fuel')?.value, km:$('km')?.value, trans:$('trans')?.value, owners:$('owners')?.value, color:$('color')?.value,
+      rc:$('rc')?.value, ins:$('ins')?.value, insTill:$('insTill')?.value, puc:$('puc')?.value,
+      fit:$('fit')?.value, fitExpiry:$('fitExpiry')?.value,
+      date:$('datePick')?.value, time:$('timePick')?.value,
+      estimateMin: ($('min')?.textContent||'').replace(/[^\d]/g,''), 
+      estimateMid: ($('mid')?.textContent||'').replace(/[^\d]/g,''), 
+      estimateMax: ($('max')?.textContent||'').replace(/[^\d]/g,'')
+    };
+    try{
+      if(!GAS_URL || GAS_URL.startsWith('PASTE_')){ toast('Add GAS_URL (Apps Script)'); return; }
+      await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      toast('Booked! We will contact you.');
+    }catch(e){ console.error(e); toast('Save failed'); }
+  });
+
+  // Footer year
+  $('yr') && ($('yr').textContent = new Date().getFullYear());
+})();
 </script>
-  <!-- ===== Footer Start ===== -->
-<footer style="background:#111; color:#ddd; padding:25px 15px; text-align:center; margin-top:40px;">
-  <div style="max-width:1000px; margin:auto; display:flex; flex-wrap:wrap; justify-content:center; gap:20px;">
-
-    <a href="about.html" style="color:#f1c40f; text-decoration:none;">About Us</a>
-    <a href="contact.html" style="color:#f1c40f; text-decoration:none;">Contact</a>
-    <a href="wishlist.html" style="color:#f1c40f; text-decoration:none;">Wishlist</a>
-    <a href="disclaimer.html" style="color:#f1c40f; text-decoration:none;">Disclaimer</a>
-    <a href="terms.html" style="color:#f1c40f; text-decoration:none;">Terms & Conditions</a>
-    <a href="privacy.html" style="color:#f1c40f; text-decoration:none;">Privacy Policy</a>
-
-  </div>
-
-  <div style="margin-top:15px; font-size:14px;">
-    © 2025 <b>Second Wheel - The Car Bazaar</b> | Trusted Vehicles, Smart Deals
-  </div>
-</footer>
-<!-- ===== Footer End ===== -->
 </body>
 </html>
