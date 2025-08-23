@@ -562,54 +562,78 @@ Estimate: ₹${r.min.toLocaleString('en-IN')} – ₹${r.max.toLocaleString('en-
 
   $('again')?.addEventListener('click', ()=> go(0));
 
-  /* ======== Google Sheet SAVE (frontend) ======== */
-  const WEBAPP_URL="https://script.google.com/macros/s/AKfycbynjxFphL7QmllgvgUIUz9vAxZH4bCGCCp4vIIkMIxWDb0vwwYesPRIM1xGVXLNxt6iwA/exec";
+<script>
+// --- GAS Web‑App URL (तुझं exec URL) ---
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyynSEn0mygSV20gB6JH0arLwPJUmKsOM78HcQ0OBWF-i2Da5HJVw5rnC-O0JIgqZcXkA/exec";
 
-  $('saveLead').addEventListener('click', async () => {
-    const payload = {
-      vid: String(Date.now()),
-      name: $('name')?.value || '',
-      phone: $('phone')?.value || '',
-      city: $('city')?.value || '',
-      notes: $('notes')?.value || '',
-      type: $('body')?.value || '',
-      brand: $('brand')?.value || '',
-      model: $('model')?.value || '',
-      variant: '',
-      year: $('year')?.value || '',
-      fuel: $('fuel')?.value || '',
-      km: $('km')?.value || '',
-      reg: $('reg')?.value || '',
-      color: $('color')?.value || '',
-      owner: $('owners')?.value || '',
-      rcStatus: $('rc')?.value || '',
-      insuranceStatus: $('ins')?.value || '',
-      insTill: $('insTill')?.value || '',
-      puc: $('puc')?.value || '',
-      fit: $('fit')?.value || '',
-      fitExp: $('fitExpiry')?.value || '',
-      slotDate: $('datePick')?.value || '',
-      slotTime: $('timePick')?.value || '',
-      estMin: ($('min')?.textContent||'').replace(/[^\d]/g,''),
-      estMax: ($('max')?.textContent||'').replace(/[^\d]/g,''),
-      source: 'sell-form'
-    };
+// --- toast helper (वर असेलच; नसेल तर हा ठेवा) ---
+function toast(msg){
+  const t=document.getElementById('toast');
+  if(!t) return alert(msg);
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(window.__tt);
+  window.__tt=setTimeout(()=>t.classList.remove('show'),2000);
+}
 
-    try {
-      const res = await fetch(WEBAPP_URL, {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+// ======== SAVE button handler (PATCH) ========
+document.getElementById('saveLead').addEventListener('click', async (ev) => {
+  ev.preventDefault();
+  const $ = id => document.getElementById(id);
 
-      // Robust parse: JSON मिळालं नाही तरी res.ok चालेल
-      let out=null, ok=false;
-      try { out = await res.json(); ok = !!out?.ok; } catch(_) { ok = res.ok; }
-      if (!ok) throw new Error(out?.error || `Save failed (${res.status})`);
+  // 1) payload build
+  const payload = {
+    vid: String(Date.now()),
+    name: $('name')?.value || '',
+    phone: $('phone')?.value || '',
+    city: $('city')?.value || '',
+    notes: $('notes')?.value || '',
 
-      toast("✅ Submitted! We’ll call you shortly.");
+    type: $('body')?.value || '',
+    brand: $('brand')?.value || '',
+    model: $('model')?.value || '',
+    variant: '',
+    year: $('year')?.value || '',
+    fuel: $('fuel')?.value || '',
+    km: $('km')?.value || '',
+    reg: $('reg')?.value || '',
+    color: $('color')?.value || '',
+    owner: $('owners')?.value || '',
 
-      const msg = encodeURIComponent(
+    rcStatus: $('rc')?.value || '',
+    insuranceStatus: $('ins')?.value || '',
+    insTill: $('insTill')?.value || '',
+    puc: $('puc')?.value || '',
+    fit: $('fit')?.value || '',
+    fitExp: $('fitExpiry')?.value || '',
+
+    slotDate: $('datePick')?.value || '',
+    slotTime: $('timePick')?.value || '',
+
+    estMin: (document.getElementById('min')?.textContent||'').replace(/[^\d]/g,''),
+    estMax: (document.getElementById('max')?.textContent||'').replace(/[^\d]/g,''),
+    source: 'sell-form'
+  };
+
+  try {
+    // 2) POST to GAS — form-urlencoded (preflight टाळण्यासाठी)
+    const body = "payload=" + encodeURIComponent(JSON.stringify(payload));
+    const res = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body
+    });
+
+    // 3) JSON वाचा (काही वेळा GAS raw 200 देतो—fallback res.ok)
+    let ok = false, out = null;
+    try { out = await res.json(); ok = !!out?.ok; } catch(_) { ok = res.ok; }
+    if (!ok) throw new Error(out?.error || `Save failed (${res.status})`);
+
+    // 4) UI success
+    toast("✅ Submitted! We’ll call you shortly.");
+
+    // 5) WhatsApp link अपडेट
+    const msg = encodeURIComponent(
 `Sell Lead
 Name: ${payload.name}
 Phone: ${payload.phone}
@@ -617,15 +641,15 @@ City: ${payload.city}
 Vehicle: ${payload.brand} ${payload.model} (${payload.type})
 Year/Fuel/KM: ${payload.year}/${payload.fuel}/${Number(payload.km||0).toLocaleString('en-IN')} km
 Est: ₹${Number(payload.estMin||0).toLocaleString('en-IN')}–₹${Number(payload.estMax||0).toLocaleString('en-IN')}`
-      );
-      const wa=$('wa'); if(wa) wa.href="https://wa.me/919822292955?text="+msg;
+    );
+    const wa = document.getElementById('wa');
+    if (wa) wa.href = "https://wa.me/919822292955?text="+msg;
 
-    } catch (err) {
-      console.error("Save error:", err);
-      toast("⚠️ Could not submit. Please try again.");
-    }
-  });
-})(); /* IIFE END */
+  } catch (err) {
+    console.error("Save error:", err);
+    toast("⚠️ Could not submit. Please try again.");
+  }
+});
 </script>
 </body>
 </html>
