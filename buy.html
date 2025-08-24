@@ -7,7 +7,6 @@
 <meta name="theme-color" content="#ffffff"/>
 <style>
   /* ---------- THEME TOKENS ---------- */
-  /* Light = default */
   :root{
     --bg:#f7f8fb; --text:#0b0f17; --muted:#5b667a;
     --line:rgba(0,0,0,.12);
@@ -17,7 +16,6 @@
     --shadow:0 10px 22px rgba(0,0,0,.10);
     --toast-bg:#ffffff; --toast-text:#0b0f17;
   }
-  /* Dark = optional */
   :root[data-theme="dark"]{
     --bg:#0b0f17; --text:#e5e7eb; --muted:#9aa3b2;
     --line:rgba(255,255,255,.12);
@@ -64,14 +62,46 @@
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
   .media{position:relative}
-  .media img.main{width:100%;height:260px;object-fit:cover}
-  @media(min-width:720px){ .media img.main{height:220px} }
 
-  .thumbbar{display:flex;gap:6px;padding:8px;overflow:auto;background:var(--surface);border-top:1px solid var(--line)}
-  .thumb{width:64px;height:48px;border-radius:8px;object-fit:cover;border:2px solid transparent;cursor:pointer;flex:0 0 auto}
-  .thumb.active{border-color:#f59e0b}
+  /* --- SWIPE CAROUSEL --- */
+  .carousel{position:relative}
+  .track{
+    display:flex;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .track::-webkit-scrollbar{display:none}
+  .slide{
+    flex:0 0 100%;
+    scroll-snap-align:center;
+    position:relative;
+  }
+  .slide img{
+    width:100%;
+    height:260px;
+    object-fit:cover;
+  }
+  @media(min-width:720px){ .slide img{height:220px} }
 
-  .badge{position:absolute;top:10px;left:10px;background:var(--brand);color:#111;font-weight:800;font-size:12px;padding:4px 8px;border-radius:999px}
+  .navBtnSm{
+    position:absolute;top:50%;transform:translateY(-50%);
+    padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.25);
+    background:rgba(0,0,0,.35);color:#fff;cursor:pointer;z-index:2;
+  }
+  .navBtnSm.l{left:8px} .navBtnSm.r{right:8px}
+  .dots{
+    position:absolute;left:50%;transform:translateX(-50%);
+    bottom:8px;display:flex;gap:6px;z-index:2;
+  }
+  .dot{
+    width:7px;height:7px;border-radius:999px;background:rgba(255,255,255,.45);border:1px solid rgba(0,0,0,.2);cursor:pointer;
+  }
+  .dot.active{background:#fff}
+
+  .badge{position:absolute;top:10px;left:10px;background:var(--brand);color:#111;font-weight:800;font-size:12px;padding:4px 8px;border-radius:999px;z-index:2}
+
   .body{padding:12px}
   .title{font-weight:800;margin:0 0 6px}
   .meta{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
@@ -165,7 +195,7 @@ applyLang(localStorage.getItem('lang')||'en');
 
 /* -------- Theme (index सारखं) -------- */
 (function(){
-  const KEY='secondwheel.theme.mode'; // 'light' | 'dark' | 'system'
+  const KEY='secondwheel.theme.mode';
   const btn=document.getElementById('themeToggle');
   const meta=document.querySelector('meta[name="theme-color"]');
   const prefers=()=>window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -231,22 +261,84 @@ async function loadType(type){
   const folders=roots.filter(x=>x?.name && !/\./.test(x.name));
   const out=[]; const brands=new Set(); const lim=limitFor(type);
 
-  for(const f of folders){
+  // Parallel load for performance
+  const results = await Promise.all(folders.map(async (f)=>{
     const vid=f.name; const base=`${type}/${vid}`;
-    const meta=await fetchMeta(base); if(!meta) continue;
+    const meta=await fetchMeta(base); if(!meta) return null;
     const imgs=await allImgUrls(base,lim);
-    if(!imgs.length){ const logo=pubUrl('logo.png'); if(logo) imgs.push(logo); else continue; }
+    if(!imgs.length){ const logo=pubUrl('logo.png'); if(logo) imgs.push(logo); else return null; }
     meta.vid=meta.vid||vid; meta.type=meta.type||type;
-    out.push({vid,meta,imgs,coverIndex:0});
-    if(meta.brand) brands.add(String(meta.brand).toUpperCase());
-  }
+    return {vid,meta,imgs,coverIndex:0};
+  }));
 
-  DATA=out.sort((a,b)=> (b.meta.updatedAt||'').localeCompare(a.meta.updatedAt||'')); 
+  const clean = results.filter(Boolean);
+  clean.forEach(x=>{ if(x.meta.brand) brands.add(String(x.meta.brand).toUpperCase()); });
+
+  // updatedAt असल्यास sort; नसेल तर title ने
+  DATA=clean.sort((a,b)=> String(b.meta.updatedAt||'').localeCompare(String(a.meta.updatedAt||'')) || String(a.meta.title||'').localeCompare(String(b.meta.title||'')));
   fillBrands([...brands].sort());
   render();
 }
 
 function fillBrands(list){ const curr=brandFilter.value; brandFilter.innerHTML='<option value="">All Brands</option>'+list.map(b=>`<option value="${b}">${b}</option>`).join(''); if(curr) brandFilter.value=curr; }
+
+/* -------- Carousel Helper -------- */
+function createCarousel(container, images, title, badgeText){
+  const wrap=document.createElement('div'); wrap.className='carousel';
+  const track=document.createElement('div'); track.className='track';
+  const dots=document.createElement('div'); dots.className='dots';
+  const prev=document.createElement('button'); prev.className='navBtnSm l'; prev.textContent='⟨';
+  const next=document.createElement('button'); next.className='navBtnSm r'; next.textContent='⟩';
+  let idx=0;
+
+  // slides
+  images.forEach((u,i)=>{
+    const s=document.createElement('div'); s.className='slide';
+    const im=document.createElement('img');
+    im.loading='lazy';
+    im.src=u;
+    im.alt=title||'';
+    im.onerror=()=>{ im.src='https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png'; };
+    im.addEventListener('click',()=>openLB(images, i));
+    s.appendChild(im); track.appendChild(s);
+
+    const d=document.createElement('div'); d.className='dot'+(i===0?' active':'');
+    d.addEventListener('click',()=>goTo(i));
+    dots.appendChild(d);
+  });
+
+  // badge
+  const badge=document.createElement('div'); badge.className='badge'; badge.textContent=String(badgeText||'').toUpperCase();
+
+  wrap.appendChild(track); wrap.appendChild(prev); wrap.appendChild(next); wrap.appendChild(dots); wrap.appendChild(badge);
+  container.appendChild(wrap);
+
+  function goTo(n){
+    idx=Math.max(0, Math.min(images.length-1, n));
+    track.scrollTo({left: idx*track.clientWidth, behavior:'smooth'});
+    [...dots.children].forEach((c,j)=>c.classList.toggle('active', j===idx));
+  }
+  function step(d){ goTo(idx+d); }
+
+  prev.onclick=()=>step(-1);
+  next.onclick=()=>step(1);
+
+  // sync index on manual swipe
+  let ticking=false;
+  track.addEventListener('scroll',()=>{
+    if(!ticking){
+      window.requestAnimationFrame(()=>{
+        const newIdx=Math.round(track.scrollLeft/track.clientWidth);
+        if(newIdx!==idx){ idx=newIdx; [...dots.children].forEach((c,j)=>c.classList.toggle('active', j===idx)); }
+        ticking=false;
+      });
+      ticking=true;
+    }
+  });
+
+  // resize snap fix
+  window.addEventListener('resize',()=>goTo(idx));
+}
 
 /* -------- Render -------- */
 function render(){
@@ -263,19 +355,12 @@ function render(){
   if(!view.length){ grid.innerHTML='<div class="muted" style="padding:16px">No results</div>'; return; }
 
   for(const it of view){
-    const m=it.meta, cover=it.imgs[it.coverIndex||0];
+    const m=it.meta;
     const card=document.createElement('div'); card.className='card';
 
     const media=document.createElement('div'); media.className='media';
-    const main=document.createElement('img'); main.className='main'; main.src=cover; main.alt=m.title||''; main.onclick=()=>openLB(it.imgs,it.coverIndex||0);
-    media.appendChild(main);
-    const badge=document.createElement('div'); badge.className='badge'; badge.textContent=(m.type||ACTIVE).toUpperCase(); media.appendChild(badge);
-
-    const thumbbar=document.createElement('div'); thumbbar.className='thumbbar';
-    it.imgs.forEach((u,idx)=>{ const t=document.createElement('img'); t.className='thumb'+(idx===it.coverIndex?' active':''); t.src=u; t.alt='thumb';
-      t.onclick=(e)=>{ e.stopPropagation(); it.coverIndex=idx; main.src=u; [...thumbbar.children].forEach(c=>c.classList.remove('active')); t.classList.add('active'); };
-      thumbbar.appendChild(t); });
-    media.appendChild(thumbbar);
+    // NEW: swipe carousel inside media
+    createCarousel(media, it.imgs, m.title||'', m.type||ACTIVE);
 
     const body=document.createElement('div'); body.className='body';
     const h=document.createElement('h3'); h.className='title'; h.textContent=m.title||'-';
