@@ -4,18 +4,33 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Second Wheel — Admin (Featured & Inventory Manager)</title>
-<meta name="theme-color" content="#0b0f17"/>
+<meta name="theme-color" content="#ffffff"/>
 <style>
+  /* ---------- LIGHT THEME (default) ---------- */
   :root{
-    --bg:#0b0f17;--card:#121826;--text:#e5e7eb;--muted:#9aa3b2;
-    --brand:#f59e0b;--ok:#22c55e;--danger:#ef4444;--line:rgba(255,255,255,.10)
+    --bg:#f7f8fb;
+    --card:#ffffff;
+    --text:#0b0f17;
+    --muted:#5b667a;
+    --brand:#f59e0b;
+    --ok:#22c55e;
+    --danger:#ef4444;
+    --line:rgba(0,0,0,.12);
+    --elev:0 8px 20px rgba(0,0,0,.06);
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font:14px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu
+  }
   a{color:inherit;text-decoration:none}
 
   /* Header */
-  header{position:sticky;top:0;z-index:20;background:rgba(11,15,23,.75);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header{
+    position:sticky;top:0;z-index:20;
+    background:rgba(255,255,255,.85);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line)
+  }
   .wrap{max-width:1200px;margin:0 auto;padding:14px 16px}
   h1{font-size:18px;margin:0 0 4px}
   .hint{color:var(--muted);font-size:12px}
@@ -25,32 +40,41 @@
   @media (max-width:920px){ main .grid{grid-template-columns:1fr} }
 
   /* Panels */
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .panel{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:14px; box-shadow:var(--elev)
+  }
   h2{font-size:16px;margin:0 0 10px}
   .rowbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:space-between}
 
   /* Filters */
   .filters{display:flex;gap:8px;flex-wrap:wrap}
-  .input{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0e1522;color:var(--text);outline:none}
-  .select{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0e1522;color:var(--text)}
+  .input,.select{
+    padding:10px 12px;border-radius:10px;border:1px solid var(--line);
+    background:#f2f4f8;color:var(--text);outline:none
+  }
 
   /* List (left) */
   .list{display:grid;gap:8px;max-height:62vh;overflow:auto}
   @media (max-width:920px){ .list{max-height:none} }
-  .item{display:grid;grid-template-columns:56px 1fr;gap:10px;padding:8px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);cursor:pointer}
-  .item:hover{background:rgba(255,255,255,.05)}
-  .thumb{width:56px;height:56px;border-radius:10px;object-fit:cover;background:#0f1626;border:1px solid var(--line)}
+  .item{
+    display:grid;grid-template-columns:56px 1fr;gap:10px;padding:8px;
+    border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;
+    box-shadow:var(--elev)
+  }
+  .item:hover{background:#fcfcff}
+  .thumb{width:56px;height:56px;border-radius:10px;object-fit:cover;background:#f2f4f8;border:1px solid var(--line)}
   .meta b{display:block}
   .meta small{color:var(--muted)}
-  .pill{padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.08);font-size:11px;margin-left:6px}
+  .pill{padding:2px 8px;border-radius:999px;background:#f2f4f8;font-size:11px;margin-left:6px;border:1px solid var(--line)}
 
   /* Form */
   label{display:block;margin:8px 0 6px;color:var(--muted);font-weight:600}
   input,select,textarea{
     width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);
-    background:#0e1522;color:var(--text);outline:none
+    background:#f2f4f8;color:var(--text);outline:none
   }
-  input:focus,select:focus,textarea:focus{border-color:#3b82f6}
+  input:focus,select:focus,textarea:focus{border-color:#3b82f6;background:#fff}
   textarea{min-height:120px;resize:vertical}
 
   .fields{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -58,34 +82,41 @@
   @media (max-width:560px){ .fields{grid-template-columns:1fr} }
 
   /* Buttons */
-  .btn{display:inline-flex;gap:8px;align-items:center;justify-content:center;
-       padding:12px 14px;border-radius:12px;border:1px solid var(--line);
-       background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-       cursor:pointer;min-width:120px}
+  .btn{
+    display:inline-flex;gap:8px;align-items:center;justify-content:center;
+    padding:12px 14px;border-radius:12px;border:1px solid var(--line);
+    background:#ffffff; cursor:pointer; min-width:120px; box-shadow:var(--elev)
+  }
   .btn:active{transform:translateY(1px)}
   .primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border:none}
   .danger{background:linear-gradient(180deg,#ef4444,#b91c1c);color:#fff;border:none}
-  .ghost{background:transparent}
+  .secondary{background:linear-gradient(180deg,#60a5fa,#2563eb);color:#fff;border:none} /* Upload */
+  .ghost{background:#f2f4f8}
   .btnBlock{display:flex;gap:10px;flex-wrap:wrap}
   @media (max-width:560px){ .btn{width:100%} .btnBlock{flex-direction:column} }
 
   /* Toggle */
-  .tick{appearance:none;width:20px;height:20px;border-radius:6px;border:1px solid var(--line);
-        display:inline-grid;place-items:center;background:#0e1522;margin-right:8px}
+  .tick{
+    appearance:none;width:20px;height:20px;border-radius:6px;border:1px solid var(--line);
+    display:inline-grid;place-items:center;background:#f2f4f8;margin-right:8px
+  }
   .tick:checked{background:#f59e0b;border-color:#f59e0b}
 
   /* Uploader + Gallery preview */
-  .upl{border:1px dashed var(--line);border-radius:12px;padding:12px;background:#0f1626}
+  .upl{border:1px dashed var(--line);border-radius:12px;padding:12px;background:#fff}
   .limit{color:var(--muted);font-size:12px}
-  .status{min-height:20px}
+  .status{min-height:20px;color:#374151;margin-top:6px}
+  .status.ok{color:#15803d}
+  .status.err{color:#b91c1c}
+
   .ghead{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
   .ggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
   @media (max-width:920px){ .ggrid{grid-template-columns:repeat(3,1fr)} }
   @media (max-width:560px){ .ggrid{grid-template-columns:repeat(2,1fr)} }
-  .gcard{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#0f1626}
+  .gcard{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;box-shadow:var(--elev)}
   .gcard img{width:100%;height:100px;object-fit:cover;display:block}
   .gact{position:absolute;right:6px;top:6px;display:flex;gap:6px}
-  .icon{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:8px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.2);cursor:pointer}
+  .icon{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:8px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.2);cursor:pointer;color:#fff}
 </style>
 </head>
 <body>
@@ -167,7 +198,7 @@
         <input id="files" type="file" accept="image/*" multiple/>
         <div class="limit">Cars: up to 20 images • Bikes/Scooters: up to 10 images</div>
         <div class="btnBlock" style="margin-top:10px">
-          <button id="btnUpload" class="btn">↑ Upload Gallery</button>
+          <button id="btnUpload" class="btn secondary">↑ Upload Gallery</button>
           <button id="btnSave" class="btn primary">Save / Update</button>
           <button id="btnDelete" class="btn danger">Delete Vehicle</button>
         </div>
@@ -214,7 +245,15 @@ function makeVID(){
   return `${ts}-${rand}`;
 }
 function slugify(s){ return (s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
-function note(msg, ok=false){ statusEl.textContent = msg; statusEl.style.color = ok ? '#22c55e' : '#e5e7eb'; }
+
+/* Status note with classes for color */
+function note(msg, ok=false, err=false){
+  statusEl.textContent = msg;
+  statusEl.className = 'status';
+  if(ok) statusEl.classList.add('ok');
+  if(err) statusEl.classList.add('err');
+}
+
 function clearForm(){
   brand.value = title.value = price.value = year.value = km.value = desc.value = '';
   type.value='car'; featured.checked=false; files.value='';
@@ -229,7 +268,7 @@ function pubUrl(path){ const { data } = sb.storage.from(BUCKET).getPublicUrl(pat
 async function listKeys(prefix){
   const { data, error } = await sb.storage.from(BUCKET).list(prefix, { limit: 200 });
   if(error){ console.error(error); return []; }
-  return data||[];
+  return (data||[]).filter(Boolean);
 }
 async function removeFolder(prefix){
   const entries = await listKeys(prefix);
@@ -344,7 +383,10 @@ async function saveVehicle(){
     note('Saved ✓', true);
     if(featured.checked){ refreshFeatured(); }
     renderGallery();
-  }catch(e){ note('Save failed'); console.error(e); }
+  }catch(e){
+    console.error(e);
+    note('Save failed', false, true);
+  }
 }
 
 /* ---------- UPLOAD GALLERY ---------- */
@@ -353,7 +395,7 @@ async function uploadGallery(){
   const filesArr = Array.from(files.files||[]);
   if(filesArr.length===0){ note('Select images first'); return; }
   const max = maxAllowed();
-  if(filesArr.length > max){ note(`Too many images. Allowed ${max}.`); return; }
+  if(filesArr.length > max){ note(`Too many images. Allowed ${max}.`, false, true); return; }
 
   note('Uploading images…');
   let i=0, ok=0, fail=0;
@@ -367,7 +409,7 @@ async function uploadGallery(){
       if(error){ fail++; console.error('upload error', key, error); } else { ok++; }
     }
   }
-  note(`Gallery uploaded: ${ok} ok, ${fail} failed.`, fail===0);
+  note(`Gallery uploaded: ${ok} ok, ${fail} failed.`, fail===0, fail>0);
   renderGallery();
 }
 
@@ -391,7 +433,6 @@ async function renderGallery(){
   gHint.textContent = pools.map(p=>p.label).join('  |  ');
 
   for(const pool of pools){
-    // group label (visually via hint already); just render items
     for(const im of pool.items){
       const card = document.createElement('div');
       card.className = 'gcard';
