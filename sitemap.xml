@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- HOME PAGE -->
+  <url>
+    <loc>https://secondwheel.in/</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.00</priority>
+  </url>
+
+  <!-- BUY PAGE -->
+  <url>
+    <loc>https://secondwheel.in/buy</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- SELL PAGE -->
+  <url>
+    <loc>https://secondwheel.in/sell</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- VALUATION PAGE -->
+  <url>
+    <loc>https://secondwheel.in/valuation</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <!-- TOOLS PAGE -->
+  <url>
+    <loc>https://secondwheel.in/tools</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <!-- ABOUT US PAGE -->
+  <url>
+    <loc>https://secondwheel.in/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <!-- CONTACT US PAGE -->
+  <url>
+    <loc>https://secondwheel.in/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <!-- TERMS & CONDITIONS -->
+  <url>
+    <loc>https://secondwheel.in/terms</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.40</priority>
+  </url>
+
+  <!-- PRIVACY POLICY -->
+  <url>
+    <loc>https://secondwheel.in/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.40</priority>
+  </url>
+
+</urlset>
