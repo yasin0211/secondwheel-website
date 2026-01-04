@@ -7,97 +7,111 @@
 
 <style>
 body{margin:0;font-family:system-ui;background:#f7f8fb}
-.login, .admin{max-width:1100px;margin:auto;padding:20px}
-.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 10px 25px rgba(0,0,0,.06)}
-h2{margin:0 0 10px}
-input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #d1d5db;margin-bottom:10px}
+.hidden{display:none}
+.wrap{max-width:1200px;margin:auto;padding:16px}
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:16px;
+box-shadow:0 8px 20px rgba(0,0,0,.06)}
+h2,h3{margin:0 0 10px}
+input,textarea,select{width:100%;padding:10px;border-radius:8px;
+border:1px solid #d1d5db;margin-bottom:10px}
 button{padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
 .primary{background:#f59e0b}
+.secondary{background:#2563eb;color:#fff}
 .danger{background:#ef4444;color:#fff}
-.list{display:grid;gap:10px}
-.item{border:1px solid #e5e7eb;border-radius:10px;padding:10px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.img{position:relative;border-radius:10px;overflow:hidden;border:1px solid #e5e7eb}
+.img img{width:100%;height:100px;object-fit:cover}
+.img button{position:absolute;top:4px;right:4px;font-size:12px;padding:4px 6px}
+.cover{border:3px solid #f59e0b}
 small{color:#6b7280;display:block}
-.hidden{display:none}
-.top{display:flex;justify-content:space-between;align-items:center}
 </style>
 </head>
 
 <body>
 
 <!-- LOGIN -->
-<div class="login card" id="loginBox">
+<div class="wrap card" id="loginBox">
   <h2>Admin Login</h2>
-  <input id="user" placeholder="Username">
-  <input id="pass" type="password" placeholder="Password">
+  <input id="loginUser" placeholder="Username">
+  <input id="loginPass" type="password" placeholder="Password">
   <button class="primary" onclick="login()">Login</button>
   <small id="loginErr"></small>
 </div>
 
 <!-- ADMIN -->
-<div class="admin hidden" id="adminBox">
-
-<div class="top">
-  <h2>Second Wheel – Admin</h2>
-  <button onclick="logout()">Logout</button>
-</div>
-
-<!-- FEATURED LIST -->
-<div class="card">
-  <h3>Featured Vehicles</h3>
-  <div id="featuredList" class="list"></div>
-</div>
+<div class="wrap hidden" id="adminBox">
+<h2>Second Wheel – Admin Panel</h2>
 
 <!-- VEHICLE FORM -->
 <div class="card">
-  <b id="vidShow">VID: -</b><br><br>
+  <b id="vidShow"></b><br><br>
 
-  <input id="brand" placeholder="Brand">
-  <input id="title" placeholder="Model / Title">
-  <input id="price" type="number" placeholder="Price">
-  <input id="year" type="number" placeholder="Year">
-  <input id="km" type="number" placeholder="KM">
-  <input id="owner" type="number" placeholder="Owner">
+  <select id="type">
+    <option value="car">Car</option>
+    <option value="bike">Bike</option>
+    <option value="scooter">Scooter</option>
+  </select>
 
-  <textarea id="desc" placeholder="Full Description (Buy page)"></textarea>
+  <div class="row">
+    <input id="brand" placeholder="Brand">
+    <input id="title" placeholder="Model / Title">
+    <input id="price" type="number" placeholder="Price">
+    <input id="year" type="number" placeholder="Year">
+    <input id="km" type="number" placeholder="KM">
+    <input id="owner" type="number" placeholder="Owner">
+  </div>
+
+  <textarea id="desc" placeholder="Full description (Buy page)"></textarea>
 
   <label><input type="checkbox" id="featured"> Mark as Featured</label><br><br>
 
-  <input type="file" id="images" multiple accept="image/*"><br><br>
+  <input type="file" id="images" multiple accept="image/*">
 
+  <button class="secondary" onclick="uploadImages()">Upload Images</button>
   <button class="primary" onclick="saveVehicle()">Save Vehicle</button>
-  <button class="danger" onclick="deleteVehicle()">Delete Vehicle</button>
 
   <small id="status"></small>
+</div>
+
+<!-- IMAGE PREVIEW -->
+<div class="card">
+  <h3>Uploaded Images (First = Cover)</h3>
+  <div id="imageGrid" class="grid"></div>
 </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ================= CONFIG ================= */
+/* ========= LOGIN CONFIG ========= */
 const ADMIN_USER="secondwheel";
-const ADMIN_PASS="1008"; // change later
+const ADMIN_PASS="1008";
 
+/* ========= SUPABASE ========= */
 const SUPABASE_URL="https://wbjwvxckbfkutqqbgupq.supabase.co";
-const SUPABASE_KEY="YOUR_ANON_KEY";
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
 const BUCKET="vehicals";
-
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-/* ================= LOGIN ================= */
+/* ========= ELEMENTS ========= */
+const $=id=>document.getElementById(id);
+const loginBox=$("loginBox"),adminBox=$("adminBox");
+const brand=$("brand"),title=$("title"),price=$("price"),
+year=$("year"),km=$("km"),owner=$("owner"),
+desc=$("desc"),featured=$("featured"),
+images=$("images"),status=$("status"),
+imageGrid=$("imageGrid"),vidShow=$("vidShow"),
+type=$("type");
+
+/* ========= LOGIN ========= */
 function login(){
-  if(user.value===ADMIN_USER && pass.value===ADMIN_PASS){
+  if(loginUser.value===ADMIN_USER && loginPass.value===ADMIN_PASS){
     localStorage.setItem("sw_admin","1");
     loginBox.classList.add("hidden");
     adminBox.classList.remove("hidden");
     init();
-  }else{
-    loginErr.textContent="Invalid login";
-  }
-}
-function logout(){
-  localStorage.removeItem("sw_admin");
-  location.reload();
+  }else loginErr.textContent="Invalid login";
 }
 if(localStorage.getItem("sw_admin")){
   loginBox.classList.add("hidden");
@@ -105,19 +119,16 @@ if(localStorage.getItem("sw_admin")){
   init();
 }
 
-/* ================= UTIL ================= */
-function vid(){ return Date.now().toString().slice(-8); }
-function shortDesc(t){ return t.length>45?t.slice(0,45)+"…":t; }
-
-let CURRENT_VID=vid();
+/* ========= UTIL ========= */
+function makeVID(){return Date.now().toString().slice(-8);}
+let CURRENT_VID=makeVID();
 vidShow.textContent="VID: "+CURRENT_VID;
 
-/* ================= SAVE ================= */
+/* ========= SAVE ========= */
 async function saveVehicle(){
-  if(owner.value<1||owner.value>5){status.textContent="Owner 1–5";return;}
-
   let meta={
     vid:CURRENT_VID,
+    type:type.value,
     brand:brand.value.toUpperCase(),
     title:title.value,
     price:+price.value,
@@ -129,53 +140,73 @@ async function saveVehicle(){
   };
 
   let blob=new Blob([JSON.stringify(meta,null,2)],{type:"application/json"});
-  await sb.storage.from(BUCKET).upload("car/"+CURRENT_VID+"/meta.json",blob,{upsert:true});
+  await sb.storage.from(BUCKET)
+    .upload(type.value+"/"+CURRENT_VID+"/meta.json",blob,{upsert:true});
+
   if(featured.checked){
-    await sb.storage.from(BUCKET).upload("featured/"+CURRENT_VID+"/meta.json",blob,{upsert:true});
+    await sb.storage.from(BUCKET)
+      .upload("featured/"+CURRENT_VID+"/meta.json",blob,{upsert:true});
   }
 
+  status.textContent="Vehicle saved ✓";
+}
+
+/* ========= IMAGE UPLOAD ========= */
+async function uploadImages(){
+  if(!images.files.length){status.textContent="Select images";return;}
+
   for(let f of images.files){
-    let n=Date.now()+"-"+f.name;
-    await sb.storage.from(BUCKET).upload("car/"+CURRENT_VID+"/"+n,f,{upsert:true});
+    let name=Date.now()+"-"+f.name;
+
+    await sb.storage.from(BUCKET)
+      .upload(type.value+"/"+CURRENT_VID+"/"+name,f,{upsert:true});
+
     if(featured.checked){
-      await sb.storage.from(BUCKET).upload("featured/"+CURRENT_VID+"/"+n,f,{upsert:true});
+      await sb.storage.from(BUCKET)
+        .upload("featured/"+CURRENT_VID+"/"+name,f,{upsert:true});
     }
   }
 
-  status.textContent="Saved ✓";
-  loadFeatured();
+  images.value="";
+  status.textContent="Images uploaded ✓";
+  loadImages();
 }
 
-/* ================= DELETE ================= */
-async function deleteVehicle(){
-  await sb.storage.from(BUCKET).remove(["car/"+CURRENT_VID,"featured/"+CURRENT_VID]);
-  status.textContent="Deleted";
-}
+/* ========= LOAD IMAGES ========= */
+async function loadImages(){
+  imageGrid.innerHTML="";
+  let {data}=await sb.storage.from(BUCKET)
+    .list(type.value+"/"+CURRENT_VID);
 
-/* ================= FEATURED ================= */
-async function loadFeatured(){
-  featuredList.innerHTML="";
-  let {data}=await sb.storage.from(BUCKET).list("featured");
   if(!data) return;
+  data=data.filter(f=>!f.name.endsWith("meta.json"));
 
-  for(let f of data){
+  for(let i=0;i<data.length;i++){
+    let f=data[i];
     let url=sb.storage.from(BUCKET)
-      .getPublicUrl("featured/"+f.name+"/meta.json").data.publicUrl;
-    let r=await fetch(url);
-    if(!r.ok)continue;
-    let m=await r.json();
+      .getPublicUrl(type.value+"/"+CURRENT_VID+"/"+f.name).data.publicUrl;
 
     let d=document.createElement("div");
-    d.className="item";
+    d.className="img"+(i===0?" cover":"");
     d.innerHTML=`
-      <b>${m.title}</b>
-      <small>${m.brand} • ₹${m.price}</small>
-      <small>${shortDesc(m.description)}</small>
+      <img src="${url}">
+      <button class="danger" onclick="deleteImage('${f.name}')">✕</button>
     `;
-    featuredList.appendChild(d);
+    imageGrid.appendChild(d);
   }
 }
-function init(){ loadFeatured(); }
+
+/* ========= DELETE IMAGE ========= */
+async function deleteImage(name){
+  await sb.storage.from(BUCKET)
+    .remove([type.value+"/"+CURRENT_VID+"/"+name]);
+  await sb.storage.from(BUCKET)
+    .remove(["featured/"+CURRENT_VID+"/"+name]);
+  loadImages();
+}
+
+/* ========= INIT ========= */
+function init(){loadImages();}
 </script>
 
 </body>
