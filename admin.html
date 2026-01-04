@@ -3,42 +3,48 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Second Wheel – Admin Panel</title>
+<title>Second Wheel Admin</title>
 
 <style>
-body{margin:0;font-family:system-ui;background:#f7f8fb}
+body{margin:0;font-family:system-ui;background:#f3f4f6}
 .wrap{max-width:1200px;margin:auto;padding:16px}
 .card{background:#fff;border-radius:14px;padding:16px;margin-bottom:16px;
-box-shadow:0 8px 20px rgba(0,0,0,.06)}
+box-shadow:0 8px 20px rgba(0,0,0,.08)}
 input,textarea,select{width:100%;padding:10px;border-radius:8px;
 border:1px solid #d1d5db;margin-bottom:10px}
 button{padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
 .primary{background:#f59e0b}
 .secondary{background:#2563eb;color:#fff}
 .danger{background:#ef4444;color:#fff}
+.hide{display:none}
 
-.slider{position:relative;overflow:hidden;border-radius:12px}
+.slider{overflow:hidden;border-radius:12px}
 .track{display:flex;transition:.3s}
-.slide{min-width:100%;position:relative}
+.slide{min-width:100%}
 .slide img{width:100%;height:240px;object-fit:cover;cursor:zoom-in}
-.slide button{position:absolute;top:8px;right:8px}
 
-.dots{text-align:center;margin-top:6px}
-.dot{display:inline-block;width:8px;height:8px;border-radius:50%;
-background:#d1d5db;margin:0 3px}
-.dot.active{background:#f59e0b}
-
-/* ZOOM MODAL */
-.zoom{position:fixed;inset:0;background:rgba(0,0,0,.9);
-display:none;align-items:center;justify-content:center;z-index:999}
-.zoom img{max-width:95%;max-height:95%}
-.zoom span{position:absolute;top:20px;right:20px;
-font-size:28px;color:#fff;cursor:pointer}
+/* LOGIN */
+.login{position:fixed;inset:0;background:#111827;
+display:flex;align-items:center;justify-content:center}
+.login .card{max-width:360px;width:100%}
 </style>
 </head>
 
 <body>
-<div class="wrap">
+
+<!-- LOGIN -->
+<div class="login" id="loginBox">
+  <div class="card">
+    <h3>Admin Login</h3>
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+    <button class="primary" onclick="login()">Login</button>
+    <small id="loginErr"></small>
+  </div>
+</div>
+
+<div class="wrap hide" id="admin">
+
 <h2>Second Wheel – Admin Panel</h2>
 
 <div class="card">
@@ -52,87 +58,127 @@ font-size:28px;color:#fff;cursor:pointer}
 
 <input id="brand" placeholder="Brand">
 <input id="title" placeholder="Model">
-<input id="price" type="number" placeholder="Price">
 <textarea id="desc" placeholder="Description"></textarea>
 
 <input type="file" id="images" multiple accept="image/*">
 <button class="secondary" onclick="uploadImages()">Upload Images</button>
-<button class="primary" onclick="saveVehicle()">Save</button>
+<button class="primary" onclick="saveVehicle()">Save Vehicle</button>
+<button class="danger" onclick="deleteVehicle()">Delete Vehicle</button>
+
+<small id="status"></small>
 </div>
 
 <div class="card">
-<h3>Images (Swipe / Tap to Zoom)</h3>
-<div class="slider" id="slider">
+<h3>Images</h3>
+<div class="slider">
   <div class="track" id="track"></div>
-</div>
-<div class="dots" id="dots"></div>
 </div>
 </div>
 
-<!-- ZOOM VIEW -->
-<div class="zoom" id="zoom">
-<span onclick="zoom.style.display='none'">✕</span>
-<img id="zoomImg">
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+/* LOGIN CONFIG */
+const ADMIN_USER="secondwheel";
+const ADMIN_PASS="1008";
+
+/* SUPABASE */
 const SUPABASE_URL="https://wbjwvxckbfkutqqbgupq.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
 const BUCKET="vehicals";
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let VID=Date.now().toString().slice(-8);
-vidShow.textContent="VID: "+VID;
-let index=0,startX=0;
+const $=id=>document.getElementById(id);
+let CURRENT_VID=Date.now().toString().slice(-8);
+vidShow.textContent="VID: "+CURRENT_VID;
 
-async function saveVehicle(){
-  let meta={vid:VID,type:type.value,brand:brand.value,title:title.value,description:desc.value};
-  let b=new Blob([JSON.stringify(meta)],{type:"application/json"});
-  await sb.storage.from(BUCKET).upload(type.value+"/"+VID+"/meta.json",b,{upsert:true});
+/* LOGIN */
+function login(){
+  if(user.value===ADMIN_USER && pass.value===ADMIN_PASS){
+    loginBox.style.display="none";
+    admin.classList.remove("hide");
+  }else{
+    loginErr.textContent="Invalid login";
+  }
 }
 
+/* SAVE */
+async function saveVehicle(){
+  let meta={
+    vid:CURRENT_VID,
+    type:type.value,
+    brand:brand.value,
+    title:title.value,
+    description:desc.value,
+    updatedAt:new Date().toISOString()
+  };
+  let blob=new Blob([JSON.stringify(meta,null,2)],{type:"application/json"});
+  await sb.storage.from(BUCKET)
+    .upload(type.value+"/"+CURRENT_VID+"/meta.json",blob,{upsert:true});
+  status.textContent="Saved ✓";
+}
+
+/* UPLOAD IMAGES */
 async function uploadImages(){
   for(let f of images.files){
     await sb.storage.from(BUCKET)
-      .upload(type.value+"/"+VID+"/"+Date.now()+"-"+f.name,f,{upsert:true});
+      .upload(type.value+"/"+CURRENT_VID+"/"+Date.now()+"-"+f.name,f,{upsert:true});
   }
+  images.value="";
   loadImages();
 }
 
+/* LOAD IMAGES */
 async function loadImages(){
-  track.innerHTML=""; dots.innerHTML="";
-  let {data}=await sb.storage.from(BUCKET).list(type.value+"/"+VID);
+  track.innerHTML="";
+  let {data}=await sb.storage.from(BUCKET).list(type.value+"/"+CURRENT_VID);
   if(!data) return;
   data=data.filter(x=>!x.name.endsWith("meta.json"));
-  data.forEach((f,i)=>{
+  data.forEach(f=>{
     let url=sb.storage.from(BUCKET)
-      .getPublicUrl(type.value+"/"+VID+"/"+f.name).data.publicUrl;
+      .getPublicUrl(type.value+"/"+CURRENT_VID+"/"+f.name).data.publicUrl;
     let d=document.createElement("div");
     d.className="slide";
-    d.innerHTML=`<img src="${url}" onclick="openZoom('${url}')">`;
+    d.innerHTML=`<img src="${url}">`;
     track.appendChild(d);
-    dots.innerHTML+=`<span class="dot ${i==0?'active':''}"></span>`;
   });
-  update();
 }
 
-function update(){
-  track.style.transform=`translateX(-${index*100}%)`;
-  [...dots.children].forEach((d,i)=>d.classList.toggle("active",i===index));
-}
+/* DELETE VEHICLE + LOG */
+async function deleteVehicle(){
+  if(!confirm("Vehicle permanently delete करायचा आहे का?")) return;
 
-slider.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
-slider.addEventListener("touchend",e=>{
-  let dx=e.changedTouches[0].clientX-startX;
-  if(dx<-50&&index<track.children.length-1) index++;
-  if(dx>50&&index>0) index--;
-  update();
-});
+  let base=type.value+"/"+CURRENT_VID;
+  let featured="featured/"+CURRENT_VID;
 
-function openZoom(src){
-  zoomImg.src=src;
-  zoom.style.display="flex";
+  async function delFolder(path){
+    let {data}=await sb.storage.from(BUCKET).list(path);
+    if(data && data.length){
+      await sb.storage.from(BUCKET)
+        .remove(data.map(f=>path+"/"+f.name));
+    }
+  }
+
+  await delFolder(base);
+  await delFolder(featured);
+
+  // DELETE LOG
+  let log={
+    vid:CURRENT_VID,
+    type:type.value,
+    deletedBy:"secondwheel",
+    deletedAt:new Date().toISOString()
+  };
+  let lb=new Blob([JSON.stringify(log,null,2)],{type:"application/json"});
+  await sb.storage.from(BUCKET)
+    .upload("delete_logs/"+CURRENT_VID+".json",lb,{upsert:true});
+
+  alert("Vehicle Deleted Successfully");
+
+  CURRENT_VID=Date.now().toString().slice(-8);
+  vidShow.textContent="VID: "+CURRENT_VID;
+  track.innerHTML="";
 }
 </script>
 </body>
