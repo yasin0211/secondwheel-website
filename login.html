@@ -1,84 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Second Wheel – Admin Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Supabase CDN (ONLY ONCE) -->
+  <!-- Supabase JS v2 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    body{
+    body {
       font-family: Arial, sans-serif;
-      background:#f4f4f4;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
-    .box{
-      width:320px;
-      margin:120px auto;
-      background:#fff;
-      padding:20px;
-      border-radius:8px;
-      box-shadow:0 0 10px rgba(0,0,0,0.1);
+    .login-box {
+      background: #fff;
+      padding: 25px;
+      width: 320px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
     }
-    h3{text-align:center}
-    input,button{
-      width:100%;
-      padding:10px;
-      margin-top:10px;
+    h2 {
+      margin-bottom: 20px;
     }
-    button{
-      background:#f59e0b;
-      border:none;
-      font-weight:bold;
-      cursor:pointer;
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
-    #msg{
-      margin-top:10px;
-      color:red;
-      text-align:center;
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #f4a52f;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background: #e3951f;
     }
   </style>
 </head>
+
 <body>
 
-<div class="box">
-  <h3>Admin Login</h3>
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <div id="msg"></div>
-</div>
+  <div class="login-box">
+    <h2>Admin Login</h2>
 
-<script>
-/* ===== SUPABASE CONFIG (DONE) ===== */
-const SUPABASE_URL = "https://wbjwvxckbfkutqqbgupq.supabase.co";
-const SUPABASE_KEY = "sb_publishable_QjJXmzREzdg3qB6dbfG-1A_0jLQNt66";
+    <input id="email" type="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
 
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+    <button onclick="loginAdmin()">Login</button>
+  </div>
 
-/* ===== LOGIN FUNCTION (FIXED) ===== */
-async function login(){
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
-  const msg = document.getElementById("msg");
+  <script>
+    const SUPABASE_URL = "https://wbjwvxckbfkutqqbgupq.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_QjJXmzREzdg3qB6dbfG-1A_0jLQNt66";
 
-  msg.innerText = "Logging in...";
+    const supabase = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email: email,
-    password: password
-  });
+    async function loginAdmin() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
 
-  if(error){
-    msg.innerText = error.message;
-  }else{
-    window.location.href = "admin.html";
-  }
-}
-</script>
+      if (!email || !password) {
+        alert("Email आणि Password टाका");
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (error) {
+        alert("Login failed: " + error.message);
+        console.error(error);
+        return;
+      }
+
+      // ✅ Login success
+      window.location.href = "admin.html";
+    }
+  </script>
 
 </body>
 </html>
