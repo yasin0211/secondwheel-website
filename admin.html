@@ -1,72 +1,51 @@
+<!-- ================== SECOND WHEEL : ADMIN PANEL (FINAL) ================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Second Wheel – Admin Panel</title>
+<title>Second Wheel | Admin</title>
 
 <style>
 body{margin:0;font-family:system-ui;background:#f3f4f6}
 .wrap{max-width:1200px;margin:auto;padding:16px}
-.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:16px;
+.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:16px;
 box-shadow:0 8px 20px rgba(0,0,0,.08)}
-input,textarea,select{width:100%;padding:10px;border-radius:8px;
+input,select,textarea{width:100%;padding:10px;border-radius:8px;
 border:1px solid #d1d5db;margin-bottom:10px}
 button{padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
 .primary{background:#f59e0b}
 .secondary{background:#2563eb;color:#fff}
 .danger{background:#ef4444;color:#fff}
-.badge{background:#facc15;padding:2px 8px;border-radius:999px;font-size:12px}
-.hide{display:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.stat{background:#111827;color:#fff;border-radius:12px;padding:12px;text-align:center}
-
-.listItem{border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin-bottom:10px}
-.listItem h4{margin:0 0 4px}
-.listItem small{color:#6b7280}
-.actions{margin-top:8px;display:flex;gap:8px}
-
-/* LOGIN */
 .login{position:fixed;inset:0;background:#111827;
 display:flex;align-items:center;justify-content:center}
-.login .card{max-width:360px;width:100%}
+.hide{display:none}
+
+.imgGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
+.imgGrid div{position:relative}
+.imgGrid img{width:100%;height:90px;object-fit:cover;border-radius:8px}
+.imgGrid button{position:absolute;top:4px;right:4px}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
 <div class="login" id="loginBox">
   <div class="card">
     <h3>Admin Login</h3>
-    <input id="user" placeholder="Username">
-    <input id="pass" type="password" placeholder="Password">
+    <input id="u" placeholder="Username">
+    <input id="p" type="password" placeholder="Password">
     <button class="primary" onclick="login()">Login</button>
-    <small id="loginErr"></small>
+    <small id="err"></small>
   </div>
 </div>
 
 <div class="wrap hide" id="admin">
 
-<h2>Second Wheel – Admin Panel</h2>
-
-<!-- DASHBOARD -->
 <div class="card">
-<h3>Dashboard</h3>
-<div class="stats">
-  <div class="stat">Cars<br><b id="cCars">0</b></div>
-  <div class="stat">Bikes<br><b id="cBikes">0</b></div>
-  <div class="stat">Scooters<br><b id="cScooters">0</b></div>
-  <div class="stat">Featured<br><b id="cFeatured">0</b></div>
-  <div class="stat">Total<br><b id="cTotal">0</b></div>
-</div>
-</div>
-
-<!-- FORM -->
-<div class="card">
-<b id="vidShow"></b><br><br>
+<h3>Add / Edit Vehicle</h3>
 
 <select id="type">
   <option value="car">Car</option>
@@ -78,254 +57,88 @@ display:flex;align-items:center;justify-content:center}
   <input id="brand" placeholder="Brand">
   <input id="title" placeholder="Title">
   <input id="model" placeholder="Model">
-  <input id="owner" type="number" placeholder="Owner">
-  <input id="year" type="number" placeholder="Year">
-  <input id="km" type="number" placeholder="KM">
-  <select id="fuel">
-    <option>Petrol</option>
-    <option>Diesel</option>
-    <option>CNG</option>
-    <option>EV</option>
-  </select>
-  <input id="price" type="number" placeholder="Price">
+  <input id="year" placeholder="Year">
+  <input id="km" placeholder="KM">
+  <input id="fuel" placeholder="Fuel">
+  <input id="price" placeholder="Price">
 </div>
 
-<textarea id="desc" placeholder="Description (Buy page)"></textarea>
+<textarea id="desc" placeholder="Description"></textarea>
+<label><input type="checkbox" id="featured"> Featured</label>
 
-<label><input type="checkbox" id="featured"> Featured</label><br><br>
+<input type="file" id="imgs" multiple>
+<button class="secondary" onclick="upload()">Upload Images</button>
+<button class="primary" onclick="save()">Save</button>
 
-<input type="file" id="images" multiple accept="image/*">
-
-<button class="secondary" onclick="uploadImages()">Upload Images</button>
-<button class="primary" onclick="saveVehicle()">Save / Update</button>
-
-<small id="status"></small>
-</div>
-
-<!-- BULK UPLOAD -->
-<div class="card">
-<h3>Bulk Upload (CSV)</h3>
-<input type="file" id="csv" accept=".csv">
-<button class="secondary" onclick="bulkUpload()">Upload CSV</button>
-<small>CSV columns: type,brand,title,model,owner,year,km,fuel,price,description,featured</small>
-</div>
-
-<!-- ADMIN LIST -->
-<div class="card">
-<h3>Vehicle List</h3>
-
-<div class="grid">
-  <input id="search" placeholder="Search brand / title / model">
-  <select id="filterType">
-    <option value="">All Types</option>
-    <option value="car">Car</option>
-    <option value="bike">Bike</option>
-    <option value="scooter">Scooter</option>
-  </select>
-</div>
-
-<div id="vehicleList"></div>
+<div id="preview" class="imgGrid"></div>
 </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* LOGIN */
 const ADMIN_USER="secondwheel";
 const ADMIN_PASS="1008";
 
-/* SUPABASE */
 const SUPABASE_URL="https://wbjwvxckbfkutqqbgupq.supabase.co";
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
+const SUPABASE_KEY="YOUR_PUBLIC_ANON_KEY";
 const BUCKET="vehicals";
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const $=id=>document.getElementById(id);
-let CURRENT_VID=Date.now().toString().slice(-8);
-vidShow.textContent="VID: "+CURRENT_VID;
-let ALL=[];
+let VID=Date.now().toString().slice(-8);
 
 /* LOGIN */
 function login(){
-  if(user.value===ADMIN_USER && pass.value===ADMIN_PASS){
+  if(u.value===ADMIN_USER && p.value===ADMIN_PASS){
     loginBox.style.display="none";
     admin.classList.remove("hide");
-    loadAll();
-  }else loginErr.textContent="Invalid login";
+  }else err.textContent="Wrong login";
 }
 
-/* SAVE VEHICLE */
-async function saveVehicle(){
-  let meta={
-    vid:CURRENT_VID,
-    type:type.value,
-    brand:brand.value,
-    title:title.value,
-    model:model.value,
-    owner:+owner.value,
-    year:+year.value,
-    km:+km.value,
-    fuel:fuel.value,
-    price:+price.value,
-    description:desc.value,
-    featured:featured.checked,
-    updatedAt:new Date().toISOString()
+/* UPLOAD */
+async function upload(){
+  preview.innerHTML="";
+  for(let f of imgs.files){
+    const path=`${type.value}/${VID}/${Date.now()}-${f.name}`;
+    await sb.storage.from(BUCKET).upload(path,f,{upsert:true});
+    showImg(path);
+  }
+}
+
+/* PREVIEW + DELETE */
+function showImg(path){
+  const d=document.createElement("div");
+  const i=document.createElement("img");
+  i.src=sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+  const b=document.createElement("button");
+  b.textContent="✕"; b.className="danger";
+  b.onclick=async()=>{
+    await sb.storage.from(BUCKET).remove([path]);
+    d.remove();
   };
-  let b=new Blob([JSON.stringify(meta,null,2)],{type:"application/json"});
+  d.appendChild(i); d.appendChild(b);
+  preview.appendChild(d);
+}
+
+/* SAVE META */
+async function save(){
+  const meta={
+    vid:VID,type:type.value,brand:brand.value,title:title.value,
+    model:model.value,year:year.value,km:km.value,
+    fuel:fuel.value,price:price.value,
+    description:desc.value,featured:featured.checked
+  };
+  const blob=new Blob([JSON.stringify(meta,null,2)],{type:"application/json"});
   await sb.storage.from(BUCKET)
-    .upload(type.value+"/"+CURRENT_VID+"/meta.json",b,{upsert:true});
+    .upload(`${type.value}/${VID}/meta.json`,blob,{upsert:true});
   if(featured.checked){
     await sb.storage.from(BUCKET)
-      .upload("featured/"+CURRENT_VID+"/meta.json",b,{upsert:true});
+      .upload(`featured/${VID}/meta.json`,blob,{upsert:true});
   }
-  status.textContent="Saved ✓";
-  loadAll();
-}
-
-/* IMAGE UPLOAD */
-async function uploadImages(){
-  for(let f of images.files){
-    await sb.storage.from(BUCKET)
-      .upload(type.value+"/"+CURRENT_VID+"/"+Date.now()+"-"+f.name,f,{upsert:true});
-  }
-  images.value="";
-}
-
-/* LOAD ALL */
-async function loadAll(){
-  ALL=[];
-  let counts={car:0,bike:0,scooter:0,featured:0};
-  for(let t of ["car","bike","scooter"]){
-    let {data}=await sb.storage.from(BUCKET).list(t);
-    if(!data) continue;
-    for(let f of data){
-      let url=sb.storage.from(BUCKET)
-        .getPublicUrl(t+"/"+f.name+"/meta.json").data.publicUrl;
-      let r=await fetch(url);
-      if(r.ok){
-        let m=await r.json();
-        ALL.push(m);
-        counts[t]++;
-        if(m.featured) counts.featured++;
-      }
-    }
-  }
-  cCars.textContent=counts.car;
-  cBikes.textContent=counts.bike;
-  cScooters.textContent=counts.scooter;
-  cFeatured.textContent=counts.featured;
-  cTotal.textContent=ALL.length;
-  renderList();
-}
-
-/* RENDER LIST */
-function renderList(){
-  vehicleList.innerHTML="";
-  let q=search.value.toLowerCase();
-  let ft=filterType.value;
-  ALL.filter(v=>
-    (!ft || v.type===ft) &&
-    (v.brand.toLowerCase().includes(q) ||
-     v.title.toLowerCase().includes(q) ||
-     v.model.toLowerCase().includes(q))
-  ).forEach(v=>{
-    let d=document.createElement("div");
-    d.className="listItem";
-    d.innerHTML=`
-      <h4>${v.title} – ${v.model} ${v.featured?'<span class="badge">Featured</span>':''}</h4>
-      <small>${v.brand} | ${v.type.toUpperCase()} | ${v.fuel}</small><br>
-      <small>₹${v.price} | ${v.year} | ${v.km} KM | Owner ${v.owner}</small>
-      <div class="actions">
-        <button class="secondary" onclick='editVehicle(${JSON.stringify(v)})'>Edit</button>
-        <button class="danger" onclick="deleteVehicle('${v.type}','${v.vid}')">Delete</button>
-      </div>`;
-    vehicleList.appendChild(d);
-  });
-}
-
-search.oninput=renderList;
-filterType.onchange=renderList;
-
-/* EDIT */
-function editVehicle(v){
-  CURRENT_VID=v.vid;
-  vidShow.textContent="VID: "+CURRENT_VID;
-  type.value=v.type;
-  brand.value=v.brand;
-  title.value=v.title;
-  model.value=v.model;
-  owner.value=v.owner;
-  year.value=v.year;
-  km.value=v.km;
-  fuel.value=v.fuel;
-  price.value=v.price;
-  desc.value=v.description;
-  featured.checked=!!v.featured;
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-/* DELETE */
-async function deleteVehicle(t,vid){
-  if(!confirm("Delete vehicle permanently?")) return;
-
-  async function del(path){
-    let {data}=await sb.storage.from(BUCKET).list(path);
-    if(data && data.length){
-      await sb.storage.from(BUCKET)
-        .remove(data.map(f=>path+"/"+f.name));
-    }
-  }
-  await del(t+"/"+vid);
-  await del("featured/"+vid);
-
-  let log={vid,deletedBy:"secondwheel",deletedAt:new Date().toISOString()};
-  let b=new Blob([JSON.stringify(log,null,2)],{type:"application/json"});
-  await sb.storage.from(BUCKET)
-    .upload("delete_logs/"+vid+".json",b,{upsert:true});
-
-  loadAll();
-}
-
-/* BULK UPLOAD */
-function bulkUpload(){
-  let f=csv.files[0];
-  if(!f) return;
-  let r=new FileReader();
-  r.onload=async()=>{
-    let rows=r.result.split("\n").slice(1);
-    for(let row of rows){
-      let c=row.split(",");
-      if(c.length<10) continue;
-      let vid=Date.now().toString().slice(-8)+Math.random().toString().slice(2,4);
-      let meta={
-        vid,
-        type:c[0],
-        brand:c[1],
-        title:c[2],
-        model:c[3],
-        owner:+c[4],
-        year:+c[5],
-        km:+c[6],
-        fuel:c[7],
-        price:+c[8],
-        description:c[9],
-        featured:c[10]==="yes"
-      };
-      let b=new Blob([JSON.stringify(meta,null,2)],{type:"application/json"});
-      await sb.storage.from(BUCKET)
-        .upload(meta.type+"/"+vid+"/meta.json",b,{upsert:true});
-      if(meta.featured){
-        await sb.storage.from(BUCKET)
-          .upload("featured/"+vid+"/meta.json",b,{upsert:true});
-      }
-    }
-    loadAll();
-    alert("Bulk upload done");
-  };
-  r.readAsText(f);
+  alert("Saved");
+  VID=Date.now().toString().slice(-8);
+  preview.innerHTML="";
 }
 </script>
-
 </body>
 </html>
