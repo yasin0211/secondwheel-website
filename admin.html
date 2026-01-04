@@ -1,256 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Second Wheel – Admin Panel</title>
+<meta charset="UTF-8" />
+<title>Second Wheel — Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <style>
-body{margin:0;font-family:system-ui;background:#f3f4f6}
-.wrap{max-width:1200px;margin:auto;padding:16px}
-.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:16px;
-box-shadow:0 8px 20px rgba(0,0,0,.08)}
-
-input,select,textarea{
-  width:100%;padding:10px;border-radius:8px;
-  border:1px solid #d1d5db;margin-bottom:10px
-}
-
-button{
-  padding:8px 14px;border-radius:8px;border:none;cursor:pointer
-}
-.primary{background:#f59e0b}
-.secondary{background:#2563eb;color:#fff}
-.danger{background:#ef4444;color:#fff}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:10px
-}
-
-/* IMAGE PREVIEW */
-.imgGrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
-  gap:8px
-}
-.imgBox{
-  position:relative;
-  border-radius:8px;
-  overflow:hidden
-}
-.imgBox img{
-  width:100%;
-  height:80px;
-  object-fit:cover
-}
-.imgBox button{
-  position:absolute;
-  top:4px;
-  right:4px;
-  padding:4px 6px;
-  font-size:12px;
-  border-radius:6px
-}
-
-/* LOGIN */
-.login{
-  position:fixed;inset:0;
-  background:#111827;
-  display:flex;align-items:center;justify-content:center
-}
-.hide{display:none}
-.login .card{max-width:360px;width:100%}
+body{margin:0;font-family:system-ui;background:#f4f6fb}
+header{background:#111827;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+h1{font-size:18px;margin:0}
+button{cursor:pointer;border:0;border-radius:8px;padding:10px 14px}
+.btn{background:#2563eb;color:#fff}
+.btn.danger{background:#dc2626}
+.btn.ghost{background:#e5e7eb;color:#111}
+main{max-width:1200px;margin:auto;padding:16px;display:grid;grid-template-columns:360px 1fr;gap:16px}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.panel{background:#fff;border-radius:14px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.list{max-height:70vh;overflow:auto}
+.item{display:flex;gap:10px;padding:8px;border:1px solid #e5e7eb;border-radius:10px;margin-bottom:8px;cursor:pointer}
+.item:hover{background:#f9fafb}
+.thumb{width:54px;height:54px;border-radius:8px;object-fit:cover;background:#eee}
+label{font-weight:600;font-size:13px;margin-top:10px;display:block}
+input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #d1d5db;margin-top:6px}
+textarea{min-height:100px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+@media(max-width:600px){.gallery{grid-template-columns:repeat(2,1fr)}}
+.gimg{position:relative}
+.gimg img{width:100%;height:110px;object-fit:cover;border-radius:10px}
+.gimg button{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#fff}
+.note{margin-top:8px;font-size:13px}
+.ok{color:#15803d}
+.err{color:#b91c1c}
 </style>
 </head>
 
 <body>
+<header>
+  <h1>Second Wheel — Admin Panel</h1>
+  <button id="logout" class="btn ghost">Logout</button>
+</header>
 
-<!-- LOGIN -->
-<div class="login" id="loginBox">
-  <div class="card">
-    <h3>Admin Login</h3>
-    <input id="pin" type="password" placeholder="Enter PIN">
-    <button class="primary" onclick="unlock()">Unlock</button>
-    <small id="err"></small>
+<main id="app" hidden>
+  <!-- LEFT -->
+  <div class="panel">
+    <button id="new" class="btn ghost" style="width:100%">+ New Vehicle</button>
+    <div id="list" class="list" style="margin-top:12px"></div>
   </div>
-</div>
 
-<div class="wrap hide" id="admin">
+  <!-- RIGHT -->
+  <div class="panel">
+    <b id="vidLabel">VID: -</b>
 
-<h2>Second Wheel – Admin Panel</h2>
+    <label>Brand</label>
+    <input id="brand">
 
-<div class="card">
-<b id="vidShow"></b><br><br>
+    <label>Title</label>
+    <input id="title">
 
-<select id="type">
-  <option value="car">Car</option>
-  <option value="bike">Bike</option>
-  <option value="scooter">Scooter</option>
-</select>
+    <label>Type</label>
+    <select id="type">
+      <option value="car">Car</option>
+      <option value="bike">Bike</option>
+      <option value="scooter">Scooter</option>
+    </select>
 
-<div class="grid">
-  <input id="brand" placeholder="Brand">
-  <input id="title" placeholder="Title">
-  <input id="model" placeholder="Model">
-  <input id="year" type="number" placeholder="Year">
-  <input id="km" type="number" placeholder="KM">
-  <input id="price" type="number" placeholder="Price">
-</div>
+    <label>Price</label>
+    <input type="number" id="price">
 
-<textarea id="desc" placeholder="Description"></textarea>
-<label><input type="checkbox" id="featured"> Featured</label>
+    <label>Year</label>
+    <input type="number" id="year">
 
-<hr>
+    <label>KM</label>
+    <input type="number" id="km">
 
-<input type="file" id="files" multiple accept="image/*">
-<button class="secondary" onclick="uploadImages()">Upload Images</button>
+    <label>Owner</label>
+    <input type="number" id="owner">
 
-<div class="imgGrid" id="preview"></div>
+    <label>Description</label>
+    <textarea id="desc"></textarea>
 
-<hr>
+    <label>
+      <input type="checkbox" id="featured"> Mark as Featured
+    </label>
 
-<button class="primary" onclick="saveVehicle()">Save Vehicle</button>
-<button class="danger" onclick="deleteVehicle()">Delete Vehicle</button>
+    <label>Upload Images</label>
+    <input type="file" id="files" multiple accept="image/*">
 
-<small id="status"></small>
-</div>
+    <div class="actions">
+      <button id="save" class="btn">Save / Update</button>
+      <button id="upload" class="btn ghost">Upload Images</button>
+      <button id="delete" class="btn danger">Delete</button>
+    </div>
 
-</div>
+    <div id="msg" class="note"></div>
+
+    <div id="gallery" class="gallery"></div>
+  </div>
+</main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ================= CONFIG ================= */
-const ADMIN_PIN="1008";
+/* ===== SUPABASE CONFIG ===== */
+const SUPABASE_URL = "https://wbjwvxckbfkutqqbgupq.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_QjJXmzREzdg3qB6dbfG-1A_0jLQNt66";
+const BUCKET = "vehicals";
 
-const SUPABASE_URL="https://wbjwvxckbfkutqqbgupq.supabase.co";
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
-const BUCKET="vehicals";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const $=id=>document.getElementById(id);
-
-/* ================= STATE ================= */
-let CURRENT_VID=Date.now().toString().slice(-8);
-vidShow.textContent="VID: "+CURRENT_VID;
-
-/* ================= LOGIN ================= */
-function unlock(){
-  if(pin.value===ADMIN_PIN){
-    loginBox.style.display="none";
-    admin.classList.remove("hide");
-  }else err.textContent="Wrong PIN";
-}
-
-/* ================= IMAGE UPLOAD (FIXED) ================= */
-async function uploadImages(){
-  if(!files.files.length){
-    alert("Select images first");
-    return;
+/* ===== AUTH GUARD ===== */
+async function checkAuth(){
+  const { data } = await sb.auth.getSession();
+  if(!data.session){
+    alert("Not logged in");
+    location.href="login.html";
   }
-
-  for(let i=0;i<files.files.length;i++){
-    const f=files.files[i];
-    const name=Date.now()+"-"+i+"-"+f.name.replace(/\s+/g,'-');
-    const path=`${type.value}/${CURRENT_VID}/${name}`;
-
-    const {error}=await sb.storage
-      .from(BUCKET)
-      .upload(path,f,{upsert:true,contentType:f.type});
-
-    if(error){
-      alert("Upload failed");
-      console.error(error);
-      return;
-    }
-  }
-
-  files.value="";
-  loadPreview();
 }
+checkAuth();
 
-/* ================= IMAGE PREVIEW ================= */
-async function loadPreview(){
-  preview.innerHTML="";
-  const {data}=await sb.storage
-    .from(BUCKET)
-    .list(`${type.value}/${CURRENT_VID}`);
+/* ===== STATE ===== */
+let VID = Date.now().toString(); // NUMBER ONLY
+const el = id=>document.getElementById(id);
 
-  if(!data) return;
-
-  data.filter(f=>!f.name.endsWith(".json")).forEach(f=>{
-    const url=sb.storage
-      .from(BUCKET)
-      .getPublicUrl(`${type.value}/${CURRENT_VID}/${f.name}`).data.publicUrl;
-
-    const box=document.createElement("div");
-    box.className="imgBox";
-    box.innerHTML=`
-      <img src="${url}">
-      <button class="danger">✕</button>
-    `;
-
-    box.querySelector("button").onclick=async()=>{
-      await sb.storage
-        .from(BUCKET)
-        .remove([`${type.value}/${CURRENT_VID}/${f.name}`]);
-      loadPreview();
-    };
-
-    preview.appendChild(box);
-  });
+function setVID(){
+  el("vidLabel").innerText="VID: "+VID;
 }
+setVID();
 
-/* ================= SAVE META ================= */
-async function saveVehicle(){
+/* ===== META ===== */
+async function saveMeta(){
   const meta={
-    vid:CURRENT_VID,
-    type:type.value,
-    brand:brand.value,
-    title:title.value,
-    model:model.value,
-    year:+year.value,
-    km:+km.value,
-    price:+price.value,
-    description:desc.value,
-    featured:featured.checked,
+    vid:VID,
+    brand:el("brand").value,
+    title:el("title").value,
+    type:el("type").value,
+    price:+el("price").value,
+    year:+el("year").value,
+    km:+el("km").value,
+    owner:+el("owner").value,
+    description:el("desc").value,
     updatedAt:new Date().toISOString()
   };
-
-  const blob=new Blob([JSON.stringify(meta,null,2)],{type:"application/json"});
-
-  await sb.storage.from(BUCKET)
-    .upload(`${type.value}/${CURRENT_VID}/meta.json`,blob,{upsert:true});
-
-  if(featured.checked){
-    await sb.storage.from(BUCKET)
-      .upload(`featured/${CURRENT_VID}/meta.json`,blob,{upsert:true});
+  const path=meta.type+"/"+VID+"/meta.json";
+  await sb.storage.from(BUCKET).upload(path,new Blob([JSON.stringify(meta)],{type:"application/json"}),{upsert:true});
+  if(el("featured").checked){
+    await sb.storage.from(BUCKET).upload("featured/"+VID+"/meta.json",new Blob([JSON.stringify(meta)],{type:"application/json"}),{upsert:true});
   }
-
-  status.textContent="Saved ✓";
 }
 
-/* ================= DELETE VEHICLE ================= */
-async function deleteVehicle(){
-  if(!confirm("Delete vehicle permanently?")) return;
-
-  async function del(path){
-    const {data}=await sb.storage.from(BUCKET).list(path);
-    if(data?.length){
-      await sb.storage.from(BUCKET)
-        .remove(data.map(f=>path+"/"+f.name));
+/* ===== UPLOAD IMAGES ===== */
+async function uploadImages(){
+  const files=el("files").files;
+  if(!files.length) return;
+  for(let f of files){
+    const name=Date.now()+"-"+f.name;
+    await sb.storage.from(BUCKET).upload(el("type").value+"/"+VID+"/"+name,f,{upsert:true});
+    if(el("featured").checked){
+      await sb.storage.from(BUCKET).upload("featured/"+VID+"/"+name,f,{upsert:true});
     }
   }
-
-  await del(`${type.value}/${CURRENT_VID}`);
-  await del(`featured/${CURRENT_VID}`);
-
-  CURRENT_VID=Date.now().toString().slice(-8);
-  vidShow.textContent="VID: "+CURRENT_VID;
-  preview.innerHTML="";
-  status.textContent="Deleted ✓";
 }
+
+/* ===== BUTTONS ===== */
+el("save").onclick=async()=>{
+  try{
+    await saveMeta();
+    el("msg").innerText="Saved successfully";
+    el("msg").className="note ok";
+  }catch(e){
+    el("msg").innerText="Save failed";
+    el("msg").className="note err";
+  }
+};
+
+el("upload").onclick=uploadImages;
+
+el("delete").onclick=async()=>{
+  if(!confirm("Delete this vehicle?"))return;
+  await sb.storage.from(BUCKET).remove([el("type").value+"/"+VID]);
+  await sb.storage.from(BUCKET).remove(["featured/"+VID]);
+  VID=Date.now().toString();
+  setVID();
+};
+
+el("new").onclick=()=>{
+  VID=Date.now().toString();
+  setVID();
+};
+
+el("logout").onclick=async()=>{
+  await sb.auth.signOut();
+  location.href="login.html";
+};
+
+document.getElementById("app").hidden=false;
 </script>
 </body>
 </html>
