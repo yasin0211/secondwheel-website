@@ -3,136 +3,208 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Second Wheel – Admin Panel</title>
+<title>Second Wheel | Admin Panel</title>
 
 <style>
-body{margin:0;font-family:system-ui;background:#f7f8fb}
+body{margin:0;font-family:system-ui;background:#f3f4f6}
 .wrap{max-width:1200px;margin:auto;padding:16px}
 .card{background:#fff;border-radius:14px;padding:16px;margin-bottom:16px;
-box-shadow:0 8px 20px rgba(0,0,0,.06)}
-input,textarea,select{width:100%;padding:10px;border-radius:8px;
+box-shadow:0 8px 20px rgba(0,0,0,.08)}
+input,select,textarea{width:100%;padding:10px;border-radius:8px;
 border:1px solid #d1d5db;margin-bottom:10px}
-button{padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
+button{padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
 .primary{background:#f59e0b}
 .secondary{background:#2563eb;color:#fff}
 .danger{background:#ef4444;color:#fff}
 
-.slider{position:relative;overflow:hidden;border-radius:12px}
-.track{display:flex;transition:.3s}
-.slide{min-width:100%;position:relative}
-.slide img{width:100%;height:240px;object-fit:cover;cursor:zoom-in}
-.slide button{position:absolute;top:8px;right:8px}
+.login{position:fixed;inset:0;background:#111827;
+display:flex;align-items:center;justify-content:center}
+.hide{display:none}
 
-.dots{text-align:center;margin-top:6px}
-.dot{display:inline-block;width:8px;height:8px;border-radius:50%;
-background:#d1d5db;margin:0 3px}
-.dot.active{background:#f59e0b}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
 
-/* ZOOM MODAL */
-.zoom{position:fixed;inset:0;background:rgba(0,0,0,.9);
-display:none;align-items:center;justify-content:center;z-index:999}
-.zoom img{max-width:95%;max-height:95%}
-.zoom span{position:absolute;top:20px;right:20px;
-font-size:28px;color:#fff;cursor:pointer}
+/* IMAGE GRID */
+.imgGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+  gap:8px;
+}
+.imgBox{
+  position:relative;
+  border:1px solid #e5e7eb;
+  border-radius:8px;
+  overflow:hidden;
+  background:#f9fafb;
+}
+.imgBox img{
+  width:100%;
+  height:70px;
+  object-fit:cover;
+}
+.imgBox .del{
+  position:absolute;top:4px;right:4px;
+  font-size:11px;padding:2px 6px
+}
+.imgBox .cover{
+  position:absolute;bottom:4px;left:4px;
+  background:#f59e0b;color:#111;
+  font-size:10px;padding:2px 6px;border-radius:6px
+}
 </style>
 </head>
 
 <body>
-<div class="wrap">
-<h2>Second Wheel – Admin Panel</h2>
+
+<!-- LOGIN -->
+<div class="login" id="loginBox">
+  <div class="card">
+    <h3>Admin Login</h3>
+    <input id="u" placeholder="Username">
+    <input id="p" type="password" placeholder="Password">
+    <button class="primary" onclick="login()">Login</button>
+    <small id="err"></small>
+  </div>
+</div>
+
+<div class="wrap hide" id="admin">
 
 <div class="card">
-<b id="vidShow"></b><br><br>
+<h3>Add / Edit Vehicle</h3>
 
 <select id="type">
-<option value="car">Car</option>
-<option value="bike">Bike</option>
-<option value="scooter">Scooter</option>
+  <option value="car">Car</option>
+  <option value="bike">Bike</option>
+  <option value="scooter">Scooter</option>
 </select>
 
-<input id="brand" placeholder="Brand">
-<input id="title" placeholder="Model">
-<input id="price" type="number" placeholder="Price">
-<textarea id="desc" placeholder="Description"></textarea>
+<select id="status">
+  <option value="available">Available</option>
+  <option value="reserved">Reserved</option>
+  <option value="sold">Sold</option>
+</select>
 
-<input type="file" id="images" multiple accept="image/*">
+<div class="grid">
+  <input id="brand" placeholder="Brand">
+  <input id="title" placeholder="Title">
+  <input id="model" placeholder="Model">
+  <input id="year" placeholder="Year">
+  <input id="km" placeholder="KM">
+  <input id="fuel" placeholder="Fuel">
+  <input id="price" placeholder="Price">
+</div>
+
+<textarea id="desc" placeholder="Full description (Buy page)"></textarea>
+
+<label><input type="checkbox" id="featured"> Featured</label>
+
+<input type="file" id="imgs" multiple accept="image/*">
+
 <button class="secondary" onclick="uploadImages()">Upload Images</button>
-<button class="primary" onclick="saveVehicle()">Save</button>
-</div>
+<button class="primary" onclick="saveVehicle()">Save Vehicle</button>
+<button onclick="previewBuy()">👁️ Preview on Buy Page</button>
 
-<div class="card">
-<h3>Images (Swipe / Tap to Zoom)</h3>
-<div class="slider" id="slider">
-  <div class="track" id="track"></div>
-</div>
-<div class="dots" id="dots"></div>
-</div>
-</div>
+<h4>Images (Cover + Order)</h4>
+<div id="preview" class="imgGrid"></div>
 
-<!-- ZOOM VIEW -->
-<div class="zoom" id="zoom">
-<span onclick="zoom.style.display='none'">✕</span>
-<img id="zoomImg">
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const ADMIN_USER="secondwheel";
+const ADMIN_PASS="1008";
+
 const SUPABASE_URL="https://wbjwvxckbfkutqqbgupq.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
 const BUCKET="vehicals";
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 let VID=Date.now().toString().slice(-8);
-vidShow.textContent="VID: "+VID;
-let index=0,startX=0;
+let selectedFiles=[];
+let coverIndex=0;
 
-async function saveVehicle(){
-  let meta={vid:VID,type:type.value,brand:brand.value,title:title.value,description:desc.value};
-  let b=new Blob([JSON.stringify(meta)],{type:"application/json"});
-  await sb.storage.from(BUCKET).upload(type.value+"/"+VID+"/meta.json",b,{upsert:true});
+/* LOGIN */
+function login(){
+  if(u.value===ADMIN_USER && p.value===ADMIN_PASS){
+    loginBox.style.display="none";
+    admin.classList.remove("hide");
+  }else err.textContent="Wrong login";
 }
 
-async function uploadImages(){
-  for(let f of images.files){
-    await sb.storage.from(BUCKET)
-      .upload(type.value+"/"+VID+"/"+Date.now()+"-"+f.name,f,{upsert:true});
-  }
-  loadImages();
-}
+/* PREVIEW */
+imgs.onchange=()=>{
+  selectedFiles=[...imgs.files];
+  renderSelected();
+};
 
-async function loadImages(){
-  track.innerHTML=""; dots.innerHTML="";
-  let {data}=await sb.storage.from(BUCKET).list(type.value+"/"+VID);
-  if(!data) return;
-  data=data.filter(x=>!x.name.endsWith("meta.json"));
-  data.forEach((f,i)=>{
-    let url=sb.storage.from(BUCKET)
-      .getPublicUrl(type.value+"/"+VID+"/"+f.name).data.publicUrl;
-    let d=document.createElement("div");
-    d.className="slide";
-    d.innerHTML=`<img src="${url}" onclick="openZoom('${url}')">`;
-    track.appendChild(d);
-    dots.innerHTML+=`<span class="dot ${i==0?'active':''}"></span>`;
+function renderSelected(){
+  preview.innerHTML="";
+  selectedFiles.forEach((f,i)=>{
+    const d=document.createElement("div");
+    d.className="imgBox";
+    d.draggable=true;
+
+    const img=document.createElement("img");
+    img.src=URL.createObjectURL(f);
+
+    const del=document.createElement("button");
+    del.className="danger del";
+    del.textContent="✕";
+    del.onclick=()=>{
+      selectedFiles.splice(i,1);
+      if(coverIndex>=selectedFiles.length) coverIndex=0;
+      renderSelected();
+    };
+
+    const cov=document.createElement("div");
+    cov.className="cover";
+    cov.textContent=i===coverIndex?"COVER":"Set cover";
+    cov.onclick=()=>{coverIndex=i;renderSelected();};
+
+    d.appendChild(img);
+    d.appendChild(del);
+    d.appendChild(cov);
+    preview.appendChild(d);
   });
-  update();
 }
 
-function update(){
-  track.style.transform=`translateX(-${index*100}%)`;
-  [...dots.children].forEach((d,i)=>d.classList.toggle("active",i===index));
+/* UPLOAD */
+async function uploadImages(){
+  for(let i=0;i<selectedFiles.length;i++){
+    const f=selectedFiles[i];
+    const path=`${type.value}/${VID}/${i===coverIndex?'0-cover':'1'}-${Date.now()}-${f.name}`;
+    await sb.storage.from(BUCKET).upload(path,f,{upsert:true});
+  }
+  selectedFiles=[];
+  imgs.value="";
+  preview.innerHTML="";
 }
 
-slider.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
-slider.addEventListener("touchend",e=>{
-  let dx=e.changedTouches[0].clientX-startX;
-  if(dx<-50&&index<track.children.length-1) index++;
-  if(dx>50&&index>0) index--;
-  update();
-});
+/* SAVE */
+async function saveVehicle(){
+  const meta={
+    vid:VID,type:type.value,status:status.value,
+    brand:brand.value,title:title.value,model:model.value,
+    year:year.value,km:km.value,fuel:fuel.value,
+    price:price.value,description:desc.value,
+    featured:featured.checked
+  };
+  const blob=new Blob([JSON.stringify(meta,null,2)],{type:"application/json"});
+  await sb.storage.from(BUCKET)
+    .upload(`${type.value}/${VID}/meta.json`,blob,{upsert:true});
 
-function openZoom(src){
-  zoomImg.src=src;
-  zoom.style.display="flex";
+  if(featured.checked){
+    await sb.storage.from(BUCKET)
+      .upload(`featured/${VID}/meta.json`,blob,{upsert:true});
+  }
+
+  alert("Saved");
+  VID=Date.now().toString().slice(-8);
+}
+
+/* PREVIEW BUY */
+function previewBuy(){
+  window.open("buy.html#"+VID,"_blank");
 }
 </script>
 </body>
