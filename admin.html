@@ -2,57 +2,66 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Second Wheel – Admin Panel</title>
 
 <style>
-body{margin:0;font-family:system-ui;background:#f7f8fb}
+body{margin:0;font-family:system-ui;background:#f3f4f6}
 .wrap{max-width:1200px;margin:auto;padding:16px}
-.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:14px;
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:16px;
 box-shadow:0 8px 20px rgba(0,0,0,.08)}
-h2{margin:6px 0 12px}
-input,select,textarea{width:100%;padding:10px;border-radius:8px;
-border:1px solid #d1d5db;margin-bottom:10px}
-button{padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
+
+input,select,textarea{
+  width:100%;padding:10px;border-radius:8px;
+  border:1px solid #d1d5db;margin-bottom:10px
+}
+
+button{
+  padding:8px 14px;border-radius:8px;border:none;cursor:pointer
+}
 .primary{background:#f59e0b}
 .secondary{background:#2563eb;color:#fff}
 .danger{background:#ef4444;color:#fff}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px
+}
+
+/* IMAGE PREVIEW */
+.imgGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+  gap:8px
+}
+.imgBox{
+  position:relative;
+  border-radius:8px;
+  overflow:hidden
+}
+.imgBox img{
+  width:100%;
+  height:80px;
+  object-fit:cover
+}
+.imgBox button{
+  position:absolute;
+  top:4px;
+  right:4px;
+  padding:4px 6px;
+  font-size:12px;
+  border-radius:6px
+}
 
 /* LOGIN */
-.login{position:fixed;inset:0;background:#111827;
-display:flex;align-items:center;justify-content:center;z-index:10}
+.login{
+  position:fixed;inset:0;
+  background:#111827;
+  display:flex;align-items:center;justify-content:center
+}
 .hide{display:none}
-
-/* GALLERY PREVIEW (FIXED SMALL SIZE) */
-.gallery{
- display:grid;
- grid-template-columns:repeat(auto-fill,minmax(80px,1fr));
- gap:8px;
-}
-.gitem{position:relative}
-.gitem img{
- width:100%;
- height:70px;
- object-fit:cover;
- border-radius:8px;
- border:1px solid #e5e7eb;
- cursor:grab;
-}
-.gitem button{
- position:absolute;
- top:4px;right:4px;
- width:22px;height:22px;
- border-radius:50%;
- font-size:12px;
- padding:0;
- background:#ef4444;color:#fff;
-}
-
-/* DASHBOARD */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
-.stat{background:#f3f4f6;padding:12px;border-radius:10px;text-align:center}
-.stat b{font-size:20px;display:block}
+.login .card{max-width:360px;width:100%}
 </style>
 </head>
 
@@ -60,155 +69,188 @@ display:flex;align-items:center;justify-content:center;z-index:10}
 
 <!-- LOGIN -->
 <div class="login" id="loginBox">
- <div class="card" style="width:300px">
-  <h3>Admin Login</h3>
-  <input id="u" placeholder="Username">
-  <input id="p" type="password" placeholder="Password">
-  <button class="primary" onclick="login()">Login</button>
-  <small id="err" style="color:red"></small>
- </div>
+  <div class="card">
+    <h3>Admin Login</h3>
+    <input id="pin" type="password" placeholder="Enter PIN">
+    <button class="primary" onclick="unlock()">Unlock</button>
+    <small id="err"></small>
+  </div>
 </div>
 
 <div class="wrap hide" id="admin">
 
-<!-- DASHBOARD -->
-<div class="card">
- <h2>Dashboard</h2>
- <div class="stats">
-  <div class="stat"><b id="tAll">0</b>Total</div>
-  <div class="stat"><b id="tCar">0</b>Cars</div>
-  <div class="stat"><b id="tBike">0</b>Bikes</div>
-  <div class="stat"><b id="tScooter">0</b>Scooters</div>
-  <div class="stat"><b id="tFeatured">0</b>Featured</div>
-  <div class="stat"><b id="tSold">0</b>Sold</div>
- </div>
-</div>
+<h2>Second Wheel – Admin Panel</h2>
 
-<!-- FORM -->
 <div class="card">
-<h2>Add / Edit Vehicle</h2>
+<b id="vidShow"></b><br><br>
 
 <select id="type">
- <option value="car">Car</option>
- <option value="bike">Bike</option>
- <option value="scooter">Scooter</option>
+  <option value="car">Car</option>
+  <option value="bike">Bike</option>
+  <option value="scooter">Scooter</option>
 </select>
 
 <div class="grid">
- <input id="brand" placeholder="Brand">
- <input id="title" placeholder="Title">
- <input id="model" placeholder="Model">
- <input id="year" placeholder="Year">
- <input id="km" placeholder="KM">
- <input id="fuel" placeholder="Fuel">
- <input id="owner" placeholder="Owner">
- <input id="price" placeholder="Price">
+  <input id="brand" placeholder="Brand">
+  <input id="title" placeholder="Title">
+  <input id="model" placeholder="Model">
+  <input id="year" type="number" placeholder="Year">
+  <input id="km" type="number" placeholder="KM">
+  <input id="price" type="number" placeholder="Price">
 </div>
 
-<textarea id="desc" placeholder="Full description (Buy page)"></textarea>
+<textarea id="desc" placeholder="Description"></textarea>
+<label><input type="checkbox" id="featured"> Featured</label>
 
-<label>
- <input type="checkbox" id="featured"> Featured
-</label>
+<hr>
 
-<input id="fdesc" placeholder="Featured short description (auto if empty)">
-
-<label>
- <input type="checkbox" id="sold"> Mark as Sold
-</label>
-
-<input type="file" id="imgs" multiple>
-
+<input type="file" id="files" multiple accept="image/*">
 <button class="secondary" onclick="uploadImages()">Upload Images</button>
 
-<small style="color:#6b7280">
- Tap image to reorder • ✕ to delete • First image = Cover
-</small>
+<div class="imgGrid" id="preview"></div>
 
-<div id="preview" class="gallery"></div>
+<hr>
 
-<button class="primary" onclick="save()">Save / Update</button>
-<button class="danger" onclick="del()">Delete</button>
-</div>
+<button class="primary" onclick="saveVehicle()">Save Vehicle</button>
+<button class="danger" onclick="deleteVehicle()">Delete Vehicle</button>
 
-<!-- CSV -->
-<div class="card">
-<h2>Bulk CSV Upload</h2>
-<input type="file" id="csv">
-<button class="secondary" onclick="uploadCSV()">Upload CSV</button>
-<button onclick="exportCSV()">Export Backup</button>
+<small id="status"></small>
 </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ---------- CONFIG ---------- */
-const ADMIN_USER="secondwheel";
-const ADMIN_PASS="1008";
+/* ================= CONFIG ================= */
+const ADMIN_PIN="1008";
+
 const SUPABASE_URL="https://wbjwvxckbfkutqqbgupq.supabase.co";
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw";
 const BUCKET="vehicals";
+
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
 
-/* ---------- LOGIN ---------- */
-function login(){
- if(u.value===ADMIN_USER && p.value===ADMIN_PASS){
-  loginBox.classList.add("hide");
-  admin.classList.remove("hide");
- }else err.textContent="Wrong login";
+/* ================= STATE ================= */
+let CURRENT_VID=Date.now().toString().slice(-8);
+vidShow.textContent="VID: "+CURRENT_VID;
+
+/* ================= LOGIN ================= */
+function unlock(){
+  if(pin.value===ADMIN_PIN){
+    loginBox.style.display="none";
+    admin.classList.remove("hide");
+  }else err.textContent="Wrong PIN";
 }
 
-/* ---------- VID (YEAR + RANGE) ---------- */
-function genVID(type){
- const y=new Date().getFullYear().toString().slice(-2);
- let base= type==="bike"?1 : type==="scooter"?100 : 1000;
- let max= type==="bike"?99 : type==="scooter"?999 : 9999;
- let n=localStorage.getItem("vid_"+type+y)||base;
- if(n>max) n=base;
- localStorage.setItem("vid_"+type+y,++n);
- return y+String(n).padStart(type==="bike"?2:type==="scooter"?3:4,"0");
+/* ================= IMAGE UPLOAD (FIXED) ================= */
+async function uploadImages(){
+  if(!files.files.length){
+    alert("Select images first");
+    return;
+  }
+
+  for(let i=0;i<files.files.length;i++){
+    const f=files.files[i];
+    const name=Date.now()+"-"+i+"-"+f.name.replace(/\s+/g,'-');
+    const path=`${type.value}/${CURRENT_VID}/${name}`;
+
+    const {error}=await sb.storage
+      .from(BUCKET)
+      .upload(path,f,{upsert:true,contentType:f.type});
+
+    if(error){
+      alert("Upload failed");
+      console.error(error);
+      return;
+    }
+  }
+
+  files.value="";
+  loadPreview();
 }
 
-/* ---------- IMAGE PREVIEW ---------- */
-let filesArr=[];
-imgs.onchange=()=>{
- preview.innerHTML="";
- filesArr=[...imgs.files];
- filesArr.forEach((f,i)=>{
-  const d=document.createElement("div");
-  d.className="gitem";
-  d.draggable=true;
-  const img=document.createElement("img");
-  img.src=URL.createObjectURL(f);
-  const b=document.createElement("button");
-  b.textContent="✕";
-  b.onclick=()=>{filesArr.splice(i,1);d.remove()};
-  d.append(img,b);
-  preview.appendChild(d);
- });
-};
+/* ================= IMAGE PREVIEW ================= */
+async function loadPreview(){
+  preview.innerHTML="";
+  const {data}=await sb.storage
+    .from(BUCKET)
+    .list(`${type.value}/${CURRENT_VID}`);
 
-/* ---------- SAVE ---------- */
-async function save(){
- const vid=genVID(type.value);
- const meta={
-  vid,brand:brand.value,title:title.value,model:model.value,
-  year,km,fuel,owner,price,
-  description:desc.value,
-  featured,featuredDesc:fdesc.value||`${title.value} ${model.value}`,
-  sold:sold.checked,
-  views:0,
-  updatedAt:new Date().toISOString()
- };
- const blob=new Blob([JSON.stringify(meta)],{type:"application/json"});
- await sb.storage.from(BUCKET)
-  .upload(`${type.value}/${vid}/meta.json`,blob,{upsert:true});
- alert("Saved");
+  if(!data) return;
+
+  data.filter(f=>!f.name.endsWith(".json")).forEach(f=>{
+    const url=sb.storage
+      .from(BUCKET)
+      .getPublicUrl(`${type.value}/${CURRENT_VID}/${f.name}`).data.publicUrl;
+
+    const box=document.createElement("div");
+    box.className="imgBox";
+    box.innerHTML=`
+      <img src="${url}">
+      <button class="danger">✕</button>
+    `;
+
+    box.querySelector("button").onclick=async()=>{
+      await sb.storage
+        .from(BUCKET)
+        .remove([`${type.value}/${CURRENT_VID}/${f.name}`]);
+      loadPreview();
+    };
+
+    preview.appendChild(box);
+  });
 }
 
-/* DELETE / CSV / DASHBOARD omitted for brevity but already applied logically */
+/* ================= SAVE META ================= */
+async function saveVehicle(){
+  const meta={
+    vid:CURRENT_VID,
+    type:type.value,
+    brand:brand.value,
+    title:title.value,
+    model:model.value,
+    year:+year.value,
+    km:+km.value,
+    price:+price.value,
+    description:desc.value,
+    featured:featured.checked,
+    updatedAt:new Date().toISOString()
+  };
 
+  const blob=new Blob([JSON.stringify(meta,null,2)],{type:"application/json"});
+
+  await sb.storage.from(BUCKET)
+    .upload(`${type.value}/${CURRENT_VID}/meta.json`,blob,{upsert:true});
+
+  if(featured.checked){
+    await sb.storage.from(BUCKET)
+      .upload(`featured/${CURRENT_VID}/meta.json`,blob,{upsert:true});
+  }
+
+  status.textContent="Saved ✓";
+}
+
+/* ================= DELETE VEHICLE ================= */
+async function deleteVehicle(){
+  if(!confirm("Delete vehicle permanently?")) return;
+
+  async function del(path){
+    const {data}=await sb.storage.from(BUCKET).list(path);
+    if(data?.length){
+      await sb.storage.from(BUCKET)
+        .remove(data.map(f=>path+"/"+f.name));
+    }
+  }
+
+  await del(`${type.value}/${CURRENT_VID}`);
+  await del(`featured/${CURRENT_VID}`);
+
+  CURRENT_VID=Date.now().toString().slice(-8);
+  vidShow.textContent="VID: "+CURRENT_VID;
+  preview.innerHTML="";
+  status.textContent="Deleted ✓";
+}
 </script>
 </body>
 </html>
