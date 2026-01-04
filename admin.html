@@ -1,178 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Second Wheel — Admin (Featured & Inventory Manager)</title>
-<meta name="theme-color" content="#ffffff"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Second Wheel – Admin Panel</title>
 
 <style>
-  :root{
-    --bg:#f7f8fb; --card:#ffffff; --text:#0b0f17; --muted:#5b667a;
-    --brand:#f59e0b; --ok:#22c55e; --danger:#ef4444; --line:rgba(0,0,0,.12);
-    --elev:0 8px 20px rgba(0,0,0,.06);
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 system-ui}
-  header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line)}
-  .wrap{max-width:1200px;margin:auto;padding:14px}
-  .panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
-  .list{display:grid;gap:8px}
-  .item{display:grid;grid-template-columns:56px 1fr;gap:10px;padding:8px;border:1px solid var(--line);border-radius:12px}
-  .thumb{width:56px;height:56px;border-radius:8px;object-fit:cover}
-  .meta small{color:#6b7280;display:block}
-  input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #d1d5db;margin-bottom:8px}
-  button{padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
-  .primary{background:#f59e0b}
-  .danger{background:#ef4444;color:#fff}
-  .secondary{background:#2563eb;color:#fff}
+body{margin:0;font-family:system-ui;background:#f7f8fb}
+.login, .admin{max-width:1100px;margin:auto;padding:20px}
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 10px 25px rgba(0,0,0,.06)}
+h2{margin:0 0 10px}
+input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #d1d5db;margin-bottom:10px}
+button{padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
+.primary{background:#f59e0b}
+.danger{background:#ef4444;color:#fff}
+.list{display:grid;gap:10px}
+.item{border:1px solid #e5e7eb;border-radius:10px;padding:10px}
+small{color:#6b7280;display:block}
+.hidden{display:none}
+.top{display:flex;justify-content:space-between;align-items:center}
 </style>
 </head>
 
 <body>
 
-<header>
-  <div class="wrap">
-    <h2>Second Wheel — Admin</h2>
-  </div>
-</header>
+<!-- LOGIN -->
+<div class="login card" id="loginBox">
+  <h2>Admin Login</h2>
+  <input id="user" placeholder="Username">
+  <input id="pass" type="password" placeholder="Password">
+  <button class="primary" onclick="login()">Login</button>
+  <small id="loginErr"></small>
+</div>
 
-<div class="wrap">
+<!-- ADMIN -->
+<div class="admin hidden" id="adminBox">
+
+<div class="top">
+  <h2>Second Wheel – Admin</h2>
+  <button onclick="logout()">Logout</button>
+</div>
 
 <!-- FEATURED LIST -->
-<div class="panel">
+<div class="card">
   <h3>Featured Vehicles</h3>
   <div id="featuredList" class="list"></div>
 </div>
 
-<br>
-
-<!-- EDITOR -->
-<div class="panel">
+<!-- VEHICLE FORM -->
+<div class="card">
   <b id="vidShow">VID: -</b><br><br>
 
   <input id="brand" placeholder="Brand">
-  <input id="title" placeholder="Title / Model">
+  <input id="title" placeholder="Model / Title">
   <input id="price" type="number" placeholder="Price">
   <input id="year" type="number" placeholder="Year">
   <input id="km" type="number" placeholder="KM">
   <input id="owner" type="number" placeholder="Owner">
 
-  <textarea id="desc" placeholder="Description"></textarea>
+  <textarea id="desc" placeholder="Full Description (Buy page)"></textarea>
 
-  <label><input type="checkbox" id="featured"> Featured</label><br><br>
+  <label><input type="checkbox" id="featured"> Mark as Featured</label><br><br>
 
-  <input type="file" id="files" multiple accept="image/*">
-  <br><br>
+  <input type="file" id="images" multiple accept="image/*"><br><br>
 
-  <button class="secondary" id="btnUpload">Upload Images</button>
-  <button class="primary" id="btnSave">Save</button>
-  <button class="danger" id="btnDelete">Delete</button>
+  <button class="primary" onclick="saveVehicle()">Save Vehicle</button>
+  <button class="danger" onclick="deleteVehicle()">Delete Vehicle</button>
 
-  <div id="status"></div>
+  <small id="status"></small>
 </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ===== SUPABASE ===== */
-var SUPABASE_URL = 'https://wbjwvxckbfkutqqbgupq.supabase.co';
-var SUPABASE_KEY = 'YOUR_ANON_KEY';
-var BUCKET = 'vehicals';
-var sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* ================= CONFIG ================= */
+const ADMIN_USER="secondwheel";
+const ADMIN_PASS="1008"; // change later
 
-/* ===== ELEMENTS ===== */
-const $ = id => document.getElementById(id);
-const brand=$('brand'), title=$('title'), price=$('price'),
-      year=$('year'), km=$('km'), owner=$('owner'),
-      desc=$('desc'), featured=$('featured'),
-      featuredList=$('featuredList'),
-      files=$('files'),
-      statusEl=$('status'),
-      vidShow=$('vidShow');
+const SUPABASE_URL="https://wbjwvxckbfkutqqbgupq.supabase.co";
+const SUPABASE_KEY="YOUR_ANON_KEY";
+const BUCKET="vehicals";
 
-/* ===== FIX 1: ONLY NUMBER VID ===== */
-function makeVID(){
-  return Date.now().toString().slice(-8);
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+/* ================= LOGIN ================= */
+function login(){
+  if(user.value===ADMIN_USER && pass.value===ADMIN_PASS){
+    localStorage.setItem("sw_admin","1");
+    loginBox.classList.add("hidden");
+    adminBox.classList.remove("hidden");
+    init();
+  }else{
+    loginErr.textContent="Invalid login";
+  }
 }
-let CURRENT_VID = makeVID();
-vidShow.textContent = 'VID: ' + CURRENT_VID;
-
-/* ===== FIX 2: SHORT DESCRIPTION ===== */
-function shortDesc(txt){
-  if(!txt) return '';
-  return txt.length > 45 ? txt.slice(0,45) + '…' : txt;
+function logout(){
+  localStorage.removeItem("sw_admin");
+  location.reload();
+}
+if(localStorage.getItem("sw_admin")){
+  loginBox.classList.add("hidden");
+  adminBox.classList.remove("hidden");
+  init();
 }
 
-/* ===== SAVE VEHICLE ===== */
+/* ================= UTIL ================= */
+function vid(){ return Date.now().toString().slice(-8); }
+function shortDesc(t){ return t.length>45?t.slice(0,45)+"…":t; }
+
+let CURRENT_VID=vid();
+vidShow.textContent="VID: "+CURRENT_VID;
+
+/* ================= SAVE ================= */
 async function saveVehicle(){
+  if(owner.value<1||owner.value>5){status.textContent="Owner 1–5";return;}
 
   let meta={
-    vid: CURRENT_VID,
-    brand: brand.value.trim().toUpperCase(),
-    title: title.value.trim(),
-    price:Number(price.value),
-    year:Number(year.value),
-    km:Number(km.value),
-    owner:Number(owner.value),
-    description: desc.value.trim(),
+    vid:CURRENT_VID,
+    brand:brand.value.toUpperCase(),
+    title:title.value,
+    price:+price.value,
+    year:+year.value,
+    km:+km.value,
+    owner:+owner.value,
+    description:desc.value,
     updatedAt:new Date().toISOString()
   };
 
-  let blob=new Blob([JSON.stringify(meta,null,2)],{type:'application/json'});
-  await sb.storage.from(BUCKET).upload('car/'+CURRENT_VID+'/meta.json',blob,{upsert:true});
-
+  let blob=new Blob([JSON.stringify(meta,null,2)],{type:"application/json"});
+  await sb.storage.from(BUCKET).upload("car/"+CURRENT_VID+"/meta.json",blob,{upsert:true});
   if(featured.checked){
-    await sb.storage.from(BUCKET).upload('featured/'+CURRENT_VID+'/meta.json',blob,{upsert:true});
+    await sb.storage.from(BUCKET).upload("featured/"+CURRENT_VID+"/meta.json",blob,{upsert:true});
   }
 
-  statusEl.textContent='Saved ✓';
+  for(let f of images.files){
+    let n=Date.now()+"-"+f.name;
+    await sb.storage.from(BUCKET).upload("car/"+CURRENT_VID+"/"+n,f,{upsert:true});
+    if(featured.checked){
+      await sb.storage.from(BUCKET).upload("featured/"+CURRENT_VID+"/"+n,f,{upsert:true});
+    }
+  }
+
+  status.textContent="Saved ✓";
   loadFeatured();
 }
 
-/* ===== UPLOAD IMAGES ===== */
-async function uploadImages(){
-  if(!files.files.length) return;
-  for(let f of files.files){
-    let name=Date.now()+'-'+f.name;
-    await sb.storage.from(BUCKET).upload('car/'+CURRENT_VID+'/'+name,f,{upsert:true});
-    if(featured.checked){
-      await sb.storage.from(BUCKET).upload('featured/'+CURRENT_VID+'/'+name,f,{upsert:true});
-    }
-  }
-  statusEl.textContent='Images uploaded ✓';
+/* ================= DELETE ================= */
+async function deleteVehicle(){
+  await sb.storage.from(BUCKET).remove(["car/"+CURRENT_VID,"featured/"+CURRENT_VID]);
+  status.textContent="Deleted";
 }
 
-/* ===== LOAD FEATURED (SHORT DESCRIPTION ONLY) ===== */
+/* ================= FEATURED ================= */
 async function loadFeatured(){
-  featuredList.innerHTML='';
-  let {data}=await sb.storage.from(BUCKET).list('featured');
+  featuredList.innerHTML="";
+  let {data}=await sb.storage.from(BUCKET).list("featured");
   if(!data) return;
 
   for(let f of data){
     let url=sb.storage.from(BUCKET)
-      .getPublicUrl('featured/'+f.name+'/meta.json').data.publicUrl;
+      .getPublicUrl("featured/"+f.name+"/meta.json").data.publicUrl;
+    let r=await fetch(url);
+    if(!r.ok)continue;
+    let m=await r.json();
 
-    let res=await fetch(url);
-    if(!res.ok) continue;
-    let m=await res.json();
-
-    let div=document.createElement('div');
-    div.className='item';
-    div.innerHTML=`
-      <div class="meta">
-        <b>${m.title}</b>
-        <small>${m.brand} • ₹${m.price}</small>
-        <small>${shortDesc(m.description)}</small>
-      </div>`;
-    featuredList.appendChild(div);
+    let d=document.createElement("div");
+    d.className="item";
+    d.innerHTML=`
+      <b>${m.title}</b>
+      <small>${m.brand} • ₹${m.price}</small>
+      <small>${shortDesc(m.description)}</small>
+    `;
+    featuredList.appendChild(d);
   }
 }
-
-$('btnSave').onclick=saveVehicle;
-$('btnUpload').onclick=uploadImages;
-loadFeatured();
+function init(){ loadFeatured(); }
 </script>
 
 </body>
