@@ -46,19 +46,20 @@ button{
 <input id="email" type="email" placeholder="Admin Email">
 <input id="password" type="password" placeholder="Password">
 
-<button onclick="login()">Login</button>
+<button id="loginBtn">Login</button>
 <div class="msg" id="msg"></div>
 </div>
 
+<!-- ✅ ONLY ONE SUPABASE LOAD -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "https://wbjwvxckbfkutqqbgupq.supabase.co";
-const SUPABASE_KEY = "sb_publishable_QjJXmzREzdg3qB6dbfG-1A_0jLQNt66";
+const sb = window.supabase.createClient(
+  "https://wbjwvxckbfkutqqbgupq.supabase.co",
+  "sb_publishable_QjJXmzREzdg3qB6dbfG-1A_0jLQNt66"
+);
 
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-async function login(){
-  msg.textContent="Logging in...";
+document.getElementById("loginBtn").onclick = async () => {
+  msg.textContent = "Logging in...";
   const { error } = await sb.auth.signInWithPassword({
     email: email.value,
     password: password.value
@@ -67,9 +68,9 @@ async function login(){
   if(error){
     msg.textContent = error.message;
   } else {
-    location.href="admin.html";
+    location.href = "admin.html";
   }
-}
+};
 </script>
 
 </body>
