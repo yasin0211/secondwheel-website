@@ -4,17 +4,198 @@
 <meta charset="UTF-8">
 <title>Admin Panel | Second Wheel</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{font-family:system-ui;background:#f7f8fb;margin:0;padding:16px}
+h2{margin-top:0}
+.card{background:#fff;padding:16px;border-radius:14px;max-width:1000px;margin:auto}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+input,select,textarea{
+  width:100%;padding:10px;border-radius:10px;border:1px solid #ccc
+}
+button{
+  padding:12px;border:none;border-radius:999px;
+  background:#f59e0b;font-weight:700;cursor:pointer
+}
+button.danger{background:#dc2626;color:#fff}
+.images{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.images div{position:relative}
+.images img{width:90px;height:70px;object-fit:cover;border-radius:8px}
+.images span{
+  position:absolute;top:-6px;right:-6px;
+  background:#dc2626;color:#fff;
+  border-radius:999px;padding:2px 6px;font-size:12px;
+  cursor:pointer
+}
+.list div{
+  border:1px solid #ddd;padding:8px;margin-top:6px;
+  display:flex;justify-content:space-between;align-items:center
+}
+</style>
 </head>
 <body>
 
-<h2>✅ Admin Panel Loaded</h2>
-<button onclick="logout()">Logout</button>
-
 <script src="auth.js"></script>
+
+<div class="card">
+<h2>🚘 Vehicle Manager</h2>
+
+<div class="grid">
+<select id="type" onchange="genId()">
+  <option value="car">Car</option>
+  <option value="bike">Bike</option>
+  <option value="scooter">Scooter</option>
+</select>
+
+<input id="vid" readonly placeholder="Vehicle ID">
+<input id="title" placeholder="Title">
+<input id="brand" placeholder="Brand">
+<input id="year" type="number" placeholder="Year">
+<input id="km" type="number" placeholder="KM">
+<input id="price" type="number" placeholder="Price">
+</div>
+
+<textarea id="desc" placeholder="Full Description"></textarea>
+
+<label>
+  <input type="checkbox" id="featured"> Featured Vehicle
+</label>
+
+<input id="featured_note" placeholder="Featured short description">
+
+<hr>
+
+<input id="images" type="file" multiple accept="image/*">
+<div class="images" id="imgBox"></div>
+
+<br>
+<button onclick="save()">Save / Update</button>
+<button class="danger" onclick="removeVehicle()">Delete Vehicle</button>
+
+<hr>
+<h3>📋 Existing Vehicles</h3>
+<div class="list" id="list"></div>
+
+</div>
+
 <script>
-async function logout(){
-  await sb.auth.signOut();
-  location.href="login.html";
+const BUCKET="vehicals";
+const MAX_IMAGES=20;
+const $=id=>document.getElementById(id);
+
+genId();
+loadList();
+
+/* AUTO ID */
+async function genId(){
+  const t=type.value;
+  const prefix=t==="car"?"SWC":t==="bike"?"SWB":"SWS";
+  const {count}=await sb.from("vehicles")
+    .select("*",{count:"exact",head:true})
+    .eq("type",t);
+  vid.value=prefix+String(count+1).padStart(3,"0");
+}
+
+/* IMAGE PREVIEW */
+images.onchange=()=>{
+  if(images.files.length>MAX_IMAGES){
+    alert("Max 20 images allowed");
+    images.value="";
+    return;
+  }
+};
+
+/* SAVE */
+async function save(){
+  const data={
+    vid:vid.value,
+    type:type.value,
+    title:title.value,
+    brand:brand.value,
+    year:year.value,
+    km:km.value,
+    price:price.value,
+    description:desc.value,
+    featured:featured.checked,
+    featured_note:featured_note.value
+  };
+
+  await sb.from("vehicles").upsert(data,{onConflict:"vid"});
+
+  const base=`${type.value}/${vid.value}`;
+
+  for(let i=0;i<images.files.length;i++){
+    await sb.storage.from(BUCKET).upload(
+      `${base}/${Date.now()}_${i}.jpg`,
+      images.files[i],
+      {upsert:true}
+    );
+  }
+
+  alert("Saved successfully");
+  loadList();
+}
+
+/* LOAD LIST */
+async function loadList(){
+  list.innerHTML="";
+  const {data}=await sb.from("vehicles").select("*").order("created_at",{ascending:false});
+  data.forEach(v=>{
+    const d=document.createElement("div");
+    d.innerHTML=`${v.vid} - ${v.title}
+      <button onclick="edit('${v.vid}')">Edit</button>`;
+    list.appendChild(d);
+  });
+}
+
+/* EDIT */
+async function edit(v){
+  const {data}=await sb.from("vehicles").select("*").eq("vid",v).single();
+  Object.assign(window,{
+    type:{value:data.type},vid:{value:data.vid},
+    title:{value:data.title},brand:{value:data.brand},
+    year:{value:data.year},km:{value:data.km},
+    price:{value:data.price},desc:{value:data.description}
+  });
+  featured.checked=data.featured;
+  featured_note.value=data.featured_note||"";
+  loadImages(data.type,data.vid);
+}
+
+/* LOAD + DELETE IMAGES */
+async function loadImages(t,v){
+  imgBox.innerHTML="";
+  const {data}=await sb.storage.from(BUCKET).list(`${t}/${v}`);
+  data.forEach(f=>{
+    if(!f.name.match(/\.jpg|png|jpeg/))return;
+    const url=sb.storage.from(BUCKET)
+      .getPublicUrl(`${t}/${v}/${f.name}`).data.publicUrl;
+    const wrap=document.createElement("div");
+    wrap.innerHTML=`<img src="${url}">
+      <span onclick="delImg('${t}','${v}','${f.name}')">✕</span>`;
+    imgBox.appendChild(wrap);
+  });
+}
+
+async function delImg(t,v,n){
+  if(!confirm("Delete image?"))return;
+  await sb.storage.from(BUCKET).remove([`${t}/${v}/${n}`]);
+  loadImages(t,v);
+}
+
+/* DELETE VEHICLE */
+async function removeVehicle(){
+  if(!confirm("Delete vehicle completely?"))return;
+  const t=type.value,v=vid.value;
+
+  const {data}=await sb.storage.from(BUCKET).list(`${t}/${v}`);
+  for(const f of data){
+    await sb.storage.from(BUCKET).remove([`${t}/${v}/${f.name}`]);
+  }
+
+  await sb.from("vehicles").delete().eq("vid",v);
+  alert("Deleted");
+  loadList();
 }
 </script>
 
