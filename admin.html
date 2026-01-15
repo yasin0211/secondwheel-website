@@ -35,8 +35,6 @@ button.danger{background:#dc2626;color:#fff}
 </head>
 <body>
 
-<script src="auth.js"></script>
-
 <div class="card">
 <h2>🚘 Vehicle Manager</h2>
 
@@ -78,11 +76,29 @@ button.danger{background:#dc2626;color:#fff}
 
 </div>
 
+<!-- ✅ SUPABASE + ADMIN LOGIC (ALL IN ONE) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+/* 🔐 SUPABASE INIT */
+const sb = window.supabase.createClient(
+  "https://wbjwvxckbfkutqqbgupq.supabase.co",
+  "sb_publishable_QjJXmzREzdg3qB6dbfG-1A_0jLQNt66"
+);
+
+/* 🔐 LOGIN CHECK */
+(async()=>{
+  const { data } = await sb.auth.getSession();
+  if(!data.session){
+    location.href="login.html";
+  }
+})();
+
+/* 🔧 HELPERS */
 const BUCKET="vehicals";
 const MAX_IMAGES=20;
 const $=id=>document.getElementById(id);
 
+/* INIT */
 genId();
 loadList();
 
@@ -96,12 +112,11 @@ async function genId(){
   vid.value=prefix+String(count+1).padStart(3,"0");
 }
 
-/* IMAGE PREVIEW */
+/* IMAGE LIMIT */
 images.onchange=()=>{
   if(images.files.length>MAX_IMAGES){
-    alert("Max 20 images allowed");
+    alert("Maximum 20 images allowed");
     images.value="";
-    return;
   }
 };
 
@@ -123,7 +138,6 @@ async function save(){
   await sb.from("vehicles").upsert(data,{onConflict:"vid"});
 
   const base=`${type.value}/${vid.value}`;
-
   for(let i=0;i<images.files.length;i++){
     await sb.storage.from(BUCKET).upload(
       `${base}/${Date.now()}_${i}.jpg`,
@@ -132,7 +146,7 @@ async function save(){
     );
   }
 
-  alert("Saved successfully");
+  alert("Vehicle Saved ✅");
   loadList();
 }
 
@@ -151,18 +165,20 @@ async function loadList(){
 /* EDIT */
 async function edit(v){
   const {data}=await sb.from("vehicles").select("*").eq("vid",v).single();
-  Object.assign(window,{
-    type:{value:data.type},vid:{value:data.vid},
-    title:{value:data.title},brand:{value:data.brand},
-    year:{value:data.year},km:{value:data.km},
-    price:{value:data.price},desc:{value:data.description}
-  });
+  type.value=data.type;
+  vid.value=data.vid;
+  title.value=data.title;
+  brand.value=data.brand;
+  year.value=data.year;
+  km.value=data.km;
+  price.value=data.price;
+  desc.value=data.description;
   featured.checked=data.featured;
   featured_note.value=data.featured_note||"";
   loadImages(data.type,data.vid);
 }
 
-/* LOAD + DELETE IMAGES */
+/* LOAD IMAGES */
 async function loadImages(t,v){
   imgBox.innerHTML="";
   const {data}=await sb.storage.from(BUCKET).list(`${t}/${v}`);
@@ -177,22 +193,22 @@ async function loadImages(t,v){
   });
 }
 
+/* DELETE IMAGE */
 async function delImg(t,v,n){
-  if(!confirm("Delete image?"))return;
-  await sb.storage.from(BUCKET).remove([`${t}/${v}/${n}`]);
-  loadImages(t,v);
+  if(confirm("Delete image?")){
+    await sb.storage.from(BUCKET).remove([`${t}/${v}/${n}`]);
+    loadImages(t,v);
+  }
 }
 
 /* DELETE VEHICLE */
 async function removeVehicle(){
-  if(!confirm("Delete vehicle completely?"))return;
+  if(!confirm("Delete vehicle?"))return;
   const t=type.value,v=vid.value;
-
   const {data}=await sb.storage.from(BUCKET).list(`${t}/${v}`);
   for(const f of data){
     await sb.storage.from(BUCKET).remove([`${t}/${v}/${f.name}`]);
   }
-
   await sb.from("vehicles").delete().eq("vid",v);
   alert("Deleted");
   loadList();
