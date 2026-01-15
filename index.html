@@ -1,432 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Second Wheel – Trusted Vehicles, Smart Deals</title>
-<meta name="theme-color" content="#111827" />
-  <meta name="description" content="Buy and sell second hand cars in Satara with Second Wheel. Trusted used cars, bikes, fair pricing, RC transfer support, insurance, HSRP, FASTag and doorstep service." />
+<meta charset="UTF-8">
+<title>Second Wheel – Trusted Used Cars & Bikes in Satara</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Buy & Sell verified used cars and bikes in Satara. RC transfer, doorstep service, best price guaranteed.">
 
-<meta name="keywords" content="second hand cars in satara, used cars in satara, buy used cars in satara, sell car in satara, second wheel satara, old cars satara, used car dealer satara, pre owned cars in satara, second hand car showroom satara" />
+<link rel="icon" href="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png">
 
-<meta name="robots" content="index, follow" />
-
-<link rel="canonical" href="https://secondwheel.in/" />
 <style>
-  /* ---------- THEME TOKENS ---------- */
-  /* Light = default */
-  :root{
-    --bg:#f7f8fb; --text:#0b0f17; --muted:#5b667a;
-    --line:rgba(0,0,0,.12);
-    --card:#ffffff;
-    --header-bg:rgba(255,255,255,.90);
-    --footer-bg:#f1f5f9;
-    --input:#f2f4f8;
-    --brand:#f59e0b; --brand-2:#16a34a;
-    --shadow:0 10px 22px rgba(0,0,0,.10);
-    --toast-bg:#ffffff; --toast-text:#0b0f17;
-  }
-  /* Dark = optional */
-  :root[data-theme="dark"]{
-    --bg:#0b0f17; --text:#e5e7eb; --muted:#9aa3b2;
-    --line:rgba(255,255,255,.12);
-    --card:#121826;
-    --header-bg:rgba(11,15,23,.85);
-    --footer-bg:#0c121e;
-    --input:#0f1626;
-    --brand:#f59e0b; --brand-2:#22c55e;
-    --shadow:0 12px 32px rgba(0,0,0,.35);
-    --toast-bg:#111827; --toast-text:#e5e7eb;
-  }
+*{box-sizing:border-box;font-family:system-ui}
+body{margin:0;background:#f7f7f7;color:#111}
 
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);
-       font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
-  a{color:inherit;text-decoration:none}
-  img{max-width:100%;display:block}
-  .container{max-width:1160px;margin:0 auto;padding:16px}
+/* ================= HEADER ================= */
+header{
+  position:sticky;top:0;z-index:100;
+  background:#fff;border-bottom:1px solid #e5e5e5;
+}
+.nav{
+  max-width:1200px;margin:auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;
+}
+.logo{
+  display:flex;align-items:center;gap:10px;
+  font-weight:900;font-size:18px;
+}
+.logo img{height:40px}
+.nav a{text-decoration:none;color:#111;font-weight:600;margin:0 10px}
+.whatsapp{
+  background:#25D366;padding:10px 18px;
+  border-radius:999px;font-weight:800;
+}
 
-  /* --- Featured Vehicle Card Compact --- */
-  #vehiclesRow { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
-  @media (min-width:720px){ #vehiclesRow{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
-  @media (min-width:1024px){ #vehiclesRow{ grid-template-columns:repeat(4,minmax(0,1fr)); } }
+/* ================= HERO ================= */
+.hero{
+  background:linear-gradient(135deg,#f59e0b,#c76a05);
+}
+.hero-inner{
+  max-width:1200px;margin:auto;
+  display:grid;gap:40px;
+  grid-template-columns:1fr;
+  padding:70px 16px;
+}
+@media(min-width:900px){
+  .hero-inner{grid-template-columns:1.1fr .9fr}
+}
+.hero h1{font-size:46px;line-height:1.1}
+.hero p{font-size:18px;max-width:520px}
+.hero-btns{margin-top:24px;display:flex;gap:14px;flex-wrap:wrap}
+.hero-btns a{
+  padding:14px 24px;border-radius:999px;
+  font-weight:800;text-decoration:none;
+}
+.btn-buy{background:#111;color:#fff}
+.btn-sell{background:#fff;color:#111}
 
-  .vehicle{ border-radius:12px; padding:8px; background:var(--card);
-            border:1px solid var(--line); box-shadow:var(--shadow); }
-  .vehicle .media{ position:relative }
-  .vehicle .media img{ width:100%; height:150px; object-fit:cover; border-radius:10px; }
-  .vehicle .tag{ position:absolute; top:8px; left:8px; background:var(--brand); color:#111;
-                 padding:3px 8px; border-radius:999px; font-weight:700; font-size:12px }
-  .vehicle .body{ padding:8px; }
-  .vehicle .title{ font-size:14px; font-weight:800; }
-  .vehicle .meta{ font-size:11px; color:var(--muted); display:flex; justify-content:space-between }
-  .vehicle .actions{ display:flex; gap:8px; margin-top:8px }
-  .vehicle .actions .btn{ padding:6px 10px; font-size:12px; border-radius:8px; }
+/* HERO CAROUSEL */
+.hero-carousel{
+  position:relative;height:380px;
+  border-radius:28px;overflow:hidden;
+  box-shadow:0 30px 60px rgba(0,0,0,.35);
+}
+.hero-carousel img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;opacity:0;
+  transition:opacity 1s ease;
+}
+.hero-carousel img.active{opacity:1}
+@media(max-width:768px){.hero-carousel{height:260px}}
 
-  /* Header (theme-aware) */
-  header{ position:sticky; top:0; z-index:50; background:var(--header-bg);
-          backdrop-filter:blur(12px); border-bottom:1px solid var(--line) }
-  .nav{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:10px 12px}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand img{width:44px;height:44px;border-radius:12px;box-shadow:var(--shadow)}
-  .brand h1{font-size:16px;margin:0;font-weight:800;letter-spacing:.3px}
-  .top-links{display:flex;gap:10px;flex-wrap:wrap}
-  .pill{padding:10px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(0,0,0,.04)}
-  :root[data-theme="dark"] .pill{ background:rgba(255,255,255,.04) }
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;
-       border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-       cursor:pointer}
-  .btn:active{transform:translateY(1px)}
-  .btn-primary{background:linear-gradient(180deg, var(--brand), #b45309);color:#111}
-  .toolbar{display:flex;gap:8px;align-items:center}
-  .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
-  .seg button{border:0;background:transparent;padding:8px 10px;color:var(--text);cursor:pointer}
-  .seg button.active{background:rgba(0,0,0,.06)}
-  :root[data-theme="dark"] .seg button.active{background:rgba(255,255,255,.16)}
+/* ================= TRUST ================= */
+.trust{
+  max-width:1200px;margin:-40px auto 40px;
+  padding:0 16px;
+  display:grid;gap:16px;
+}
+@media(min-width:700px){.trust{grid-template-columns:repeat(3,1fr)}}
+.trust-card{
+  background:#fff;padding:18px;border-radius:16px;
+  text-align:center;font-weight:700;
+  box-shadow:0 10px 20px rgba(0,0,0,.1);
+}
 
-  /* Hero */
-  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
-  .hero-bg{position:absolute;inset:0;
-    background:
-      radial-gradient(90% 60% at 50% 40%, rgba(245,158,11,.12), transparent 60%),
-      linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.14));
-  }
-  :root[data-theme="dark"] .hero-bg{
-    background:
-      radial-gradient(90% 60% at 50% 40%, rgba(245,158,11,.12), transparent 60%),
-      linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.55));
-  }
-  .hero-inner{position:relative;z-index:1;padding:48px 16px 28px}
-  .hero h2{font-size:28px;margin:0 0 10px}
-  .hero p{margin:0 0 18px;color:var(--muted)}
-  .toggle{display:inline-grid;grid-auto-flow:column;gap:8px;background:rgba(0,0,0,.05);padding:6px;border-radius:999px;border:1px solid var(--line)}
-  :root[data-theme="dark"] .toggle{ background:rgba(0,0,0,.35) }
-  .toggle button{padding:10px 14px;border-radius:999px;border:none;background:transparent;color:var(--text);cursor:pointer}
-  .toggle button.active{background:var(--brand);color:#111;font-weight:700}
+/* ================= SECTIONS ================= */
+.section{max-width:1200px;margin:50px auto;padding:0 16px}
+.section h2{font-size:28px;margin-bottom:20px}
 
-  /* Cards grid */
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  @media(min-width:720px){.grid{grid-template-columns:repeat(4,1fr)}}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow);transition:transform .15s ease}
-  .card:hover{transform:translateY(-2px)}
-  .card h3{margin:10px 0 4px;font-size:15px}
-  .muted{color:var(--muted)}
+/* FEATURED */
+.vehicles{display:grid;gap:16px}
+@media(min-width:700px){.vehicles{grid-template-columns:repeat(4,1fr)}}
+.vehicle{
+  background:#fff;border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 10px 20px rgba(0,0,0,.1);
+}
+.vehicle img{width:100%;height:180px;object-fit:cover}
+.vehicle .body{padding:12px}
+.vehicle h3{font-size:15px}
+.vehicle p{font-size:13px;opacity:.7}
 
-  /* Toast */
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:var(--toast-bg);color:var(--toast-text);
-         border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .3s}
-  .toast.show{opacity:1}
+/* WHY */
+.why{display:grid;gap:16px}
+@media(min-width:700px){.why{grid-template-columns:repeat(4,1fr)}}
+.why div{
+  background:#fff;padding:18px;border-radius:16px;
+  box-shadow:0 10px 20px rgba(0,0,0,.08);
+}
 
-  /* Footer (theme-aware) */
-  footer{background:var(--footer-bg); color:var(--muted); border-top:1px solid var(--line); margin-top:40px}
-  footer .wrap{max-width:1100px;margin:auto;padding:28px 16px}
-  .fgrid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.2fr;gap:20px}
-  @media (max-width:900px){.fgrid{grid-template-columns:1fr 1fr}}
-  @media (max-width:560px){.fgrid{grid-template-columns:1fr}}
-  footer h3{margin:0 0 6px; font-size:20px; letter-spacing:.4px; color:var(--text)}
-  footer h4{margin:0 0 10px; font-size:14px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
-  footer a{display:flex;align-items:center;gap:6px;margin:6px 0;color:var(--text);opacity:.9}
-  footer a:hover{opacity:1; text-decoration:underline}
-  .fbottom{border-top:1px solid var(--line); margin-top:18px; padding:10px 0; font-size:12px; text-align:center}
-  .whatsapp{position:fixed;right:16px;bottom:16px;z-index:60}
-  .whatsapp a{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:#25D366;color:#111;font-weight:700;box-shadow:var(--shadow)}
-  .hidden{display:none !important}
+/* REVIEW */
+.review{
+  background:linear-gradient(135deg,#f59e0b,#c76a05);
+  padding:40px;border-radius:24px;
+  text-align:center;font-weight:800;
+}
+
+/* COUNTERS */
+.counters{display:grid;gap:20px;text-align:center}
+@media(min-width:700px){.counters{grid-template-columns:repeat(4,1fr)}}
+.counters h3{font-size:36px}
+
+/* SELL CTA */
+.sell{
+  background:#111;color:#fff;
+  padding:50px;border-radius:24px;
+  text-align:center;
+}
+.sell a{
+  display:inline-block;margin-top:16px;
+  padding:14px 26px;border-radius:999px;
+  background:#f59e0b;color:#111;
+  font-weight:900;text-decoration:none;
+}
+
+/* FOOTER */
+footer{
+  background:#0b0f17;color:#ccc;
+  padding:30px 16px;margin-top:60px;
+  text-align:center;
+}
+
+/* MOBILE BAR */
+.mobile-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:#111;color:#fff;
+  display:flex;justify-content:space-around;
+  padding:10px;z-index:200;
+}
+.mobile-bar a{color:#fff;text-decoration:none;font-size:13px}
+@media(min-width:900px){.mobile-bar{display:none}}
 </style>
 </head>
+
 <body>
-  <!-- HEADER -->
-  <header>
-    <div class="nav container">
-      <div class="brand">
-        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel logo">
-        <h1>SECOND WHEEL</h1>
-      </div>
-      <div class="toolbar">
-        <div class="seg" id="langSeg">
-          <button data-lang="en" class="active">EN</button>
-          <button data-lang="hi">HI</button>
-          <button data-lang="mr">MR</button>
-        </div>
-        <button class="btn" id="darkToggle" aria-label="Toggle theme">☀️</button>
+
+<!-- HEADER -->
+<header>
+  <div class="nav">
+    <div class="logo">
+      <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png">
+      SECOND WHEEL
+    </div>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="buy.html">Buy</a>
+      <a href="sell.html">Sell</a>
+      <a class="whatsapp" href="https://wa.me/919822292955">WhatsApp</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1>Trusted Used Cars & Bikes<br>in Satara</h1>
+      <p>Buy & sell verified vehicles with complete peace of mind.<br>
+      RC transfer • Doorstep service • Best price guaranteed</p>
+
+      <div class="hero-btns">
+        <a href="buy.html" class="btn-buy">Buy Vehicles</a>
+        <a href="sell.html" class="btn-sell">Sell Your Vehicle</a>
       </div>
     </div>
-    <nav class="container top-links" aria-label="Primary">
-      <a class="pill" href="index.html"  data-i18n="nav.home">Home</a>
-      <a class="pill" href="buy.html"    data-i18n="nav.buy">Buy</a>
-      <a class="pill" href="sell.html"   data-i18n="nav.sell">Sell</a>
-      <a class="pill" href="valuation.html" data-i18n="nav.valuation">Valuation</a>
-      <a class="pill" href="tools.html"  data-i18n="nav.tools">Tools</a>
-    </nav>
-  </header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-inner container">
-      <h2 data-i18n="hero.title">Trusted Vehicles, Smart Deals</h2>
-      <p  data-i18n="hero.subtitle">Buy & Sell pre-owned Cars and Bikes with complete peace of mind.</p>
-      <div class="toggle" role="tablist" aria-label="Buy or Sell">
-        <button id="tabBuy"  class="active" role="tab" aria-selected="true"  data-i18n="hero.buy">Buy</button>
-        <button id="tabSell" role="tab"   aria-selected="false"            data-i18n="hero.sell">Sell</button>
-      </div>
-      <div id="panelBuy"  role="tabpanel" aria-labelledby="tabBuy"  style="margin-top:14px">
-        <div class="grid">
-          <a class="card" href="buy.html#cars"><h3 data-i18n="hero.buycar">Buy Car</h3><div class="muted">Explore verified listings</div></a>
-          <a class="card" href="buy.html#bikes"><h3 data-i18n="hero.buybike">Buy Bike</h3><div class="muted">Curated options</div></a>
-          <a class="card" href="buy.html#scooters"><h3>Buy Scooter</h3><div class="muted">Popular picks</div></a>
-        </div>
-      </div>
-      <div id="panelSell" role="tabpanel" aria-labelledby="tabSell" class="hidden" style="margin-top:14px">
-        <div class="grid">
-          <a class="card" href="sell.html#car"><h3 data-i18n="hero.sellcar">Sell Car</h3><div class="muted">Doorstep inspection</div></a>
-          <a class="card" href="sell.html#bike"><h3 data-i18n="hero.sellbike">Sell Bike</h3><div class="muted">Quick approval</div></a>
-        </div>
-      </div>
+    <div class="hero-carousel">
+      <img src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2" class="active">
+      <img src="https://images.unsplash.com/photo-1542362567-b07e54358753">
+      <img src="https://images.unsplash.com/photo-1583267746897-2cf415887172">
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- FEATURED -->
-  <main class="container">
-    <section aria-labelledby="featHeading" style="margin:22px 0">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-        <h3 id="featHeading" style="margin:0" data-i18n="feat.title">Featured Vehicles</h3>
-        <div style="display:flex;gap:8px;align-items:center">
-          <label for="brandFilter" class="muted" data-i18n="feat.filter">Brand</label>
-          <select id="brandFilter" class="btn" style="min-width:160px"></select>
-        </div>
-      </div>
-      <div id="vehiclesRow" aria-live="polite"><div class="muted">Loading…</div></div>
-    </section>
-  </main>
+<!-- TRUST -->
+<div class="trust">
+  <div class="trust-card">✔ Verified Vehicles</div>
+  <div class="trust-card">📄 RC Transfer Support</div>
+  <div class="trust-card">🏠 Doorstep Service</div>
+</div>
 
-  <div class="whatsapp"><a href="https://wa.me/919822292955" target="_blank" rel="noopener">WhatsApp</a></div>
-  <div id="toast" class="toast" role="status" aria-live="polite">Saved!</div>
+<!-- FEATURED -->
+<section class="section">
+  <h2>Featured Vehicles</h2>
+  <div class="vehicles" id="featured"></div>
+</section>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="wrap">
-      <div class="fgrid">
-        <div>
-          <h3>SECOND WHEEL</h3>
-          <p class="muted">Trusted Vehicles, Smart Deals</p>
-        </div>
-        <div>
-          <h4>Company</h4>
-          <a href="about.html">About Us</a>
-          <a href="contact.html">Contact Us</a>
-        </div>
-        <div>
-          <h4>Legal</h4>
-          <a href="terms.html">Terms &amp; Conditions</a>
-          <a href="privacy.html">Privacy Policy</a>
-        </div>
-        <div>
-          <h4>Follow Us</h4>
-          <a href="https://www.instagram.com/secondwheel.in?igsh=b3V0c3l4dnhoa2pt" target="_blank">Instagram</a>
-          <a href="https://www.facebook.com/secondwheelin/" target="_blank">Facebook Page</a>
-          <a href="https://www.facebook.com/groups/secondwheelin/" target="_blank">Facebook Group</a>
-        </div>
-      </div>
-      <div class="fbottom"><span id="yr"></span> © Second Wheel — All rights reserved.</div>
-    </div>
-  </footer>
+<!-- WHY -->
+<section class="section">
+  <h2>Why Second Wheel?</h2>
+  <div class="why">
+    <div>✔ 100% Genuine Vehicles</div>
+    <div>📍 Satara Local Dealer</div>
+    <div>💰 Best Market Price</div>
+    <div>🤝 Trusted by 300+ Customers</div>
+  </div>
+</section>
 
-  <!-- Supabase JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- REVIEW -->
+<section class="section">
+  <div class="review">
+    ⭐⭐⭐⭐⭐ 4.9 / 5<br>
+    “Buying from Second Wheel was simple & stress-free”
+  </div>
+</section>
 
-  <!-- Language + Theme bootstrap (URL param + toggle + memory) -->
-  <script>
-  (function(){
-    const I18N = {
-      en:{'nav.home':'Home','nav.buy':'Buy','nav.sell':'Sell','nav.valuation':'Valuation','nav.tools':'Tools',
-          'hero.title':'Trusted Vehicles, Smart Deals','hero.subtitle':'Buy & Sell pre-owned Cars and Bikes with complete peace of mind.',
-          'hero.buy':'Buy','hero.sell':'Sell','hero.buycar':'Buy Car','hero.buybike':'Buy Bike','hero.sellcar':'Sell Car','hero.sellbike':'Sell Bike',
-          'feat.title':'Featured Vehicles','feat.filter':'Brand'},
-      hi:{'nav.home':'होम','nav.buy':'खरीदें','nav.sell':'बेचें','nav.valuation':'वैल्यूएशन','nav.tools':'टूल्स',
-          'hero.title':'ट्रस्टेड व्हीकल्स, स्मार्ट डील्स','hero.subtitle':'पुरानी कार/बाइक निश्चिंत होकर खरीदें और बेचें।',
-          'hero.buy':'खरीदें','hero.sell':'बेचें','hero.buycar':'कार खरीदें','hero.buybike':'बाइक खरीदें','hero.sellcar':'कार बेचें','hero.sellbike':'बाइक बेचें',
-          'feat.title':'फ़ीचर्ड वाहन','feat.filter':'ब्रांड'},
-      mr:{'nav.home':'मुखपृष्ठ','nav.buy':'खरेदी','nav.sell':'विक्री','nav.valuation':'मूल्यांकन','nav.tools':'साधने',
-          'hero.title':'विश्वसनीय व्हेइकल्स, स्मार्ट डील्स','hero.subtitle':'जुन्या कार/बाईक निर्धास्तपणे खरेदी-विक्री करा.',
-          'hero.buy':'खरेदी','hero.sell':'विक्री','hero.buycar':'कार खरेदी','hero.buybike':'बाईक खरेदी','hero.sellcar':'कार विक्री','hero.sellbike':'बाईक विक्री',
-          'feat.title':'फीचर्ड वाहने','feat.filter':'ब्रँड'}
-    };
-    const KEY_LANG='secondwheel.lang';
-    const KEY_MODE='secondwheel.theme.mode'; // 'light' | 'dark' | 'system'
+<!-- COUNTERS -->
+<section class="section">
+  <div class="counters">
+    <div><h3>1200+</h3><p>Vehicles Sold</p></div>
+    <div><h3>300+</h3><p>Happy Customers</p></div>
+    <div><h3>6+</h3><p>Years Experience</p></div>
+    <div><h3>24x7</h3><p>Support</p></div>
+  </div>
+</section>
 
-    const langSeg=document.getElementById('langSeg');
-    const darkBtn=document.getElementById('darkToggle');
-    const toastEl=document.getElementById('toast');
+<!-- SELL CTA -->
+<section class="section">
+  <div class="sell">
+    <h2>Sell Your Vehicle in 30 Minutes</h2>
+    <p>Free inspection • Best price • Same day payment</p>
+    <a href="sell.html">Sell Now</a>
+  </div>
+</section>
 
-    function toast(msg){ if(!toastEl) return; toastEl.textContent=msg; toastEl.classList.add('show'); clearTimeout(window.__t); window.__t=setTimeout(()=>toastEl.classList.remove('show'),1400); }
-    function applyLang(l){
-      document.querySelectorAll('[data-i18n]').forEach(el=>{ const k=el.getAttribute('data-i18n'); if(I18N[l]&&I18N[l][k]) el.textContent=I18N[l][k]; });
-      localStorage.setItem(KEY_LANG,l);
-      langSeg?.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
-    }
+<footer>
+  © 2026 Second Wheel – All rights reserved
+</footer>
 
-    function systemPrefersDark(){ return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; }
-    function resolve(mode){ if(mode==='system') return systemPrefersDark()?'dark':'light'; return (mode==='dark'||mode==='light')?mode:'light'; }
-    function setThemeMode(mode){
-      localStorage.setItem(KEY_MODE, mode);
-      const eff = resolve(mode);
-      document.documentElement.setAttribute('data-theme', eff);
-      if(darkBtn) darkBtn.textContent = (eff==='dark') ? '🌙' : '☀️';
-      // meta theme-color update (nice for mobile status bar)
-      const meta = document.querySelector('meta[name="theme-color"]');
-      if(meta) meta.setAttribute('content', eff==='dark' ? '#0b0f17' : '#ffffff');
-    }
-    function readParamMode(){
-      const url = new URL(window.location.href);
-      let m = (url.searchParams.get('mode')||'').toLowerCase();
-      if(!m && url.hash.startsWith('#mode=')) m = url.hash.slice(6).toLowerCase();
-      return ['light','dark','system'].includes(m) ? m : null;
-    }
+<div class="mobile-bar">
+  <a href="tel:+919822292955">📞 Call</a>
+  <a href="https://wa.me/919822292955">💬 WhatsApp</a>
+  <a href="buy.html">🚘 Buy</a>
+</div>
 
-    document.getElementById('yr').textContent=new Date().getFullYear();
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const slides=document.querySelectorAll(".hero-carousel img");
+let i=0;
+setInterval(()=>{
+  slides[i].classList.remove("active");
+  i=(i+1)%slides.length;
+  slides[i].classList.add("active");
+},3500);
 
-    // language
-    applyLang(localStorage.getItem(KEY_LANG)||'en');
-    langSeg?.addEventListener('click',e=>{
-      const btn=e.target.closest('button[data-lang]'); if(!btn) return;
-      applyLang(btn.dataset.lang); toast('Language: '+btn.dataset.lang.toUpperCase());
-    });
+const sb=supabase.createClient(
+  "https://wbjwvxckbfkutqqbgupq.supabase.co",
+  "sb_publishable_QjJXmzREzdg3qB6dbfG-1A_0jLQNt66"
+);
 
-    // theme bootstrap: URL > saved > system > light
-    const fromParam = readParamMode();
-    const saved     = localStorage.getItem(KEY_MODE);
-    const initial   = fromParam || saved || (systemPrefersDark() ? 'dark' : 'light');
-    setThemeMode(initial);
-
-    // system listener (only if mode=system)
-    const mm = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
-    if(mm && mm.addEventListener){
-      mm.addEventListener('change', ()=> { if((localStorage.getItem(KEY_MODE)||'light')==='system') setThemeMode('system'); });
-    }
-
-    // toggle cycles: light → dark → system → light …
-    darkBtn?.addEventListener('click', ()=>{
-      const cur = localStorage.getItem(KEY_MODE) || 'light';
-      const nxt = cur==='light' ? 'dark' : cur==='dark' ? 'system' : 'light';
-      setThemeMode(nxt);
-      toast('Theme: '+nxt);
-    });
-
-    // Buy/Sell tabs
-    const buyBtn = document.getElementById('tabBuy');
-    const sellBtn= document.getElementById('tabSell');
-    const panelB = document.getElementById('panelBuy');
-    const panelS = document.getElementById('panelSell');
-    function show(which){
-      const b = which==='buy';
-      buyBtn.classList.toggle('active', b);
-      sellBtn.classList.toggle('active', !b);
-      panelB.classList.toggle('hidden', !b);
-      panelS.classList.toggle('hidden', b);
-    }
-    buyBtn?.addEventListener('click', ()=>show('buy'));
-    sellBtn?.addEventListener('click',()=>show('sell'));
-  })();
-  </script>
-
-  <!-- Featured from Supabase -->
-  <script>
-  (async function(){
-    const SUPABASE_URL='https://wbjwvxckbfkutqqbgupq.supabase.co';
-    const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-    const BUCKET='vehicals';
-
-    const row = document.getElementById('vehiclesRow');
-    const brandFilter = document.getElementById('brandFilter');
-
-    function card(v){
-      const el=document.createElement('article');
-      el.className='vehicle';
-      el.innerHTML=`
-        <div class="media">
-          <img src="${v.image}" alt="${v.title}">
-          <span class="tag">Featured</span>
-        </div>
+(async()=>{
+  const box=document.getElementById("featured");
+  const {data}=await sb.from("vehicles").select("*").eq("featured",true).limit(4);
+  if(!data?.length){box.innerHTML="<p>No featured vehicles yet</p>";return;}
+  data.forEach(v=>{
+    box.innerHTML+=`
+      <div class="vehicle">
+        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/${v.type}/${v.vid}/cover.jpg">
         <div class="body">
-          <div class="title">${v.title}</div>
-          <div class="meta"><span>${v.brand||''}</span><span>${v.price||''}</span></div>
-          <div class="muted" style="margin:6px 0 4px">${v.year||''} • ${v.km||''} km</div>
-          <p class="muted" style="margin:6px 0">${v.desc||''}</p>
-          <div class="actions">
-            <a class="btn" href="#" onclick="event.preventDefault()">♡ Wishlist</a>
-            <a class="btn btn-primary" href="https://wa.me/919822292955?text=${encodeURIComponent('Interested: '+v.title)}">Enquire Now</a>
-          </div>
-        </div>`;
-      return el;
-    }
-    function publicUrl(client, path){
-      const { data } = client.storage.from(BUCKET).getPublicUrl(path);
-      return data?.publicUrl || `${SUPABASE_URL}/storage/v1/object/public/${path}`;
-    }
-    async function list(client, prefix){
-      const { data } = await client.storage.from(BUCKET).list(prefix, { limit: 200 });
-      return data || [];
-    }
-    async function firstImageUrl(client, prefix){
-      const listArr = await list(client, prefix);
-      const first = listArr.filter(x=>!/\.json$/i.test(x.name))
-                           .sort((a,b)=>a.name.localeCompare(b.name))[0];
-      return first ? publicUrl(client, `${prefix}/${first.name}`) : '';
-    }
+          <h3>${v.title}</h3>
+          <p>${v.year} • ${v.km} km</p>
+          <strong>₹${v.price}</strong>
+        </div>
+      </div>`;
+  });
+})();
+</script>
 
-    async function run(){
-      const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      const roots = await list(client, 'featured');
-
-      const items = [];
-      for(const f of (roots||[])){
-        const folderName = f.name;
-        if(!folderName || /\./.test(folderName)) continue;
-        const base = `featured/${folderName}`;
-
-        let metaJson = {};
-        try{
-          const dl = await client.storage.from(BUCKET).download(`${base}/meta.json`);
-          if(dl.data){ try{ metaJson = JSON.parse(await dl.data.text()); }catch{} }
-        }catch(_){}
-
-        let img = await firstImageUrl(client, base);
-        if(!img && metaJson.type){
-          const alt = `${metaJson.type}/${folderName}`;
-          img = await firstImageUrl(client, alt);
-        }
-        if(!img) img = publicUrl(client, 'logo.png');
-
-        items.push({
-          title: metaJson.title || folderName,
-          brand: metaJson.brand || '',
-          price: metaJson.price ? `₹${metaJson.price}` : '',
-          year:  metaJson.year  || '',
-          km:    metaJson.km    || '',
-          desc:  metaJson.description || '',
-          image: img
-        });
-      }
-
-      const brands = [...new Set(items.map(i=>i.brand).filter(Boolean))];
-      brandFilter.innerHTML = '<option value="">All</option>' + brands.map(b=>`<option>${b}</option>`).join('');
-      brandFilter.onchange = ()=>render(brandFilter.value);
-
-      function render(br){
-        row.innerHTML='';
-        const view = items.filter(i=>!br || i.brand===br);
-        view.forEach(v=>row.appendChild(card(v)));
-        if(!row.children.length) row.innerHTML = '<div class="muted">No items yet</div>';
-      }
-      render('');
-    }
-
-    try{ await run(); }
-    catch(e){
-      console.warn('Featured fetch failed, showing placeholder.', e);
-      row.innerHTML = '<div class="muted" style="padding:8px">No featured vehicles found.</div>';
-    }
-  })();
-  </script>
 </body>
 </html>
