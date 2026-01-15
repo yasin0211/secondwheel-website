@@ -31,52 +31,59 @@ button.danger{background:#dc2626;color:#fff}
   border:1px solid #ddd;padding:8px;margin-top:6px;
   display:flex;justify-content:space-between;align-items:center
 }
+.topbar{
+  display:flex;justify-content:space-between;align-items:center
+}
+.logout{
+  background:#111;color:#fff
+}
 </style>
 </head>
 <body>
 
 <div class="card">
-<h2>🚘 Vehicle Manager</h2>
+  <div class="topbar">
+    <h2>🚘 Vehicle Manager</h2>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
 
-<div class="grid">
-<select id="type" onchange="genId()">
-  <option value="car">Car</option>
-  <option value="bike">Bike</option>
-  <option value="scooter">Scooter</option>
-</select>
+  <div class="grid">
+    <select id="type" onchange="genId()">
+      <option value="car">Car</option>
+      <option value="bike">Bike</option>
+      <option value="scooter">Scooter</option>
+    </select>
 
-<input id="vid" readonly placeholder="Vehicle ID">
-<input id="title" placeholder="Title">
-<input id="brand" placeholder="Brand">
-<input id="year" type="number" placeholder="Year">
-<input id="km" type="number" placeholder="KM">
-<input id="price" type="number" placeholder="Price">
+    <input id="vid" readonly placeholder="Vehicle ID">
+    <input id="title" placeholder="Title">
+    <input id="brand" placeholder="Brand">
+    <input id="year" type="number" placeholder="Year">
+    <input id="km" type="number" placeholder="KM">
+    <input id="price" type="number" placeholder="Price">
+  </div>
+
+  <textarea id="desc" placeholder="Full Description"></textarea>
+
+  <label>
+    <input type="checkbox" id="featured"> Featured Vehicle
+  </label>
+
+  <input id="featured_note" placeholder="Featured short description">
+
+  <hr>
+
+  <input id="images" type="file" multiple accept="image/*">
+  <div class="images" id="imgBox"></div>
+
+  <br>
+  <button onclick="save()">Save / Update</button>
+  <button class="danger" onclick="removeVehicle()">Delete Vehicle</button>
+
+  <hr>
+  <h3>📋 Existing Vehicles</h3>
+  <div class="list" id="list"></div>
 </div>
 
-<textarea id="desc" placeholder="Full Description"></textarea>
-
-<label>
-  <input type="checkbox" id="featured"> Featured Vehicle
-</label>
-
-<input id="featured_note" placeholder="Featured short description">
-
-<hr>
-
-<input id="images" type="file" multiple accept="image/*">
-<div class="images" id="imgBox"></div>
-
-<br>
-<button onclick="save()">Save / Update</button>
-<button class="danger" onclick="removeVehicle()">Delete Vehicle</button>
-
-<hr>
-<h3>📋 Existing Vehicles</h3>
-<div class="list" id="list"></div>
-
-</div>
-
-<!-- ✅ SUPABASE + ADMIN LOGIC (ALL IN ONE) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* 🔐 SUPABASE INIT */
@@ -85,22 +92,22 @@ const sb = window.supabase.createClient(
   "sb_publishable_QjJXmzREzdg3qB6dbfG-1A_0jLQNt66"
 );
 
-/* 🔐 LOGIN CHECK */
+/* 🔧 HELPERS */
+const BUCKET="vehicals"; // ✅ confirmed
+const MAX_IMAGES=20;
+const $=id=>document.getElementById(id);
+
+/* 🔐 LOGIN CHECK + INIT */
 (async()=>{
   const { data } = await sb.auth.getSession();
   if(!data.session){
     location.href="login.html";
+    return;
   }
+
+  genId();
+  loadList();
 })();
-
-/* 🔧 HELPERS */
-const BUCKET="vehicals";
-const MAX_IMAGES=20;
-const $=id=>document.getElementById(id);
-
-/* INIT */
-genId();
-loadList();
 
 /* AUTO ID */
 async function genId(){
@@ -212,6 +219,12 @@ async function removeVehicle(){
   await sb.from("vehicles").delete().eq("vid",v);
   alert("Deleted");
   loadList();
+}
+
+/* LOGOUT */
+async function logout(){
+  await sb.auth.signOut();
+  location.href="login.html";
 }
 </script>
 
