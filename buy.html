@@ -1,26 +1,195 @@
-view.forEach(v => {
-  const price = Number(v.price);
-  const emi36 = calcEMI(price, 36);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Buy Used Cars in Satara | Second Wheel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  grid.innerHTML += `
-    <div class="card">
-     <img
-  src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/car/${v.vid}/cover.jpg"
-  onerror="this.src='https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png'"
-  alt="${v.title}"
->
+<style>
+body{margin:0;font-family:system-ui;background:#f7f8fb}
+header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #ddd}
+.wrap{max-width:1200px;margin:auto;padding:14px}
+.row{display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900}
+.logo img{height:40px}
 
-      <div class="body">
-        <h3>${v.title}</h3>
-        <p>${v.year} • ${Number(v.km).toLocaleString("en-IN")} km</p>
-        <div class="price">₹${price.toLocaleString("en-IN")}</div>
+.filters{display:grid;gap:10px;margin-top:12px}
+@media(min-width:700px){.filters{grid-template-columns:2fr 1fr 1fr auto}}
 
-        <div class="emi-box">
-          EMI (18% reducing)<br>
-          <b>₹${emi36.toLocaleString("en-IN")} / month</b><br>
-          <small>36 months</small>
-        </div>
+input,select{padding:10px;border-radius:10px;border:1px solid #ccc}
+
+.grid{display:grid;gap:16px;margin-top:16px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}}
+
+.card{
+  background:#fff;border-radius:16px;overflow:hidden;
+  box-shadow:0 10px 20px rgba(0,0,0,.1)
+}
+.card img{width:100%;height:180px;object-fit:cover}
+.body{padding:12px}
+.body h3{margin:0 0 6px;font-size:15px}
+.body p{margin:0;font-size:13px;opacity:.7}
+.price{font-weight:900;margin-top:6px}
+
+.emi-box{
+  margin-top:8px;background:#f2f4f8;
+  padding:8px;border-radius:10px;
+  font-size:13px;font-weight:800
+}
+
+.empty{text-align:center;padding:40px;opacity:.7}
+
+.sticky{
+  position:fixed;bottom:16px;right:16px;z-index:99
+}
+.sticky a{
+  padding:14px 18px;border-radius:999px;
+  font-weight:900;text-decoration:none;
+  background:#111;color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="row">
+      <div class="logo">
+        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png">
+        SECOND WHEEL
       </div>
+      <a href="https://wa.me/919822292955"
+         style="background:#25D366;padding:10px 18px;border-radius:999px;font-weight:800;color:#111;text-decoration:none">
+        WhatsApp
+      </a>
     </div>
-  `;
-});
+
+    <div class="filters">
+      <input id="q" placeholder="Search car / brand">
+      <select id="brand"><option value="">All Brands</option></select>
+      <select id="sort">
+        <option value="">Sort</option>
+        <option value="price-low">Price: Low → High</option>
+        <option value="price-high">Price: High → Low</option>
+        <option value="new">Newest</option>
+      </select>
+      <span id="count" style="font-weight:900"></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="grid" class="grid"></div>
+</main>
+
+<div class="sticky">
+  <a href="tel:+919822292955">📞 Call Now</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const sb = supabase.createClient(
+  "https://wbjwvxckbfkutqqbgupq.supabase.co",
+  "sb_publishable_QjJXmzREzdg3qB6dbfG-1A_0jLQNt66"
+);
+
+const $=id=>document.getElementById(id);
+const grid=$("grid"), q=$("q"), brand=$("brand"),
+sort=$("sort"), count=$("count");
+
+const money=n=>"₹"+Number(n).toLocaleString("en-IN");
+
+/* EMI – 18% reducing */
+function calcEMI(price, months){
+  const r=0.18/12;
+  return Math.round(
+    price*r*Math.pow(1+r,months)/(Math.pow(1+r,months)-1)
+  );
+}
+
+let DATA=[];
+
+/* LOAD DATA */
+async function load(){
+  const {data,error}=await sb
+    .from("vehicles")
+    .select("*")
+    .eq("type","car")
+    .order("created_at",{ascending:false});
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  DATA=data||[];
+  setupBrands();
+  render();
+}
+
+/* BRAND FILTER */
+function setupBrands(){
+  const brands=[...new Set(DATA.map(v=>v.brand).filter(Boolean))];
+  brand.innerHTML='<option value="">All Brands</option>'+
+    brands.map(b=>`<option value="${b}">${b}</option>`).join("");
+}
+
+/* RENDER */
+function render(){
+  let view=[...DATA];
+
+  const term=q.value.toLowerCase().trim();
+  if(term){
+    view=view.filter(v=>
+      (v.title||"").toLowerCase().includes(term) ||
+      (v.brand||"").toLowerCase().includes(term)
+    );
+  }
+
+  if(brand.value) view=view.filter(v=>v.brand===brand.value);
+
+  if(sort.value==="price-low") view.sort((a,b)=>a.price-b.price);
+  if(sort.value==="price-high") view.sort((a,b)=>b.price-a.price);
+  if(sort.value==="new")
+    view.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+
+  count.textContent=view.length+" Cars";
+  grid.innerHTML="";
+
+  if(!view.length){
+    grid.innerHTML='<div class="empty">No cars found</div>';
+    return;
+  }
+
+  view.forEach(v=>{
+    const price=Number(v.price);
+    const emi36=calcEMI(price,36);
+
+    grid.innerHTML+=`
+      <div class="card">
+        <img
+          src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/car/${v.vid}/cover.jpg"
+          onerror="this.src='https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png'">
+        <div class="body">
+          <h3>${v.title}</h3>
+          <p>${v.year} • ${Number(v.km).toLocaleString("en-IN")} km</p>
+          <div class="price">${money(price)}</div>
+          <div class="emi-box">
+            EMI (18% reducing)<br>
+            <b>${money(emi36)} / month</b><br>
+            <small>36 months</small>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+/* EVENTS */
+[q,brand,sort].forEach(el=>el.oninput=render);
+
+load();
+</script>
+
+</body>
+</html>
