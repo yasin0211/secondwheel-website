@@ -103,7 +103,6 @@ const money=n=>"₹"+Number(n).toLocaleString("en-IN");
 
 /* EMI – 18% reducing */
 function calcEMI(price, months){
-  price = Number(price);
   const r = 0.18/12;
   return Math.round(
     price * r * Math.pow(1+r,months) /
@@ -149,24 +148,25 @@ function render(){
   grid.innerHTML="";
 
   if(!view.length){
-    grid.innerHTML='<div class="empty">No cars found</div>'; return;
+    grid.innerHTML='<div class="empty">No cars found</div>';
+    return;
   }
 
   view.forEach(v=>{
-    const price = Number(v.price);
-    const emi36 = calcEMI(price,36);
+    const price=Number(v.price);
+    const emi36=calcEMI(price,36);
 
     grid.innerHTML+=`
       <div class="card">
-        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/car/${v.vid}/cover.jpg"
-        onerror="this.src='https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png'">
+        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/car/car/${v.vid}/cover.jpg"
+             onerror="this.src='https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png'">
         <div class="body">
           <h3>${v.title}</h3>
           <p>${v.year} • ${Number(v.km).toLocaleString("en-IN")} km</p>
           <div class="price">${money(price)}</div>
           <div class="emi-box">
-            EMI (18% reducing): <br>
-            <b>${money(emi36)} / month</b> <br>
+            EMI (18% reducing)<br>
+            <b>${money(emi36)} / month</b><br>
             <small>36 months</small>
           </div>
         </div>
