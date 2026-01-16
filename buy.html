@@ -8,50 +8,23 @@
 
 <style>
 body{margin:0;font-family:system-ui;background:#f7f8fb}
-
-/* HEADER */
-header{
-  position:sticky;top:0;z-index:20;
-  background:#fff;border-bottom:1px solid #ddd
-}
+header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #ddd}
 .wrap{max-width:1200px;margin:auto;padding:14px}
-.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.row{display:flex;justify-content:space-between;align-items:center}
 .logo{display:flex;align-items:center;gap:10px;font-weight:900}
 .logo img{height:40px}
 
-/* FILTERS */
 .filters{display:grid;gap:10px;margin-top:12px}
-@media(min-width:700px){.filters{grid-template-columns:2fr 1fr 1fr 1fr}}
+@media(min-width:700px){.filters{grid-template-columns:2fr 1fr 1fr}}
 
-input,select{
-  padding:10px;border-radius:10px;border:1px solid #ccc
-}
+input,select{padding:10px;border-radius:10px;border:1px solid #ccc}
 
-/* SLIDER */
-.slider-box{
-  grid-column:1/-1;
-  background:#fff;
-  padding:12px;
-  border-radius:14px;
-  box-shadow:0 6px 14px rgba(0,0,0,.08)
-}
-.range-values{
-  display:flex;
-  justify-content:space-between;
-  font-weight:900;
-  margin-bottom:6px
-}
-
-/* GRID */
 .grid{display:grid;gap:16px;margin-top:16px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}}
 
-/* CARD */
 .card{
-  background:#fff;border-radius:16px;
-  overflow:hidden;
-  box-shadow:0 10px 20px rgba(0,0,0,.1);
-  text-decoration:none;color:#111
+  background:#fff;border-radius:16px;overflow:hidden;
+  box-shadow:0 10px 20px rgba(0,0,0,.1)
 }
 .card img{width:100%;height:180px;object-fit:cover}
 .body{padding:12px}
@@ -59,40 +32,27 @@ input,select{
 .body p{margin:0;font-size:13px;opacity:.7}
 .price{font-weight:900;margin-top:6px}
 
-/* EMI */
-.emi{
-  margin-top:8px;
-  font-size:13px;
-  font-weight:900;
-  background:#f2f4f8;
-  padding:6px 10px;
-  border-radius:10px;
+.emi-box{
+  margin-top:8px;background:#f2f4f8;
+  padding:8px;border-radius:10px;
+  font-size:13px;font-weight:800
 }
 
-/* EMPTY */
 .empty{text-align:center;padding:40px;opacity:.7}
 
-/* STICKY CALL */
 .sticky{
-  position:fixed;
-  bottom:16px;
-  right:16px;
-  z-index:99
+  position:fixed;bottom:16px;right:16px;z-index:99
 }
 .sticky a{
-  padding:14px 18px;
-  border-radius:999px;
-  font-weight:900;
-  text-decoration:none;
-  box-shadow:0 10px 20px rgba(0,0,0,.3);
-  background:#111;color:#fff
+  padding:14px 18px;border-radius:999px;
+  font-weight:900;text-decoration:none;
+  background:#111;color:#fff;
 }
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="wrap">
     <div class="row">
@@ -101,12 +61,11 @@ input,select{
         SECOND WHEEL
       </div>
       <a href="https://wa.me/919822292955"
-         style="background:#25D366;padding:10px 18px;border-radius:999px;font-weight:800;color:#111;text-decoration:none">
+        style="background:#25D366;padding:10px 18px;border-radius:999px;font-weight:800;color:#111;text-decoration:none">
         WhatsApp
       </a>
     </div>
 
-    <!-- FILTERS -->
     <div class="filters">
       <input id="q" placeholder="Search car / brand">
       <select id="brand"><option value="">All Brands</option></select>
@@ -116,27 +75,15 @@ input,select{
         <option value="price-high">Price: High → Low</option>
         <option value="new">Newest</option>
       </select>
-      <span id="count" style="align-self:center;font-weight:900"></span>
-
-      <!-- PRICE SLIDER -->
-      <div class="slider-box">
-        <div class="range-values">
-          <span id="minVal">₹0</span>
-          <span id="maxVal">₹0</span>
-        </div>
-        <input type="range" id="minPrice" step="50000">
-        <input type="range" id="maxPrice" step="50000">
-      </div>
+      <span id="count" style="font-weight:900"></span>
     </div>
   </div>
 </header>
 
-<!-- GRID -->
 <main class="wrap">
   <div id="grid" class="grid"></div>
 </main>
 
-<!-- STICKY CALL -->
 <div class="sticky">
   <a href="tel:+919822292955">📞 Call Now</a>
 </div>
@@ -148,111 +95,86 @@ const sb = supabase.createClient(
   "sb_publishable_QjJXmzREzdg3qB6dbfG-1A_0jLQNt66"
 );
 
-const grid=document.getElementById("grid");
-const q=document.getElementById("q");
-const brand=document.getElementById("brand");
-const sort=document.getElementById("sort");
-const count=document.getElementById("count");
-const minP=document.getElementById("minPrice");
-const maxP=document.getElementById("maxPrice");
-const minVal=document.getElementById("minVal");
-const maxVal=document.getElementById("maxVal");
-
-let DATA=[];
+const $=id=>document.getElementById(id);
+const grid=$("grid"), q=$("q"), brand=$("brand"),
+sort=$("sort"), count=$("count");
 
 const money=n=>"₹"+Number(n).toLocaleString("en-IN");
 
 /* EMI – 18% reducing */
 function calcEMI(price, months){
-  const r = (18/100)/12;
-  const n = months;
+  price = Number(price);
+  const r = 0.18/12;
   return Math.round(
-    price * r * Math.pow(1+r,n) /
-    (Math.pow(1+r,n)-1)
+    price * r * Math.pow(1+r,months) /
+    (Math.pow(1+r,months)-1)
   );
 }
+
+let DATA=[];
 
 async function load(){
   const {data}=await sb.from("vehicles")
     .select("*")
-    .eq("type","car")
-    .neq("status","sold");
+    .eq("type","car");
 
   DATA=data||[];
   setupBrands();
-  setupPrice();
   render();
 }
 
 function setupBrands(){
   const brands=[...new Set(DATA.map(v=>v.brand).filter(Boolean))];
   brand.innerHTML='<option value="">All Brands</option>'+
-    brands.map(b=>`<option value="${b}">${b}</option>`).join("");
-}
-
-function setupPrice(){
-  if(!DATA.length) return;
-  const prices=DATA.map(v=>v.price);
-  const min=Math.min(...prices);
-  const max=Math.max(...prices);
-  minP.min=min; minP.max=max; minP.value=min;
-  maxP.min=min; maxP.max=max; maxP.value=max;
-  minVal.textContent=money(min);
-  maxVal.textContent=money(max);
+    brands.map(b=>`<option>${b}</option>`).join("");
 }
 
 function render(){
   let view=[...DATA];
 
   const term=q.value.toLowerCase().trim();
-  if(term){
-    view=view.filter(v=>
-      v.title.toLowerCase().includes(term) ||
-      (v.brand||"").toLowerCase().includes(term)
-    );
-  }
+  if(term) view=view.filter(v=>
+    v.title.toLowerCase().includes(term) ||
+    (v.brand||"").toLowerCase().includes(term)
+  );
 
   if(brand.value) view=view.filter(v=>v.brand===brand.value);
 
-  view=view.filter(v=>v.price>=+minP.value && v.price<=+maxP.value);
-
   if(sort.value==="price-low") view.sort((a,b)=>a.price-b.price);
   if(sort.value==="price-high") view.sort((a,b)=>b.price-a.price);
-  if(sort.value==="new") view.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  if(sort.value==="new")
+    view.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
 
   count.textContent=view.length+" Cars";
-
   grid.innerHTML="";
+
   if(!view.length){
-    grid.innerHTML='<div class="empty">No cars found</div>';
-    return;
+    grid.innerHTML='<div class="empty">No cars found</div>'; return;
   }
 
   view.forEach(v=>{
+    const price = Number(v.price);
+    const emi36 = calcEMI(price,36);
+
     grid.innerHTML+=`
-      <a class="card" href="vehicle.html?vid=${v.vid}">
+      <div class="card">
         <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/car/${v.vid}/cover.jpg"
-             onerror="this.src='https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png'">
+        onerror="this.src='https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png'">
         <div class="body">
           <h3>${v.title}</h3>
           <p>${v.year} • ${Number(v.km).toLocaleString("en-IN")} km</p>
-          <div class="price">${money(v.price)}</div>
-          <div class="emi">EMI: ${money(calcEMI(v.price,36))} / month</div>
+          <div class="price">${money(price)}</div>
+          <div class="emi-box">
+            EMI (18% reducing): <br>
+            <b>${money(emi36)} / month</b> <br>
+            <small>36 months</small>
+          </div>
         </div>
-      </a>
-    `;
+      </div>`;
   });
 }
 
-[minP,maxP].forEach(r=>r.oninput=()=>{
-  if(+minP.value>+maxP.value) minP.value=maxP.value;
-  minVal.textContent=money(minP.value);
-  maxVal.textContent=money(maxP.value);
-  render();
-});
-
 [q,brand,sort].forEach(el=>el.oninput=render);
-
 load();
 </script>
 
