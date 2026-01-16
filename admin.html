@@ -48,8 +48,6 @@ button.danger{background:#dc2626;color:#fff}
   <div class="grid">
     <select id="type" onchange="genId()">
       <option value="car">Car</option>
-      <option value="bike">Bike</option>
-      <option value="scooter">Scooter</option>
     </select>
 
     <input id="vid" readonly placeholder="Vehicle ID">
@@ -84,21 +82,20 @@ button.danger{background:#dc2626;color:#fff}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const sb = window.supabase.createClient(
+const sb = supabase.createClient(
   "https://wbjwvxckbfkutqqbgupq.supabase.co",
   "sb_publishable_QjJXmzREzdg3qB6dbfG-1A_0jLQNt66"
 );
 
-const BUCKET = "vehicals";
-const MAX_IMAGES = 20;
-const $ = id => document.getElementById(id);
+const BUCKET="vehicals";
+const MAX_IMAGES=20;
+const $=id=>document.getElementById(id);
 
 /* LOGIN CHECK */
 (async()=>{
   const { data } = await sb.auth.getSession();
   if(!data.session){
-    location.href="login.html";
-    return;
+    location.href="login.html"; return;
   }
   genId();
   loadList();
@@ -106,60 +103,57 @@ const $ = id => document.getElementById(id);
 
 /* AUTO ID */
 async function genId(){
-  const t = type.value;
-  const prefix = t==="car"?"SWC":t==="bike"?"SWB":"SWS";
-  const {count} = await sb.from("vehicles")
+  const {count}=await sb.from("vehicles")
     .select("*",{count:"exact",head:true})
-    .eq("type",t);
-  vid.value = prefix + String(count+1).padStart(3,"0");
+    .eq("type","car");
+  vid.value="SWC"+String(count+1).padStart(3,"0");
 }
 
 /* IMAGE LIMIT */
-images.onchange = ()=>{
-  if(images.files.length > MAX_IMAGES){
-    alert("Maximum 20 images allowed");
-    images.value="";
+images.onchange=()=>{
+  if(images.files.length>MAX_IMAGES){
+    alert("Max 20 images"); images.value="";
   }
 };
 
 /* SAVE */
 async function save(){
-  const payload = {
-    vid: vid.value,
-    type: type.value,
-    title: title.value,
-    brand: brand.value,
-    year: year.value,
-    km: km.value,
-    price: price.value,
-    description: desc.value,
-    featured: featured.checked,
-    featured_note: featured_note.value
+  const payload={
+    vid:vid.value,
+    type:"car",
+    title:title.value,
+    brand:brand.value,
+    year:year.value,
+    km:km.value,
+    price:price.value,
+    description:desc.value,
+    featured:featured.checked,
+    featured_note:featured_note.value
   };
 
   await sb.from("vehicles").upsert(payload,{onConflict:"vid"});
 
-  const base = `${type.value}/${vid.value}`;
+  // 🔥 CORRECT PATH
+  const base=`car/car/${vid.value}`;
 
   for(let i=0;i<images.files.length;i++){
-    const name = i===0 ? "cover.jpg" : `${Date.now()}_${i}.jpg`;
+    const name=i===0?"cover.jpg":`${Date.now()}_${i}.jpg`;
     await sb.storage.from(BUCKET).upload(
       `${base}/${name}`,
       images.files[i],
-      { upsert:true }
+      {upsert:true}
     );
   }
 
-  alert("Vehicle Saved ✅");
+  alert("Saved ✅");
   loadList();
 }
 
 /* LOAD LIST */
 async function loadList(){
   list.innerHTML="";
-  const {data} = await sb.from("vehicles")
-    .select("*")
-    .order("created_at",{ascending:false});
+  const {data}=await sb.from("vehicles")
+    .select("*").order("created_at",{ascending:false});
 
   data.forEach(v=>{
     const d=document.createElement("div");
@@ -171,11 +165,9 @@ async function loadList(){
 
 /* EDIT */
 async function edit(v){
-  const {data} = await sb.from("vehicles")
-    .select("*")
-    .eq("vid",v).single();
+  const {data}=await sb.from("vehicles")
+    .select("*").eq("vid",v).single();
 
-  type.value=data.type;
   vid.value=data.vid;
   title.value=data.title;
   brand.value=data.brand;
@@ -186,39 +178,45 @@ async function edit(v){
   featured.checked=data.featured;
   featured_note.value=data.featured_note||"";
 
-  loadImages(data.type,data.vid);
+  loadImages(v);
 }
 
 /* LOAD IMAGES */
-async function loadImages(t,v){
+async function loadImages(v){
   imgBox.innerHTML="";
-  const {data} = await sb.storage.from(BUCKET).list(`${t}/${v}`);
+  const {data}=await sb.storage.from(BUCKET).list(`car/car/${v}`);
+  if(!data) return;
+
   data.forEach(f=>{
     if(!f.name.match(/\.(jpg|jpeg|png)$/i))return;
-    const url = sb.storage.from(BUCKET)
-      .getPublicUrl(`${t}/${v}/${f.name}`).data.publicUrl;
+    const url=sb.storage.from(BUCKET)
+      .getPublicUrl(`car/car/${v}/${f.name}`).data.publicUrl;
+
     const wrap=document.createElement("div");
     wrap.innerHTML=`<img src="${url}">
-      <span onclick="delImg('${t}','${v}','${f.name}')">✕</span>`;
+      <span onclick="delImg('${v}','${f.name}')">✕</span>`;
     imgBox.appendChild(wrap);
   });
 }
 
 /* DELETE IMAGE */
-async function delImg(t,v,n){
+async function delImg(v,n){
   if(confirm("Delete image?")){
-    await sb.storage.from(BUCKET).remove([`${t}/${v}/${n}`]);
-    loadImages(t,v);
+    await sb.storage.from(BUCKET)
+      .remove([`car/car/${v}/${n}`]);
+    loadImages(v);
   }
 }
 
 /* DELETE VEHICLE */
 async function removeVehicle(){
   if(!confirm("Delete vehicle?"))return;
-  const t=type.value,v=vid.value;
-  const {data} = await sb.storage.from(BUCKET).list(`${t}/${v}`);
+  const v=vid.value;
+
+  const {data}=await sb.storage.from(BUCKET).list(`car/car/${v}`);
   for(const f of data){
-    await sb.storage.from(BUCKET).remove([`${t}/${v}/${f.name}`]);
+    await sb.storage.from(BUCKET)
+      .remove([`car/car/${v}/${f.name}`]);
   }
   await sb.from("vehicles").delete().eq("vid",v);
   alert("Deleted");
