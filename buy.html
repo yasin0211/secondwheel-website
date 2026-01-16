@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Buy Used Cars in Satara | Second Wheel</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Buy verified used cars in Satara. Best price, RC transfer, doorstep service.">
 
 <style>
 body{margin:0;font-family:system-ui;background:#f7f8fb}
@@ -61,7 +60,7 @@ input,select{padding:10px;border-radius:10px;border:1px solid #ccc}
         SECOND WHEEL
       </div>
       <a href="https://wa.me/919822292955"
-        style="background:#25D366;padding:10px 18px;border-radius:999px;font-weight:800;color:#111;text-decoration:none">
+         style="background:#25D366;padding:10px 18px;border-radius:999px;font-weight:800;color:#111;text-decoration:none">
         WhatsApp
       </a>
     </div>
@@ -103,10 +102,9 @@ const money=n=>"₹"+Number(n).toLocaleString("en-IN");
 
 /* EMI – 18% reducing */
 function calcEMI(price, months){
-  const r = 0.18/12;
+  const r=0.18/12;
   return Math.round(
-    price * r * Math.pow(1+r,months) /
-    (Math.pow(1+r,months)-1)
+    price*r*Math.pow(1+r,months)/(Math.pow(1+r,months)-1)
   );
 }
 
@@ -115,7 +113,8 @@ let DATA=[];
 async function load(){
   const {data}=await sb.from("vehicles")
     .select("*")
-    .eq("type","car");
+    .eq("type","car")
+    .order("created_at",{ascending:false});
 
   DATA=data||[];
   setupBrands();
@@ -132,17 +131,19 @@ function render(){
   let view=[...DATA];
 
   const term=q.value.toLowerCase().trim();
-  if(term) view=view.filter(v=>
-    v.title.toLowerCase().includes(term) ||
-    (v.brand||"").toLowerCase().includes(term)
-  );
+  if(term){
+    view=view.filter(v=>
+      v.title.toLowerCase().includes(term) ||
+      (v.brand||"").toLowerCase().includes(term)
+    );
+  }
 
   if(brand.value) view=view.filter(v=>v.brand===brand.value);
 
   if(sort.value==="price-low") view.sort((a,b)=>a.price-b.price);
   if(sort.value==="price-high") view.sort((a,b)=>b.price-a.price);
   if(sort.value==="new")
-    view.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+    view.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
 
   count.textContent=view.length+" Cars";
   grid.innerHTML="";
