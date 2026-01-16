@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Admin Panel | Second Wheel</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
 body{font-family:system-ui;background:#f7f8fb;margin:0;padding:16px}
 h2{margin-top:0}
@@ -31,14 +32,11 @@ button.danger{background:#dc2626;color:#fff}
   border:1px solid #ddd;padding:8px;margin-top:6px;
   display:flex;justify-content:space-between;align-items:center
 }
-.topbar{
-  display:flex;justify-content:space-between;align-items:center
-}
-.logout{
-  background:#111;color:#fff
-}
+.topbar{display:flex;justify-content:space-between;align-items:center}
+.logout{background:#111;color:#fff}
 </style>
 </head>
+
 <body>
 
 <div class="card">
@@ -86,42 +84,39 @@ button.danger{background:#dc2626;color:#fff}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* 🔐 SUPABASE INIT */
 const sb = window.supabase.createClient(
   "https://wbjwvxckbfkutqqbgupq.supabase.co",
   "sb_publishable_QjJXmzREzdg3qB6dbfG-1A_0jLQNt66"
 );
 
-/* 🔧 HELPERS */
-const BUCKET="vehicals"; // ✅ confirmed
-const MAX_IMAGES=20;
-const $=id=>document.getElementById(id);
+const BUCKET = "vehicals";
+const MAX_IMAGES = 20;
+const $ = id => document.getElementById(id);
 
-/* 🔐 LOGIN CHECK + INIT */
+/* LOGIN CHECK */
 (async()=>{
   const { data } = await sb.auth.getSession();
   if(!data.session){
     location.href="login.html";
     return;
   }
-
   genId();
   loadList();
 })();
 
 /* AUTO ID */
 async function genId(){
-  const t=type.value;
-  const prefix=t==="car"?"SWC":t==="bike"?"SWB":"SWS";
-  const {count}=await sb.from("vehicles")
+  const t = type.value;
+  const prefix = t==="car"?"SWC":t==="bike"?"SWB":"SWS";
+  const {count} = await sb.from("vehicles")
     .select("*",{count:"exact",head:true})
     .eq("type",t);
-  vid.value=prefix+String(count+1).padStart(3,"0");
+  vid.value = prefix + String(count+1).padStart(3,"0");
 }
 
 /* IMAGE LIMIT */
-images.onchange=()=>{
-  if(images.files.length>MAX_IMAGES){
+images.onchange = ()=>{
+  if(images.files.length > MAX_IMAGES){
     alert("Maximum 20 images allowed");
     images.value="";
   }
@@ -129,27 +124,29 @@ images.onchange=()=>{
 
 /* SAVE */
 async function save(){
-  const data={
-    vid:vid.value,
-    type:type.value,
-    title:title.value,
-    brand:brand.value,
-    year:year.value,
-    km:km.value,
-    price:price.value,
-    description:desc.value,
-    featured:featured.checked,
-    featured_note:featured_note.value
+  const payload = {
+    vid: vid.value,
+    type: type.value,
+    title: title.value,
+    brand: brand.value,
+    year: year.value,
+    km: km.value,
+    price: price.value,
+    description: desc.value,
+    featured: featured.checked,
+    featured_note: featured_note.value
   };
 
-  await sb.from("vehicles").upsert(data,{onConflict:"vid"});
+  await sb.from("vehicles").upsert(payload,{onConflict:"vid"});
 
-  const base=`${type.value}/${vid.value}`;
+  const base = `${type.value}/${vid.value}`;
+
   for(let i=0;i<images.files.length;i++){
+    const name = i===0 ? "cover.jpg" : `${Date.now()}_${i}.jpg`;
     await sb.storage.from(BUCKET).upload(
-      `${base}/${Date.now()}_${i}.jpg`,
+      `${base}/${name}`,
       images.files[i],
-      {upsert:true}
+      { upsert:true }
     );
   }
 
@@ -160,7 +157,10 @@ async function save(){
 /* LOAD LIST */
 async function loadList(){
   list.innerHTML="";
-  const {data}=await sb.from("vehicles").select("*").order("created_at",{ascending:false});
+  const {data} = await sb.from("vehicles")
+    .select("*")
+    .order("created_at",{ascending:false});
+
   data.forEach(v=>{
     const d=document.createElement("div");
     d.innerHTML=`${v.vid} - ${v.title}
@@ -171,7 +171,10 @@ async function loadList(){
 
 /* EDIT */
 async function edit(v){
-  const {data}=await sb.from("vehicles").select("*").eq("vid",v).single();
+  const {data} = await sb.from("vehicles")
+    .select("*")
+    .eq("vid",v).single();
+
   type.value=data.type;
   vid.value=data.vid;
   title.value=data.title;
@@ -182,16 +185,17 @@ async function edit(v){
   desc.value=data.description;
   featured.checked=data.featured;
   featured_note.value=data.featured_note||"";
+
   loadImages(data.type,data.vid);
 }
 
 /* LOAD IMAGES */
 async function loadImages(t,v){
   imgBox.innerHTML="";
-  const {data}=await sb.storage.from(BUCKET).list(`${t}/${v}`);
+  const {data} = await sb.storage.from(BUCKET).list(`${t}/${v}`);
   data.forEach(f=>{
-    if(!f.name.match(/\.jpg|png|jpeg/))return;
-    const url=sb.storage.from(BUCKET)
+    if(!f.name.match(/\.(jpg|jpeg|png)$/i))return;
+    const url = sb.storage.from(BUCKET)
       .getPublicUrl(`${t}/${v}/${f.name}`).data.publicUrl;
     const wrap=document.createElement("div");
     wrap.innerHTML=`<img src="${url}">
@@ -212,7 +216,7 @@ async function delImg(t,v,n){
 async function removeVehicle(){
   if(!confirm("Delete vehicle?"))return;
   const t=type.value,v=vid.value;
-  const {data}=await sb.storage.from(BUCKET).list(`${t}/${v}`);
+  const {data} = await sb.storage.from(BUCKET).list(`${t}/${v}`);
   for(const f of data){
     await sb.storage.from(BUCKET).remove([`${t}/${v}/${f.name}`]);
   }
