@@ -4,11 +4,12 @@ view.forEach(v => {
 
   grid.innerHTML += `
     <div class="card">
-      <img 
-        src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/car/${v.vid}/cover.jpg"
-        onerror="this.src='https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png'"
-        alt="${v.title}"
-      >
+     <img
+  src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/car/${v.vid}/cover.jpg"
+  onerror="this.src='https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png'"
+  alt="${v.title}"
+>
+
       <div class="body">
         <h3>${v.title}</h3>
         <p>${v.year} • ${Number(v.km).toLocaleString("en-IN")} km</p>
