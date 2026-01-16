@@ -1,425 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Second Wheel — Buy</title>
-<meta name="theme-color" content="#ffffff"/>
+<meta charset="UTF-8">
+<title>Buy Used Cars in Satara | Second Wheel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Buy verified used cars in Satara. Best price, RC transfer, doorstep service.">
+
 <style>
-  /* ---------- THEME TOKENS ---------- */
-  :root{
-    --bg:#f7f8fb; --text:#0b0f17; --muted:#5b667a;
-    --line:rgba(0,0,0,.12);
-    --card:#ffffff; --surface:#f2f4f8;
-    --header-bg:rgba(255,255,255,.90);
-    --brand:#f59e0b; --brand2:#16a34a;
-    --shadow:0 10px 22px rgba(0,0,0,.10);
-    --toast-bg:#ffffff; --toast-text:#0b0f17;
-  }
-  :root[data-theme="dark"]{
-    --bg:#0b0f17; --text:#e5e7eb; --muted:#9aa3b2;
-    --line:rgba(255,255,255,.12);
-    --card:#121826; --surface:#0f1626;
-    --header-bg:rgba(11,15,23,.82);
-    --brand:#f59e0b; --brand2:#22c55e;
-    --shadow:0 12px 32px rgba(0,0,0,.35);
-    --toast-bg:#111827; --toast-text:#e5e7eb;
-  }
+body{margin:0;font-family:system-ui;background:#f7f8fb}
 
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu}
-  a{color:inherit;text-decoration:none}
-  img{max-width:100%;display:block}
+/* HEADER */
+header{
+  position:sticky;top:0;z-index:20;
+  background:#fff;border-bottom:1px solid #ddd
+}
+.wrap{max-width:1200px;margin:auto;padding:14px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900}
+.logo img{height:40px}
 
-  header{position:sticky;top:0;z-index:30;background:var(--header-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  .wrap{max-width:1180px;margin:0 auto;padding:12px 16px}
-  .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand img{width:56px;height:56px;border-radius:14px;box-shadow:var(--shadow)}
-  .brand h1{margin:0;font-size:16px;letter-spacing:.4px}
-  .seg{display:inline-flex;gap:8px;padding:6px;border:1px solid var(--line);border-radius:999px;background:rgba(0,0,0,.04)}
-  :root[data-theme="dark"] .seg{background:rgba(255,255,255,.06)}
-  .seg button{border:0;background:transparent;padding:10px 14px;border-radius:999px;color:var(--text);cursor:pointer}
-  .seg button.active{background:var(--brand);color:#111;font-weight:800}
-  .util{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));cursor:pointer}
-  .btn:active{transform:translateY(1px)}
-  .btn.round{border-radius:999px}
-  .btn.primary{background:linear-gradient(180deg,#f59e0b,#b45309);color:#111;border:none}
+/* FILTERS */
+.filters{display:grid;gap:10px;margin-top:12px}
+@media(min-width:700px){.filters{grid-template-columns:2fr 1fr 1fr 1fr}}
 
-  .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-  .chip{padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(0,0,0,.04);cursor:pointer}
-  :root[data-theme="dark"] .chip{background:rgba(255,255,255,.06)}
-  .chip.active{background:var(--brand);color:#111;font-weight:800;border-color:transparent}
+input,select{
+  padding:10px;border-radius:10px;border:1px solid #ccc
+}
 
-  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-  .input, .select{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--text);outline:none}
-  .muted{color:var(--muted)}
+/* SLIDER */
+.slider-box{
+  grid-column:1/-1;
+  background:#fff;
+  padding:12px;
+  border-radius:14px;
+  box-shadow:0 6px 14px rgba(0,0,0,.08)
+}
+.range-values{
+  display:flex;
+  justify-content:space-between;
+  font-weight:900;
+  margin-bottom:6px
+}
 
-  .grid{display:grid;grid-template-columns:repeat(1,1fr);gap:14px;margin-top:14px}
-  @media(min-width:680px){ .grid{grid-template-columns:repeat(2,1fr)} }
-  @media(min-width:1040px){ .grid{grid-template-columns:repeat(3,1fr)} }
+/* GRID */
+.grid{display:grid;gap:16px;margin-top:16px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}}
 
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
-  .media{position:relative}
+/* CARD */
+.card{
+  background:#fff;border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 10px 20px rgba(0,0,0,.1);
+  text-decoration:none;color:#111
+}
+.card img{width:100%;height:180px;object-fit:cover}
+.body{padding:12px}
+.body h3{margin:0 0 6px;font-size:15px}
+.body p{margin:0;font-size:13px;opacity:.7}
+.price{font-weight:900;margin-top:6px}
 
-  /* --- SWIPE CAROUSEL --- */
-  .carousel{position:relative}
-  .track{
-    display:flex;
-    overflow-x:auto;
-    scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-  }
-  .track::-webkit-scrollbar{display:none}
-  .slide{
-    flex:0 0 100%;
-    scroll-snap-align:center;
-    position:relative;
-  }
-  .slide img{
-    width:100%;
-    height:260px;
-    object-fit:cover;
-  }
-  @media(min-width:720px){ .slide img{height:220px} }
+/* EMI */
+.emi{
+  margin-top:8px;
+  font-size:13px;
+  font-weight:900;
+  background:#f2f4f8;
+  padding:6px 10px;
+  border-radius:10px;
+}
 
-  .navBtnSm{
-    position:absolute;top:50%;transform:translateY(-50%);
-    padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.25);
-    background:rgba(0,0,0,.35);color:#fff;cursor:pointer;z-index:2;
-  }
-  .navBtnSm.l{left:8px} .navBtnSm.r{right:8px}
-  .dots{
-    position:absolute;left:50%;transform:translateX(-50%);
-    bottom:8px;display:flex;gap:6px;z-index:2;
-  }
-  .dot{
-    width:7px;height:7px;border-radius:999px;background:rgba(255,255,255,.45);border:1px solid rgba(0,0,0,.2);cursor:pointer;
-  }
-  .dot.active{background:#fff}
+/* EMPTY */
+.empty{text-align:center;padding:40px;opacity:.7}
 
-  .badge{position:absolute;top:10px;left:10px;background:var(--brand);color:#111;font-weight:800;font-size:12px;padding:4px 8px;border-radius:999px;z-index:2}
-
-  .body{padding:12px}
-  .title{font-weight:800;margin:0 0 6px}
-  .meta{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
-  .desc{margin-top:8px;color:var(--text);opacity:.9;max-height:9.6em;overflow:auto;border-top:1px solid var(--line);padding-top:8px;white-space:pre-wrap}
-  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  .wish{background:rgba(0,0,0,.04);border:1px solid var(--line)}
-  :root[data-theme="dark"] .wish{background:rgba(255,255,255,.06)}
-  .wish.active{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.45)}
-
-  .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.88);z-index:60}
-  .lightbox.show{display:flex}
-  .lb-img{max-width:92vw;max-height:86vh;border-radius:14px;box-shadow:var(--shadow)}
-  .navBtn{position:absolute;top:50%;transform:translateY(-50%);padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.45);cursor:pointer}
-  .navBtn.l{left:16px} .navBtn.r{right:16px}
-  .navBtn:active{transform:translateY(-50%) scale(.98)}
-  .closeBtn{position:absolute;top:16px;right:16px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.45);cursor:pointer}
-
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:var(--toast-bg);color:var(--toast-text);border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
-  .toast.show{opacity:1}
-
-  /* Footer (same as index theme) */
-  footer{background:var(--card); color:var(--muted); border-top:1px solid var(--line); margin-top:40px}
-  footer .wrap{max-width:1100px;margin:auto;padding:28px 16px}
-  .fgrid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.2fr;gap:20px}
-  @media (max-width:900px){.fgrid{grid-template-columns:1fr 1fr}}
-  @media (max-width:560px){.fgrid{grid-template-columns:1fr}}
-  footer h3{margin:0 0 6px; font-size:20px; letter-spacing:.4px; color:var(--text)}
-  footer h4{margin:0 0 10px; font-size:14px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
-  footer a{display:flex;align-items:center;gap:6px;margin:6px 0;color:var(--text);opacity:.9}
-  footer a:hover{opacity:1; text-decoration:underline}
-  .fbottom{border-top:1px solid var(--line); margin-top:18px; padding:10px 0; font-size:12px; text-align:center}
+/* STICKY CALL */
+.sticky{
+  position:fixed;
+  bottom:16px;
+  right:16px;
+  z-index:99
+}
+.sticky a{
+  padding:14px 18px;
+  border-radius:999px;
+  font-weight:900;
+  text-decoration:none;
+  box-shadow:0 10px 20px rgba(0,0,0,.3);
+  background:#111;color:#fff
+}
 </style>
 </head>
+
 <body>
+
+<!-- HEADER -->
 <header>
   <div class="wrap">
     <div class="row">
-      <div class="brand">
-        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png" alt="Second Wheel logo"/>
-        <h1>SECOND WHEEL</h1>
+      <div class="logo">
+        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png">
+        SECOND WHEEL
       </div>
-      <div class="util">
-        <div class="seg" id="langSeg">
-          <button data-lang="en" class="active">EN</button>
-          <button data-lang="hi">HI</button>
-          <button data-lang="mr">MR</button>
-        </div>
-        <button class="btn round" id="themeToggle" aria-label="Toggle theme">☀️</button>
-      </div>
+      <a href="https://wa.me/919822292955"
+         style="background:#25D366;padding:10px 18px;border-radius:999px;font-weight:800;color:#111;text-decoration:none">
+        WhatsApp
+      </a>
     </div>
 
-    <div class="tabs" id="tabs">
-      <button class="chip active" data-type="car" data-i18n="tabs.cars">🚗 Cars</button>
-      <button class="chip" data-type="bike" data-i18n="tabs.bikes">🏍️ Bikes</button>
-      <button class="chip" data-type="scooter" data-i18n="tabs.scooters">🛵 Scooters</button>
-    </div>
-
+    <!-- FILTERS -->
     <div class="filters">
-      <input id="q" class="input" placeholder="Search (Title / Brand)"/>
-      <select id="brandFilter" class="select"><option value="">All Brands</option></select>
-      <span class="muted" id="count">—</span>
+      <input id="q" placeholder="Search car / brand">
+      <select id="brand"><option value="">All Brands</option></select>
+      <select id="sort">
+        <option value="">Sort</option>
+        <option value="price-low">Price: Low → High</option>
+        <option value="price-high">Price: High → Low</option>
+        <option value="new">Newest</option>
+      </select>
+      <span id="count" style="align-self:center;font-weight:900"></span>
+
+      <!-- PRICE SLIDER -->
+      <div class="slider-box">
+        <div class="range-values">
+          <span id="minVal">₹0</span>
+          <span id="maxVal">₹0</span>
+        </div>
+        <input type="range" id="minPrice" step="50000">
+        <input type="range" id="maxPrice" step="50000">
+      </div>
     </div>
   </div>
 </header>
 
+<!-- GRID -->
 <main class="wrap">
-  <div id="grid" class="grid" aria-live="polite"></div>
+  <div id="grid" class="grid"></div>
 </main>
 
-<div id="lightbox" class="lightbox" role="dialog" aria-modal="true">
-  <img id="lbImg" class="lb-img" alt=""/>
-  <button class="navBtn l" id="lbPrev">⟨</button>
-  <button class="navBtn r" id="lbNext">⟩</button>
-  <button class="closeBtn" id="lbClose">✕</button>
+<!-- STICKY CALL -->
+<div class="sticky">
+  <a href="tel:+919822292955">📞 Call Now</a>
 </div>
-
-<div id="toast" class="toast">Saved!</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* -------- i18n -------- */
-const I18N={en:{'tabs.cars':'Cars','tabs.bikes':'Bikes','tabs.scooters':'Scooters','btn.wishlist':'Wishlist','btn.enquire':'Enquire Now'},
-           hi:{'tabs.cars':'कारें','tabs.bikes':'बाइक्स','tabs.scooters':'स्कूटर','btn.wishlist':'विशलिस्ट','btn.enquire':'एन्क्वायर नाउ'},
-           mr:{'tabs.cars':'कार्स','tabs.bikes':'बाईक्स','tabs.scooters':'स्कूटर्स','btn.wishlist':'विशलिस्ट','btn.enquire':'इन्क्वायरी'}};
-const langSeg=document.getElementById('langSeg');
-function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(window.__t); window.__t=setTimeout(()=>el.classList.remove('show'),1500); }
-function applyLang(l){ localStorage.setItem('lang', l); [...langSeg.querySelectorAll('button')].forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
-  document.querySelectorAll('[data-i18n]').forEach(el=>{ const k=el.getAttribute('data-i18n'); if(I18N[l]&&I18N[l][k]) el.textContent=I18N[l][k]; }); }
-langSeg.addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) applyLang(b.dataset.lang);});
-applyLang(localStorage.getItem('lang')||'en');
+const sb = supabase.createClient(
+  "https://wbjwvxckbfkutqqbgupq.supabase.co",
+  "sb_publishable_QjJXmzREzdg3qB6dbfG-1A_0jLQNt66"
+);
 
-/* -------- Theme (index सारखं) -------- */
-(function(){
-  const KEY='secondwheel.theme.mode';
-  const btn=document.getElementById('themeToggle');
-  const meta=document.querySelector('meta[name="theme-color"]');
-  const prefers=()=>window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const resolve=m=>m==='system'?(prefers()?'dark':'light'):(m==='dark'||m==='light'?m:'light');
-  function setMode(m){
-    localStorage.setItem(KEY,m);
-    const eff=resolve(m);
-    document.documentElement.setAttribute('data-theme',eff);
-    btn.textContent=eff==='dark'?'🌙':'☀️';
-    if(meta) meta.setAttribute('content', eff==='dark' ? '#0b0f17' : '#ffffff');
-  }
-  const init = localStorage.getItem(KEY) || (prefers() ? 'dark' : 'light');
-  setMode(init);
-  btn.addEventListener('click',()=>{ const cur=localStorage.getItem(KEY)||'light'; const next=cur==='light'?'dark':cur==='dark'?'system':'light'; setMode(next); toast('Theme: '+next); });
-  const mm = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
-  mm && mm.addEventListener && mm.addEventListener('change',()=>{ if((localStorage.getItem(KEY)||'light')==='system') setMode('system'); });
-})();
+const grid=document.getElementById("grid");
+const q=document.getElementById("q");
+const brand=document.getElementById("brand");
+const sort=document.getElementById("sort");
+const count=document.getElementById("count");
+const minP=document.getElementById("minPrice");
+const maxP=document.getElementById("maxPrice");
+const minVal=document.getElementById("minVal");
+const maxVal=document.getElementById("maxVal");
 
-/* -------- Supabase -------- */
-const SUPABASE_URL='https://wbjwvxckbfkutqqbgupq.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indiand2eGNrYmZrdXRxcWJndXBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzU3NDEsImV4cCI6MjA2OTQ1MTc0MX0.u_zwikgAryhF5Ccv5yOvjq20hzxE5tbYfKI04uTnNXw';
-const BUCKET='vehicals';
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const grid=document.getElementById('grid');
-const brandFilter=document.getElementById('brandFilter');
-const q=document.getElementById('q');
-const count=document.getElementById('count');
-
-/* -------- State -------- */
-let ACTIVE='car';
 let DATA=[];
-let WISHLIST=new Set(JSON.parse(localStorage.getItem('wishlist')||'[]'));
 
-/* -------- Helpers -------- */
-function pubUrl(path){ const {data}=sb.storage.from(BUCKET).getPublicUrl(path); return data?.publicUrl||''; }
-function isImg(name){ return !/\.json$/i.test(name) && (/\.(jpe?g|png|webp|avif)$/i.test(name) || !/\./.test(name)); }
-function limitFor(type){ return type==='car'?20:10; }
-function money(n){ if(n===0||n) try{return '₹'+Number(n).toLocaleString('en-IN')}catch(_){return '₹'+n}; return '₹—'; }
-function wishToggle(id){ if(WISHLIST.has(id)) WISHLIST.delete(id); else WISHLIST.add(id); localStorage.setItem('wishlist',JSON.stringify([...WISHLIST])); render(); toast('Wishlist updated'); }
-function waLink(m){ const msg=encodeURIComponent(`Hi Second Wheel,%0AI want to enquire about:%0A${m.title} (${m.brand})%0AType: ${m.type}%0APrice: ${money(m.price)}%0AYear: ${m.year} • KM: ${m.km}%0AID: ${m.vid}`); return `https://wa.me/919822292955?text=${msg}`; }
+const money=n=>"₹"+Number(n).toLocaleString("en-IN");
 
-/* -------- Lightbox -------- */
-const lb=document.getElementById('lightbox'), lbImg=document.getElementById('lbImg'), lbPrev=document.getElementById('lbPrev'), lbNext=document.getElementById('lbNext'), lbClose=document.getElementById('lbClose');
-let LB_LIST=[], LB_IDX=0;
-function openLB(list,idx){ LB_LIST=list; LB_IDX=idx; lbImg.src=list[idx]; lb.classList.add('show'); }
-function closeLB(){ lb.classList.remove('show'); LB_LIST=[]; }
-function stepLB(d){ if(!LB_LIST.length) return; LB_IDX=(LB_IDX+d+LB_LIST.length)%LB_LIST.length; lbImg.src=LB_LIST[LB_IDX]; }
-lbClose.onclick=closeLB; lbPrev.onclick=()=>stepLB(-1); lbNext.onclick=()=>stepLB(1);
-lb.addEventListener('click',e=>{ if(e.target===lb) closeLB(); });
-
-/* -------- Loaders -------- */
-async function list(prefix){ try{ const {data,error}=await sb.storage.from(BUCKET).list(prefix,{limit:200}); if(error){console.error('list',prefix,error); return [];} return data||[]; }catch(e){console.error('list ex',prefix,e); return [];} }
-async function allImgUrls(prefix,max){ const arr=await list(prefix); const imgs=arr.filter(f=>isImg(f.name)).sort((a,b)=>a.name.localeCompare(b.name)).slice(0,max); return imgs.map(f=>pubUrl(`${prefix}/${f.name}`)).filter(Boolean); }
-async function fetchMeta(prefix){
-  try{ const {data}=sb.storage.from(BUCKET).getPublicUrl(`${prefix}/meta.json`); if(!data?.publicUrl) return null;
-       const res=await fetch(data.publicUrl,{cache:'no-store'}); if(res.ok) return await res.json(); }catch(e){ console.warn('meta',prefix,e); }
-  return null;
+/* EMI – 18% reducing */
+function calcEMI(price, months){
+  const r = (18/100)/12;
+  const n = months;
+  return Math.round(
+    price * r * Math.pow(1+r,n) /
+    (Math.pow(1+r,n)-1)
+  );
 }
 
-async function loadType(type){
-  ACTIVE=type; grid.innerHTML='<div class="muted" style="padding:16px">Loading…</div>';
-  const roots=await list(type);
-  const folders=roots.filter(x=>x?.name && !/\./.test(x.name));
-  const out=[]; const brands=new Set(); const lim=limitFor(type);
+async function load(){
+  const {data}=await sb.from("vehicles")
+    .select("*")
+    .eq("type","car")
+    .neq("status","sold");
 
-  // Parallel load for performance
-  const results = await Promise.all(folders.map(async (f)=>{
-    const vid=f.name; const base=`${type}/${vid}`;
-    const meta=await fetchMeta(base); if(!meta) return null;
-    const imgs=await allImgUrls(base,lim);
-    if(!imgs.length){ const logo=pubUrl('logo.png'); if(logo) imgs.push(logo); else return null; }
-    meta.vid=meta.vid||vid; meta.type=meta.type||type;
-    return {vid,meta,imgs,coverIndex:0};
-  }));
-
-  const clean = results.filter(Boolean);
-  clean.forEach(x=>{ if(x.meta.brand) brands.add(String(x.meta.brand).toUpperCase()); });
-
-  // updatedAt असल्यास sort; नसेल तर title ने
-  DATA=clean.sort((a,b)=> String(b.meta.updatedAt||'').localeCompare(String(a.meta.updatedAt||'')) || String(a.meta.title||'').localeCompare(String(b.meta.title||'')));
-  fillBrands([...brands].sort());
+  DATA=data||[];
+  setupBrands();
+  setupPrice();
   render();
 }
 
-function fillBrands(list){ const curr=brandFilter.value; brandFilter.innerHTML='<option value="">All Brands</option>'+list.map(b=>`<option value="${b}">${b}</option>`).join(''); if(curr) brandFilter.value=curr; }
-
-/* -------- Carousel Helper -------- */
-function createCarousel(container, images, title, badgeText){
-  const wrap=document.createElement('div'); wrap.className='carousel';
-  const track=document.createElement('div'); track.className='track';
-  const dots=document.createElement('div'); dots.className='dots';
-  const prev=document.createElement('button'); prev.className='navBtnSm l'; prev.textContent='⟨';
-  const next=document.createElement('button'); next.className='navBtnSm r'; next.textContent='⟩';
-  let idx=0;
-
-  // slides
-  images.forEach((u,i)=>{
-    const s=document.createElement('div'); s.className='slide';
-    const im=document.createElement('img');
-    im.loading='lazy';
-    im.src=u;
-    im.alt=title||'';
-    im.onerror=()=>{ im.src='https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png'; };
-    im.addEventListener('click',()=>openLB(images, i));
-    s.appendChild(im); track.appendChild(s);
-
-    const d=document.createElement('div'); d.className='dot'+(i===0?' active':'');
-    d.addEventListener('click',()=>goTo(i));
-    dots.appendChild(d);
-  });
-
-  // badge
-  const badge=document.createElement('div'); badge.className='badge'; badge.textContent=String(badgeText||'').toUpperCase();
-
-  wrap.appendChild(track); wrap.appendChild(prev); wrap.appendChild(next); wrap.appendChild(dots); wrap.appendChild(badge);
-  container.appendChild(wrap);
-
-  function goTo(n){
-    idx=Math.max(0, Math.min(images.length-1, n));
-    track.scrollTo({left: idx*track.clientWidth, behavior:'smooth'});
-    [...dots.children].forEach((c,j)=>c.classList.toggle('active', j===idx));
-  }
-  function step(d){ goTo(idx+d); }
-
-  prev.onclick=()=>step(-1);
-  next.onclick=()=>step(1);
-
-  // sync index on manual swipe
-  let ticking=false;
-  track.addEventListener('scroll',()=>{
-    if(!ticking){
-      window.requestAnimationFrame(()=>{
-        const newIdx=Math.round(track.scrollLeft/track.clientWidth);
-        if(newIdx!==idx){ idx=newIdx; [...dots.children].forEach((c,j)=>c.classList.toggle('active', j===idx)); }
-        ticking=false;
-      });
-      ticking=true;
-    }
-  });
-
-  // resize snap fix
-  window.addEventListener('resize',()=>goTo(idx));
+function setupBrands(){
+  const brands=[...new Set(DATA.map(v=>v.brand).filter(Boolean))];
+  brand.innerHTML='<option value="">All Brands</option>'+
+    brands.map(b=>`<option value="${b}">${b}</option>`).join("");
 }
 
-/* -------- Render -------- */
+function setupPrice(){
+  if(!DATA.length) return;
+  const prices=DATA.map(v=>v.price);
+  const min=Math.min(...prices);
+  const max=Math.max(...prices);
+  minP.min=min; minP.max=max; minP.value=min;
+  maxP.min=min; maxP.max=max; maxP.value=max;
+  minVal.textContent=money(min);
+  maxVal.textContent=money(max);
+}
+
 function render(){
-  const term=(q.value||'').toLowerCase().trim();
-  const bf=(brandFilter.value||'').trim();
-  const view=DATA.filter(it=>{
-    const hitQ=!term || ((it.meta.title||'').toLowerCase().includes(term) || (it.meta.brand||'').toLowerCase().includes(term));
-    const hitB=!bf || (String(it.meta.brand||'').toUpperCase()===bf);
-    return hitQ && hitB;
-  });
+  let view=[...DATA];
 
-  count.textContent=`${view.length} ${ACTIVE.toUpperCase()} found`;
-  grid.innerHTML='';
-  if(!view.length){ grid.innerHTML='<div class="muted" style="padding:16px">No results</div>'; return; }
-
-  for(const it of view){
-    const m=it.meta;
-    const card=document.createElement('div'); card.className='card';
-
-    const media=document.createElement('div'); media.className='media';
-    // NEW: swipe carousel inside media
-    createCarousel(media, it.imgs, m.title||'', m.type||ACTIVE);
-
-    const body=document.createElement('div'); body.className='body';
-    const h=document.createElement('h3'); h.className='title'; h.textContent=m.title||'-';
-    const metaRow=document.createElement('div'); metaRow.className='meta';
-    metaRow.innerHTML=`<span><b>${(m.brand||'').toUpperCase()}</b></span><span>${m.year||'—'}</span><span>${m.km?Number(m.km).toLocaleString('en-IN')+' km':'—'}</span><span>${money(m.price)}</span><span>ID: ${m.vid||it.vid}</span>`;
-    const desc=document.createElement('div'); desc.className='desc'; desc.textContent=m.description||'';
-    const actions=document.createElement('div'); actions.className='actions';
-    const wbtn=document.createElement('button'); wbtn.className='btn wish'+(WISHLIST.has(m.vid||it.vid)?' active':''); wbtn.innerHTML='♥ <span data-i18n="btn.wishlist">Wishlist</span>'; wbtn.onclick=()=>wishToggle(m.vid||it.vid);
-    const ebtn=document.createElement('a'); ebtn.className='btn primary'; ebtn.innerHTML='💬 <span data-i18n="btn.enquire">Enquire Now</span>'; ebtn.href=waLink(m); ebtn.target='_blank'; ebtn.rel='noopener';
-    actions.appendChild(wbtn); actions.appendChild(ebtn);
-
-    body.appendChild(h); body.appendChild(metaRow); body.appendChild(desc); body.appendChild(actions);
-    card.appendChild(media); card.appendChild(body); grid.appendChild(card);
+  const term=q.value.toLowerCase().trim();
+  if(term){
+    view=view.filter(v=>
+      v.title.toLowerCase().includes(term) ||
+      (v.brand||"").toLowerCase().includes(term)
+    );
   }
 
-  const currLang=localStorage.getItem('lang')||'en';
-  document.querySelectorAll('[data-i18n]').forEach(el=>{ const k=el.getAttribute('data-i18n'); if(I18N[currLang]&&I18N[currLang][k]) el.textContent=I18N[currLang][k]; });
+  if(brand.value) view=view.filter(v=>v.brand===brand.value);
+
+  view=view.filter(v=>v.price>=+minP.value && v.price<=+maxP.value);
+
+  if(sort.value==="price-low") view.sort((a,b)=>a.price-b.price);
+  if(sort.value==="price-high") view.sort((a,b)=>b.price-a.price);
+  if(sort.value==="new") view.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+
+  count.textContent=view.length+" Cars";
+
+  grid.innerHTML="";
+  if(!view.length){
+    grid.innerHTML='<div class="empty">No cars found</div>';
+    return;
+  }
+
+  view.forEach(v=>{
+    grid.innerHTML+=`
+      <a class="card" href="vehicle.html?vid=${v.vid}">
+        <img src="https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/car/${v.vid}/cover.jpg"
+             onerror="this.src='https://wbjwvxckbfkutqqbgupq.supabase.co/storage/v1/object/public/vehicals/logo.png'">
+        <div class="body">
+          <h3>${v.title}</h3>
+          <p>${v.year} • ${Number(v.km).toLocaleString("en-IN")} km</p>
+          <div class="price">${money(v.price)}</div>
+          <div class="emi">EMI: ${money(calcEMI(v.price,36))} / month</div>
+        </div>
+      </a>
+    `;
+  });
 }
 
-/* -------- Events & Init -------- */
-document.getElementById('tabs').addEventListener('click',e=>{
-  const btn=e.target.closest('.chip'); if(!btn) return;
-  [...document.querySelectorAll('.chip')].forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active'); loadType(btn.dataset.type);
+[minP,maxP].forEach(r=>r.oninput=()=>{
+  if(+minP.value>+maxP.value) minP.value=maxP.value;
+  minVal.textContent=money(minP.value);
+  maxVal.textContent=money(maxP.value);
+  render();
 });
-q.addEventListener('input',render);
-brandFilter.addEventListener('change',render);
 
-loadType(ACTIVE);
+[q,brand,sort].forEach(el=>el.oninput=render);
+
+load();
 </script>
 
-<!-- FOOTER (same as index) -->
-<footer>
-  <div class="wrap">
-    <div class="fgrid">
-      <div>
-        <h3>SECOND WHEEL</h3>
-        <p class="muted">Trusted Vehicles, Smart Deals</p>
-      </div>
-      <div>
-        <h4>Company</h4>
-        <a href="about.html">About Us</a>
-        <a href="contact.html">Contact Us</a>
-      </div>
-      <div>
-        <h4>Legal</h4>
-        <a href="terms.html">Terms &amp; Conditions</a>
-        <a href="privacy.html">Privacy Policy</a>
-      </div>
-      <div>
-        <h4>Follow Us</h4>
-        <a href="https://www.instagram.com/secondwheel.in?igsh=b3V0c3l4dnhoa2pt" target="_blank">Instagram</a>
-        <a href="https://www.facebook.com/secondwheelin/" target="_blank">Facebook Page</a>
-        <a href="https://www.facebook.com/groups/secondwheelin/" target="_blank">Facebook Group</a>
-      </div>
-    </div>
-    <div class="fbottom"><span id="yr"></span> © Second Wheel — All rights reserved.</div>
-  </div>
-</footer>
-<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
 </body>
 </html>
